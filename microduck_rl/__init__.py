@@ -1,0 +1,56 @@
+"""Microduck HD1910 (Feetech) replica tasks for Isaac Lab 3.0 + Newton MJWarp.
+
+Importing this package registers the tasks below. Add ``presets=backlash`` to train the robot with
+gearbox-play hinges (what the official Microduck policies deploy with).
+
+* ``Microduck-Velocity-Flat-HD1910``  walking / velocity tracking (official recipe)
+* ``Microduck-Velocity-Rough-HD1910`` the same on rough terrain
+* ``Microduck-Run-Flat-HD1910``       velocity tracking with a faster forward range
+* ``Microduck-Sit-Flat-HD1910``       stand -> sit
+* ``Microduck-Stand-Flat-HD1910``     sit -> stand
+* ``Microduck-SitStand-Flat-HD1910``  commanded sit <-> stand, one policy
+"""
+
+import gymnasium as gym
+
+_TASKS = "microduck_rl.tasks"
+_ENV = "isaaclab.envs:ManagerBasedRLEnv"
+
+
+def _register(task_id: str, env_cfg: str, agent_cfg: str, symmetry_cfg: str | None = None) -> None:
+    kwargs = {
+        "env_cfg_entry_point": f"{_TASKS}.{env_cfg}",
+        "rsl_rl_cfg_entry_point": f"{_TASKS}.agents:{agent_cfg}",
+    }
+    if symmetry_cfg is not None:
+        kwargs["rsl_rl_with_symmetry_cfg_entry_point"] = f"{_TASKS}.agents:{symmetry_cfg}"
+    gym.register(id=task_id, entry_point=_ENV, disable_env_checker=True, kwargs=kwargs)
+
+
+_register(
+    "Microduck-Velocity-Flat-HD1910",
+    "velocity_env_cfg:MicroDuckHD1910VelocityFlatEnvCfg",
+    "WalkFlatPPORunnerCfg",
+    "WalkFlatSymmetricPPORunnerCfg",
+)
+_register(
+    "Microduck-Velocity-Rough-HD1910",
+    "velocity_env_cfg:MicroDuckHD1910VelocityRoughEnvCfg",
+    "WalkRoughPPORunnerCfg",
+    "WalkRoughPPORunnerCfg",
+)
+_register("Microduck-Run-Flat-HD1910", "velocity_env_cfg:MicroDuckHD1910RunFlatEnvCfg", "RunFlatPPORunnerCfg")
+_register("Microduck-Sit-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitFlatEnvCfg", "SitPPORunnerCfg")
+_register("Microduck-Stand-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910StandFlatEnvCfg", "StandPPORunnerCfg")
+_register(
+    "Microduck-SitStand-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitStandFlatEnvCfg", "SitStandPPORunnerCfg"
+)
+
+TASK_IDS = [
+    "Microduck-Velocity-Flat-HD1910",
+    "Microduck-Velocity-Rough-HD1910",
+    "Microduck-Run-Flat-HD1910",
+    "Microduck-Sit-Flat-HD1910",
+    "Microduck-Stand-Flat-HD1910",
+    "Microduck-SitStand-Flat-HD1910",
+]

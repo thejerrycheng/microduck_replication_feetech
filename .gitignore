@@ -1,0 +1,21 @@
+# third-party checkouts and environments
+external/
+.venv/
+# training outputs
+logs/
+rollouts/
+outputs/
+wandb/
+*.pt
+*.onnx
+*.mp4
+*.npz
+# python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+# editors
+.vscode/
+.idea/

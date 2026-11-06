@@ -1,0 +1,17 @@
+[project]
+name = "microduck_rl"
+version = "0.1.0"
+description = "Microduck (Feetech HD1910 replica) RL on Isaac Lab 3.0 + Newton MJWarp: walk/run, sit, stand"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+# Isaac Lab, Newton and RSL-RL come from the external/IsaacLab uv environment;
+# this package is installed editable into that environment (see Makefile).
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["microduck_rl*"]
