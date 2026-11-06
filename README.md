@@ -41,6 +41,7 @@ Requirements: Linux, an NVIDIA GPU, `uv`. Isaac Sim is **not** needed (Kit-less 
 ## Train
 
 ```bash
+make train-all         # walk -> sit -> stand, one trainer at a time, in a tmux session (tmux attach -t microduck)
 make train-walk        # Microduck-Velocity-Flat-HD1910, 4096 envs, presets=backlash
 make train-sit
 make train-stand

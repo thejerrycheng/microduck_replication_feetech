@@ -5,7 +5,7 @@ PRESET   ?= presets=backlash
 NUM_ENVS ?= 4096
 VIDEO    ?= --video --video_length 500 --video_interval 6000   # one clip per 250 iterations (24 steps each)
 
-.PHONY: help setup install list-envs smoke measure train-walk train-run train-sit train-stand train-sitstand play record
+.PHONY: help setup install list-envs smoke measure train-all train-walk train-run train-sit train-stand train-sitstand play record
 
 help:
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed 's/:.*## /\t/'
@@ -27,6 +27,9 @@ smoke: ## 64-env, 3-iteration training of every task (catches config errors in m
 
 measure: ## measure standing/seated rest heights of the Newton model (checks STAND_Z / SIT_Z)
 	$(UV) scripts/measure_rest_heights.py $(PRESET) --out docs/rest_heights.json
+
+train-all: ## walk -> sit -> stand sequentially in a tmux session (survives the terminal closing); logs/train_all.log
+	tmux new-session -d -s microduck "cd $(CURDIR) && scripts/train_all.sh $(or $(ITERS),15000 15000 15000) > logs/train_all.out 2>&1" && tmux ls
 
 train-walk: ## velocity tracking, flat
 	$(UV) scripts/train.py --rl_library rsl_rl --task Microduck-Velocity-Flat-HD1910 --num_envs $(NUM_ENVS) $(PRESET) $(VIDEO) $(ARGS)
