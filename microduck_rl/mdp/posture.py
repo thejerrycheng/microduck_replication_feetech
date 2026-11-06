@@ -178,9 +178,13 @@ def _posture_height(
 
 
 def _tilt_sq(asset: Articulation) -> torch.Tensor:
-    """``2 (qx^2 + qy^2)`` = 1 - cos(tilt), a tilt-squared proxy for small angles."""
-    quat = asset.data.root_link_quat_w.torch
-    return 2.0 * (quat[:, 1] ** 2 + quat[:, 2] ** 2)
+    """``1 - cos(tilt)`` of the trunk (= ``2 (qx^2 + qy^2)`` upstream), a tilt-squared proxy for small angles.
+
+    Read from the projected gravity rather than the quaternion: Newton stores ``root_link_quat_w`` as
+    ``(x, y, z, w)``, so upstream's component indices would read yaw. Upright gives 0, horizontal 1, inverted 2.
+    """
+    gravity_b = torch.nan_to_num(asset.data.projected_gravity_b.torch, nan=0.0)
+    return torch.clamp(1.0 + gravity_b[:, 2], 0.0, 2.0)
 
 
 def _smoothstep(t: torch.Tensor) -> torch.Tensor:

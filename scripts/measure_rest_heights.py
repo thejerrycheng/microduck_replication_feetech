@@ -66,8 +66,8 @@ def main() -> int:
         for _ in range(steps):
             env.step(target)
         z = (robot.data.root_link_pos_w.torch[:, 2] - env.scene.env_origins[:, 2]).cpu()
-        quat = robot.data.root_link_quat_w.torch.cpu()
-        tilt = torch.rad2deg(torch.acos(torch.clamp(1.0 - 2.0 * (quat[:, 1] ** 2 + quat[:, 2] ** 2), -1.0, 1.0)))
+        gravity_b = robot.data.projected_gravity_b.torch.cpu()
+        tilt = torch.rad2deg(torch.acos(torch.clamp(-gravity_b[:, 2], -1.0, 1.0)))
         tau = robot.data.applied_torque.torch[:, head_ids].abs().cpu()
         report[mode] = {
             "trunk_z_m": {"median": float(z.median()), "min": float(z.min()), "max": float(z.max())},
