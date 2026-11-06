@@ -133,6 +133,13 @@ Shared helpers.
 """
 
 
+def _resolve_env_ids(env: ManagerBasedEnv, env_ids: torch.Tensor | slice | None) -> torch.Tensor:
+    """Event managers pass a slice for "all environments"; turn any form into a long index tensor."""
+    if env_ids is None or isinstance(env_ids, slice):
+        return torch.arange(env.num_envs, device=env.device)[slice(None) if env_ids is None else env_ids]
+    return torch.as_tensor(env_ids, device=env.device, dtype=torch.long)
+
+
 def _trunk_z(env: ManagerBasedEnv, asset: Articulation) -> torch.Tensor:
     return torch.nan_to_num(asset.data.root_link_pos_w.torch[:, 2] - env.scene.env_origins[:, 2], nan=0.0)
 
@@ -450,7 +457,7 @@ Reset and interval events.
 
 def set_random_ground_state(
     env: ManagerBasedEnv,
-    env_ids: torch.Tensor,
+    env_ids: torch.Tensor | slice | None,
     asset_cfg: SceneEntityCfg,
     sitting_prob: float = 0.5,
     standing_prob: float = 0.5,
@@ -468,11 +475,11 @@ def set_random_ground_state(
     absolute trunk height above the env origin, zero velocity, and for the seated bucket the SIT keyframe
     (``asset_cfg`` servo indices -> angles) with per-joint Gaussian noise and +-``sitting_tilt_max`` tilt.
     """
-    if env_ids is None or len(env_ids) == 0:
+    env_ids = _resolve_env_ids(env, env_ids)
+    if len(env_ids) == 0:
         return
     asset: Articulation = env.scene[asset_cfg.name]
     device = env.device
-    env_ids = env_ids.to(device=device, dtype=torch.long)
     num = len(env_ids)
     total = sitting_prob + standing_prob
     is_sit = torch.rand(num, device=device) < (sitting_prob / total)
@@ -525,9 +532,9 @@ def seated_head_command_jerk(
     live ranges. Supplies the sub-second head motion a gamepad produces, which the dwell-resampled
     command never trains; on the real robot that is what tips a seated duck onto its back.
     """
-    if prob <= 0.0 or env_ids is None or len(env_ids) == 0:
+    env_ids = _resolve_env_ids(env, env_ids)
+    if prob <= 0.0 or len(env_ids) == 0:
         return
-    env_ids = env_ids.to(device=env.device, dtype=torch.long)
     pick = _seated_mask(env, posture_command_name, min_alpha)[env_ids]
     pick &= torch.rand(len(env_ids), device=env.device) < prob
     ids = env_ids[pick]
@@ -556,9 +563,9 @@ def seated_backward_tip(
     ``lateral_frac`` mixes a random +- roll component for backward-diagonal falls. Generates the leaned-back
     seated states no spawn covers (teleporting into a lean at sit height penetrates the floor).
     """
-    if env_ids is None or len(env_ids) == 0 or ang_vel_range[1] <= 0.0:
+    env_ids = _resolve_env_ids(env, env_ids)
+    if len(env_ids) == 0 or ang_vel_range[1] <= 0.0:
         return
-    env_ids = env_ids.to(device=env.device, dtype=torch.long)
     pick = _seated_mask(env, posture_command_name, min_alpha)[env_ids]
     pick &= torch.rand(len(env_ids), device=env.device) < prob
     ids = env_ids[pick]
