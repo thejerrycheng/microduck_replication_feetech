@@ -36,6 +36,7 @@ def main() -> int:
     parser.add_argument("--num_envs", type=int, default=32)
     parser.add_argument("--seconds", type=float, default=11.8, help="Keep below the 12 s episode so the final sample precedes the auto-reset")
     parser.add_argument("--out", default=None)
+    parser.add_argument("--train_env_cfg", action="store_true", help="Evaluate in the TRAINING configuration (no play_mode: noise, delays, pushes as trained)")
     args, _ = parser.parse_known_args()
     extra = [a for a in sys.argv[1:] if "=" in a and not a.startswith("-")]
 
@@ -60,7 +61,8 @@ def main() -> int:
                 shutil.copy(run / "exported" / f, export_dir / f)
 
     env_cfg = parse_env_cfg(args.task, device="cuda:0", num_envs=args.num_envs)
-    env_cfg.play_mode()
+    if not args.train_env_cfg:
+        env_cfg.play_mode()
     env_cfg.curriculum = None
     env = gym.make(args.task, cfg=env_cfg).unwrapped
     policy = torch.jit.load(str(policy_path), map_location=env.device).eval()
