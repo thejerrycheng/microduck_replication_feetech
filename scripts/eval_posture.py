@@ -37,6 +37,7 @@ def main() -> int:
     parser.add_argument("--seconds", type=float, default=11.8, help="Keep below the 12 s episode so the final sample precedes the auto-reset")
     parser.add_argument("--out", default=None)
     parser.add_argument("--train_env_cfg", action="store_true", help="Evaluate in the TRAINING configuration (no play_mode: noise, delays, pushes as trained)")
+    parser.add_argument("--action_noise_std", type=float, default=0.0, help="Gaussian noise added to the policy's mean action (the training rollouts sample at the actor's std)")
     args, _ = parser.parse_known_args()
     extra = [a for a in sys.argv[1:] if "=" in a and not a.startswith("-")]
 
@@ -82,7 +83,10 @@ def main() -> int:
     timeline = []
     with torch.no_grad():
         for t in range(steps):
-            obs, _, _, _, _ = env.step(policy(obs["policy"]))
+            action = policy(obs["policy"])
+            if args.action_noise_std > 0.0:
+                action = action + args.action_noise_std * torch.randn_like(action)
+            obs, _, _, _, _ = env.step(action)
             if (t + 1) % per_second == 0 or t == steps - 1:
                 z = robot.data.root_link_pos_w.torch[:, 2] - env.scene.env_origins[:, 2]
                 g = robot.data.projected_gravity_b.torch
@@ -100,7 +104,8 @@ def main() -> int:
     standing = ((z - STAND_Z).abs() < 0.015) & (tilt < 25)
     fallen = tilt > 60
     head_err, neck_pitch_err, neck_tau = head_stats()
-    report = {"checkpoint": str(run / args.checkpoint), "num_envs": args.num_envs, "timeline": timeline,
+    report = {"checkpoint": str(run / args.checkpoint), "num_envs": args.num_envs, "train_env_cfg": args.train_env_cfg,
+              "action_noise_std": args.action_noise_std, "timeline": timeline,
               "final": {"seated_upright_frac": float(seated.float().mean()), "standing_frac": float(standing.float().mean()),
                         "fallen_frac": float(fallen.float().mean()), "z_median_m": float(z.median()), "tilt_median_deg": float(tilt.median()),
                         "head_err_rad": head_err, "neck_pitch_err_rad": neck_pitch_err, "head_up_frac": float((((robot.data.joint_pos.torch[:, head_ids[0]] - robot.data.default_joint_pos.torch[:, head_ids[0]]).abs()) < 0.3).float().mean())}}
