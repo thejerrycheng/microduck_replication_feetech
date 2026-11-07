@@ -54,7 +54,7 @@ def main() -> int:
             extra = [a for a in sys.argv[1:] if "=" in a and not a.startswith("-")]
             subprocess.run(
                 [sys.executable, str(play), "--rl_library", "rsl_rl", "--task", args.task, "--checkpoint",
-                 str(args.run / args.checkpoint), "--num_envs", "4", "--video_length", "1", *extra],
+                 str(args.run.resolve() / args.checkpoint), "--num_envs", "4", "--video_length", "1", *extra],
                 check=True, cwd=Path(__file__).resolve().parent.parent / "external" / "IsaacLab",
             )
             export_dir.mkdir(exist_ok=True)
