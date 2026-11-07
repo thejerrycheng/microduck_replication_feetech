@@ -39,7 +39,9 @@ _register(
     "WalkRoughPPORunnerCfg",
     "WalkRoughPPORunnerCfg",
 )
-_register("Microduck-Run-Flat-HD1910", "velocity_env_cfg:MicroDuckHD1910RunFlatEnvCfg", "RunFlatPPORunnerCfg")
+_register(
+    "Microduck-Run-Flat-HD1910", "velocity_env_cfg:MicroDuckHD1910RunFlatEnvCfg", "RunFlatPPORunnerCfg", "RunFlatPPORunnerCfg"
+)
 _register("Microduck-Sit-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitFlatEnvCfg", "SitPPORunnerCfg")
 _register("Microduck-Stand-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910StandFlatEnvCfg", "StandPPORunnerCfg")
 _register(
