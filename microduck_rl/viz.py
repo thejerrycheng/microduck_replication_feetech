@@ -34,6 +34,10 @@ def clip_visualizer_cfg(num_envs: int, count: int = 16) -> VisualizerCfg:
     return VisualizerCfg(eye=CLIP_EYE, lookat=CLIP_LOOKAT, visible_env_indices=central_env_indices(num_envs, count))
 
 
+PLAY_EYE = (0.9, 0.9, 0.45)
+PLAY_LOOKAT = (0.0, 0.0, 0.06)
+
+
 def play_visualizer_cfg() -> VisualizerCfg:
-    """Playback renders every environment (there are only a few), framed the same way, without debug markers."""
-    return VisualizerCfg(eye=CLIP_EYE, lookat=CLIP_LOOKAT, enable_markers=False)
+    """Playback renders every environment (there are only a few): a closer camera, no debug markers."""
+    return VisualizerCfg(eye=PLAY_EYE, lookat=PLAY_LOOKAT, enable_markers=False)
