@@ -26,8 +26,11 @@ class WalkRoughPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
 
 
 @configclass
-class RunFlatPPORunnerCfg(MicroDuckPPORunnerCfg):
+class RunFlatPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
+    """Sprint budget (official: 3000 iterations, best checkpoint often early) with symmetry augmentation."""
+
     experiment_name = _names("microduck_run_flat")
+    max_iterations = 3000
 
 
 @configclass

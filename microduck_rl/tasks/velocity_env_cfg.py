@@ -6,12 +6,17 @@ swapped for the HD1910 BAM fit and the replica domain randomisation widened
 an exported policy drops into the Microduck runtime like the official one.
 """
 
+import math
+
+from isaaclab.managers import ObservationTermCfg as ObsTerm
+from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.utils.configclass import configclass
 
-from isaaclab_tasks.contrib.microduck.flat_env_cfg import MicroDuckSceneCfg, MicroDuckVelocityFlatEnvCfg
+from isaaclab_tasks.contrib.microduck.flat_env_cfg import MicroDuckSceneCfg, MicroDuckVelocityFlatEnvCfg, _schedule
 from isaaclab_tasks.contrib.microduck.rough_env_cfg import MicroDuckRoughSceneCfg, MicroDuckVelocityRoughEnvCfg
 from isaaclab_tasks.utils import preset
 
+from microduck_rl import mdp
 from microduck_rl.assets import MICRODUCK_HD1910_BACKLASH_CFG, MICRODUCK_HD1910_CFG
 from microduck_rl.dr import apply_replica_dr
 from microduck_rl.realism import apply_servo_realism
@@ -48,6 +53,8 @@ class MicroDuckHD1910VelocityFlatEnvCfg(MicroDuckVelocityFlatEnvCfg):
         apply_replica_dr(self, first_stage_iteration=500)
         self.sim.visualizer_cfgs = clip_visualizer_cfg(self.scene.num_envs)
         apply_servo_realism(self)
+        # Wider forward range than the official +-0.4 so the walking policy also covers a brisk pace.
+        self.commands.base_velocity.ranges.lin_vel_x = (-0.4, 0.6)
 
     def play_mode(self):
         super().play_mode()
@@ -73,17 +80,35 @@ class MicroDuckHD1910VelocityRoughEnvCfg(MicroDuckVelocityRoughEnvCfg):
 
 @configclass
 class MicroDuckHD1910RunFlatEnvCfg(MicroDuckHD1910VelocityFlatEnvCfg):
-    """Flat velocity tracking with a faster forward command range (the "run" policy).
+    """Running: a port of Pollen's official 2 m sprint recipe (``microduck-challenges/sprint_2m``).
 
-    Same recipe as walking; only the command distribution asks for more speed. The air-time window
-    is shortened to reward the quicker stepping a faster gait needs. Experimental: the official
-    recipe is tuned for the 0.4 m/s range.
+    Straight-ahead commands over the Arena's sweep (0.20--1.20 m/s), no sideways or turning command;
+    ``heading_hold`` prices yaw drift against the spawn heading and the critic sees that error; the
+    "previous" tracking terms (weight 2.0, std^2 0.1 / 0.5), the posture reward active while moving, the
+    head command held at its small range (no widening curriculum), the action-rate ramp to -1.0 by 1500.
+    Official budget: 3000 iterations; the reference policy's best checkpoint was 1000 (0.55 m/s).
     """
 
     def __post_init__(self):
         super().__post_init__()
-        self.commands.base_velocity.ranges.lin_vel_x = (-0.4, 0.8)
-        self.commands.base_velocity.forward_min_speed = 0.4
-        self.commands.base_velocity.rel_forward_envs = 0.4
-        self.rewards.air_time.params["threshold_min"] = 0.1
-        self.rewards.air_time.params["threshold_max"] = 0.25
+        cmd = self.commands.base_velocity
+        cmd.ranges.lin_vel_x = (0.20, 1.20)
+        cmd.ranges.lin_vel_y = (0.0, 0.0)
+        cmd.ranges.ang_vel_z = (0.0, 0.0)
+        cmd.rel_forward_envs = 0.0
+        cmd.rel_turn_in_place_envs = 0.0
+        # Previous (sprint) tracking recipe.
+        self.rewards.track_lin_vel = RewTerm(
+            func=mdp.track_linear_velocity, weight=2.0, params={"command_name": "base_velocity", "std": math.sqrt(0.1)}
+        )
+        self.rewards.track_ang_vel = RewTerm(
+            func=mdp.track_angular_velocity, weight=2.0, params={"command_name": "base_velocity", "std": math.sqrt(0.5)}
+        )
+        self.rewards.pose.params["standing_only"] = False
+        self.rewards.heading_hold = RewTerm(func=mdp.heading_hold, weight=1.0, params={"std": 0.4})
+        self.observations.critic.heading_error = ObsTerm(func=mdp.heading_error)
+        # The sprint holds the head command small for the whole run and ramps the action-rate penalty earlier.
+        self.curriculum.head_pose_range = None
+        self.curriculum.action_rate_weight = _schedule(
+            "rewards.action_rate_l2.weight", (500, -0.2), (750, -0.4), (1000, -0.6), (1250, -0.8), (1500, -1.0)
+        )

@@ -14,4 +14,5 @@ from isaaclab_tasks.contrib.microduck.mdp.observations import *  # noqa: F401, F
 from isaaclab_tasks.contrib.microduck.mdp.rewards import *  # noqa: F401, F403
 from isaaclab_tasks.contrib.microduck.mdp.terminations import *  # noqa: F401, F403
 
+from .heading import *  # noqa: F401, F403
 from .posture import *  # noqa: F401, F403
