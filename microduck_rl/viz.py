@@ -35,5 +35,5 @@ def clip_visualizer_cfg(num_envs: int, count: int = 16) -> VisualizerCfg:
 
 
 def play_visualizer_cfg() -> VisualizerCfg:
-    """Playback renders every environment (there are only a few), framed the same way."""
-    return VisualizerCfg(eye=CLIP_EYE, lookat=CLIP_LOOKAT)
+    """Playback renders every environment (there are only a few), framed the same way, without debug markers."""
+    return VisualizerCfg(eye=CLIP_EYE, lookat=CLIP_LOOKAT, enable_markers=False)
