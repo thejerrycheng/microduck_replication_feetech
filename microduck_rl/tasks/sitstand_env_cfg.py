@@ -55,6 +55,7 @@ from microduck_rl.assets import (
     MICRODUCK_HD1910_ALLCOLLISIONS_CFG,
     MICRODUCK_JOINT_NAMES,
 )
+from microduck_rl.realism import apply_servo_realism
 from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
 from microduck_rl.dr import FOOT_FRICTION_RANGE, HEAD_COM_STAGES_M, MASS_SCALE_RANGE, TRUNK_COM_STAGES_M
 
@@ -425,6 +426,7 @@ class MicroDuckHD1910SitStandFlatEnvCfg(ManagerBasedRLEnvCfg):
         self.scene.contact_forces.update_period = self.sim.dt
         self.scene.self_collision.update_period = self.sim.dt
         self.sim.visualizer_cfgs = clip_visualizer_cfg(self.scene.num_envs)
+        apply_servo_realism(self)
 
     def play_mode(self):
         """Inference defaults; keep the pushes off so a clip shows the commanded behaviour."""
