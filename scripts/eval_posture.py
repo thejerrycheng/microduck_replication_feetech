@@ -65,6 +65,15 @@ def main() -> int:
     env = gym.make(args.task, cfg=env_cfg).unwrapped
     policy = torch.jit.load(str(policy_path), map_location=env.device).eval()
     robot = env.scene["robot"]
+    head_ids, _ = robot.find_joints(["neck_pitch", "head_pitch", "head_yaw", "head_roll"], preserve_order=True)
+
+    def head_stats():
+        """Mean |head joint - default - command| [rad] and mean |neck torque| [N.m] over robots."""
+        err = robot.data.joint_pos.torch[:, head_ids] - robot.data.default_joint_pos.torch[:, head_ids]
+        err = err - env.command_manager.get_command("head_pose")
+        tau = robot.data.applied_torque.torch[:, head_ids].abs()
+        return float(err.abs().mean()), float(err[:, 0].mean()), float(tau.mean())
+
     obs, _ = env.reset()
     steps = int(args.seconds / env.step_dt)
     per_second = int(round(1.0 / env.step_dt))
@@ -77,18 +86,22 @@ def main() -> int:
                 g = robot.data.projected_gravity_b.torch
                 tilt = torch.rad2deg(torch.acos(torch.clamp(-g[:, 2], -1.0, 1.0)))
                 flag = env.command_manager.get_command("base_velocity")[:, 0]
+                head_err, neck_pitch_err, neck_tau = head_stats()
                 timeline.append({"t_s": round((t + 1) * env.step_dt, 2), "z_median_m": round(float(z.median()), 4),
                                  "tilt_median_deg": round(float(tilt.median()), 1), "tilt_p90_deg": round(float(tilt.quantile(0.9)), 1),
-                                 "sit_cmd_frac": round(float(flag.mean()), 2)})
+                                 "sit_cmd_frac": round(float(flag.mean()), 2), "head_err_rad": round(head_err, 3),
+                                 "neck_pitch_err_rad": round(neck_pitch_err, 3), "neck_tau_nm": round(neck_tau, 4)})
     z = robot.data.root_link_pos_w.torch[:, 2] - env.scene.env_origins[:, 2]
     g = robot.data.projected_gravity_b.torch
     tilt = torch.rad2deg(torch.acos(torch.clamp(-g[:, 2], -1.0, 1.0)))
     seated = ((z - SIT_Z).abs() < 0.015) & (tilt < 25)
     standing = ((z - STAND_Z).abs() < 0.015) & (tilt < 25)
     fallen = tilt > 60
+    head_err, neck_pitch_err, neck_tau = head_stats()
     report = {"checkpoint": str(run / args.checkpoint), "num_envs": args.num_envs, "timeline": timeline,
               "final": {"seated_upright_frac": float(seated.float().mean()), "standing_frac": float(standing.float().mean()),
-                        "fallen_frac": float(fallen.float().mean()), "z_median_m": float(z.median()), "tilt_median_deg": float(tilt.median())}}
+                        "fallen_frac": float(fallen.float().mean()), "z_median_m": float(z.median()), "tilt_median_deg": float(tilt.median()),
+                        "head_err_rad": head_err, "neck_pitch_err_rad": neck_pitch_err, "head_up_frac": float((((robot.data.joint_pos.torch[:, head_ids[0]] - robot.data.default_joint_pos.torch[:, head_ids[0]]).abs()) < 0.3).float().mean())}}
     for row in timeline:
         print(row)
     print("final:", json.dumps(report["final"]))
