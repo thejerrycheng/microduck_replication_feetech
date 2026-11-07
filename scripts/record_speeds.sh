@@ -24,7 +24,7 @@ for spec in $CMDS; do
   if [ -n "$clip" ]; then
     mv "$clip" "$OUT/${CK%.pt}_$label.mp4"
     scripts/label_clip.sh "$OUT/${CK%.pt}_$label.mp4" "$OUT/labeled/${KIND,,}_${CK%.pt}_$label.mp4" \
-      "$KIND policy  checkpoint ${CK#model_}  ($TASK)" "commanded: vx=$vx m/s  vy=$vy m/s  yaw=$wz rad/s   |  4 robots, 10 s, deterministic" \
+      "$KIND policy  checkpoint $(basename "$CK" .pt | sed s/model_//)  ($TASK)" "commanded: vx=$vx m/s  vy=$vy m/s  yaw=$wz rad/s   |  4 robots, 10 s, deterministic" \
       && echo "[$(date +%T)] $label -> $OUT/labeled/${KIND,,}_${CK%.pt}_$label.mp4"
   else
     echo "[$(date +%T)] $label FAILED (see logs/record_speed_$label.log)"

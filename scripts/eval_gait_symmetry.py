@@ -79,7 +79,7 @@ def main() -> int:
 
     obs, _ = env.reset()
     steps = int(args.seconds / env.step_dt)
-    air, contact, touchdowns, foot_xy, last_air = [], [], [], [], []
+    air, contact, touchdowns, foot_xy, last_air, vx_b, fallen = [], [], [], [], [], [], []
     qmin = {s: None for s in leg}
     qmax = {s: None for s in leg}
     with torch.no_grad():
@@ -93,6 +93,8 @@ def main() -> int:
             touchdowns.append(sensor.compute_first_contact(env.step_dt).torch[:, foot_ids].clone())
             foot_xy.append(robot.data.body_link_pos_w.torch[:, robot_foot_ids, :2].clone())
             last_air.append(sensor.data.last_air_time.torch[:, foot_ids].clone())
+            vx_b.append(robot.data.root_link_lin_vel_b.torch[:, 0].clone())
+            fallen.append((robot.data.projected_gravity_b.torch[:, 2] > -0.5).clone())
             for s, ids in leg.items():
                 q = robot.data.joint_pos.torch[:, ids]
                 qmin[s] = q if qmin[s] is None else torch.minimum(qmin[s], q)
@@ -121,9 +123,14 @@ def main() -> int:
     for side, lst in stride.items():
         d = torch.cat(lst) if lst else torch.zeros(1)
         stride_stats[side] = {"mean_m": float(d.mean()), "std_m": float(d.std()), "cv": float(d.std() / d.mean().clamp_min(1e-6))}
+    vx_all = torch.stack(vx_b)  # (T, envs)
+    achieved = vx_all[int(vx_all.shape[0] * 0.2):].mean(dim=0)  # skip the first 20 % (start-up transient)
     report = {
         "checkpoint_policy": str(policy_path),
         "vx_cmd": args.vx,
+        "vx_achieved_mean": float(achieved.mean()),
+        "vx_achieved_p10": float(achieved.quantile(0.1)),
+        "fallen_frac": float(torch.stack(fallen).any(dim=0).float().mean()),
         "air_time_s": {"left": float(air_m[0]), "right": float(air_m[1])},
         "contact_time_s": {"left": float(con_m[0]), "right": float(con_m[1])},
         "steps_per_episode": {"left": float(steps_per_foot[:, 0].mean()), "right": float(steps_per_foot[:, 1].mean())},
