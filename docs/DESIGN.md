@@ -83,3 +83,20 @@ Training records a clip of the live policy every 250 iterations (`--video --vide
 24 steps per iteration); `scripts/record_checkpoints.py` re-renders every saved checkpoint after the
 fact and writes an index with each checkpoint's SHA-256, so a clip can always be traced to its weights
 (a live `latest.pt` is not one policy).
+
+## Evaluate the mean action, not the training log (2026-11-07)
+
+The sit run was resumed from checkpoint 9250 with one added reward term (`head_pose_l1`). From the
+first resumed checkpoint on, the policy's **mean** action stood still under the SIT command while
+actions **sampled** at the actor's std (0.14) still sat in 16/16 robots — so the training rewards,
+the training clips and the stochastic rollouts all looked healthy while the deployable policy was
+broken (`docs/posture_sit_compare_14999*.json`). The original 9250 sits deterministically.
+
+Rules that follow:
+
+- judge every checkpoint with `scripts/eval_posture.py` / `scripts/eval_gait_symmetry.py`
+  (deterministic rollouts in the play configuration) before calling it trained or deployable;
+- do not resume a run after changing its reward; start a fresh run (the first PPO updates after a
+  reward switch can destroy a learned behaviour while exploration noise hides it);
+- `--action_noise_std` and `--train_env_cfg` on the evaluator reproduce the training-time
+  behaviour when a discrepancy needs to be bracketed.

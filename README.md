@@ -65,6 +65,15 @@ make record TASK=Microduck-Sit-Flat-HD1910 RUN=external/IsaacLab/logs/rsl_rl/mic
 make play TASK=Microduck-Velocity-Flat-HD1910 CKPT=latest
 ```
 
+## Evaluate (before trusting a checkpoint)
+
+```bash
+# deterministic rollouts; a policy that only works with exploration noise is not deployable
+uv run --project external/IsaacLab python scripts/eval_posture.py --task Microduck-Sit-Flat-HD1910 --run <run> --checkpoint model_N.pt presets=backlash
+uv run --project external/IsaacLab python scripts/eval_gait_symmetry.py --run <run> --checkpoint model_N.pt presets=backlash   # L/R air, stance, stride CV
+scripts/record_speeds.sh <run> model_N.pt Microduck-Run-Flat-HD1910                       # labelled fixed-command clips
+```
+
 ## Deploy
 
 `make play` writes `exported/policy.onnx` (61 → 14, normaliser baked in). On the robot:
