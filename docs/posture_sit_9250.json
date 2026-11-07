@@ -1,0 +1,97 @@
+{
+  "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_sit_flat_hd1910_backlash/2026-11-06_19-47-46/model_9250.pt",
+  "num_envs": 16,
+  "timeline": [
+    {
+      "t_s": 1.0,
+      "z_median_m": 0.1159,
+      "tilt_median_deg": 6.8,
+      "tilt_p90_deg": 26.9,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 2.0,
+      "z_median_m": 0.114,
+      "tilt_median_deg": 2.1,
+      "tilt_p90_deg": 19.7,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 3.0,
+      "z_median_m": 0.069,
+      "tilt_median_deg": 1.9,
+      "tilt_p90_deg": 12.4,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 4.0,
+      "z_median_m": 0.0611,
+      "tilt_median_deg": 0.9,
+      "tilt_p90_deg": 5.0,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 5.0,
+      "z_median_m": 0.061,
+      "tilt_median_deg": 1.2,
+      "tilt_p90_deg": 5.2,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 6.0,
+      "z_median_m": 0.0607,
+      "tilt_median_deg": 0.9,
+      "tilt_p90_deg": 4.2,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 7.0,
+      "z_median_m": 0.0606,
+      "tilt_median_deg": 1.0,
+      "tilt_p90_deg": 4.6,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 8.0,
+      "z_median_m": 0.0606,
+      "tilt_median_deg": 0.9,
+      "tilt_p90_deg": 5.2,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 9.0,
+      "z_median_m": 0.0605,
+      "tilt_median_deg": 0.9,
+      "tilt_p90_deg": 11.2,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 10.0,
+      "z_median_m": 0.0605,
+      "tilt_median_deg": 0.8,
+      "tilt_p90_deg": 2.5,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 11.0,
+      "z_median_m": 0.0605,
+      "tilt_median_deg": 0.8,
+      "tilt_p90_deg": 2.5,
+      "sit_cmd_frac": 1.0
+    },
+    {
+      "t_s": 12.0,
+      "z_median_m": 0.1139,
+      "tilt_median_deg": 7.7,
+      "tilt_p90_deg": 9.2,
+      "sit_cmd_frac": 1.0
+    }
+  ],
+  "final": {
+    "seated_upright_frac": 0.0,
+    "standing_frac": 1.0,
+    "fallen_frac": 0.0,
+    "z_median_m": 0.11387675255537033,
+    "tilt_median_deg": 7.685693740844727
+  }
+}

@@ -15,9 +15,10 @@ run() {  # name task iterations [extra args...]
   echo "[$(date +%F_%T)] end $name exit=$?" | tee -a logs/train_all.log
 }
 mkdir -p logs
-# WALK_RESUME="--checkpoint /abs/path/model_N.pt" continues an interrupted walk run (RSL-RL restores the
-# iteration counter from the checkpoint, so --max_iterations stays the total budget).
+# WALK_RESUME="--checkpoint /abs/path/model_N.pt" continues an interrupted walk run (pass the REMAINING iterations:
+# RSL-RL adds --max_iterations to the checkpoint's iteration count).
 # SKIP_WALK=1 skips the walk stage; SIT_RESUME / STAND_RESUME="--checkpoint /abs/path/model_N.pt" resume a stage.
+# NOTE: when resuming, RSL-RL ADDS the iteration count to the checkpoint's, so pass the REMAINING iterations.
 [ -n "${SKIP_WALK:-}" ] || run walk  Microduck-Velocity-Flat-HD1910 "$WALK_ITERS" ${WALK_RESUME:-}
 run sit   Microduck-Sit-Flat-HD1910      "$SIT_ITERS"   ${SIT_RESUME:-}
 run stand Microduck-Stand-Flat-HD1910    "$STAND_ITERS" ${STAND_RESUME:-}
