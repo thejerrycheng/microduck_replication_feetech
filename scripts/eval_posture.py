@@ -34,7 +34,7 @@ def main() -> int:
     parser.add_argument("--run", required=True, type=Path)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--num_envs", type=int, default=32)
-    parser.add_argument("--seconds", type=float, default=12.0)
+    parser.add_argument("--seconds", type=float, default=11.8, help="Keep below the 12 s episode so the final sample precedes the auto-reset")
     parser.add_argument("--out", default=None)
     args, _ = parser.parse_known_args()
     extra = [a for a in sys.argv[1:] if "=" in a and not a.startswith("-")]

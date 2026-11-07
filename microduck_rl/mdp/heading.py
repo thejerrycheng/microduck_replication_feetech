@@ -15,6 +15,12 @@ import torch
 
 from isaaclab.managers import ManagerTermBase, SceneEntityCfg
 
+from isaaclab_tasks.contrib.microduck.mdp import symmetry as _symmetry
+
+# The official left/right data augmentation reflects observations term by term and refuses unknown
+# terms; a yaw error is axial, so it changes sign under the mirror.
+_symmetry._TERM_SIGNS.setdefault("heading_error", (-1,))
+
 if TYPE_CHECKING:
     from isaaclab.assets import Articulation
     from isaaclab.envs import ManagerBasedRLEnv
