@@ -22,5 +22,5 @@ mkdir -p logs
 [ -n "${SKIP_WALK:-}" ] || run walk  Microduck-Velocity-Flat-HD1910 "$WALK_ITERS" ${WALK_RESUME:-}
 [ -n "${SKIP_SIT:-}" ] || run sit   Microduck-Sit-Flat-HD1910      "$SIT_ITERS"   ${SIT_RESUME:-}
 # RUN_AFTER_SIT=1 trains the running policy (official sprint budget, RUN_ITERS, default 3000) before stand.
-[ -z "${RUN_AFTER_SIT:-}" ] || run run Microduck-Run-Flat-HD1910 "${RUN_ITERS:-3000}" --agent rsl_rl_with_symmetry_cfg_entry_point
+[ -z "${RUN_AFTER_SIT:-}" ] || run run "${RUN_TASK:-Microduck-Run-Flat-HD1910}" "${RUN_ITERS:-3000}" --agent rsl_rl_with_symmetry_cfg_entry_point
 run stand Microduck-Stand-Flat-HD1910    "$STAND_ITERS" ${STAND_RESUME:-}

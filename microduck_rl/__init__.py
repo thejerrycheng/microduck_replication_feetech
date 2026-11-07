@@ -5,7 +5,8 @@ gearbox-play hinges (what the official Microduck policies deploy with).
 
 * ``Microduck-Velocity-Flat-HD1910``  walking / velocity tracking (official recipe)
 * ``Microduck-Velocity-Rough-HD1910`` the same on rough terrain
-* ``Microduck-Run-Flat-HD1910``       velocity tracking with a faster forward range
+* ``Microduck-Run-Flat-HD1910``       running: port of Pollen's official sprint recipe
+* ``Microduck-RunV2-Flat-HD1910``     running with a speed curriculum (see velocity_env_cfg)
 * ``Microduck-Sit-Flat-HD1910``       stand -> sit
 * ``Microduck-Stand-Flat-HD1910``     sit -> stand
 * ``Microduck-SitStand-Flat-HD1910``  commanded sit <-> stand, one policy
@@ -42,6 +43,9 @@ _register(
 _register(
     "Microduck-Run-Flat-HD1910", "velocity_env_cfg:MicroDuckHD1910RunFlatEnvCfg", "RunFlatPPORunnerCfg", "RunFlatPPORunnerCfg"
 )
+_register(
+    "Microduck-RunV2-Flat-HD1910", "velocity_env_cfg:MicroDuckHD1910RunV2FlatEnvCfg", "RunFlatPPORunnerCfg", "RunFlatPPORunnerCfg"
+)
 _register("Microduck-Sit-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitFlatEnvCfg", "SitPPORunnerCfg")
 _register("Microduck-Stand-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910StandFlatEnvCfg", "StandPPORunnerCfg")
 _register(
@@ -52,6 +56,7 @@ TASK_IDS = [
     "Microduck-Velocity-Flat-HD1910",
     "Microduck-Velocity-Rough-HD1910",
     "Microduck-Run-Flat-HD1910",
+    "Microduck-RunV2-Flat-HD1910",
     "Microduck-Sit-Flat-HD1910",
     "Microduck-Stand-Flat-HD1910",
     "Microduck-SitStand-Flat-HD1910",

@@ -112,3 +112,23 @@ class MicroDuckHD1910RunFlatEnvCfg(MicroDuckHD1910VelocityFlatEnvCfg):
         self.curriculum.action_rate_weight = _schedule(
             "rewards.action_rate_l2.weight", (500, -0.2), (750, -0.4), (1000, -0.6), (1250, -0.8), (1500, -1.0)
         )
+
+
+@configclass
+class MicroDuckHD1910RunV2FlatEnvCfg(MicroDuckHD1910RunFlatEnvCfg):
+    """Running, second attempt: the sprint recipe with a SPEED CURRICULUM and the forward knob at 4.0.
+
+    Measured on run v1 (``docs/run_speed_*.json``): achieved speed fell with the command (0.23 m/s at 0.3,
+    0.02 m/s at 1.1, zero falls) because the Gaussian tracking kernel (std^2 0.1) carries no gradient once the
+    error exceeds ~0.5 m/s, so the fast commands paid nothing from iteration 0. The command range therefore
+    starts at 0.2--0.5 m/s and widens in four stages to the Arena sweep 0.2--1.2, and the sprint's own
+    ``forward_reward`` knob is set to 4.0 (its documented range is 0.5--5.0).
+    """
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.commands.base_velocity.ranges.lin_vel_x = (0.20, 0.50)
+        self.rewards.track_lin_vel.weight = 4.0
+        self.curriculum.speed_range = _schedule(
+            "commands.base_velocity.ranges.lin_vel_x", (750, (0.2, 0.7)), (1500, (0.2, 0.9)), (2250, (0.2, 1.2))
+        )
