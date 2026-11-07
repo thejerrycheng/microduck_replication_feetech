@@ -34,7 +34,6 @@ from isaaclab.sim import SimulationCfg
 from isaaclab.sim.spawners.materials import RigidBodyMaterialBaseCfg
 from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils.configclass import configclass
-from isaaclab.visualizers import VisualizerCfg
 
 from isaaclab_tasks.contrib.microduck.flat_env_cfg import (
     _FOOT_SENSOR_CFG,
@@ -56,6 +55,7 @@ from microduck_rl.assets import (
     MICRODUCK_HD1910_ALLCOLLISIONS_CFG,
     MICRODUCK_JOINT_NAMES,
 )
+from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
 from microduck_rl.dr import FOOT_FRICTION_RANGE, HEAD_COM_STAGES_M, MASS_SCALE_RANGE, TRUNK_COM_STAGES_M
 
 # ── Keyframes (upstream, stability-verified 2026-07-27; verify TILT in sim before changing) ──
@@ -424,12 +424,13 @@ class MicroDuckHD1910SitStandFlatEnvCfg(ManagerBasedRLEnvCfg):
         self.sim.physics_material = self.scene.terrain.physics_material
         self.scene.contact_forces.update_period = self.sim.dt
         self.scene.self_collision.update_period = self.sim.dt
-        self.sim.visualizer_cfgs = VisualizerCfg(eye=(0.8, 0.8, 0.4), lookat=(0.0, 0.0, 0.1))
+        self.sim.visualizer_cfgs = clip_visualizer_cfg(self.scene.num_envs)
 
     def play_mode(self):
         """Inference defaults; keep the pushes off so a clip shows the commanded behaviour."""
         super().play_mode()
         self.events.push_robot = None
+        self.sim.visualizer_cfgs = play_visualizer_cfg()
 
 
 @configclass

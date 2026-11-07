@@ -14,6 +14,7 @@ from isaaclab_tasks.utils import preset
 
 from microduck_rl.assets import MICRODUCK_HD1910_BACKLASH_CFG, MICRODUCK_HD1910_CFG
 from microduck_rl.dr import apply_replica_dr
+from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
 
 _ROBOT_PRESET = dict(
     default=MICRODUCK_HD1910_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot"),
@@ -44,6 +45,11 @@ class MicroDuckHD1910VelocityFlatEnvCfg(MicroDuckVelocityFlatEnvCfg):
     def __post_init__(self):
         super().__post_init__()
         apply_replica_dr(self, first_stage_iteration=500)
+        self.sim.visualizer_cfgs = clip_visualizer_cfg(self.scene.num_envs)
+
+    def play_mode(self):
+        super().play_mode()
+        self.sim.visualizer_cfgs = play_visualizer_cfg()
 
 
 @configclass
@@ -55,6 +61,11 @@ class MicroDuckHD1910VelocityRoughEnvCfg(MicroDuckVelocityRoughEnvCfg):
     def __post_init__(self):
         super().__post_init__()
         apply_replica_dr(self, first_stage_iteration=1000)
+        self.sim.visualizer_cfgs = clip_visualizer_cfg(self.scene.num_envs)
+
+    def play_mode(self):
+        super().play_mode()
+        self.sim.visualizer_cfgs = play_visualizer_cfg()
 
 
 @configclass
