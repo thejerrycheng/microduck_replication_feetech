@@ -432,6 +432,7 @@ class MicroDuckHD1910SitStandFlatEnvCfg(ManagerBasedRLEnvCfg):
         """Inference defaults; keep the pushes off so a clip shows the commanded behaviour."""
         super().play_mode()
         self.events.push_robot = None
+        self.curriculum.push_magnitude = None  # it schedules the push term that is now gone
         self.sim.visualizer_cfgs = play_visualizer_cfg()
 
 
