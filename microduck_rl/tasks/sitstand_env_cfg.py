@@ -86,6 +86,7 @@ MAX_RISE_SPEED = 0.08
 EPISODE_LENGTH_S = 12.0
 POSTURE_DWELL_S = (3.5, 6.5)
 VELOCITY_PUSH_RANGE = (-0.3, 0.3)
+HEAD_POSE_L1_WEIGHT = 1.0
 
 _HEAD_BODY_CFG = SceneEntityCfg("robot", body_names=["neck", "neck_pitch(_[0-9]+)?", "yaw_roll_motion", "jaw_soft"])
 _ROBOT_PRESET = dict(
@@ -160,6 +161,11 @@ class RewardsCfg:
         backlash_cfg=_HEAD_PLAY_JOINT_CFG,
     )
     posture_pose_l1 = RewTerm(func=mdp.posture_pose_l1, weight=1.0, params=_POSE)
+    # Deviation from upstream (see mdp.head_pose_l1): constant pull of the head toward its command, so a head
+    # parked on the floor still has a gradient back up. Weight as the leg L1.
+    head_pose_l1 = RewTerm(
+        func=mdp.head_pose_l1, weight=HEAD_POSE_L1_WEIGHT, params={"asset_cfg": _HEAD_JOINT_CFG, "command_name": "head_pose"}
+    )
     posture_height = RewTerm(func=mdp.posture_height_gaussian, weight=1.0, params={**_HEIGHT, "std": 0.04})
     posture_height_sharp = RewTerm(func=mdp.posture_height_gaussian, weight=1.0, params={**_HEIGHT, "std": 0.015})
     posture_height_l1 = RewTerm(func=mdp.posture_height_l1, weight=6.0, params=_HEIGHT)

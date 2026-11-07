@@ -33,6 +33,7 @@ __all__ = [
     "SitStandCommandCfg",
     "posture_pose_match",
     "posture_pose_l1",
+    "head_pose_l1",
     "posture_height_gaussian",
     "posture_height_l1",
     "posture_composite",
@@ -221,6 +222,23 @@ def posture_pose_l1(
     _, target = _posture_targets(env, asset, asset_cfg, command_name, sit_overrides)
     joint_pos = asset.data.joint_pos.torch[:, asset_cfg.joint_ids][:, joint_indices]
     return zero_non_finite(-torch.abs(joint_pos - target[:, joint_indices]).mean(dim=-1))
+
+
+def head_pose_l1(
+    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, command_name: str = "head_pose"
+) -> torch.Tensor:
+    """L1 distance of the neck/head joints from their commanded offsets; returns <= 0.
+
+    Not in upstream. Both upstream head terms (``head_pose_tracking``, the composite's head factor) are
+    Gaussians with std 0.4--0.5 rad; once the policy parks the head on the floor (1.3 rad away, measured
+    at iterations 250--2000 of the first HD1910 sit run) they are numerically flat and nothing pulls the
+    head back up. This is the head counterpart of ``posture_pose_l1``: a constant gradient everywhere.
+    ``asset_cfg`` selects the 4 head joints in servo order.
+    """
+    asset: Articulation = env.scene[asset_cfg.name]
+    actual = asset.data.joint_pos.torch[:, asset_cfg.joint_ids] - asset.data.default_joint_pos.torch[:, asset_cfg.joint_ids]
+    error = actual - env.command_manager.get_command(command_name)
+    return zero_non_finite(-torch.abs(error).mean(dim=-1))
 
 
 def posture_height_gaussian(

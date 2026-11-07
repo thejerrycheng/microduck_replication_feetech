@@ -51,7 +51,7 @@ def main() -> int:
         play = Path(__file__).resolve().parent / "play.py"
         subprocess.run(
             [sys.executable, str(play), "--rl_library", "rsl_rl", "--task", args.task, "--checkpoint",
-             str(run / args.checkpoint), "--num_envs", "4", "--video_length", "1", *extra],
+             str(run / args.checkpoint), "--num_envs", "4", "--video", "--video_length", "1", "--video_interval", "1000000", *extra],
             check=True, cwd=Path(__file__).resolve().parent.parent / "external" / "IsaacLab",
         )
         export_dir.mkdir(exist_ok=True)
