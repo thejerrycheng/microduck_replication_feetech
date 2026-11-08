@@ -63,3 +63,17 @@ class RouladePPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
     def __post_init__(self):
         super().__post_init__()
         self.algorithm.entropy_coef = 0.001
+
+
+@configclass
+class JumpPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
+    """One-shot jump: upstream v6 ran 5000 iterations at entropy 0.001 with a bounded std (init 0.6, floor 0.05);
+    here the mirror loss is on (the jump is sagittal) and the std starts at 0.6."""
+
+    experiment_name = _names("microduck_jump_flat")
+    max_iterations = 5000
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.algorithm.entropy_coef = 0.001
+        self.actor.distribution_cfg.init_std = 0.6

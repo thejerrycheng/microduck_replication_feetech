@@ -14,6 +14,7 @@ reference motion). The twist command is a near-zero noise, head and body command
 
 import math
 
+from isaaclab.managers import CurriculumTermCfg as CurrTerm
 from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
@@ -153,9 +154,6 @@ class RewardsCfg:
     dof_pos_limits = _backlash_preset(RewTerm(func=mdp.joint_pos_limits_finite, weight=-1.0), asset_cfg=_SERVO_JOINT_CFG)
     # Light: a tucked roll needs knees against the trunk.
     self_collisions = RewTerm(func=mdp.self_collision_cost, weight=-0.1, params={"sensor_cfg": SceneEntityCfg("self_collision")})
-    # Zero-weight diagnostics (logged as Episode_Reward/...): rotation frontier [rad] and head latch rate.
-    rotation_frontier = RewTerm(func=mdp.roulade_rotation_frontier, weight=0.0, params=_ROBOT)
-    head_latched = RewTerm(func=mdp.roulade_head_latched, weight=0.0, params=_ROBOT)
 
 
 @configclass
@@ -220,6 +218,10 @@ class CurriculumCfg:
     arrival_damping_weight = _schedule("rewards.arrival_damping.weight", (2500, -0.025), (3500, -0.05))
     torque_rate_weight = _schedule("rewards.joint_torque_rate_l2.weight", (2500, -5e-4), (3500, -1e-3))
     gentle_landing_weight = _schedule("rewards.gentle_landing.weight", (2500, 0.005))
+    # Diagnostics logged as Curriculum/...: computed on the episodes ending at each reset.
+    frontier_deg = CurrTerm(func=mdp.roulade_frontier_deg)
+    completed_frac = CurrTerm(func=mdp.roulade_completed_frac)
+    completed_standing_frac = CurrTerm(func=mdp.roulade_standing_frac)
 
 
 @configclass
@@ -247,4 +249,7 @@ class MicroDuckHD1910RouladeFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
         self.events.set_roulade_state.params["midroll_prob"] = 0.0
         self.curriculum.spawn_standing = None
         self.curriculum.spawn_midroll = None
+        self.curriculum.frontier_deg = None
+        self.curriculum.completed_frac = None
+        self.curriculum.completed_standing_frac = None
         self.sim.visualizer_cfgs = play_visualizer_cfg()

@@ -381,18 +381,27 @@ def body_ang_vel_at_height(
     return cost * gate
 
 
-# ── metrics (observation-free diagnostics for the training log) ─────────────────────────────────────────
+# ── metrics: curriculum terms run at reset on the ENDING episodes and are logged as Curriculum/<name> ──
 
 
-def roulade_rotation_frontier(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
-    """Rotation frontier [rad] as a zero-weight reward term: logs the mean per episode."""
-    asset: Articulation = env.scene[asset_cfg.name]
-    update_accum(env, asset)
+def roulade_frontier_deg(env: ManagerBasedRLEnv, env_ids: torch.Tensor) -> torch.Tensor:
+    """Mean rotation frontier [deg] of the episodes ending now (a zero-weight reward would log 0 x value)."""
     _, max_accum, _ = _state(env)
-    return max_accum
+    return torch.rad2deg(max_accum[env_ids]).mean()
 
 
-def roulade_head_latched(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+def roulade_completed_frac(env: ManagerBasedRLEnv, env_ids: torch.Tensor) -> torch.Tensor:
+    """Fraction of ending episodes that rolled past 330 deg with the head latched."""
+    _, max_accum, _ = _state(env)
+    done = (max_accum[env_ids] >= math.radians(330.0)) & env._roulade_head_latch[env_ids]
+    return done.float().mean()
+
+
+def roulade_standing_frac(env: ManagerBasedRLEnv, env_ids: torch.Tensor, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """Fraction of ending episodes upright (tilt < 20 deg) above 0.095 m: completed-and-standing when ANDed."""
     asset: Articulation = env.scene[asset_cfg.name]
-    update_accum(env, asset)
-    return env._roulade_head_latch.float()
+    up = _upright(asset)[env_ids] > math.cos(math.radians(20.0))
+    tall = _trunk_z(env, asset)[env_ids] > 0.095
+    _, max_accum, _ = _state(env)
+    done = (max_accum[env_ids] >= math.radians(330.0)) & env._roulade_head_latch[env_ids]
+    return (up & tall & done).float().mean()

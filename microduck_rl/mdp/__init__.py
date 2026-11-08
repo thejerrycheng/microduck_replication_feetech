@@ -17,3 +17,4 @@ from isaaclab_tasks.contrib.microduck.mdp.terminations import *  # noqa: F401, F
 from .heading import *  # noqa: F401, F403
 from .posture import *  # noqa: F401, F403
 from .roulade import *  # noqa: F401, F403
+from .jump import *  # noqa: F401, F403

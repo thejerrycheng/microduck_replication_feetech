@@ -49,6 +49,7 @@ _register(
 _register(
     "Microduck-Roulade-Flat-HD1910", "roulade_env_cfg:MicroDuckHD1910RouladeFlatEnvCfg", "RouladePPORunnerCfg", "RouladePPORunnerCfg"
 )
+_register("Microduck-Jump-Flat-HD1910", "jump_env_cfg:MicroDuckHD1910JumpFlatEnvCfg", "JumpPPORunnerCfg", "JumpPPORunnerCfg")
 _register("Microduck-Sit-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitFlatEnvCfg", "SitPPORunnerCfg")
 _register("Microduck-Stand-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910StandFlatEnvCfg", "StandPPORunnerCfg")
 _register(
@@ -62,6 +63,7 @@ TASK_IDS = [
     "Microduck-RunV2-Flat-HD1910",
     "Microduck-Sit-Flat-HD1910",
     "Microduck-Roulade-Flat-HD1910",
+    "Microduck-Jump-Flat-HD1910",
     "Microduck-Stand-Flat-HD1910",
     "Microduck-SitStand-Flat-HD1910",
 ]
