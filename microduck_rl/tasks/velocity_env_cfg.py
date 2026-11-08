@@ -10,9 +10,17 @@ import math
 
 from isaaclab.managers import ObservationTermCfg as ObsTerm
 from isaaclab.managers import RewardTermCfg as RewTerm
+from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils.configclass import configclass
 
-from isaaclab_tasks.contrib.microduck.flat_env_cfg import MicroDuckSceneCfg, MicroDuckVelocityFlatEnvCfg, _schedule
+from isaaclab_tasks.contrib.microduck.flat_env_cfg import (
+    _HEAD_JOINT_CFG,
+    _HEAD_PLAY_JOINT_CFG,
+    MicroDuckSceneCfg,
+    MicroDuckVelocityFlatEnvCfg,
+    _backlash_preset,
+    _schedule,
+)
 from isaaclab_tasks.contrib.microduck.rough_env_cfg import MicroDuckRoughSceneCfg, MicroDuckVelocityRoughEnvCfg
 from isaaclab_tasks.utils import preset
 
@@ -191,4 +199,45 @@ class MicroDuckHD1910RunV3FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatAllCollEnvCf
         self.commands.base_velocity.ranges.lin_vel_x = (0.20, 0.70)
         self.curriculum.speed_range = _schedule(
             "commands.base_velocity.ranges.lin_vel_x", (3000 + 500, (0.2, 0.9)), (3000 + 1000, (0.2, 1.2))
+        )
+        # The head is a dynamic body (~38 % of the mass): let the runner use it (lean forward, counter-swing)
+        # instead of pinning it to the zero command at weight 2.0 / std 0.5 as the walking recipe does.
+        self.rewards.head_pose_tracking = _backlash_preset(
+            RewTerm(func=mdp.head_pose_tracking, weight=0.25, params={"command_name": "head_pose", "std": 1.0, "asset_cfg": _HEAD_JOINT_CFG}),
+            backlash_cfg=_HEAD_PLAY_JOINT_CFG,
+        )
+        # push robustness ladder for running (counter continues at 2999): +-0.4 then +-0.6 m/s, every 3-5 s.
+        self.events.push_robot.interval_range_s = (3.0, 5.0)
+        self.curriculum.push_magnitude = _schedule(
+            "events.push_robot.params.velocity_range",
+            (3000 + 400, {"x": (-0.4, 0.4), "y": (-0.4, 0.4)}),
+            (3000 + 1200, {"x": (-0.6, 0.6), "y": (-0.6, 0.6)}),
+        )
+
+
+@configclass
+class MicroDuckHD1910VelocityFlatAllCollV3EnvCfg(MicroDuckHD1910VelocityFlatAllCollEnvCfg):
+    """Walk v3 (full-collision fine-tune): no squat, no limp.
+
+    Measured on the walk policy: at zero command the trunk drops to 0.067-0.092 m (a squat) and a turn starts
+    with the same dip; the official recipe trains standing still in only 2 % of environments and has no trunk
+    height term (``pose`` pays only while standing). Here 15 % of environments stand and 15 % turn in place,
+    an always-on trunk-height cost holds the body at standing height through stops and turns, and the
+    mirror loss (with the data augmentation) addresses the air-time asymmetry (L/R 0.93)."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.commands.base_velocity.rel_standing_envs = 0.15
+        self.commands.base_velocity.rel_turn_in_place_envs = 0.15
+        self.rewards.trunk_height = RewTerm(
+            func=mdp.trunk_height_error_l1, weight=-3.0, params={"asset_cfg": SceneEntityCfg("robot"), "target_height": 0.115}
+        )
+        # push robustness ladder (warm start continues the walk's counter at 16498: stages must sit past it).
+        # Standing balance must be the most robust policy, then walking, then running: walk takes pushes to
+        # +-0.8 m/s every 2-4 s, the official recipe stopped at +-0.3 every 5-10 s.
+        self.events.push_robot.interval_range_s = (2.0, 4.0)
+        self.curriculum.push_magnitude = _schedule(
+            "events.push_robot.params.velocity_range",
+            (16498 + 300, {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}),
+            (16498 + 800, {"x": (-0.8, 0.8), "y": (-0.8, 0.8)}),
         )

@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedEnv, ManagerBasedRLEnv
 
 __all__ = [
+    "trunk_height_error_l1",
     "SitStandCommand",
     "SitStandCommandCfg",
     "posture_pose_match",
@@ -603,3 +604,11 @@ def seated_backward_tip(
     vel = asset.data.root_link_vel_w.torch[ids].clone()
     vel[:, 3:6] += omega_w
     asset.write_root_link_velocity_to_sim_index(root_velocity=vel, env_ids=ids)
+
+
+def trunk_height_error_l1(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, target_height: float = 0.115) -> torch.Tensor:
+    """|trunk z - target| [m], a positive cost (use a negative weight). Always on: a walking duck keeps its
+    trunk near standing height, and this is what removes the squat the walk policy adopted at zero command
+    (z 0.067-0.092 measured) and at the onset of a turn."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    return (_trunk_z(env, asset) - target_height).abs()

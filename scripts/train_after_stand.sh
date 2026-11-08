@@ -20,6 +20,30 @@ RUN3_CK=$(ls "$RUN3"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -
 SPEEDS="0.3 0.5 0.7 0.9 1.1" MIN_FREE_MB=3000 scripts/eval_run_speeds.sh "$RUN3" Microduck-RunV3-Flat-HD1910-AllColl "$RUN3_CK"
 for vx in 0.3 0.5 0.7 0.9 1.1; do mv -f "docs/run_speed_${RUN3_CK}_vx$vx.json" "docs/run_v3_speed_${RUN3_CK}_vx$vx.json" 2>/dev/null; done
 echo "[$(date +%F_%T)] run-v3 speed table done" >> logs/evals.log
+# Walk v3: full-collision walk with more standing/turning environments, an always-on trunk-height cost (no
+# squat at stop / turn onset) and the mirror loss.
+WALK2=/home/jerrycheng/microduck/logs/rsl_rl/microduck_walk_flat_allcoll_hd1910_backlash/2026-11-08_14-55-24
+echo "[$(date +%F_%T)] start walk-v3 (height cost + standing envs + mirror loss, 1500 its from walk-allcoll 16498)" | tee -a logs/train_all.log
+uv run --project external/IsaacLab python scripts/train.py --task Microduck-WalkV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+  --max_iterations 1500 $COMMON --checkpoint "$WALK2/model_16498.pt" >> logs/train_walk_v3.log 2>&1
+echo "[$(date +%F_%T)] end walk-v3 exit=$?" | tee -a logs/train_all.log
+WALK3=$(ls -td logs/rsl_rl/microduck_walk_flat_allcoll_mirror_hd1910_backlash/*/ | head -1)
+WALK3_CK=$(ls "$WALK3"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
+uv run --project external/IsaacLab python scripts/play.py --rl_library rsl_rl --task Microduck-WalkV3-Flat-HD1910-AllColl --num_envs 4 presets=backlash \
+  --checkpoint "$(readlink -f "$WALK3")/model_$WALK3_CK.pt" --video --video_length 1 --video_interval 1000000 > logs/export_walk_v3.log 2>&1
+mkdir -p "$WALK3/exported_model_$WALK3_CK"; cp "$WALK3"/exported/policy.* "$WALK3/exported_model_$WALK3_CK/" 2>/dev/null
+uv run --project external/IsaacLab python scripts/eval_squat.py --policy "$WALK3/exported_model_$WALK3_CK/policy.pt" presets=backlash --out "docs/squat_walk_v3_$WALK3_CK.json" > logs/eval_squat_walk_v3.log 2>&1
+uv run --project external/IsaacLab python scripts/eval_gait_symmetry.py --task Microduck-WalkV3-Flat-HD1910-AllColl --run "$(readlink -f "$WALK3")" --checkpoint "model_$WALK3_CK.pt" \
+  --vx 0.3 --num_envs 64 presets=backlash --out "docs/gait_walk_v3_$WALK3_CK.json" > logs/eval_gait_walk_v3.log 2>&1
+echo "[$(date +%F_%T)] walk-v3 squat+gait evals done" >> logs/evals.log
+# StandUp (get-up + robust stand), if registered by then.
+if uv run --project external/IsaacLab python -c "import gymnasium as gym, microduck_rl; gym.spec('Microduck-StandUp-Flat-HD1910')" >/dev/null 2>&1; then
+  echo "[$(date +%F_%T)] start standup (${STANDUP_ITERS:-10000} its, two-phase entropy)" | tee -a logs/train_all.log
+  TASK=Microduck-StandUp-Flat-HD1910 DIR=microduck_standup_flat_hd1910_backlash PHASE1_ITERS=7000 TOTAL_ITERS=${STANDUP_ITERS:-10000} scripts/train_stand_two_phase.sh
+  echo "[$(date +%F_%T)] end standup" | tee -a logs/train_all.log
+else
+  echo "[$(date +%F_%T)] standup task not registered; skipped" | tee -a logs/train_all.log
+fi
 echo "[$(date +%F_%T)] start roulade (front flip, ${ROULADE_ITERS:-8000} iterations)" | tee -a logs/train_all.log
 uv run --project external/IsaacLab python scripts/train.py --task Microduck-Roulade-Flat-HD1910 --agent rsl_rl_with_symmetry_cfg_entry_point \
   --max_iterations "${ROULADE_ITERS:-8000}" $COMMON >> logs/train_roulade.log 2>&1 &

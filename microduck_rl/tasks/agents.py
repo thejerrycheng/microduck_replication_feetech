@@ -109,3 +109,16 @@ class RunFlatAllCollMirrorPPORunnerCfg(RunFlatAllCollPPORunnerCfg):
         super().__post_init__()
         self.algorithm.symmetry_cfg.use_mirror_loss = True
         self.algorithm.symmetry_cfg.mirror_loss_coeff = 0.5
+
+
+@configclass
+class WalkFlatAllCollMirrorPPORunnerCfg(WalkFlatAllCollPPORunnerCfg):
+    """Walk v3 fine-tune: mirror loss 0.5 on top of the data augmentation."""
+
+    experiment_name = _names("microduck_walk_flat_allcoll_mirror")
+    max_iterations = 1500
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.algorithm.symmetry_cfg.use_mirror_loss = True
+        self.algorithm.symmetry_cfg.mirror_loss_coeff = 0.5
