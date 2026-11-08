@@ -1,0 +1,182 @@
+{
+ "seed": 1,
+ "fell": false,
+ "segments": [
+  {
+   "label": "WALK forward 0.3 m/s",
+   "policy": "walk",
+   "command": [
+    0.3,
+    0.0,
+    0.0
+   ],
+   "t_start": 0.0,
+   "t_end": 4.0,
+   "distance_m": 1.045,
+   "mean_speed_m_s": 0.261,
+   "turned_deg": -54.4,
+   "final_z_m": 0.12,
+   "final_tilt_deg": 5.1
+  },
+  {
+   "label": "RUN forward 0.7 m/s",
+   "policy": "run",
+   "command": [
+    0.7,
+    0.0,
+    0.0
+   ],
+   "t_start": 4.0,
+   "t_end": 8.02,
+   "distance_m": 1.958,
+   "mean_speed_m_s": 0.487,
+   "turned_deg": -16.2,
+   "final_z_m": 0.109,
+   "final_tilt_deg": 2.4
+  },
+  {
+   "label": "STOP (walk policy, zero command)",
+   "policy": "walk",
+   "command": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "t_start": 8.02,
+   "t_end": 8.84,
+   "distance_m": 0.106,
+   "mean_speed_m_s": 0.13,
+   "turned_deg": -64.2,
+   "final_z_m": 0.092,
+   "final_tilt_deg": 12.8
+  },
+  {
+   "label": "STAND STILL (flag=0)",
+   "policy": "sitstand",
+   "command": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "t_start": 8.84,
+   "t_end": 10.06,
+   "distance_m": 0.029,
+   "mean_speed_m_s": 0.024,
+   "turned_deg": -21.2,
+   "final_z_m": 0.116,
+   "final_tilt_deg": 2.1
+  },
+  {
+   "label": "SIT (flag=1)",
+   "policy": "sitstand",
+   "command": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "t_start": 10.06,
+   "t_end": 14.08,
+   "distance_m": 0.071,
+   "mean_speed_m_s": 0.018,
+   "turned_deg": -0.8,
+   "final_z_m": 0.06,
+   "final_tilt_deg": 3.2
+  },
+  {
+   "label": "STAND UP (flag=0)",
+   "policy": "sitstand",
+   "command": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "t_start": 14.08,
+   "t_end": 17.1,
+   "distance_m": 0.016,
+   "mean_speed_m_s": 0.005,
+   "turned_deg": -6.3,
+   "final_z_m": 0.116,
+   "final_tilt_deg": 1.6
+  },
+  {
+   "label": "TURN 180 deg (yaw 1.0 rad/s)",
+   "policy": "walk",
+   "command": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "t_start": 17.1,
+   "t_end": 22.12,
+   "distance_m": 0.04,
+   "mean_speed_m_s": 0.008,
+   "turned_deg": 148.4,
+   "final_z_m": 0.123,
+   "final_tilt_deg": 7.7
+  },
+  {
+   "label": "RUN forward 0.7 m/s",
+   "policy": "run",
+   "command": [
+    0.7,
+    0.0,
+    0.0
+   ],
+   "t_start": 22.12,
+   "t_end": 26.14,
+   "distance_m": 1.864,
+   "mean_speed_m_s": 0.464,
+   "turned_deg": -7.2,
+   "final_z_m": 0.115,
+   "final_tilt_deg": 4.0
+  },
+  {
+   "label": "CIRCLE: walk 0.3 m/s, yaw 0.6 rad/s (r=0.5 m)",
+   "policy": "walk",
+   "command": [
+    0.3,
+    0.0,
+    0.6
+   ],
+   "t_start": 26.14,
+   "t_end": 37.14,
+   "distance_m": 2.774,
+   "mean_speed_m_s": 0.252,
+   "turned_deg": 108.6,
+   "final_z_m": 0.123,
+   "final_tilt_deg": 3.9
+  },
+  {
+   "label": "STOP (walk policy, zero command)",
+   "policy": "walk",
+   "command": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "t_start": 37.14,
+   "t_end": 37.94,
+   "distance_m": 0.041,
+   "mean_speed_m_s": 0.052,
+   "turned_deg": -9.5,
+   "final_z_m": 0.073,
+   "final_tilt_deg": 4.0
+  },
+  {
+   "label": "STAND STILL (flag=0)",
+   "policy": "sitstand",
+   "command": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "t_start": 37.94,
+   "t_end": 39.14,
+   "distance_m": 0.024,
+   "mean_speed_m_s": 0.02,
+   "turned_deg": 0.1,
+   "final_z_m": 0.116,
+   "final_tilt_deg": 1.4
+  }
+ ]
+}
