@@ -62,6 +62,9 @@ def main() -> int:
     parser.add_argument("--cam_dist", type=float, default=0.75)
     parser.add_argument("--cam_height", type=float, default=0.32)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--walk", default=WALK)
+    parser.add_argument("--run", default=RUN)
+    parser.add_argument("--sitstand", default=SITSTAND)
     args, hydra = parser.parse_known_args()
     os.makedirs(args.out, exist_ok=True)
     total_steps = int(sum(s[3] for s in SEGMENTS) / 0.02) + 5
@@ -87,7 +90,7 @@ def main() -> int:
                                             frame_stride=2, fps=25, output_filename_prefix="demo_raw")]
     env = gym.make(args.task, cfg=cfg).unwrapped
     dev = env.device
-    policies = {k: torch.jit.load(p, map_location=dev).eval() for k, p in (("walk", WALK), ("run", RUN), ("sitstand", SITSTAND))}
+    policies = {k: torch.jit.load(p, map_location=dev).eval() for k, p in (("walk", args.walk), ("run", args.run), ("sitstand", args.sitstand))}
     robot = env.scene["robot"]
     cmd_term = env.command_manager.get_term("base_velocity")
     obs, _ = env.reset()
