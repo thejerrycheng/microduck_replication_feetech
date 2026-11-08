@@ -73,6 +73,7 @@ def main() -> int:
     ap.add_argument("--num_envs", type=int, default=32)
     ap.add_argument("--out", default="rollouts/push")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--no_video", action="store_true")
     args, hydra = ap.parse_known_args()
     levels = [float(v) for v in args.levels.split(",")]
     os.makedirs(args.out, exist_ok=True)
@@ -83,6 +84,8 @@ def main() -> int:
     total_s = schedule[-1][0] + 3.0
 
     def run(env, record):
+        """record=True: one continuous take for the clip. record=False: statistics, RESET before every push so
+        each level starts upright (without this a fall at a low level is counted again at every later one)."""
         robot = env.scene["robot"]
         arrow = VisualizationMarkers(RED_ARROW_X_MARKER_CFG.replace(prim_path="/Visuals/push_arrow")) if record else None
         push_vis = {"until": -1.0, "dir": 0.0, "level": 0.0}
@@ -100,6 +103,8 @@ def main() -> int:
                 buf[:] = 0.0
                 buf[:, 0] = args.vx
                 for t_push, lvl in schedule:
+                    if not record and abs(t - (t_push - 1.0)) < dt / 2:
+                        obs, _ = env.reset()  # fresh upright start, 1 s of walking/standing before the push
                     if abs(t - t_push) < dt / 2:
                         ang = torch.rand(n, device=env.device) * 2 * math.pi
                         v = robot.data.root_lin_vel_w.torch.clone()
@@ -150,6 +155,8 @@ def main() -> int:
     with open(os.path.join(args.out, f"push_{args.policy}_vx{args.vx}.json"), "w") as f:
         json.dump({"policy": args.policy, "vx": args.vx, "num_envs": args.num_envs, "per_push": stats, "by_level": summary}, f, indent=1)
 
+    if args.no_video:
+        return 0
     env = make_env(args.task, 1, hydra, video_dir=args.out, video_steps=int(total_s / dt) + 2)
     run(env, record=True)
     env.close()

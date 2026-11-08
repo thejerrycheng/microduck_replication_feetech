@@ -61,6 +61,7 @@ _register(
 _register(
     "Microduck-WalkV3-Flat-HD1910-AllColl", "velocity_env_cfg:MicroDuckHD1910VelocityFlatAllCollV3EnvCfg", "WalkFlatAllCollMirrorPPORunnerCfg", "WalkFlatAllCollMirrorPPORunnerCfg"
 )
+_register("Microduck-StandUp-Flat-HD1910", "standup_env_cfg:MicroDuckHD1910StandUpFlatEnvCfg", "StandUpPPORunnerCfg")
 _register("Microduck-Jump-Flat-HD1910", "jump_env_cfg:MicroDuckHD1910JumpFlatEnvCfg", "JumpPPORunnerCfg", "JumpPPORunnerCfg")
 _register("Microduck-Sit-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitFlatEnvCfg", "SitPPORunnerCfg")
 _register("Microduck-Stand-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910StandFlatEnvCfg", "StandPPORunnerCfg")
@@ -80,6 +81,7 @@ TASK_IDS = [
     "Microduck-RunV2-Flat-HD1910-AllColl",
     "Microduck-RunV3-Flat-HD1910-AllColl",
     "Microduck-WalkV3-Flat-HD1910-AllColl",
+    "Microduck-StandUp-Flat-HD1910",
     "Microduck-Stand-Flat-HD1910",
     "Microduck-SitStand-Flat-HD1910",
 ]

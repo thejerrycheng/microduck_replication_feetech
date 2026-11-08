@@ -18,3 +18,4 @@ from .heading import *  # noqa: F401, F403
 from .posture import *  # noqa: F401, F403
 from .roulade import *  # noqa: F401, F403
 from .jump import *  # noqa: F401, F403
+from .standup import *  # noqa: F401, F403

@@ -122,3 +122,12 @@ class WalkFlatAllCollMirrorPPORunnerCfg(WalkFlatAllCollPPORunnerCfg):
         super().__post_init__()
         self.algorithm.symmetry_cfg.use_mirror_loss = True
         self.algorithm.symmetry_cfg.mirror_loss_coeff = 0.5
+
+
+@configclass
+class StandUpPPORunnerCfg(SitStandPPORunnerCfg):
+    """Get-up + robust stand: upstream's recipe (no symmetry, entropy 0.01; deployed checkpoint came at 9750 of
+    15000). Trained two-phase by scripts/train_stand_two_phase.sh (entropy 0.001 for the last 3000)."""
+
+    experiment_name = _names("microduck_standup_flat")
+    max_iterations = 10000
