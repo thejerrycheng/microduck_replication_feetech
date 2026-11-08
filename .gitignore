@@ -21,3 +21,6 @@ dist/
 .idea/
 # Deployable policies are small (0.8 MB each) and the Mac app syncs them from GitHub.
 !exports/*.onnx
+# Selected checkpoints (RSL-RL .pt + TorchScript policy + the run's configs), ~6 MB each.
+!checkpoints/
+!checkpoints/**

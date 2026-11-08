@@ -1,0 +1,72 @@
+{
+ "walk_sym_15000": {
+  "run": "microduck_walk_flat_symmetry_hd1910_backlash/2026-11-07_09-39-14",
+  "iteration": 15000,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_15000.pt",
+   "policy.pt"
+  ]
+ },
+ "walk_allcoll_16498": {
+  "run": "microduck_walk_flat_allcoll_hd1910_backlash/2026-11-08_14-55-24",
+  "iteration": 16498,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_16498.pt",
+   "policy.pt"
+  ]
+ },
+ "run_v2_2999": {
+  "run": "microduck_run_flat_hd1910_backlash/2026-11-07_19-05-22",
+  "iteration": 2999,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_2999.pt",
+   "policy.pt"
+  ]
+ },
+ "run_allcoll_4498": {
+  "run": "microduck_run_flat_allcoll_hd1910_backlash/2026-11-08_15-55-03",
+  "iteration": 4498,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_4498.pt",
+   "policy.pt"
+  ]
+ },
+ "sit_12000": {
+  "run": "microduck_sit_flat_hd1910_backlash/2026-11-08_02-46-12",
+  "iteration": 12000,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_12000.pt",
+   "policy.pt"
+  ]
+ },
+ "sitstand_4000": {
+  "run": "microduck_sitstand_flat_hd1910_backlash/2026-11-08_09-43-28",
+  "iteration": 4000,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_4000.pt",
+   "policy.pt"
+  ]
+ },
+ "sitstand_6000": {
+  "run": "microduck_sitstand_flat_hd1910_backlash/2026-11-08_09-43-28",
+  "iteration": 6000,
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_6000.pt",
+   "policy.pt"
+  ]
+ }
+}
