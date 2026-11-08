@@ -1,0 +1,123 @@
+{
+ "policy": "run",
+ "vx": 0.6,
+ "num_envs": 32,
+ "per_push": [
+  {
+   "t": 1.0,
+   "level": 0.5,
+   "fell_frac": 0.062,
+   "upright_after_2s_frac": 0.188,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 4.0,
+   "level": 0.5,
+   "fell_frac": 0.0,
+   "upright_after_2s_frac": 0.375,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 7.0,
+   "level": 1.0,
+   "fell_frac": 0.5,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 10.0,
+   "level": 1.0,
+   "fell_frac": 0.375,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 13.0,
+   "level": 1.5,
+   "fell_frac": 0.75,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 16.0,
+   "level": 1.5,
+   "fell_frac": 0.688,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 19.0,
+   "level": 2.0,
+   "fell_frac": 0.875,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 22.0,
+   "level": 2.0,
+   "fell_frac": 0.719,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 25.0,
+   "level": 2.5,
+   "fell_frac": 0.906,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 28.0,
+   "level": 2.5,
+   "fell_frac": 1.0,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 31.0,
+   "level": 3.0,
+   "fell_frac": 0.938,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  {
+   "t": 34.0,
+   "level": 3.0,
+   "fell_frac": 0.906,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  }
+ ],
+ "by_level": {
+  "0.5": {
+   "fell_frac": 0.031,
+   "upright_after_2s_frac": 0.281,
+   "recovered_after_fall_frac": 0.0
+  },
+  "1.0": {
+   "fell_frac": 0.438,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  "1.5": {
+   "fell_frac": 0.719,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  "2.0": {
+   "fell_frac": 0.797,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  "2.5": {
+   "fell_frac": 0.953,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  },
+  "3.0": {
+   "fell_frac": 0.922,
+   "upright_after_2s_frac": 0.0,
+   "recovered_after_fall_frac": 0.0
+  }
+ }
+}
