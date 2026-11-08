@@ -6,6 +6,18 @@ cd "$(dirname "$0")/.."
 COMMON="--rl_library rsl_rl --num_envs 4096 presets=backlash --video --video_length 400 --video_interval 6000 --max_visible_envs 16"
 until grep "end stand" logs/train_all.log 2>/dev/null | awk -v s="[$SINCE" '$1 > s' | grep -q .; do sleep 120; done
 sleep 30
+# Run v3: the full-collision run with the mirror loss (timing asymmetry: air time L/R 0.89-0.93 on run v2).
+RUN2=$(ls -td logs/rsl_rl/microduck_run_flat_allcoll_hd1910_backlash/*/ | head -1)
+RUN2_CK=$(ls "$RUN2"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
+echo "[$(date +%F_%T)] start run-v3 (mirror loss, 1500 its from run-allcoll $RUN2_CK)" | tee -a logs/train_all.log
+uv run --project external/IsaacLab python scripts/train.py --task Microduck-RunV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+  --max_iterations 1500 $COMMON --checkpoint "$(readlink -f "$RUN2")/model_$RUN2_CK.pt" >> logs/train_run_v3.log 2>&1
+echo "[$(date +%F_%T)] end run-v3 exit=$?" | tee -a logs/train_all.log
+RUN3=$(ls -td logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/*/ | head -1)
+RUN3_CK=$(ls "$RUN3"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
+SPEEDS="0.3 0.5 0.7 0.9" MIN_FREE_MB=3000 scripts/eval_run_speeds.sh "$RUN3" Microduck-RunV3-Flat-HD1910-AllColl "$RUN3_CK"
+for vx in 0.3 0.5 0.7 0.9; do mv -f "docs/run_speed_${RUN3_CK}_vx$vx.json" "docs/run_v3_speed_${RUN3_CK}_vx$vx.json" 2>/dev/null; done
+echo "[$(date +%F_%T)] run-v3 speed table done" >> logs/evals.log
 echo "[$(date +%F_%T)] start roulade (front flip, ${ROULADE_ITERS:-8000} iterations)" | tee -a logs/train_all.log
 uv run --project external/IsaacLab python scripts/train.py --task Microduck-Roulade-Flat-HD1910 --agent rsl_rl_with_symmetry_cfg_entry_point \
   --max_iterations "${ROULADE_ITERS:-8000}" $COMMON >> logs/train_roulade.log 2>&1 &
