@@ -93,3 +93,19 @@ class RunFlatAllCollPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
 
     experiment_name = _names("microduck_run_flat_allcoll")
     max_iterations = 1500
+
+
+@configclass
+class RunFlatAllCollMirrorPPORunnerCfg(RunFlatAllCollPPORunnerCfg):
+    """Run v3: the full-collision run fine-tune with the MIRROR LOSS on top of data augmentation.
+    Measured on run v2 (docs/run_v2_speed_2999_vx*.json): knee amplitude L/R 1.00 but air time L/R 0.89-0.93
+    and stance L/R 1.05-1.10 -- a timing asymmetry (one leg stays on the ground longer) that reads as a limp.
+    Augmentation alone did not remove it; the mirror loss penalises the actor's left/right difference directly."""
+
+    experiment_name = _names("microduck_run_flat_allcoll_mirror")
+    max_iterations = 1500
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.algorithm.symmetry_cfg.use_mirror_loss = True
+        self.algorithm.symmetry_cfg.mirror_loss_coeff = 0.5

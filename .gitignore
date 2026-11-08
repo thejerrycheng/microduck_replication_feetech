@@ -19,3 +19,5 @@ dist/
 # editors
 .vscode/
 .idea/
+# Deployable policies are small (0.8 MB each) and the Mac app syncs them from GitHub.
+!exports/*.onnx
