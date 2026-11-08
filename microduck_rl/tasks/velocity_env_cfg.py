@@ -17,7 +17,12 @@ from isaaclab_tasks.contrib.microduck.rough_env_cfg import MicroDuckRoughSceneCf
 from isaaclab_tasks.utils import preset
 
 from microduck_rl import mdp
-from microduck_rl.assets import MICRODUCK_HD1910_BACKLASH_CFG, MICRODUCK_HD1910_CFG
+from microduck_rl.assets import (
+    MICRODUCK_HD1910_ALLCOLLISIONS_BACKLASH_CFG,
+    MICRODUCK_HD1910_ALLCOLLISIONS_CFG,
+    MICRODUCK_HD1910_BACKLASH_CFG,
+    MICRODUCK_HD1910_CFG,
+)
 from microduck_rl.dr import apply_replica_dr
 from microduck_rl.realism import apply_servo_realism
 from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
@@ -132,3 +137,40 @@ class MicroDuckHD1910RunV2FlatEnvCfg(MicroDuckHD1910RunFlatEnvCfg):
         self.curriculum.speed_range = _schedule(
             "commands.base_velocity.ranges.lin_vel_x", (750, (0.2, 0.7)), (1500, (0.2, 0.9)), (2250, (0.2, 1.2))
         )
+
+
+# ── Full-collision variants ───────────────────────────────────────────────────────────────────────────────
+# The walking USD enables sole colliders only. On the full-collision model (shells, legs, head: the one the
+# sit/stand, roll and jump policies live on, and the one closest to the real robot's shells) the policies
+# trained on the reduced model are fragile: measured 2026-11-08, walk 0.3 m/s falls in 2 of 16 within 4 s and
+# the run in 2 of 16, with 21 N of trunk self-contact at HOME. These variants fine-tune them where they will
+# be deployed next to the other policies; the self-collision sensor keeps the official foot-against-foot pair.
+_ALLCOLL_ROBOT_PRESET = dict(
+    default=MICRODUCK_HD1910_ALLCOLLISIONS_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot"),
+    backlash=MICRODUCK_HD1910_ALLCOLLISIONS_BACKLASH_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot"),
+)
+
+
+@configclass
+class MicroDuckHD1910AllCollSceneCfg(MicroDuckSceneCfg):
+    robot = preset(**_ALLCOLL_ROBOT_PRESET)
+
+
+@configclass
+class MicroDuckHD1910VelocityFlatAllCollEnvCfg(MicroDuckHD1910VelocityFlatEnvCfg):
+    """Walking on the full-collision model (fine-tune target)."""
+
+    scene: MicroDuckHD1910AllCollSceneCfg = MicroDuckHD1910AllCollSceneCfg(num_envs=4096, env_spacing=2.0)
+
+
+@configclass
+class MicroDuckHD1910RunV2FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatEnvCfg):
+    """Running (speed-curriculum recipe, curriculum pinned at its final band) on the full-collision model."""
+
+    scene: MicroDuckHD1910AllCollSceneCfg = MicroDuckHD1910AllCollSceneCfg(num_envs=4096, env_spacing=2.0)
+
+    def __post_init__(self):
+        super().__post_init__()
+        # A fine-tune starts from a policy that already runs the full band: no speed curriculum.
+        self.commands.base_velocity.ranges.lin_vel_x = (0.20, 1.20)
+        self.curriculum.speed_range = None

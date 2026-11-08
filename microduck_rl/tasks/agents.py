@@ -77,3 +77,19 @@ class JumpPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
         super().__post_init__()
         self.algorithm.entropy_coef = 0.001
         self.actor.distribution_cfg.init_std = 0.6
+
+
+@configclass
+class WalkFlatAllCollPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
+    """Walk fine-tune on the full-collision model (warm start from the symmetric walk; entropy as the walk used)."""
+
+    experiment_name = _names("microduck_walk_flat_allcoll")
+    max_iterations = 1500
+
+
+@configclass
+class RunFlatAllCollPPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
+    """Run fine-tune on the full-collision model (warm start from run v2)."""
+
+    experiment_name = _names("microduck_run_flat_allcoll")
+    max_iterations = 1500
