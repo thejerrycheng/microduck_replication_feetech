@@ -49,3 +49,17 @@ class SitPPORunnerCfg(SitStandPPORunnerCfg):
 @configclass
 class StandPPORunnerCfg(SitStandPPORunnerCfg):
     experiment_name = _names("microduck_stand_flat")
+
+
+@configclass
+class RouladePPORunnerCfg(MicroDuckSymmetricPPORunnerCfg):
+    """Forward roll: upstream trains 10k iterations at entropy 0.01 with the mirror loss on (the roll is
+    sagittal; symmetry fights the shoulder-roll cheat of upstream run 5). Entropy 0.001 here: the sit stage
+    showed a behaviour initiated by exploration noise is not one the deployed mean action performs."""
+
+    experiment_name = _names("microduck_roulade_flat")
+    max_iterations = 8000
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.algorithm.entropy_coef = 0.001

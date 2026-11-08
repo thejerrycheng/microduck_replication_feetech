@@ -1,0 +1,10454 @@
+{
+ "task": "Microduck-Sit-Flat-HD1910",
+ "overrides": [
+  "presets=backlash"
+ ],
+ "num_variants": 576,
+ "num_valid_crouches": 1,
+ "top10": [
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": true,
+   "crouch_drop_mm": 13.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.302,
+   "max_tilt_deg": 20.0
+  }
+ ],
+ "best_by": {
+  "head=0": {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": true,
+   "crouch_drop_mm": 13.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.302,
+   "max_tilt_deg": 20.0
+  },
+  "gain=3.0": {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": true,
+   "crouch_drop_mm": 13.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.302,
+   "max_tilt_deg": 20.0
+  },
+  "signs=(1, 1, 1)": {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": true,
+   "crouch_drop_mm": 13.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.302,
+   "max_tilt_deg": 20.0
+  }
+ },
+ "rows": [
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.011,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.217,
+   "max_tilt_deg": 81.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.053,
+   "max_tilt_deg": 82.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.249,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.074,
+   "max_tilt_deg": 84.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.053,
+   "max_tilt_deg": 111.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.267,
+   "max_tilt_deg": 94.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.5,
+   "rise_mm": 5.0,
+   "air_time_s": 0.58,
+   "vz_peak_m_s": 0.067,
+   "max_tilt_deg": 111.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.019,
+   "max_tilt_deg": 84.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.239,
+   "max_tilt_deg": 84.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.119,
+   "max_tilt_deg": 96.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.093,
+   "max_tilt_deg": 83.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 87.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -3.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 48.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -2.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.34,
+   "vz_peak_m_s": 0.28,
+   "max_tilt_deg": 94.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -3.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.254,
+   "max_tilt_deg": 104.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.048,
+   "max_tilt_deg": 79.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 2.7,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.051,
+   "max_tilt_deg": 105.8
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.149,
+   "max_tilt_deg": 84.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.336,
+   "max_tilt_deg": 80.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.007,
+   "max_tilt_deg": 89.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.083,
+   "max_tilt_deg": 97.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.008,
+   "max_tilt_deg": 88.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.1,
+   "rise_mm": 1.4,
+   "air_time_s": 0.3,
+   "vz_peak_m_s": 0.144,
+   "max_tilt_deg": 99.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.049,
+   "max_tilt_deg": 82.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.089,
+   "max_tilt_deg": 84.8
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 9.2,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 99.8
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.107,
+   "max_tilt_deg": 84.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 80.0
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.44,
+   "vz_peak_m_s": 0.437,
+   "max_tilt_deg": 128.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.051,
+   "max_tilt_deg": 79.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.2,
+   "max_tilt_deg": 80.1
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 81.0
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.188,
+   "max_tilt_deg": 81.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.42,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 87.0
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.196,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.54,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 87.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.154,
+   "max_tilt_deg": 98.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 88.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 7.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 112.0
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 57.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 84.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.115,
+   "max_tilt_deg": 84.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.038,
+   "max_tilt_deg": 84.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.134,
+   "max_tilt_deg": 84.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -3.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 29.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 4.6,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.065,
+   "max_tilt_deg": 110.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.066,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.5,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 98.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 87.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.243,
+   "max_tilt_deg": 79.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.101,
+   "max_tilt_deg": 84.1
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.308,
+   "max_tilt_deg": 79.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 88.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.1,
+   "rise_mm": 6.2,
+   "air_time_s": 0.56,
+   "vz_peak_m_s": 0.093,
+   "max_tilt_deg": 112.1
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.336,
+   "max_tilt_deg": 93.8
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.22,
+   "vz_peak_m_s": 0.146,
+   "max_tilt_deg": 99.1
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.017,
+   "max_tilt_deg": 84.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -1.0,
+   "rise_mm": 4.4,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.173,
+   "max_tilt_deg": 84.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.061,
+   "max_tilt_deg": 84.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.081,
+   "max_tilt_deg": 84.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -2.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.064,
+   "max_tilt_deg": 68.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 2.4,
+   "rise_mm": 1.7,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.048,
+   "max_tilt_deg": 94.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 3.4,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.053,
+   "max_tilt_deg": 106.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 86.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.095,
+   "max_tilt_deg": 68.0
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.158,
+   "max_tilt_deg": 20.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 32.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.248,
+   "max_tilt_deg": 81.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -1.4,
+   "rise_mm": 1.4,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 87.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.58,
+   "vz_peak_m_s": 0.084,
+   "max_tilt_deg": 109.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.006,
+   "max_tilt_deg": 88.1
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.058,
+   "max_tilt_deg": 113.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.019,
+   "max_tilt_deg": 89.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.17,
+   "max_tilt_deg": 84.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.015,
+   "max_tilt_deg": 84.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 57.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.097,
+   "max_tilt_deg": 84.0
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 2.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.004,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.245,
+   "max_tilt_deg": 80.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 87.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.218,
+   "max_tilt_deg": 79.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 80.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 5.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.154,
+   "max_tilt_deg": 69.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 23.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.091,
+   "max_tilt_deg": 85.8
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.223,
+   "max_tilt_deg": 70.6
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -2.0,
+   "rise_mm": 2.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.004,
+   "max_tilt_deg": 88.4
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 3.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.057,
+   "max_tilt_deg": 72.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.006,
+   "max_tilt_deg": 88.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.105,
+   "max_tilt_deg": 102.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.068,
+   "max_tilt_deg": 84.5
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.227,
+   "max_tilt_deg": 83.9
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.067,
+   "max_tilt_deg": 84.3
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.089,
+   "max_tilt_deg": 84.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 87.2
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.209,
+   "max_tilt_deg": 80.7
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.1
+  },
+  {
+   "depth": 0.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 80.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.062,
+   "max_tilt_deg": 82.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.248,
+   "max_tilt_deg": 81.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.103,
+   "max_tilt_deg": 84.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.311,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 92.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.152,
+   "max_tilt_deg": 98.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.18,
+   "max_tilt_deg": 91.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.22,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 101.2
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 84.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.218,
+   "max_tilt_deg": 84.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 8.6,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.148,
+   "max_tilt_deg": 101.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 7.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.164,
+   "max_tilt_deg": 120.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -5.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.008,
+   "max_tilt_deg": 85.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -1.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.026,
+   "max_tilt_deg": 71.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -3.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.039,
+   "max_tilt_deg": 84.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -6.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.141,
+   "max_tilt_deg": 105.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.2
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.305,
+   "max_tilt_deg": 79.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.162,
+   "max_tilt_deg": 86.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.318,
+   "max_tilt_deg": 79.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.007,
+   "max_tilt_deg": 89.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.129,
+   "max_tilt_deg": 96.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.008,
+   "max_tilt_deg": 91.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.117,
+   "max_tilt_deg": 103.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 48.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.134,
+   "max_tilt_deg": 84.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 53.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.066,
+   "max_tilt_deg": 83.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.166,
+   "max_tilt_deg": 82.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -4.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.047,
+   "max_tilt_deg": 91.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.0,
+   "rise_mm": 0.8,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.045,
+   "max_tilt_deg": 102.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -5.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.071,
+   "max_tilt_deg": 99.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.17,
+   "max_tilt_deg": 80.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.38,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -1.3,
+   "rise_mm": 5.6,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.069,
+   "max_tilt_deg": 108.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.36,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.256,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.38,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 89.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.132,
+   "max_tilt_deg": 99.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 90.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.103,
+   "max_tilt_deg": 102.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 57.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.099,
+   "max_tilt_deg": 84.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 4.9,
+   "air_time_s": 0.38,
+   "vz_peak_m_s": 0.061,
+   "max_tilt_deg": 111.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 57.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.091,
+   "max_tilt_deg": 84.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 57.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.181,
+   "max_tilt_deg": 83.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 81.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -4.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.116,
+   "max_tilt_deg": 78.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 35.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.038,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.233,
+   "max_tilt_deg": 78.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.107,
+   "max_tilt_deg": 82.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.335,
+   "max_tilt_deg": 79.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.107,
+   "max_tilt_deg": 87.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.328,
+   "max_tilt_deg": 79.2
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.048,
+   "max_tilt_deg": 92.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.128,
+   "max_tilt_deg": 98.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.027,
+   "max_tilt_deg": 89.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.253,
+   "max_tilt_deg": 105.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.087,
+   "max_tilt_deg": 83.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.151,
+   "max_tilt_deg": 82.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 22.8,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.255,
+   "max_tilt_deg": 109.2
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.203,
+   "max_tilt_deg": 82.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 9.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 86.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -4.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.059,
+   "max_tilt_deg": 99.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.2
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.146,
+   "max_tilt_deg": 81.0
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.024,
+   "max_tilt_deg": 81.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.223,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 3.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.232,
+   "max_tilt_deg": 81.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.004,
+   "max_tilt_deg": 89.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.117,
+   "max_tilt_deg": 101.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 92.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.17,
+   "max_tilt_deg": 99.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.035,
+   "max_tilt_deg": 89.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.264,
+   "max_tilt_deg": 82.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.117,
+   "max_tilt_deg": 83.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 83.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.008,
+   "max_tilt_deg": 80.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 3.6,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.062,
+   "max_tilt_deg": 107.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.037,
+   "max_tilt_deg": 81.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.227,
+   "max_tilt_deg": 78.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 8.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.243,
+   "max_tilt_deg": 84.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 8.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.215,
+   "max_tilt_deg": 70.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 8.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.264,
+   "max_tilt_deg": 85.4
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 8.1,
+   "rise_mm": 7.4,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.262,
+   "max_tilt_deg": 70.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.007,
+   "max_tilt_deg": 89.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 3.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.138,
+   "max_tilt_deg": 98.9
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.056,
+   "max_tilt_deg": 92.7
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 98.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.2,
+   "max_tilt_deg": 101.5
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.157,
+   "max_tilt_deg": 86.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.133,
+   "max_tilt_deg": 83.6
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 53.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.169,
+   "max_tilt_deg": 83.3
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 80.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.179,
+   "max_tilt_deg": 80.8
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.1
+  },
+  {
+   "depth": 0.6,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.168,
+   "max_tilt_deg": 80.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.081,
+   "max_tilt_deg": 83.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.292,
+   "max_tilt_deg": 81.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.107,
+   "max_tilt_deg": 86.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.266,
+   "max_tilt_deg": 81.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 90.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.122,
+   "max_tilt_deg": 98.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.004,
+   "max_tilt_deg": 89.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 2.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.203,
+   "max_tilt_deg": 99.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 82.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.249,
+   "max_tilt_deg": 83.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.129,
+   "max_tilt_deg": 101.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 13.7,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.189,
+   "max_tilt_deg": 123.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 6.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.033,
+   "max_tilt_deg": 82.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.231,
+   "max_tilt_deg": 79.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.46,
+   "vz_peak_m_s": 0.26,
+   "max_tilt_deg": 94.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -7.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.24,
+   "vz_peak_m_s": 0.439,
+   "max_tilt_deg": 130.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.182,
+   "max_tilt_deg": 85.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.351,
+   "max_tilt_deg": 78.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.201,
+   "max_tilt_deg": 93.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.348,
+   "max_tilt_deg": 79.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 3.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.059,
+   "max_tilt_deg": 92.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.115,
+   "max_tilt_deg": 112.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.073,
+   "max_tilt_deg": 92.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 11.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.159,
+   "max_tilt_deg": 97.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.041,
+   "max_tilt_deg": 91.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 7.9,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.137,
+   "max_tilt_deg": 115.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.148,
+   "max_tilt_deg": 111.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 80.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -7.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.052,
+   "max_tilt_deg": 99.1
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 80.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -7.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 110.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.36,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 88.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.261,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.302,
+   "max_tilt_deg": 82.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.008,
+   "max_tilt_deg": 89.1
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.173,
+   "max_tilt_deg": 98.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 92.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.186,
+   "max_tilt_deg": 98.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.126,
+   "max_tilt_deg": 101.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.127,
+   "max_tilt_deg": 111.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.137,
+   "max_tilt_deg": 93.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 56.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.276,
+   "max_tilt_deg": 83.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -4.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.039,
+   "max_tilt_deg": 97.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 4.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.056,
+   "max_tilt_deg": 107.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.52,
+   "vz_peak_m_s": 0.016,
+   "max_tilt_deg": 89.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.207,
+   "max_tilt_deg": 79.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.124,
+   "max_tilt_deg": 84.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 109.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.12,
+   "max_tilt_deg": 89.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.311,
+   "max_tilt_deg": 78.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.086,
+   "max_tilt_deg": 91.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.167,
+   "max_tilt_deg": 97.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 91.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.157,
+   "max_tilt_deg": 97.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.174,
+   "max_tilt_deg": 101.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.259,
+   "max_tilt_deg": 82.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 20.8,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.275,
+   "max_tilt_deg": 107.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 11.2,
+   "rise_mm": 35.1,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.391,
+   "max_tilt_deg": 120.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.196,
+   "max_tilt_deg": 80.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.201,
+   "max_tilt_deg": 81.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.041,
+   "max_tilt_deg": 91.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.037,
+   "max_tilt_deg": 101.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 9.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.3,
+   "max_tilt_deg": 67.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 3.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 90.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.154,
+   "max_tilt_deg": 97.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.078,
+   "max_tilt_deg": 92.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.144,
+   "max_tilt_deg": 97.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 101.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 55.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.277,
+   "max_tilt_deg": 83.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 13.3,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.157,
+   "max_tilt_deg": 105.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.205,
+   "max_tilt_deg": 117.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 80.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.201,
+   "max_tilt_deg": 78.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.039,
+   "max_tilt_deg": 79.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.154,
+   "max_tilt_deg": 78.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 31.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.2,
+   "vz_peak_m_s": 0.317,
+   "max_tilt_deg": 94.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.34,
+   "vz_peak_m_s": 0.059,
+   "max_tilt_deg": 106.6
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": true,
+   "crouch_drop_mm": 13.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.302,
+   "max_tilt_deg": 20.0
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 4.9,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.058,
+   "max_tilt_deg": 110.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.026,
+   "max_tilt_deg": 90.9
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.095,
+   "max_tilt_deg": 97.3
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.073,
+   "max_tilt_deg": 92.2
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.138,
+   "max_tilt_deg": 97.5
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 46.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.041,
+   "max_tilt_deg": 82.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.149,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.017,
+   "max_tilt_deg": 80.7
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 76.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.366,
+   "max_tilt_deg": 127.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.5,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.157,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.8
+  },
+  {
+   "depth": 0.8,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 4.4,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.064,
+   "max_tilt_deg": 110.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.125,
+   "max_tilt_deg": 86.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.288,
+   "max_tilt_deg": 82.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 89.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.295,
+   "max_tilt_deg": 82.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 89.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.172,
+   "max_tilt_deg": 97.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.084,
+   "max_tilt_deg": 92.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.186,
+   "max_tilt_deg": 96.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 76.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.132,
+   "max_tilt_deg": 107.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.36,
+   "vz_peak_m_s": 0.081,
+   "max_tilt_deg": 105.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 76.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.215,
+   "max_tilt_deg": 116.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.4,
+   "rise_mm": 15.9,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.194,
+   "max_tilt_deg": 125.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.52,
+   "vz_peak_m_s": 0.019,
+   "max_tilt_deg": 91.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 108.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -1.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.177,
+   "max_tilt_deg": 81.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 4.9,
+   "air_time_s": 0.56,
+   "vz_peak_m_s": 0.07,
+   "max_tilt_deg": 110.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.099,
+   "max_tilt_deg": 93.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 1.2,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.043,
+   "max_tilt_deg": 100.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 87.2
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.308,
+   "max_tilt_deg": 79.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.048,
+   "max_tilt_deg": 91.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.152,
+   "max_tilt_deg": 97.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.061,
+   "max_tilt_deg": 92.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 5.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.195,
+   "max_tilt_deg": 97.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 46.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 83.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 76.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.242,
+   "max_tilt_deg": 117.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 29.4,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.276,
+   "max_tilt_deg": 113.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 30.7,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.359,
+   "max_tilt_deg": 133.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.059,
+   "max_tilt_deg": 82.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 27.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.52,
+   "vz_peak_m_s": 0.448,
+   "max_tilt_deg": 118.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -7.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.097,
+   "max_tilt_deg": 98.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.188,
+   "max_tilt_deg": 81.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.113,
+   "max_tilt_deg": 93.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 97.2
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.142,
+   "max_tilt_deg": 88.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.049,
+   "max_tilt_deg": 97.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 57.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.067,
+   "max_tilt_deg": 92.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.148,
+   "max_tilt_deg": 96.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 92.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.13,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.112,
+   "max_tilt_deg": 85.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.126,
+   "max_tilt_deg": 109.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.258,
+   "max_tilt_deg": 121.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.212,
+   "max_tilt_deg": 115.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.019,
+   "max_tilt_deg": 81.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.3,
+   "rise_mm": 2.9,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.04,
+   "max_tilt_deg": 104.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 78.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 4.7,
+   "air_time_s": 0.56,
+   "vz_peak_m_s": 0.073,
+   "max_tilt_deg": 110.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.042,
+   "max_tilt_deg": 93.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.26,
+   "vz_peak_m_s": 0.049,
+   "max_tilt_deg": 97.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.24,
+   "vz_peak_m_s": 0.018,
+   "max_tilt_deg": 94.2
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.24,
+   "vz_peak_m_s": 0.211,
+   "max_tilt_deg": 98.2
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.025,
+   "max_tilt_deg": 92.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.143,
+   "max_tilt_deg": 96.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.082,
+   "max_tilt_deg": 90.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.156,
+   "max_tilt_deg": 97.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.064,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.272,
+   "max_tilt_deg": 113.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.365,
+   "max_tilt_deg": 131.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.191,
+   "max_tilt_deg": 81.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.006,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.186,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 47.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.067,
+   "max_tilt_deg": 110.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.052,
+   "max_tilt_deg": 93.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.155,
+   "max_tilt_deg": 98.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.22,
+   "vz_peak_m_s": 0.035,
+   "max_tilt_deg": 89.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.24,
+   "vz_peak_m_s": 0.114,
+   "max_tilt_deg": 97.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.047,
+   "max_tilt_deg": 92.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.18,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.064,
+   "max_tilt_deg": 91.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 3.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.149,
+   "max_tilt_deg": 97.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.161,
+   "max_tilt_deg": 110.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.154,
+   "max_tilt_deg": 85.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.146,
+   "max_tilt_deg": 92.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.7,
+   "rise_mm": 14.5,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.224,
+   "max_tilt_deg": 124.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.012,
+   "max_tilt_deg": 80.0
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.232,
+   "max_tilt_deg": 78.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.009,
+   "max_tilt_deg": 78.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.204,
+   "max_tilt_deg": 78.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -1.0,
+   "rise_mm": 1.1,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 86.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.153,
+   "max_tilt_deg": 99.5
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.018,
+   "max_tilt_deg": 87.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.2,
+   "vz_peak_m_s": 0.181,
+   "max_tilt_deg": 100.4
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.054,
+   "max_tilt_deg": 91.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.145,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.06,
+   "max_tilt_deg": 92.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.156,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.255,
+   "max_tilt_deg": 109.2
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.167,
+   "max_tilt_deg": 83.1
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.424,
+   "max_tilt_deg": 125.9
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 23.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.378,
+   "max_tilt_deg": 134.3
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.198,
+   "max_tilt_deg": 81.6
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.7
+  },
+  {
+   "depth": 1.0,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.158,
+   "max_tilt_deg": 81.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.015,
+   "max_tilt_deg": 89.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.031,
+   "max_tilt_deg": 100.6
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.015,
+   "max_tilt_deg": 92.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.166,
+   "max_tilt_deg": 98.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.074,
+   "max_tilt_deg": 91.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 49.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.113,
+   "max_tilt_deg": 102.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 91.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 5.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.156,
+   "max_tilt_deg": 97.3
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.125,
+   "max_tilt_deg": 97.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.152,
+   "max_tilt_deg": 109.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.264,
+   "max_tilt_deg": 119.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 17.1,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.161,
+   "max_tilt_deg": 127.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.5,
+   "vz_peak_m_s": 0.008,
+   "max_tilt_deg": 89.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -3.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.103,
+   "max_tilt_deg": 69.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.042,
+   "max_tilt_deg": 91.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.54,
+   "vz_peak_m_s": 0.078,
+   "max_tilt_deg": 111.6
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.048,
+   "max_tilt_deg": 92.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 97.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.003,
+   "max_tilt_deg": 87.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 97.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.044,
+   "max_tilt_deg": 91.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.119,
+   "max_tilt_deg": 96.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 12.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 92.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.171,
+   "max_tilt_deg": 98.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 14.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.215,
+   "max_tilt_deg": 104.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.267,
+   "max_tilt_deg": 116.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.6,
+   "rise_mm": 0.4,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.434,
+   "max_tilt_deg": 133.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.389,
+   "max_tilt_deg": 121.3
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 32.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 80.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.17,
+   "max_tilt_deg": 80.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.082,
+   "max_tilt_deg": 111.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.074,
+   "max_tilt_deg": 93.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 2.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.045,
+   "max_tilt_deg": 101.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.152,
+   "max_tilt_deg": 97.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.049,
+   "max_tilt_deg": 91.6
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.127,
+   "max_tilt_deg": 96.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.064,
+   "max_tilt_deg": 91.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.133,
+   "max_tilt_deg": 96.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.161,
+   "max_tilt_deg": 109.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.118,
+   "max_tilt_deg": 109.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.1,
+   "rise_mm": 16.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.233,
+   "max_tilt_deg": 106.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 54.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.22,
+   "max_tilt_deg": 83.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.056,
+   "max_tilt_deg": 81.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 2.7,
+   "air_time_s": 0.52,
+   "vz_peak_m_s": 0.065,
+   "max_tilt_deg": 106.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 78.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 33.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.176,
+   "max_tilt_deg": 75.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.056,
+   "max_tilt_deg": 94.6
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.015,
+   "max_tilt_deg": 96.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.056,
+   "max_tilt_deg": 94.3
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 96.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.041,
+   "max_tilt_deg": 92.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 5.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.167,
+   "max_tilt_deg": 97.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 91.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.132,
+   "max_tilt_deg": 98.3
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": -0.1,
+   "rise_mm": 18.3,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.208,
+   "max_tilt_deg": 106.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.241,
+   "max_tilt_deg": 81.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.292,
+   "max_tilt_deg": 108.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 31.5,
+   "air_time_s": 0.22,
+   "vz_peak_m_s": 0.449,
+   "max_tilt_deg": 134.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 81.3
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.198,
+   "max_tilt_deg": 82.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.014,
+   "max_tilt_deg": 90.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 3.9,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.052,
+   "max_tilt_deg": 107.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.014,
+   "max_tilt_deg": 90.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.4,
+   "vz_peak_m_s": 0.117,
+   "max_tilt_deg": 100.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.01,
+   "max_tilt_deg": 90.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.058,
+   "max_tilt_deg": 108.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.046,
+   "max_tilt_deg": 91.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.165,
+   "max_tilt_deg": 96.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.039,
+   "max_tilt_deg": 92.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.177,
+   "max_tilt_deg": 97.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.19,
+   "max_tilt_deg": 108.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.144,
+   "max_tilt_deg": 110.6
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.22,
+   "max_tilt_deg": 107.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 74.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.267,
+   "max_tilt_deg": 118.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.038,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 1.2,
+   "rise_mm": 2.6,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.078,
+   "max_tilt_deg": 107.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 77.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 4.1,
+   "air_time_s": 0.5,
+   "vz_peak_m_s": 0.09,
+   "max_tilt_deg": 110.1
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.36,
+   "vz_peak_m_s": 0.022,
+   "max_tilt_deg": 90.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 5.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.059,
+   "max_tilt_deg": 111.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.027,
+   "max_tilt_deg": 91.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 4.4,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.053,
+   "max_tilt_deg": 109.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.081,
+   "max_tilt_deg": 91.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.232,
+   "max_tilt_deg": 97.4
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.079,
+   "max_tilt_deg": 91.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.175,
+   "max_tilt_deg": 97.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.222,
+   "max_tilt_deg": 94.8
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.082,
+   "max_tilt_deg": 107.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 30.2,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.319,
+   "max_tilt_deg": 115.0
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.309,
+   "max_tilt_deg": 117.9
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.44,
+   "vz_peak_m_s": 0.006,
+   "max_tilt_deg": 90.5
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.198,
+   "max_tilt_deg": 81.2
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.7
+  },
+  {
+   "depth": 1.2,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 5.2,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 111.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.116,
+   "max_tilt_deg": 85.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.157,
+   "max_tilt_deg": 98.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.012,
+   "max_tilt_deg": 89.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 5.9,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 112.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.068,
+   "max_tilt_deg": 91.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.145,
+   "max_tilt_deg": 96.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.075,
+   "max_tilt_deg": 93.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.188,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.111,
+   "max_tilt_deg": 101.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.149,
+   "max_tilt_deg": 109.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.053,
+   "max_tilt_deg": 91.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.073,
+   "max_tilt_deg": 97.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.087,
+   "max_tilt_deg": 82.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.122,
+   "max_tilt_deg": 74.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 47.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.293,
+   "max_tilt_deg": 93.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.147,
+   "max_tilt_deg": 75.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.004,
+   "max_tilt_deg": 87.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.28,
+   "vz_peak_m_s": 0.025,
+   "max_tilt_deg": 96.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.2,
+   "vz_peak_m_s": 0.038,
+   "max_tilt_deg": 90.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.163,
+   "max_tilt_deg": 98.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.042,
+   "max_tilt_deg": 92.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.123,
+   "max_tilt_deg": 98.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.023,
+   "max_tilt_deg": 91.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 12.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.197,
+   "max_tilt_deg": 97.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.12,
+   "vz_peak_m_s": 0.333,
+   "max_tilt_deg": 120.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.218,
+   "max_tilt_deg": 80.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 28.7,
+   "air_time_s": 0.14,
+   "vz_peak_m_s": 0.315,
+   "max_tilt_deg": 113.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 32.9,
+   "air_time_s": 0.2,
+   "vz_peak_m_s": 0.346,
+   "max_tilt_deg": 136.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.4,
+   "vz_peak_m_s": 0.02,
+   "max_tilt_deg": 90.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": -7.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.082,
+   "max_tilt_deg": 89.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 81.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.3,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 5.1,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.062,
+   "max_tilt_deg": 111.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.035,
+   "max_tilt_deg": 93.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 108.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.009,
+   "max_tilt_deg": 89.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.42,
+   "vz_peak_m_s": 0.108,
+   "max_tilt_deg": 111.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.072,
+   "max_tilt_deg": 91.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 4.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.052,
+   "max_tilt_deg": 97.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.097,
+   "max_tilt_deg": 91.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.183,
+   "max_tilt_deg": 98.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 12.9,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.15,
+   "max_tilt_deg": 104.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.197,
+   "max_tilt_deg": 106.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.4,
+   "rise_mm": 18.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.217,
+   "max_tilt_deg": 106.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.182,
+   "max_tilt_deg": 81.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 68.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.023,
+   "max_tilt_deg": 80.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.225,
+   "max_tilt_deg": 78.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 69.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 78.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 6.3,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.077,
+   "max_tilt_deg": 112.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 58.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.013,
+   "max_tilt_deg": 97.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.26,
+   "vz_peak_m_s": 0.023,
+   "max_tilt_deg": 96.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 97.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.46,
+   "vz_peak_m_s": 0.032,
+   "max_tilt_deg": 97.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 73.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.092,
+   "max_tilt_deg": 91.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.033,
+   "max_tilt_deg": 96.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.071,
+   "max_tilt_deg": 91.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.132,
+   "max_tilt_deg": 97.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.182,
+   "max_tilt_deg": 79.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.065,
+   "max_tilt_deg": 100.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.122,
+   "max_tilt_deg": 79.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 60.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.289,
+   "max_tilt_deg": 79.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.002,
+   "max_tilt_deg": 82.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 63.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.16,
+   "max_tilt_deg": 81.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 82.3
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.6,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 64.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.142,
+   "max_tilt_deg": 82.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.001,
+   "max_tilt_deg": 87.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.2,
+   "rise_mm": 3.4,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.062,
+   "max_tilt_deg": 107.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 65.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.16,
+   "vz_peak_m_s": 0.084,
+   "max_tilt_deg": 92.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 66.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.244,
+   "max_tilt_deg": 98.9
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.055,
+   "max_tilt_deg": 91.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.17,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.9,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.116,
+   "max_tilt_deg": 90.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.15,
+   "max_tilt_deg": 97.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 75.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.08,
+   "vz_peak_m_s": 0.21,
+   "max_tilt_deg": 117.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 49.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.174,
+   "max_tilt_deg": 85.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 50.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.021,
+   "max_tilt_deg": 85.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 52.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.131,
+   "max_tilt_deg": 84.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.48,
+   "vz_peak_m_s": 0.029,
+   "max_tilt_deg": 91.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.21,
+   "max_tilt_deg": 77.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 73.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 77.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.3,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.209,
+   "max_tilt_deg": 78.0
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 45.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.2,
+   "max_tilt_deg": 89.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.18,
+   "vz_peak_m_s": 0.202,
+   "max_tilt_deg": 98.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 0.3,
+   "rise_mm": 0.0,
+   "air_time_s": 0.6,
+   "vz_peak_m_s": 0.005,
+   "max_tilt_deg": 87.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 59.0,
+   "rise_mm": 0.0,
+   "air_time_s": 0.24,
+   "vz_peak_m_s": 0.141,
+   "max_tilt_deg": 97.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 12.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.081,
+   "max_tilt_deg": 91.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 72.4,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.091,
+   "max_tilt_deg": 96.8
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 70.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.02,
+   "vz_peak_m_s": 0.056,
+   "max_tilt_deg": 92.5
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    1,
+    -1,
+    1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 71.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.052,
+   "max_tilt_deg": 96.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 53.8,
+   "rise_mm": 0.0,
+   "air_time_s": 0.1,
+   "vz_peak_m_s": 0.238,
+   "max_tilt_deg": 110.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.283,
+   "max_tilt_deg": 79.4
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 67.1,
+   "rise_mm": 0.0,
+   "air_time_s": 0.06,
+   "vz_peak_m_s": 0.255,
+   "max_tilt_deg": 96.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.2,
+   "rise_mm": 0.0,
+   "air_time_s": 0.04,
+   "vz_peak_m_s": 0.303,
+   "max_tilt_deg": 79.7
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.6,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 82.6
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 1.5,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 61.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.186,
+   "max_tilt_deg": 82.1
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 0,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.7,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.0,
+   "max_tilt_deg": 83.2
+  },
+  {
+   "depth": 1.4,
+   "ankle_ratio": 0.9,
+   "hip_ratio": 0.6,
+   "signs": [
+    -1,
+    -1,
+    -1
+   ],
+   "gain": 3.0,
+   "head": 1,
+   "crouch_ok": false,
+   "crouch_drop_mm": 62.5,
+   "rise_mm": 0.0,
+   "air_time_s": 0.0,
+   "vz_peak_m_s": 0.178,
+   "max_tilt_deg": 82.2
+  }
+ ]
+}
