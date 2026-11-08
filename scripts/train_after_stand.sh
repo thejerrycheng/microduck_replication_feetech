@@ -38,6 +38,11 @@ uv run --project external/IsaacLab python scripts/eval_gait_symmetry.py --task M
 echo "[$(date +%F_%T)] walk-v3 squat+gait evals done" >> logs/evals.log
 # StandUp (get-up + robust stand), if registered by then.
 if uv run --project external/IsaacLab python -c "import gymnasium as gym, microduck_rl; gym.spec('Microduck-StandUp-Flat-HD1910')" >/dev/null 2>&1; then
+  # Bank of real fall end-states for the stand-up start distribution (runs while no trainer is up).
+  if [ ! -f docs/fall_bank.json ]; then
+    uv run --project external/IsaacLab python scripts/capture_fall_states.py --target 300 --num_envs 32 presets=backlash > logs/capture_fall_states.log 2>&1
+    echo "[$(date +%F_%T)] fall bank capture exit=$? ($(python3 -c "import json;print(len(json.load(open('docs/fall_bank.json'))))" 2>/dev/null || echo 0) states)" | tee -a logs/train_all.log
+  fi
   echo "[$(date +%F_%T)] start standup (${STANDUP_ITERS:-10000} its, two-phase entropy)" | tee -a logs/train_all.log
   TASK=Microduck-StandUp-Flat-HD1910 DIR=microduck_standup_flat_hd1910_backlash PHASE1_ITERS=7000 TOTAL_ITERS=${STANDUP_ITERS:-10000} scripts/train_stand_two_phase.sh
   echo "[$(date +%F_%T)] end standup" | tee -a logs/train_all.log
