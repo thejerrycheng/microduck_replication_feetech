@@ -103,7 +103,7 @@ class RunFlatAllCollMirrorPPORunnerCfg(RunFlatAllCollPPORunnerCfg):
     Augmentation alone did not remove it; the mirror loss penalises the actor's left/right difference directly."""
 
     experiment_name = _names("microduck_run_flat_allcoll_mirror")
-    max_iterations = 1500
+    max_iterations = 3000
 
     def __post_init__(self):
         super().__post_init__()

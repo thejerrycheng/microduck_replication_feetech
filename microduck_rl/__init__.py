@@ -56,7 +56,7 @@ _register(
     "Microduck-RunV2-Flat-HD1910-AllColl", "velocity_env_cfg:MicroDuckHD1910RunV2FlatAllCollEnvCfg", "RunFlatAllCollPPORunnerCfg", "RunFlatAllCollPPORunnerCfg"
 )
 _register(
-    "Microduck-RunV3-Flat-HD1910-AllColl", "velocity_env_cfg:MicroDuckHD1910RunV2FlatAllCollEnvCfg", "RunFlatAllCollMirrorPPORunnerCfg", "RunFlatAllCollMirrorPPORunnerCfg"
+    "Microduck-RunV3-Flat-HD1910-AllColl", "velocity_env_cfg:MicroDuckHD1910RunV3FlatAllCollEnvCfg", "RunFlatAllCollMirrorPPORunnerCfg", "RunFlatAllCollMirrorPPORunnerCfg"
 )
 _register("Microduck-Jump-Flat-HD1910", "jump_env_cfg:MicroDuckHD1910JumpFlatEnvCfg", "JumpPPORunnerCfg", "JumpPPORunnerCfg")
 _register("Microduck-Sit-Flat-HD1910", "sitstand_env_cfg:MicroDuckHD1910SitFlatEnvCfg", "SitPPORunnerCfg")

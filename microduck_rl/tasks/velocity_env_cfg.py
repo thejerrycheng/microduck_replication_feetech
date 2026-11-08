@@ -174,3 +174,21 @@ class MicroDuckHD1910RunV2FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatEnvCfg):
         # A fine-tune starts from a policy that already runs the full band: no speed curriculum.
         self.commands.base_velocity.ranges.lin_vel_x = (0.20, 1.20)
         self.curriculum.speed_range = None
+
+
+@configclass
+class MicroDuckHD1910RunV3FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatAllCollEnvCfg):
+    """Run v3 environment: the full-collision run WITH a (compressed) speed curriculum again.
+
+    Measured on the v2 -> full-collision fine-tune without a curriculum (``docs/run_allcoll_speed_4498_*``):
+    0.26 / 0.44 / 0.35 / 0.00 / 0.00 m/s for 0.3 / 0.5 / 0.7 / 0.9 / 1.1 commanded -- inside 1500 iterations on
+    the new plant the policy gave up the fast commands, exactly the run-v1 failure. The band therefore
+    reopens from 0.2-0.7 to 0.2-1.2 over the first half of the run (iterations are the warm start's own count,
+    continued: ``_schedule`` runs on the global step counter, so stages are placed past the loaded 2999)."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.commands.base_velocity.ranges.lin_vel_x = (0.20, 0.70)
+        self.curriculum.speed_range = _schedule(
+            "commands.base_velocity.ranges.lin_vel_x", (3000 + 500, (0.2, 0.9)), (3000 + 1000, (0.2, 1.2))
+        )
