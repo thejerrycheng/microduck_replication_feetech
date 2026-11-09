@@ -53,6 +53,34 @@ else
   echo "[$(date +%F_%T)] standup task not registered; skipped" | tee -a logs/train_all.log
 fi
 
+# Sit/stand FAST: the gated sit/stand took ~2 s per transition because the posture target slews over 2.0 s;
+# fine-tune it with a 0.4 s ramp (about the servo limit for the 55 mm rise). 1500 its from sitstand 4000.
+if uv run --project external/IsaacLab python -c "import gymnasium as gym, microduck_rl; gym.spec('Microduck-SitStandFast-Flat-HD1910')" >/dev/null 2>&1; then
+  SS=/home/jerrycheng/microduck/checkpoints/sitstand_4000/model_4000.pt
+  START_CK="$SS"; ITERS=1500; END=5500
+  PREV=$(latest_with_ckpt microduck_sitstand_fast_flat_hd1910_backlash)
+  if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt $((END - 1)) ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((END - PREV_CK)); else ITERS=0; fi; fi
+  if [ "$ITERS" -gt 0 ]; then
+    echo "[$(date +%F_%T)] start sitstand-fast (0.4 s ramp, $ITERS its from $START_CK)" | tee -a logs/train_all.log
+    uv run --project external/IsaacLab python scripts/train.py --task Microduck-SitStandFast-Flat-HD1910 --max_iterations $ITERS $COMMON \
+      --checkpoint "$START_CK" >> logs/train_sitstand_fast.log 2>&1
+    echo "[$(date +%F_%T)] end sitstand-fast exit=$?" | tee -a logs/train_all.log
+  fi
+  SF=$(latest_with_ckpt microduck_sitstand_fast_flat_hd1910_backlash); SF_CK=$(last_ckpt "$SF")
+  uv run --project external/IsaacLab python scripts/play.py --rl_library rsl_rl --task Microduck-SitStandFast-Flat-HD1910 --num_envs 4 presets=backlash \
+    --checkpoint "$(readlink -f "$SF")/model_$SF_CK.pt" --video --video_length 1 --video_interval 1000000 > logs/export_sitstand_fast.log 2>&1
+  mkdir -p "$SF/exported_model_$SF_CK"; cp "$SF"/exported/policy.* "$SF/exported_model_$SF_CK/" 2>/dev/null
+  uv run --project external/IsaacLab python scripts/eval_transition.py --task Microduck-SitStandFast-Flat-HD1910 --policy "$SF/exported_model_$SF_CK/policy.pt" presets=backlash \
+    --out "docs/transition_sitstand_fast_$SF_CK.json" > logs/eval_transition_sitstand_fast.log 2>&1
+  uv run --project external/IsaacLab python scripts/eval_transition.py --policy checkpoints/sitstand_4000/policy.pt presets=backlash \
+    --out docs/transition_sitstand_4000.json > logs/eval_transition_sitstand_4000.log 2>&1
+  uv run --project external/IsaacLab python scripts/eval_posture.py --task Microduck-SitStandFast-Flat-HD1910 --run "$(readlink -f "$SF")" --checkpoint "model_$SF_CK.pt" \
+    --num_envs 32 presets=backlash --out "docs/posture_sitstand_fast_$SF_CK.json" > logs/eval_posture_sitstand_fast.log 2>&1
+  echo "[$(date +%F_%T)] sitstand-fast transition+posture evals done" >> logs/evals.log
+else
+  echo "[$(date +%F_%T)] sitstand-fast task not registered; skipped" | tee -a logs/train_all.log
+fi
+
 # Walk v4: the squat at zero command survived walk v3's L1 height cost (trunk 0.073 m stopped vs 0.115 standing,
 # cost -3.0 read -0.03/s in the log -- negligible). v4 uses a deadbanded cost ~50x stronger plus the
 # default-pose term at zero command; 1500 iterations from walk v3's last checkpoint.

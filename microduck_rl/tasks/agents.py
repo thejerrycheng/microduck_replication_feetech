@@ -42,6 +42,19 @@ class SitStandPPORunnerCfg(MicroDuckPPORunnerCfg):
 
 
 @configclass
+class SitStandFastPPORunnerCfg(SitStandPPORunnerCfg):
+    """Fast-transition fine-tune of the gated sit/stand (behaviour exists: entropy 0.001, 1500 iterations)."""
+
+    experiment_name = _names("microduck_sitstand_fast_flat")
+    max_iterations = 1500
+
+    def __post_init__(self):
+        if hasattr(super(), "__post_init__"):
+            super().__post_init__()
+        self.algorithm.entropy_coef = 0.001
+
+
+@configclass
 class SitPPORunnerCfg(SitStandPPORunnerCfg):
     experiment_name = _names("microduck_sit_flat")
 

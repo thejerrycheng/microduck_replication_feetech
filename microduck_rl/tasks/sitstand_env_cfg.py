@@ -462,3 +462,15 @@ class MicroDuckHD1910StandFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
         self.commands.base_velocity.sit_prob = 0.0
         self.events.set_ground_state.params["sitting_prob"] = 1.0
         self.events.set_ground_state.params["standing_prob"] = 0.0
+
+
+@configclass
+class MicroDuckHD1910SitStandFastFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
+    """Sit/stand with an (almost) instant transition. The posture rewards track ``alpha``, which slews from one
+    posture to the other in ``ramp_s``; at the recipe's 2.0 s the policy learned to take two seconds. 0.4 s is
+    about what the knee servos can do for the 55 mm rise (11.9 rad/s no-load), so the transition is as fast as
+    the hardware allows and the policy still has a continuous target to follow. Fine-tune from the gated sit/stand."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.commands.base_velocity.ramp_s = 0.4
