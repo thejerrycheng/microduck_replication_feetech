@@ -13,8 +13,11 @@ RUN2=/home/jerrycheng/microduck/logs/rsl_rl/microduck_run_flat_hd1910_backlash/2
 RUN2_CK=2999
 START_CK="$RUN2/model_$RUN2_CK.pt"; ITERS=3000
 # RESUME run v3 if an earlier attempt left checkpoints (the chain unit was restarted mid-stage once).
-PREV=$(ls -td logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/*/ 2>/dev/null | head -1)
-if [ -n "$PREV" ] && ls "$PREV"/model_*.pt >/dev/null 2>&1; then
+PREV=""
+for d in $(ls -td logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/*/ 2>/dev/null); do
+  if ls "$d"/model_*.pt >/dev/null 2>&1; then PREV="$d"; break; fi
+done
+if [ -n "$PREV" ]; then
   PREV_CK=$(ls "$PREV"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
   if [ "$PREV_CK" -lt 5999 ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((5999 - PREV_CK)); fi
 fi
