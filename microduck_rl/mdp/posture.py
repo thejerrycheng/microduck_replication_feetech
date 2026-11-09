@@ -30,6 +30,8 @@ if TYPE_CHECKING:
 
 __all__ = [
     "trunk_height_error_l1",
+    "forward_speed_reward",
+    "joint_speed_saturation_frac",
     "SitStandCommand",
     "SitStandCommandCfg",
     "posture_pose_match",
@@ -612,3 +614,18 @@ def trunk_height_error_l1(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, tar
     (z 0.067-0.092 measured) and at the onset of a turn."""
     asset: Articulation = env.scene[asset_cfg.name]
     return (_trunk_z(env, asset) - target_height).abs()
+
+
+def forward_speed_reward(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, cap: float = 2.0) -> torch.Tensor:
+    """Body-frame forward speed [m/s], clipped at ``cap``: the sprint-max objective (pays speed itself, not
+    tracking a command, so the policy is pushed to whatever the servos allow)."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    return torch.clamp(asset.data.root_lin_vel_b.torch[:, 0], min=-cap, max=cap)
+
+
+def joint_speed_saturation_frac(env: ManagerBasedRLEnv, env_ids: torch.Tensor, asset_cfg: SceneEntityCfg, limit_rad_s: float = 10.0) -> torch.Tensor:
+    """Curriculum-logged metric: fraction of servo joints currently above ``limit_rad_s`` (the HD1910 no-load
+    speed is ~11.9 rad/s at 7.4 V): how hard the gait leans on the servo speed wall."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    jv = asset.data.joint_vel.torch[:, asset_cfg.joint_ids].abs()
+    return (jv > limit_rad_s).float().mean()

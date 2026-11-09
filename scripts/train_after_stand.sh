@@ -49,6 +49,18 @@ if uv run --project external/IsaacLab python -c "import gymnasium as gym, microd
 else
   echo "[$(date +%F_%T)] standup task not registered; skipped" | tee -a logs/train_all.log
 fi
+# Sprint-max (hardware top speed) after the stand-up: fine-tune from run v3's last checkpoint.
+RUN3=$(ls -td logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/*/ | head -1)
+RUN3_CK=$(ls "$RUN3"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
+echo "[$(date +%F_%T)] start sprint-max (2000 its from run v3 $RUN3_CK)" | tee -a logs/train_all.log
+uv run --project external/IsaacLab python scripts/train.py --task Microduck-SprintMax-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+  --max_iterations 2000 $COMMON --checkpoint "$(readlink -f "$RUN3")/model_$RUN3_CK.pt" >> logs/train_sprint_max.log 2>&1
+echo "[$(date +%F_%T)] end sprint-max exit=$?" | tee -a logs/train_all.log
+SP=$(ls -td logs/rsl_rl/microduck_sprint_max_allcoll_hd1910_backlash/*/ | head -1)
+SP_CK=$(ls "$SP"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
+SPEEDS="0.7 1.0 1.2 1.4" MIN_FREE_MB=3000 scripts/eval_run_speeds.sh "$SP" Microduck-SprintMax-Flat-HD1910-AllColl "$SP_CK"
+for vx in 0.7 1.0 1.2 1.4; do mv -f "docs/run_speed_${SP_CK}_vx$vx.json" "docs/sprint_max_speed_${SP_CK}_vx$vx.json" 2>/dev/null; done
+echo "[$(date +%F_%T)] sprint-max speed table done" >> logs/evals.log
 echo "[$(date +%F_%T)] start roulade (front flip, ${ROULADE_ITERS:-8000} iterations)" | tee -a logs/train_all.log
 uv run --project external/IsaacLab python scripts/train.py --task Microduck-Roulade-Flat-HD1910 --agent rsl_rl_with_symmetry_cfg_entry_point \
   --max_iterations "${ROULADE_ITERS:-8000}" $COMMON >> logs/train_roulade.log 2>&1 &

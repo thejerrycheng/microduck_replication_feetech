@@ -131,3 +131,11 @@ class StandUpPPORunnerCfg(SitStandPPORunnerCfg):
 
     experiment_name = _names("microduck_standup_flat")
     max_iterations = 10000
+
+
+@configclass
+class SprintMaxPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
+    """Sprint-max fine-tune from run v3 (mirror loss kept)."""
+
+    experiment_name = _names("microduck_sprint_max_allcoll")
+    max_iterations = 2000

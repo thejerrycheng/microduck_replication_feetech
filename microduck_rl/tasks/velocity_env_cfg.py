@@ -9,6 +9,7 @@ an exported policy drops into the Microduck runtime like the official one.
 import math
 
 from isaaclab.managers import ObservationTermCfg as ObsTerm
+from isaaclab.managers import CurriculumTermCfg as CurrTerm
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils.configclass import configclass
@@ -240,4 +241,49 @@ class MicroDuckHD1910VelocityFlatAllCollV3EnvCfg(MicroDuckHD1910VelocityFlatAllC
             "events.push_robot.params.velocity_range",
             (16498 + 300, {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}),
             (16498 + 800, {"x": (-0.8, 0.8), "y": (-0.8, 0.8)}),
+        )
+
+
+def _with_vin(robot_cfg, vin_range):
+    """Copy of a robot cfg whose servo actuator samples its supply in ``vin_range`` (the preset wrapper cannot be
+    edited after construction, so each alternative is rebuilt here)."""
+    from dataclasses import replace as _dc_replace
+
+    cfg = robot_cfg.replace(prim_path="{ENV_REGEX_NS}/Robot")
+    cfg.actuators = dict(cfg.actuators)
+    cfg.actuators["servos"] = _dc_replace(cfg.actuators["servos"], vin=vin_range[0], vin_range=vin_range)
+    return cfg
+
+
+@configclass
+class MicroDuckHD1910AllCollSprintSceneCfg(MicroDuckSceneCfg):
+    """Full-collision robot with the battery sampled up to a fully charged 8.4 V (the floor stays 7.4 V)."""
+
+    robot = preset(
+        default=_with_vin(MICRODUCK_HD1910_ALLCOLLISIONS_CFG, (7.4, 8.4)),
+        backlash=_with_vin(MICRODUCK_HD1910_ALLCOLLISIONS_BACKLASH_CFG, (7.4, 8.4)),
+    )
+
+
+@configclass
+class MicroDuckHD1910SprintMaxAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCfg):
+    """Sprint-max: find the hardware's top speed.
+
+    Measured on run v2 at the 0.7 m/s command (0.49 m/s achieved): knee/ankle peaks 11.3-11.4 rad/s against the
+    HD1910 no-load 11.9 rad/s at 7.4 V, torque peaks at stall -- the gait already rides the servo wall. This
+    variant pays forward speed DIRECTLY (clipped at 2 m/s) on top of a weakened tracking term, pins the command
+    at the top of the band (so the observation says "as fast as you can"), samples the battery up to a fully
+    charged 8.4 V (the one knob that raises the wall, ~13 %), and logs how often the joints sit above 10 rad/s.
+    Keep straight-line symmetry and fall terms; expect tens of percent, not a doubling."""
+
+    scene: MicroDuckHD1910AllCollSprintSceneCfg = MicroDuckHD1910AllCollSprintSceneCfg(num_envs=4096, env_spacing=2.0)
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.commands.base_velocity.ranges.lin_vel_x = (1.0, 1.4)
+        self.curriculum.speed_range = None
+        self.rewards.forward_speed = RewTerm(func=mdp.forward_speed_reward, weight=3.0, params={"asset_cfg": SceneEntityCfg("robot"), "cap": 2.0})
+        self.rewards.track_lin_vel.weight = 1.0
+        self.curriculum.joint_speed_saturation = CurrTerm(
+            func=mdp.joint_speed_saturation_frac, params={"asset_cfg": SceneEntityCfg("robot", joint_names=[r"^(?!passive_).*"]), "limit_rad_s": 10.0}
         )
