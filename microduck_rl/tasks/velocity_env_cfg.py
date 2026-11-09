@@ -214,6 +214,11 @@ class MicroDuckHD1910RunV3FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatAllCollEnvCf
             (3000 + 400, {"x": (-0.4, 0.4), "y": (-0.4, 0.4)}),
             (3000 + 1200, {"x": (-0.6, 0.6), "y": (-0.6, 0.6)}),
         )
+    def play_mode(self):
+        """The base play mode removes the push event; drop the schedule that addresses it or play crashes."""
+        super().play_mode()
+        self.curriculum.push_magnitude = None
+
 
 
 @configclass
@@ -242,6 +247,11 @@ class MicroDuckHD1910VelocityFlatAllCollV3EnvCfg(MicroDuckHD1910VelocityFlatAllC
             (16498 + 300, {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}),
             (16498 + 800, {"x": (-0.8, 0.8), "y": (-0.8, 0.8)}),
         )
+    def play_mode(self):
+        """The base play mode removes the push event; drop the schedule that addresses it or play crashes."""
+        super().play_mode()
+        self.curriculum.push_magnitude = None
+
 
 
 def _with_vin(robot_cfg, vin_range):
