@@ -185,7 +185,7 @@ if uv run --project external/IsaacLab python -c "import gymnasium as gym, microd
   JPID=$!
   sleep 240
   JRUN=$(ls -td logs/rsl_rl/microduck_jump_flat_hd1910_backlash/*/ | head -1)
-  scripts/eval_jump_checkpoints.sh "$JRUN" jump 500 1000 1500 2000 3000 4000 5000 &
+  MIN_FREE_MB=3300 scripts/eval_jump_checkpoints.sh "$JRUN" jump 500 1000 1500 2000 3000 4000 5000 &
   JEVAL=$!
   wait $JPID
   echo "[$(date +%F_%T)] end jump exit=$?" | tee -a logs/train_all.log
