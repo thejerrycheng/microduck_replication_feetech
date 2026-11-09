@@ -1,0 +1,138 @@
+{
+  "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_sitstand_flat_hd1910_backlash/2026-11-08_16-59-09/model_10000.pt",
+  "num_envs": 16,
+  "train_env_cfg": false,
+  "action_noise_std": 0.0,
+  "timeline": [
+    {
+      "t_s": 1.0,
+      "z_median_m": 0.0621,
+      "tilt_median_deg": 5.7,
+      "tilt_p90_deg": 11.0,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.069,
+      "neck_pitch_err_rad": -0.03,
+      "neck_tau_nm": 0.0498
+    },
+    {
+      "t_s": 2.0,
+      "z_median_m": 0.0593,
+      "tilt_median_deg": 10.9,
+      "tilt_p90_deg": 12.7,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.072,
+      "neck_pitch_err_rad": 0.029,
+      "neck_tau_nm": 0.0353
+    },
+    {
+      "t_s": 3.0,
+      "z_median_m": 0.0594,
+      "tilt_median_deg": 10.9,
+      "tilt_p90_deg": 12.6,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.072,
+      "neck_pitch_err_rad": 0.036,
+      "neck_tau_nm": 0.0352
+    },
+    {
+      "t_s": 4.0,
+      "z_median_m": 0.0595,
+      "tilt_median_deg": 10.9,
+      "tilt_p90_deg": 12.6,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.072,
+      "neck_pitch_err_rad": 0.033,
+      "neck_tau_nm": 0.0345
+    },
+    {
+      "t_s": 5.0,
+      "z_median_m": 0.0596,
+      "tilt_median_deg": 10.7,
+      "tilt_p90_deg": 12.5,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.074,
+      "neck_pitch_err_rad": 0.044,
+      "neck_tau_nm": 0.0325
+    },
+    {
+      "t_s": 6.0,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.6,
+      "tilt_p90_deg": 12.4,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.076,
+      "neck_pitch_err_rad": 0.047,
+      "neck_tau_nm": 0.0306
+    },
+    {
+      "t_s": 7.0,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.6,
+      "tilt_p90_deg": 12.3,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.078,
+      "neck_pitch_err_rad": 0.052,
+      "neck_tau_nm": 0.0294
+    },
+    {
+      "t_s": 8.0,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.5,
+      "tilt_p90_deg": 12.1,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.078,
+      "neck_pitch_err_rad": 0.048,
+      "neck_tau_nm": 0.0254
+    },
+    {
+      "t_s": 9.0,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.7,
+      "tilt_p90_deg": 12.0,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.078,
+      "neck_pitch_err_rad": 0.053,
+      "neck_tau_nm": 0.0255
+    },
+    {
+      "t_s": 10.0,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.6,
+      "tilt_p90_deg": 11.9,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.08,
+      "neck_pitch_err_rad": 0.057,
+      "neck_tau_nm": 0.0263
+    },
+    {
+      "t_s": 11.0,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.7,
+      "tilt_p90_deg": 11.9,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.082,
+      "neck_pitch_err_rad": 0.065,
+      "neck_tau_nm": 0.027
+    },
+    {
+      "t_s": 11.8,
+      "z_median_m": 0.0597,
+      "tilt_median_deg": 10.7,
+      "tilt_p90_deg": 11.8,
+      "sit_cmd_frac": 1.0,
+      "head_err_rad": 0.083,
+      "neck_pitch_err_rad": 0.069,
+      "neck_tau_nm": 0.0264
+    }
+  ],
+  "final": {
+    "seated_upright_frac": 0.9375,
+    "standing_frac": 0.0625,
+    "fallen_frac": 0.0,
+    "z_median_m": 0.05973473936319351,
+    "tilt_median_deg": 10.712485313415527,
+    "head_err_rad": 0.0825490728020668,
+    "neck_pitch_err_rad": 0.06933886557817459,
+    "head_up_frac": 1.0
+  }
+}

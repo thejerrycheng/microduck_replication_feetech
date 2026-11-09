@@ -37,6 +37,7 @@ POLICIES = {
     "run": "checkpoints/run_allcoll_4498/policy.pt",
     "walk_reduced": "checkpoints/walk_sym_15000/policy.pt",
     "stand": "checkpoints/sitstand_4000/policy.pt",  # sit/stand policy with the flag at 0 = standing hold
+    "stand_final": "logs/rsl_rl/microduck_sitstand_flat_hd1910_backlash/2026-11-08_16-59-09/exported_model_15000/policy.pt",
 }
 
 
