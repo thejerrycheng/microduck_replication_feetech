@@ -1,0 +1,84 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_standup_flat_hd1910_backlash/2026-11-09_04-05-52/model_6999.pt",
+ "num_envs": 32,
+ "push_m_s": 1.0,
+ "families": {
+  "prone": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.0,
+   "time_to_stand_s": {
+    "median": 0.32,
+    "p90": 0.34
+   },
+   "peak_omega_median": 6.87
+  },
+  "supine": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.0,
+   "time_to_stand_s": {
+    "median": 0.44,
+    "p90": 0.48
+   },
+   "peak_omega_median": 11.97
+  },
+  "side": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.0,
+   "time_to_stand_s": {
+    "median": 0.44,
+    "p90": 0.46
+   },
+   "peak_omega_median": 11.79
+  },
+  "random": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.0,
+   "time_to_stand_s": {
+    "median": 0.54,
+    "p90": 0.7
+   },
+   "peak_omega_median": 10.43
+  },
+  "bank": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.0,
+   "time_to_stand_s": {
+    "median": 0.5,
+    "p90": 0.62
+   },
+   "peak_omega_median": 11.82
+  },
+  "sitting": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.0,
+   "time_to_stand_s": {
+    "median": 0.16,
+    "p90": 0.18
+   },
+   "peak_omega_median": 6.39
+  },
+  "standing_pushed": {
+   "standing_at_3s": 0.938,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 1.0,
+   "time_to_stand_s": {
+    "median": 0.0,
+    "p90": 0.0
+   },
+   "peak_omega_median": 14.36
+  }
+ }
+}
