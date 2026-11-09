@@ -14,6 +14,9 @@ VelStand policy (one network that walks, falls and gets up). Their measured less
   The warm-start WALK checkpoint is therefore a second frozen teacher on the UPRIGHT frames (tilt below
   ``anchor_tilt_deg``). PPO alone owns the band in between and everything the reward adds on top.
 * Gentle passes: lr 3e-4, a minimum mini-batch so a first pass on a handful of frames cannot take 20 steps.
+* Addition here: upright frames with a ZERO velocity command are cloned from the stand-up expert as well, which
+  holds a robust 0.115 m stand -- the walk crouches to 0.073 m at zero command, and two fine-tunes with height
+  costs up to -50 left that untouched (`docs/squat_walk_v4_19496.json`). Frames with a command keep the walk anchor.
 """
 
 from __future__ import annotations
@@ -42,6 +45,11 @@ def default_bc_cfg() -> dict:
         "expert_weight": 1.0,
         "anchor_weight": 1.0,
         "max_grad_norm": 1.0,
+        # Zero-command upright frames go to the EXPERT too (it holds a robust 0.115 m stand; the walk crouches to
+        # 0.073 m at zero command and kept doing so under a -50 height cost). Frames with a velocity command stay
+        # anchored to the walk.
+        "expert_on_zero_twist": True,
+        "zero_twist_eps": 1.0e-3,
     }
 
 
@@ -94,18 +102,25 @@ class PpoWithExpertBc(PPO):
 
     def _bc_update(self, flat: torch.Tensor) -> dict[str, float]:
         cfg = self.bc_cfg
-        stats = {"bc_expert": 0.0, "bc_anchor": 0.0, "bc_fallen_frac": 0.0}
+        stats = {"bc_expert": 0.0, "bc_anchor": 0.0, "bc_fallen_frac": 0.0, "bc_standing_frac": 0.0}
         if self.expert is None and self.anchor is None:
             return stats
         tilt = tilt_deg_from_obs(flat, tuple(cfg["gravity_slice"]))
         fallen = tilt > float(cfg["gate_tilt_deg"])
         upright = tilt < float(cfg["anchor_tilt_deg"])
+        t0, t1 = cfg["twist_slice"]
+        zero_cmd = flat[:, t0:t1].abs().amax(dim=1) < float(cfg["zero_twist_eps"])
+        if cfg.get("expert_on_zero_twist", True):
+            expert_frames = fallen | (upright & zero_cmd)
+            upright = upright & ~zero_cmd
+        else:
+            expert_frames = fallen
         stats["bc_fallen_frac"] = float(fallen.float().mean())
+        stats["bc_standing_frac"] = float((expert_frames & ~fallen).float().mean())
         jobs = []
-        if self.expert is not None and int(fallen.sum()) >= int(cfg["min_frames"]):
-            x = flat[fallen]
+        if self.expert is not None and int(expert_frames.sum()) >= int(cfg["min_frames"]):
+            x = flat[expert_frames]
             xe = x.clone()
-            t0, t1 = cfg["twist_slice"]
             xe[:, t0:t1] = 0.0
             with torch.no_grad():
                 y = _det_action(self.expert, xe)
