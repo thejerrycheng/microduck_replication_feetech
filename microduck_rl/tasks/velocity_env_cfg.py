@@ -207,13 +207,10 @@ class MicroDuckHD1910RunV3FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatAllCollEnvCf
             RewTerm(func=mdp.head_pose_tracking, weight=0.25, params={"command_name": "head_pose", "std": 1.0, "asset_cfg": _HEAD_JOINT_CFG}),
             backlash_cfg=_HEAD_PLAY_JOINT_CFG,
         )
-        # push robustness ladder for running (counter continues at 2999): +-0.4 then +-0.6 m/s, every 3-5 s.
-        self.events.push_robot.interval_range_s = (3.0, 5.0)
-        self.curriculum.push_magnitude = _schedule(
-            "events.push_robot.params.velocity_range",
-            (3000 + 400, {"x": (-0.4, 0.4), "y": (-0.4, 0.4)}),
-            (3000 + 1200, {"x": (-0.6, 0.6), "y": (-0.6, 0.6)}),
-        )
+        # Pushes stay at the official +-0.3 for the runner: the +-0.6 ladder of the first v3 attempt made it stop
+        # running (see the walk v3 note); robustness to big shoves is the stand-up policy's job.
+        self.events.push_robot.interval_range_s = (3.0, 6.0)
+        self.curriculum.push_magnitude = None
     def play_mode(self):
         """The base play mode removes the push event; drop the schedule that addresses it or play crashes."""
         super().play_mode()
@@ -241,11 +238,12 @@ class MicroDuckHD1910VelocityFlatAllCollV3EnvCfg(MicroDuckHD1910VelocityFlatAllC
         # push robustness ladder (warm start continues the walk's counter at 16498: stages must sit past it).
         # Standing balance must be the most robust policy, then walking, then running: walk takes pushes to
         # +-0.8 m/s every 2-4 s, the official recipe stopped at +-0.3 every 5-10 s.
-        self.events.push_robot.interval_range_s = (2.0, 4.0)
+        # Measured on run v3: pushes of +-0.6 m/s every 3-5 s made the runner STOP (tracking error 0.16 -> 0.30,
+        # falls 2.7 % -> 0.1 %, achieved 0.1 m/s): past ~0.4 m/s a shove is survived by standing still, so big
+        # pushes belong to the stand-up policy, not to locomotion. Walk: +-0.4 every 3-5 s.
+        self.events.push_robot.interval_range_s = (3.0, 5.0)
         self.curriculum.push_magnitude = _schedule(
-            "events.push_robot.params.velocity_range",
-            (16498 + 300, {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}),
-            (16498 + 800, {"x": (-0.8, 0.8), "y": (-0.8, 0.8)}),
+            "events.push_robot.params.velocity_range", (16498 + 300, {"x": (-0.4, 0.4), "y": (-0.4, 0.4)})
         )
     def play_mode(self):
         """The base play mode removes the push event; drop the schedule that addresses it or play crashes."""
