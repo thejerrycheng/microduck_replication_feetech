@@ -149,5 +149,22 @@
   "measured": "docs/run_v3b_speed_5999_vx*.json",
   "onnx": "exports/run_v3_allcoll_hd1910_iter5999.onnx",
   "role": "the run policy to deploy (replaces run_allcoll_4498); sprint-max warm start"
+ },
+ "sprint_max_7998": {
+  "run": "microduck_sprint_max_allcoll_hd1910_backlash/2026-11-09_15-22-18",
+  "iteration": 7998,
+  "task": "Microduck-SprintMax-Flat-HD1910-AllColl",
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_7998.pt",
+   "policy.pt",
+   "policy.onnx",
+   "policy.onnx.data"
+  ],
+  "description": "Top-speed runner: run v3 fine-tuned with a direct forward-speed reward (weight 15), command pinned 1.0-1.4, battery sampled 7.4-8.4 V. Deterministic, 32 envs: 1.19 / 1.14 / 1.05 / 1.11 m/s at commands 0.7 / 1.0 / 1.2 / 1.4 (falls 0 / 0 / 0 / 9 %), 1.10-1.12 m/s in the run v3 env (7.4-8.0 V); net ground displacement 1.13 m/s, trunk 0.118 m, pitch -3 deg; air-time L/R 0.98-1.00. Knee/ankle peaks 12-13.6 rad/s (the servo's no-load speed at 7.4-8.4 V is 11.9-13.5), torque at the 1.07 N.m cap. It runs flat out regardless of the command magnitude; use run_v3_5999 for commanded speeds below 0.6.",
+  "measured": "docs/sprint_max_speed_7998_vx*.json, docs/sprint_max_in_runv3env_7998_vx*.json",
+  "onnx": "exports/sprint_max_allcoll_hd1910_iter7998.onnx",
+  "role": "fastest straight run (the 'sprint' button)"
  }
 }
