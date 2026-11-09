@@ -83,7 +83,7 @@
   "task": "Microduck-SitStandFast-Flat-HD1910",
   "description": "Sit/stand with a 0.4 s posture ramp (fine-tune of sitstand_4000). Deterministic transition times (32 envs): to seated 0.32 s median / 0.38 s max, to standing 0.26 / 0.28 s (previous policy 1.0 / 2.14 and 0.62 / 2.02); 100 % reached, 0 falls; standing tilt median 1.3 deg.",
   "measured": "docs/transition_sitstand_fast_5499.json, docs/posture_sitstand_fast_5499.json",
-  "onnx": "exports/sitstand_fast_5499.onnx"
+  "onnx": "exports/sitstand_fast_hd1910_iter5499.onnx"
  },
  "run_v3_4250": {
   "run": null,
@@ -113,7 +113,7 @@
   ],
   "description": "Get-up + standing hold (port of Pollen's StandUp, two-phase entropy 0.01/0.001, 10000 its). Deterministic, 32 envs, no pushes, in the full-collision walk scene: stands from face down / face up / side / random / real fall bank 100 %, time to stand 0.30-0.56 s median, 0 re-falls; standing hold 100 %. With 1.0 m/s shoves every 1.5 s (phase-1 ckpt): knocked down each time, back up each time.",
   "measured": "docs/standup_expert_in_velstand_env_nopush.json, docs/standup_phase1_6999.json",
-  "onnx": "exports/standup_9999.onnx",
+  "onnx": "exports/standup_hd1910_iter9999.onnx",
   "role": "frozen recovery expert for the VelStand distillation; standalone fallback balance policy"
  },
  "velstand_21495": {
@@ -130,7 +130,7 @@
   ],
   "description": "ONE walking policy with balance at zero speed and fall recovery (Pollen's VelStand recipe: PPO warm-started from walk v4 + fallen-gated behaviour cloning from standup_9999, zero-command upright frames cloned from the expert too, upright anchor to walk v4). Deterministic: stands at 0.116 m at zero command (walk v4 crouched to 0.073), gets up from face down / face up / side / random / real fall bank 100 % (0.28-0.56 s median, re-falls 3-9 %), walks 0.3 m/s with air-time L/R 0.95. 1.0 m/s shoves every 1.5 s still topple it; it gets back up each time (84 % standing at the end of 6 s).",
   "measured": "docs/standup_velstand_21495.json, docs/squat_velstand_21495.json, docs/gait_velstand_21495.json",
-  "onnx": "exports/velstand_21495.onnx",
+  "onnx": "exports/velstand_allcoll_hd1910_iter21495.onnx",
   "role": "the walk policy to deploy (replaces walk_allcoll_16498 / walk v3 / walk v4)"
  }
 }

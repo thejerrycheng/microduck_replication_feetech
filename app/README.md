@@ -12,9 +12,12 @@ variant. Keyframe `INIT` stands the robot at z 0.12. Pollen's reference CPU runn
 ## Policies (`../exports/*.onnx`, 61 -> 14, observation normaliser baked in, 50 Hz)
 | file | role | command slot use |
 |---|---|---|
-| `walk_allcoll_hd1910_iter16498.onnx` | walking, full-collision model | twist = (vx [-0.4,0.6], vy [-0.3,0.3], yaw [-1,1]) |
-| `run_allcoll_hd1910_iter4498.onnx` | running (straight only) | twist = (vx [0.2,1.2], 0, 0) |
-| `sitstand_hd1910_iter4000.onnx` | sit <-> stand | twist = (flag, 0, 0): 0 stand, 1 sit |
+| **`velstand_allcoll_hd1910_iter21495.onnx`** | **the walk policy: walking + balance at zero speed + fall recovery, one network** (Pollen's VelStand recipe). Idle = this policy at zero twist (stands at 0.116 m, no squat). If it is knocked over it gets up by itself (100 % from face down / face up / side / random / real fall poses, 0.3-0.6 s) and keeps following the command. | twist = (vx [-0.4,0.6], vy [-0.3,0.3], yaw [-1,1]); zero = balanced stand |
+| `sitstand_fast_hd1910_iter5499.onnx` | sit <-> stand, transition 0.3 s (0.26 s to standing, 0.32 s to seated) | twist = (flag, 0, 0): 0 stand, 1 sit |
+| `standup_hd1910_iter9999.onnx` | standalone get-up + standing hold; fallback if a non-recovering policy (run, sit) ends on the floor: run it at zero twist until upright, then hand back | twist = (0, 0, 0) |
+| `run_allcoll_hd1910_iter4498.onnx` | running (straight only); no fall recovery of its own -> on a fall switch to velstand or standup | twist = (vx [0.2,1.2], 0, 0) |
+| `walk_allcoll_hd1910_iter16498.onnx` | previous walking policy (squats to 0.073 m at zero command; superseded by velstand) | as velstand |
+| `sitstand_hd1910_iter4000.onnx` | previous sit <-> stand (2 s transitions; superseded) | twist = (flag, 0, 0) |
 | `walk_sym_hd1910_iter15000.onnx`, `run_v2_hd1910_iter2999.onnx` | the reduced-collision originals | same |
 | `sit_hd1910_iter12000.onnx` | sit-only (standing start) | twist = (1, 0, 0) |
 
@@ -40,8 +43,10 @@ kt 0.6238 N.m/A, R 4.910 ohm, kp_fw 5, error gain 0.166 x 1.3217 duty/rad per un
 limit, supply 7.4-8.0 V (sag 0-0.2 V/A, floor 7.0 V), command delay 3-6 physics steps, backlash +-1 deg
 hinges. Full dict: `microduck_rl/assets/microduck_hd1910.py::HD1910_BAM_FIT`.
 
-## Operator logic that worked in simulation (`scripts/demo_sequence.py`)
-Start standing (sit/stand env seats half its spawns by default). Idle = sit/stand policy with flag 0. Arrow
-keys drive the walk policy; running = run policy with vx in [0.2, 1.2] (it cannot turn). Stop = walk policy at
-zero command for ~0.8 s, then the stand flag. Sit/stand toggles the flag; the transition takes ~2-3 s.
+## Operator logic that worked in simulation (`scripts/demo_sequence.py`, `scripts/push_test.py`)
+Default policy is **velstand**: idle = velstand at zero twist (balanced stand, no squat), arrow keys set its twist.
+Running = run policy with vx in [0.2, 1.2] (it cannot turn). Stop = velstand at zero twist. Sit/stand toggles the
+fast sit/stand flag (0.3 s transitions); start sitting from velstand's stand, return to velstand once standing.
+Fall detection (tilt > 60 deg for 0.2 s): under velstand nothing to do, it gets up on its own; under run or sit,
+switch to velstand (or standup) at zero twist until tilt < 20 deg and trunk z > 0.095 m for 0.5 s, then hand back.
 Space (jump) and R (front roll) are reserved for the policies training next.
