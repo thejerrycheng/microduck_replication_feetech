@@ -178,3 +178,9 @@ class VelStandPPORunnerCfg(WalkV4AllCollPPORunnerCfg):
 
         self.algorithm.class_name = "microduck_rl.mdp.distill:PpoWithExpertBc"
         self.algorithm.bc_cfg = default_bc_cfg()
+        # Measured on the first attempt: inheriting the walk recipe's entropy 0.01 / lr 1e-3 blew the action std up
+        # from 0.41 to 0.95 inside 750 iterations (falls are not terminated here, so flailing is never cut short);
+        # 65 % of training frames were spent fallen and the return fell from 8 to 0. The behaviours already exist in
+        # the two teachers; this stage only has to merge them.
+        self.algorithm.entropy_coef = 0.001
+        self.algorithm.learning_rate = 5.0e-4
