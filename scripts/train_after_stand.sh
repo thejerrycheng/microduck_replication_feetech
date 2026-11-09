@@ -11,9 +11,16 @@ sleep 30
 # which had already given up the fast commands; the v3 env reopens the speed band by curriculum.
 RUN2=/home/jerrycheng/microduck/logs/rsl_rl/microduck_run_flat_hd1910_backlash/2026-11-07_19-05-22
 RUN2_CK=2999
-echo "[$(date +%F_%T)] start run-v3 (mirror loss + reopened speed curriculum, 3000 its from run v2 $RUN2_CK)" | tee -a logs/train_all.log
+START_CK="$RUN2/model_$RUN2_CK.pt"; ITERS=3000
+# RESUME run v3 if an earlier attempt left checkpoints (the chain unit was restarted mid-stage once).
+PREV=$(ls -td logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/*/ 2>/dev/null | head -1)
+if [ -n "$PREV" ] && ls "$PREV"/model_*.pt >/dev/null 2>&1; then
+  PREV_CK=$(ls "$PREV"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
+  if [ "$PREV_CK" -lt 5999 ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((5999 - PREV_CK)); fi
+fi
+echo "[$(date +%F_%T)] start run-v3 (mirror loss + reopened speed curriculum, $ITERS its from $START_CK)" | tee -a logs/train_all.log
 uv run --project external/IsaacLab python scripts/train.py --task Microduck-RunV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
-  --max_iterations 3000 $COMMON --checkpoint "$RUN2/model_$RUN2_CK.pt" >> logs/train_run_v3.log 2>&1
+  --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_run_v3.log 2>&1
 echo "[$(date +%F_%T)] end run-v3 exit=$?" | tee -a logs/train_all.log
 RUN3=$(ls -td logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/*/ | head -1)
 RUN3_CK=$(ls "$RUN3"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1)
