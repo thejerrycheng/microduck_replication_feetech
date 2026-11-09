@@ -139,3 +139,11 @@ class SprintMaxPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
 
     experiment_name = _names("microduck_sprint_max_allcoll")
     max_iterations = 2000
+
+
+@configclass
+class WalkV4AllCollPPORunnerCfg(WalkFlatAllCollMirrorPPORunnerCfg):
+    """Walk v4 fine-tune (strong height cost), mirror loss kept."""
+
+    experiment_name = _names("microduck_walk_v4_allcoll")
+    max_iterations = 1500

@@ -30,6 +30,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "trunk_height_error_l1",
+    "trunk_height_deadband_l1",
     "forward_speed_reward",
     "joint_speed_saturation_frac",
     "SitStandCommand",
@@ -629,3 +630,14 @@ def joint_speed_saturation_frac(env: ManagerBasedRLEnv, env_ids: torch.Tensor, a
     asset: Articulation = env.scene[asset_cfg.name]
     jv = asset.data.joint_vel.torch[:, asset_cfg.joint_ids].abs()
     return (jv > limit_rad_s).float().mean()
+
+
+def trunk_height_deadband_l1(
+    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, target_height: float = 0.115, deadband_m: float = 0.008
+) -> torch.Tensor:
+    """max(|trunk z - target| - deadband, 0) [m], a positive cost. Walk v3's plain L1 at weight -3 left the
+    zero-command squat untouched (trunk 0.073 m stopped against 0.115 standing; the term read -0.03/s in the
+    log, nothing beside tracking at 2-4/s). The deadband leaves the walking height (0.121) free; the weight is
+    sized so a 42 mm squat costs about what the standing env earns for tracking zero velocity."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    return torch.clamp((_trunk_z(env, asset) - target_height).abs() - deadband_m, min=0.0)

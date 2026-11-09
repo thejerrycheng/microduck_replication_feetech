@@ -47,6 +47,30 @@ else
   echo "[$(date +%F_%T)] standup task not registered; skipped" | tee -a logs/train_all.log
 fi
 
+# Walk v4: the squat at zero command survived walk v3's L1 height cost (trunk 0.073 m stopped vs 0.115 standing,
+# cost -3.0 read -0.03/s in the log -- negligible). v4 uses a deadbanded cost ~50x stronger plus the
+# default-pose term at zero command; 1500 iterations from walk v3's last checkpoint.
+if uv run --project external/IsaacLab python -c "import gymnasium as gym, microduck_rl; gym.spec('Microduck-WalkV4-Flat-HD1910-AllColl')" >/dev/null 2>&1; then
+  WALK3=$(latest_with_ckpt microduck_walk_flat_allcoll_mirror_hd1910_backlash); WALK3_CK=$(last_ckpt "$WALK3")
+  START_CK="$(readlink -f "$WALK3")/model_$WALK3_CK.pt"; ITERS=1500; END=$((WALK3_CK + 1500))
+  PREV=$(latest_with_ckpt microduck_walk_v4_allcoll_hd1910_backlash)
+  if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt "$END" ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((END - PREV_CK)); fi; fi
+  echo "[$(date +%F_%T)] start walk-v4 (strong height cost, $ITERS its from $START_CK)" | tee -a logs/train_all.log
+  uv run --project external/IsaacLab python scripts/train.py --task Microduck-WalkV4-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+    --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_walk_v4.log 2>&1
+  echo "[$(date +%F_%T)] end walk-v4 exit=$?" | tee -a logs/train_all.log
+  WALK4=$(latest_with_ckpt microduck_walk_v4_allcoll_hd1910_backlash); WALK4_CK=$(last_ckpt "$WALK4")
+  uv run --project external/IsaacLab python scripts/play.py --rl_library rsl_rl --task Microduck-WalkV4-Flat-HD1910-AllColl --num_envs 4 presets=backlash \
+    --checkpoint "$(readlink -f "$WALK4")/model_$WALK4_CK.pt" --video --video_length 1 --video_interval 1000000 > logs/export_walk_v4.log 2>&1
+  mkdir -p "$WALK4/exported_model_$WALK4_CK"; cp "$WALK4"/exported/policy.* "$WALK4/exported_model_$WALK4_CK/" 2>/dev/null
+  uv run --project external/IsaacLab python scripts/eval_squat.py --policy "$WALK4/exported_model_$WALK4_CK/policy.pt" presets=backlash --out "docs/squat_walk_v4_$WALK4_CK.json" > logs/eval_squat_walk_v4.log 2>&1
+  uv run --project external/IsaacLab python scripts/eval_gait_symmetry.py --task Microduck-WalkV4-Flat-HD1910-AllColl --run "$(readlink -f "$WALK4")" --checkpoint "model_$WALK4_CK.pt" \
+    --vx 0.3 --num_envs 64 presets=backlash --out "docs/gait_walk_v4_$WALK4_CK.json" > logs/eval_gait_walk_v4.log 2>&1
+  echo "[$(date +%F_%T)] walk-v4 squat+gait evals done" >> logs/evals.log
+else
+  echo "[$(date +%F_%T)] walk-v4 task not registered; skipped" | tee -a logs/train_all.log
+fi
+
 # Run v3, take 2. Take 1 (dir 2026-11-08_22-26-35 / 23-24-57) reached 0.60 m/s at the 0.7 command with zero
 # falls at checkpoint 4250, then the +-0.6 m/s push stage taught it to stand still (0.16 m/s by 5000, tracking
 # error 0.16 -> 0.30). Restart from 4250 with pushes held at the official +-0.3; 1750 iterations to 5999.

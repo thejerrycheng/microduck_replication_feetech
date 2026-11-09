@@ -252,6 +252,24 @@ class MicroDuckHD1910VelocityFlatAllCollV3EnvCfg(MicroDuckHD1910VelocityFlatAllC
 
 
 
+@configclass
+class MicroDuckHD1910VelocityFlatAllCollV4EnvCfg(MicroDuckHD1910VelocityFlatAllCollV3EnvCfg):
+    """Walk v4: v3 plus a height cost that actually bites. Measured on walk v3 (`docs/squat_walk_v3_17997.json`):
+    trunk 0.121 m walking, 0.073 m at zero command, 0.072 m at turn onset -- a 42 mm squat, unchanged from the
+    pre-v3 walk, under a -3.0 L1 cost that logged -0.03/s. Here: deadbanded L1 at -50 (a 42 mm squat costs
+    ~1.7/s, the walking height costs 0), and the upstream default-pose term tripled so standing still means
+    standing at the default (0.115 m) pose. Fine-tune from walk v3; pushes stay at +-0.4."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.rewards.trunk_height = RewTerm(
+            func=mdp.trunk_height_deadband_l1,
+            weight=-50.0,
+            params={"asset_cfg": SceneEntityCfg("robot"), "target_height": 0.115, "deadband_m": 0.008},
+        )
+        self.rewards.pose.weight = 3.0
+
+
 def _with_vin(robot_cfg, vin_range):
     """Copy of a robot cfg whose servo actuator samples its supply in ``vin_range`` (the preset wrapper cannot be
     edited after construction, so each alternative is rebuilt here)."""
