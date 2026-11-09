@@ -86,3 +86,7 @@ class MicroDuckHD1910VelStandAllCollEnvCfg(MicroDuckHD1910VelocityFlatAllCollV4E
         super().play_mode()
         self.events.topple_push = None
         self.curriculum.topple_magnitude = None
+        # Evaluations and demos start upright; the get-up battery sets the fallen families explicitly.
+        self.events.set_fallen_state.params.update(
+            {"standing_prob": 1.0, "sitting_prob": 0.0, "prone_prob": 0.0, "supine_prob": 0.0, "random_prob": 0.0, "bank_prob": 0.0}
+        )

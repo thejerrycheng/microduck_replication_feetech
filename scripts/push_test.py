@@ -36,6 +36,7 @@ POLICIES = {
     "walk": "checkpoints/walk_allcoll_16498/policy.pt",
     "run": "checkpoints/run_allcoll_4498/policy.pt",
     "walk_reduced": "checkpoints/walk_sym_15000/policy.pt",
+    "velstand": "checkpoints/velstand_21495/policy.pt",  # walk + balance + get-up in one (task Microduck-VelStand-Flat-HD1910-AllColl)
     "stand": "checkpoints/sitstand_4000/policy.pt",  # sit/stand policy with the flag at 0 = standing hold
     "stand_final": "logs/rsl_rl/microduck_sitstand_flat_hd1910_backlash/2026-11-08_16-59-09/exported_model_15000/policy.pt",
 }
@@ -50,7 +51,8 @@ def make_env(task, n, hydra, video_dir=None, video_steps=0):
     cfg.commands.base_velocity.resampling_time_range = (1.0e9, 1.0e9)
     cfg.commands.head_pose.ranges = ((0.0, 0.0),) * 4
     cfg.commands.body_pose.ranges = ((0.0, 0.0),) * 6
-    cfg.events.set_ground_state.params.update({"sitting_prob": 0.0, "standing_prob": 1.0, "standing_z_min": 0.115, "standing_z_max": 0.115})
+    if getattr(cfg.events, "set_ground_state", None) is not None:
+        cfg.events.set_ground_state.params.update({"sitting_prob": 0.0, "standing_prob": 1.0, "standing_z_min": 0.115, "standing_z_max": 0.115})
     if video_dir:
         viz = play_visualizer_cfg().replace(backend=NewtonGLBackendCfg(), headless=True, enable_markers=True)
         viz.window.size = (854, 480)

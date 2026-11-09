@@ -1,0 +1,91 @@
+seed: 42
+device: cuda:0
+num_steps_per_env: 24
+init_at_random_ep_len: true
+max_iterations: 2000
+obs_groups:
+  actor:
+  - policy
+  critic:
+  - critic
+clip_actions: null
+check_for_nan: true
+save_interval: 250
+experiment_name: microduck_velstand_allcoll_hd1910_backlash
+run_name: ''
+logger: tensorboard
+neptune_project: isaaclab
+wandb_project: isaaclab
+resume: false
+load_run: .*
+load_checkpoint: /home/jerrycheng/microduck/logs/rsl_rl/microduck_walk_v4_allcoll_hd1910_backlash/2026-11-09_10-24-48/model_19496.pt
+class_name: OnPolicyRunner
+actor:
+  class_name: MLPModel
+  hidden_dims:
+  - 512
+  - 256
+  - 128
+  activation: elu
+  obs_normalization: true
+  distribution_cfg:
+    class_name: GaussianDistribution
+    init_std: 1.0
+    std_type: scalar
+    std_range: !!python/tuple
+    - 1.0e-06
+    - 1000000.0
+critic:
+  class_name: MLPModel
+  hidden_dims:
+  - 512
+  - 256
+  - 128
+  activation: elu
+  obs_normalization: true
+  distribution_cfg: null
+algorithm:
+  class_name: microduck_rl.mdp.distill:PpoWithExpertBc
+  num_learning_epochs: 5
+  num_mini_batches: 4
+  learning_rate: 0.0005
+  schedule: adaptive
+  gamma: 0.99
+  lam: 0.95
+  entropy_coef: 0.001
+  desired_kl: 0.01
+  max_grad_norm: 1.0
+  optimizer: adam
+  value_loss_coef: 1.0
+  use_clipped_value_loss: true
+  clip_param: 0.2
+  normalize_advantage_per_mini_batch: false
+  share_cnn_encoders: false
+  use_mixed_precision: false
+  rnd_cfg: null
+  symmetry_cfg:
+    use_data_augmentation: true
+    use_mirror_loss: true
+    data_augmentation_func: isaaclab_tasks.contrib.microduck.mdp.symmetry:compute_symmetric_states
+    mirror_loss_coeff: 0.5
+  bc_cfg:
+    expert_checkpoint: /home/jerrycheng/microduck/logs/rsl_rl/microduck_standup_flat_hd1910_backlash/2026-11-09_07-08-09/model_9999.pt
+    anchor_checkpoint: /home/jerrycheng/microduck/logs/rsl_rl/microduck_walk_v4_allcoll_hd1910_backlash/2026-11-09_10-24-48/model_19496.pt
+    gravity_slice: !!python/tuple
+    - 3
+    - 6
+    twist_slice: !!python/tuple
+    - 48
+    - 51
+    gate_tilt_deg: 35.0
+    anchor_tilt_deg: 25.0
+    lr: 0.0003
+    min_batch: 512
+    max_steps: 20
+    min_frames: 64
+    expert_weight: 1.0
+    anchor_weight: 1.0
+    max_grad_norm: 1.0
+    expert_on_zero_twist: true
+    zero_twist_eps: 0.001
+torch_compile_mode: null
