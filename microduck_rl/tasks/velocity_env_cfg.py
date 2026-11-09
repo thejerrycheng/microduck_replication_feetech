@@ -308,7 +308,10 @@ class MicroDuckHD1910SprintMaxAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCf
         super().__post_init__()
         self.commands.base_velocity.ranges.lin_vel_x = (1.0, 1.4)
         self.curriculum.speed_range = None
-        self.rewards.forward_speed = RewTerm(func=mdp.forward_speed_reward, weight=3.0, params={"asset_cfg": SceneEntityCfg("robot"), "cap": 2.0})
+        # Measured on the first attempt (weight 3.0, 700 iterations): the speed term paid ~0.8/s against air_time 2.4/s
+        # and upright 1.8/s and stayed flat; the gait did not get faster. At 15 a 0.6 m/s run pays ~9/s and the term
+        # dominates the stack.
+        self.rewards.forward_speed = RewTerm(func=mdp.forward_speed_reward, weight=15.0, params={"asset_cfg": SceneEntityCfg("robot"), "cap": 2.0})
         self.rewards.track_lin_vel.weight = 1.0
         self.curriculum.joint_speed_saturation = CurrTerm(
             func=mdp.joint_speed_saturation_frac, params={"asset_cfg": SceneEntityCfg("robot", joint_names=[r"^(?!passive_).*"]), "limit_rad_s": 10.0}
