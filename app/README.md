@@ -15,7 +15,8 @@ variant. Keyframe `INIT` stands the robot at z 0.12. Pollen's reference CPU runn
 | **`velstand_allcoll_hd1910_iter21495.onnx`** | **the walk policy: walking + balance at zero speed + fall recovery, one network** (Pollen's VelStand recipe). Idle = this policy at zero twist (stands at 0.116 m, no squat). If it is knocked over it gets up by itself (100 % from face down / face up / side / random / real fall poses, 0.3-0.6 s) and keeps following the command. | twist = (vx [-0.4,0.6], vy [-0.3,0.3], yaw [-1,1]); zero = balanced stand |
 | `sitstand_fast_hd1910_iter5499.onnx` | sit <-> stand, transition 0.3 s (0.26 s to standing, 0.32 s to seated) | twist = (flag, 0, 0): 0 stand, 1 sit |
 | `standup_hd1910_iter9999.onnx` | standalone get-up + standing hold; fallback if a non-recovering policy (run, sit) ends on the floor: run it at zero twist until upright, then hand back | twist = (0, 0, 0) |
-| `run_allcoll_hd1910_iter4498.onnx` | running (straight only); no fall recovery of its own -> on a fall switch to velstand or standup | twist = (vx [0.2,1.2], 0, 0) |
+| `run_v3_allcoll_hd1910_iter5999.onnx` | running (straight only), peak 0.63 m/s at the 0.9 command (servo speed limit); no fall recovery of its own -> on a fall switch to velstand or standup | twist = (vx [0.2,1.1], 0, 0) |
+| `run_allcoll_hd1910_iter4498.onnx` | previous runner (0.49 m/s peak; superseded) | twist = (vx [0.2,1.2], 0, 0) |
 | `walk_allcoll_hd1910_iter16498.onnx` | previous walking policy (squats to 0.073 m at zero command; superseded by velstand) | as velstand |
 | `sitstand_hd1910_iter4000.onnx` | previous sit <-> stand (2 s transitions; superseded) | twist = (flag, 0, 0) |
 | `walk_sym_hd1910_iter15000.onnx`, `run_v2_hd1910_iter2999.onnx` | the reduced-collision originals | same |

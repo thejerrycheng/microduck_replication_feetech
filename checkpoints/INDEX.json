@@ -132,5 +132,22 @@
   "measured": "docs/standup_velstand_21495.json, docs/squat_velstand_21495.json, docs/gait_velstand_21495.json",
   "onnx": "exports/velstand_allcoll_hd1910_iter21495.onnx",
   "role": "the walk policy to deploy (replaces walk_allcoll_16498 / walk v3 / walk v4)"
+ },
+ "run_v3_5999": {
+  "run": "microduck_run_flat_allcoll_mirror_hd1910_backlash/2026-11-09_13-40-30",
+  "iteration": 5999,
+  "task": "Microduck-RunV3-Flat-HD1910-AllColl",
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_5999.pt",
+   "policy.pt",
+   "policy.onnx",
+   "policy.onnx.data"
+  ],
+  "description": "Full-collision runner with the mirror loss, take 2 (restarted from 4250 with pushes held at +-0.3). Deterministic, 32 envs: achieved 0.27 / 0.45 / 0.59 / 0.63 / 0.61 m/s at commands 0.3 / 0.5 / 0.7 / 0.9 / 1.1 (run v2: 0.23 / 0.40 / 0.49 / 0.45 / 0.33), falls 0 / 0 / 0 / 3 / 9 %, air-time L/R 0.86-1.01. Peak 0.63 m/s; knee/ankle servos ride the HD1910 speed limit (11.3-11.4 of 11.9 rad/s).",
+  "measured": "docs/run_v3b_speed_5999_vx*.json",
+  "onnx": "exports/run_v3_allcoll_hd1910_iter5999.onnx",
+  "role": "the run policy to deploy (replaces run_allcoll_4498); sprint-max warm start"
  }
 }
