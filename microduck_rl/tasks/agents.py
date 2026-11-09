@@ -147,3 +147,21 @@ class WalkV4AllCollPPORunnerCfg(WalkFlatAllCollMirrorPPORunnerCfg):
 
     experiment_name = _names("microduck_walk_v4_allcoll")
     max_iterations = 1500
+
+
+@configclass
+class VelStandPPORunnerCfg(WalkV4AllCollPPORunnerCfg):
+    """VelStand: PPO with fallen-gated behaviour cloning from the stand-up expert and an upright anchor to the
+    warm-start walk (`microduck_rl.mdp.distill.PpoWithExpertBc`). Mirror loss kept. The two teacher checkpoints
+    are passed on the command line: ``agent.algorithm.bc_cfg.expert_checkpoint=... anchor_checkpoint=...``."""
+
+    experiment_name = _names("microduck_velstand_allcoll")
+    max_iterations = 2000
+
+    def __post_init__(self):
+        if hasattr(super(), "__post_init__"):
+            super().__post_init__()
+        from microduck_rl.mdp.distill import default_bc_cfg
+
+        self.algorithm.class_name = "microduck_rl.mdp.distill:PpoWithExpertBc"
+        self.algorithm.bc_cfg = default_bc_cfg()

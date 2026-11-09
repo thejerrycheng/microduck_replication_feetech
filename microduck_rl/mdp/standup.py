@@ -80,8 +80,13 @@ def reset_fallen_state(
     random_joint_frac: float = 0.6,
     random_z_range: tuple = (0.06, 0.10),
     fall_bank_path: str = "docs/fall_bank.json",
+    standing_keep: bool = False,
 ) -> None:
-    """Spawn each environment in one of the start families (probabilities are normalised)."""
+    """Spawn each environment in one of the start families (probabilities are normalised).
+
+    ``standing_keep``: environments drawn as *standing* are left exactly as the preceding reset events put them
+    (the walk recipe's own randomised standing reset) instead of being rewritten to the canonical standing pose.
+    """
     if env_ids is None or isinstance(env_ids, slice):
         env_ids = torch.arange(env.num_envs, device=env.device)[env_ids if env_ids is not None else slice(None)]
     env_ids = env_ids.to(env.device, dtype=torch.long)
@@ -97,6 +102,15 @@ def reset_fallen_state(
         probs[5] = 0.0  # no bank on disk yet: fold its share into the random family
         probs[4] += bank_prob
     fam = torch.multinomial(probs / probs.sum(), num, replacement=True)
+    if standing_keep:
+        standing = fam == 0
+        s["family"][env_ids[standing]] = 0
+        s["stood_step"][env_ids[standing]] = -1
+        s["peak_omega"][env_ids[standing]] = 0.0
+        env_ids, fam = env_ids[~standing], fam[~standing]
+        num = len(env_ids)
+        if num == 0:
+            return
 
     yaw = (torch.rand(num, device=dev) * 2.0 - 1.0) * math.pi
     tilt = math.radians(tilt_noise_deg)

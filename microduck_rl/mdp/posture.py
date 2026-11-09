@@ -31,6 +31,7 @@ if TYPE_CHECKING:
 __all__ = [
     "trunk_height_error_l1",
     "trunk_height_deadband_l1",
+    "action_rate_l2_fallen_scaled",
     "forward_speed_reward",
     "joint_speed_saturation_frac",
     "SitStandCommand",
@@ -641,3 +642,18 @@ def trunk_height_deadband_l1(
     sized so a 42 mm squat costs about what the standing env earns for tracking zero velocity."""
     asset: Articulation = env.scene[asset_cfg.name]
     return torch.clamp((_trunk_z(env, asset) - target_height).abs() - deadband_m, min=0.0)
+
+
+def action_rate_l2_fallen_scaled(
+    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, fallen_tilt_deg: float = 40.0, fallen_scale: float = 0.1
+) -> torch.Tensor:
+    """Action-rate L2, scaled by ``fallen_scale`` while the trunk is tilted past ``fallen_tilt_deg``.
+
+    Pollen's VelStand run-1 lesson: a warm-started walk carries the recipe's full smoothness tax (-1.0), and a
+    flat tax on fallen frames makes thrashing cost more than lying still, so the policy learned to lie still.
+    The walk keeps its full tax; the recovery attempts are taxed at a tenth."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    rate = torch.sum(torch.square(env.action_manager.action - env.action_manager.prev_action), dim=1)
+    g = asset.data.projected_gravity_b.torch
+    tilt = torch.rad2deg(torch.acos(torch.clamp(-g[:, 2], -1.0, 1.0)))
+    return torch.where(tilt > fallen_tilt_deg, rate * fallen_scale, rate)

@@ -18,13 +18,18 @@ last_ckpt() { ls "$1"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail 
 WALK2=/home/jerrycheng/microduck/logs/rsl_rl/microduck_walk_flat_allcoll_hd1910_backlash/2026-11-08_14-55-24
 START_CK="$WALK2/model_16498.pt"; ITERS=1500
 PREV=$(latest_with_ckpt microduck_walk_flat_allcoll_mirror_hd1910_backlash)
-if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt 17998 ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((17998 - PREV_CK)); fi; fi
-echo "[$(date +%F_%T)] start walk-v3 (height cost + standing envs + mirror loss, $ITERS its from $START_CK)" | tee -a logs/train_all.log
-uv run --project external/IsaacLab python scripts/train.py --task Microduck-WalkV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
-  --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_walk_v3.log 2>&1
-echo "[$(date +%F_%T)] end walk-v3 exit=$?" | tee -a logs/train_all.log
+if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt 17997 ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((17998 - PREV_CK)); else ITERS=0; fi; fi
+if [ "$ITERS" -gt 0 ]; then
+  echo "[$(date +%F_%T)] start walk-v3 (height cost + standing envs + mirror loss, $ITERS its from $START_CK)" | tee -a logs/train_all.log
+  uv run --project external/IsaacLab python scripts/train.py --task Microduck-WalkV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+    --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_walk_v3.log 2>&1
+  echo "[$(date +%F_%T)] end walk-v3 exit=$?" | tee -a logs/train_all.log
+else
+  echo "[$(date +%F_%T)] walk-v3 already complete ($PREV); skipped" | tee -a logs/train_all.log
+fi
 WALK3=$(latest_with_ckpt microduck_walk_flat_allcoll_mirror_hd1910_backlash)
 WALK3_CK=$(last_ckpt "$WALK3")
+if [ ! -f "docs/gait_walk_v3_$WALK3_CK.json" ]; then
 uv run --project external/IsaacLab python scripts/play.py --rl_library rsl_rl --task Microduck-WalkV3-Flat-HD1910-AllColl --num_envs 4 presets=backlash \
   --checkpoint "$(readlink -f "$WALK3")/model_$WALK3_CK.pt" --video --video_length 1 --video_interval 1000000 > logs/export_walk_v3.log 2>&1
 mkdir -p "$WALK3/exported_model_$WALK3_CK"; cp "$WALK3"/exported/policy.* "$WALK3/exported_model_$WALK3_CK/" 2>/dev/null
@@ -32,6 +37,7 @@ uv run --project external/IsaacLab python scripts/eval_squat.py --policy "$WALK3
 uv run --project external/IsaacLab python scripts/eval_gait_symmetry.py --task Microduck-WalkV3-Flat-HD1910-AllColl --run "$(readlink -f "$WALK3")" --checkpoint "model_$WALK3_CK.pt" \
   --vx 0.3 --num_envs 64 presets=backlash --out "docs/gait_walk_v3_$WALK3_CK.json" > logs/eval_gait_walk_v3.log 2>&1
 echo "[$(date +%F_%T)] walk-v3 squat+gait evals done" >> logs/evals.log
+fi
 
 # StandUp (get-up + robust stand).
 if uv run --project external/IsaacLab python -c "import gymnasium as gym, microduck_rl; gym.spec('Microduck-StandUp-Flat-HD1910')" >/dev/null 2>&1; then
@@ -54,11 +60,13 @@ if uv run --project external/IsaacLab python -c "import gymnasium as gym, microd
   WALK3=$(latest_with_ckpt microduck_walk_flat_allcoll_mirror_hd1910_backlash); WALK3_CK=$(last_ckpt "$WALK3")
   START_CK="$(readlink -f "$WALK3")/model_$WALK3_CK.pt"; ITERS=1500; END=$((WALK3_CK + 1500))
   PREV=$(latest_with_ckpt microduck_walk_v4_allcoll_hd1910_backlash)
-  if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt "$END" ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((END - PREV_CK)); fi; fi
-  echo "[$(date +%F_%T)] start walk-v4 (strong height cost, $ITERS its from $START_CK)" | tee -a logs/train_all.log
-  uv run --project external/IsaacLab python scripts/train.py --task Microduck-WalkV4-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
-    --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_walk_v4.log 2>&1
-  echo "[$(date +%F_%T)] end walk-v4 exit=$?" | tee -a logs/train_all.log
+  if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt $((END - 1)) ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((END - PREV_CK)); else ITERS=0; fi; fi
+  if [ "$ITERS" -gt 0 ]; then
+    echo "[$(date +%F_%T)] start walk-v4 (strong height cost, $ITERS its from $START_CK)" | tee -a logs/train_all.log
+    uv run --project external/IsaacLab python scripts/train.py --task Microduck-WalkV4-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+      --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_walk_v4.log 2>&1
+    echo "[$(date +%F_%T)] end walk-v4 exit=$?" | tee -a logs/train_all.log
+  fi
   WALK4=$(latest_with_ckpt microduck_walk_v4_allcoll_hd1910_backlash); WALK4_CK=$(last_ckpt "$WALK4")
   uv run --project external/IsaacLab python scripts/play.py --rl_library rsl_rl --task Microduck-WalkV4-Flat-HD1910-AllColl --num_envs 4 presets=backlash \
     --checkpoint "$(readlink -f "$WALK4")/model_$WALK4_CK.pt" --video --video_length 1 --video_interval 1000000 > logs/export_walk_v4.log 2>&1
@@ -71,17 +79,46 @@ else
   echo "[$(date +%F_%T)] walk-v4 task not registered; skipped" | tee -a logs/train_all.log
 fi
 
+# VelStand: ONE policy that walks, balances at zero speed and gets up after a fall (Pollen's deployed recipe).
+# Warm start from walk v4; the stand-up policy is the frozen recovery expert, walk v4 the upright anchor.
+if uv run --project external/IsaacLab python -c "import gymnasium as gym, microduck_rl; gym.spec('Microduck-VelStand-Flat-HD1910-AllColl')" >/dev/null 2>&1; then
+  WALK4=$(latest_with_ckpt microduck_walk_v4_allcoll_hd1910_backlash); WALK4_CK=$(last_ckpt "$WALK4")
+  SU=$(latest_with_ckpt microduck_standup_flat_hd1910_backlash); SU_CK=$(last_ckpt "$SU")
+  ANCHOR="$(readlink -f "$WALK4")/model_$WALK4_CK.pt"; EXPERT="$(readlink -f "$SU")/model_$SU_CK.pt"
+  START_CK="$ANCHOR"; ITERS=2000; END=$((WALK4_CK + 2000))
+  PREV=$(latest_with_ckpt microduck_velstand_allcoll_hd1910_backlash)
+  if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt $((END - 1)) ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((END - PREV_CK)); else ITERS=0; fi; fi
+  if [ "$ITERS" -gt 0 ]; then
+    echo "[$(date +%F_%T)] start velstand ($ITERS its from $START_CK; expert $EXPERT)" | tee -a logs/train_all.log
+    uv run --project external/IsaacLab python scripts/train.py --task Microduck-VelStand-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+      --max_iterations $ITERS $COMMON --checkpoint "$START_CK" \
+      agent.algorithm.bc_cfg.expert_checkpoint="$EXPERT" agent.algorithm.bc_cfg.anchor_checkpoint="$ANCHOR" >> logs/train_velstand.log 2>&1
+    echo "[$(date +%F_%T)] end velstand exit=$?" | tee -a logs/train_all.log
+  fi
+  VS=$(latest_with_ckpt microduck_velstand_allcoll_hd1910_backlash); VS_CK=$(last_ckpt "$VS")
+  uv run --project external/IsaacLab python scripts/eval_standup.py --task Microduck-VelStand-Flat-HD1910-AllColl --run "$(readlink -f "$VS")" --checkpoint "model_$VS_CK.pt" \
+    --zero_twist --num_envs 32 presets=backlash --out "docs/standup_velstand_$VS_CK.json" > "logs/eval_standup_velstand_$VS_CK.log" 2>&1
+  uv run --project external/IsaacLab python scripts/eval_squat.py --policy "$VS/exported_model_$VS_CK/policy.pt" presets=backlash --out "docs/squat_velstand_$VS_CK.json" > logs/eval_squat_velstand.log 2>&1
+  uv run --project external/IsaacLab python scripts/eval_gait_symmetry.py --task Microduck-VelStand-Flat-HD1910-AllColl --run "$(readlink -f "$VS")" --checkpoint "model_$VS_CK.pt" \
+    --vx 0.3 --num_envs 64 presets=backlash --out "docs/gait_velstand_$VS_CK.json" > logs/eval_gait_velstand.log 2>&1
+  echo "[$(date +%F_%T)] velstand getup+squat+gait evals done" >> logs/evals.log
+else
+  echo "[$(date +%F_%T)] velstand task not registered; skipped" | tee -a logs/train_all.log
+fi
+
 # Run v3, take 2. Take 1 (dir 2026-11-08_22-26-35 / 23-24-57) reached 0.60 m/s at the 0.7 command with zero
 # falls at checkpoint 4250, then the +-0.6 m/s push stage taught it to stand still (0.16 m/s by 5000, tracking
 # error 0.16 -> 0.30). Restart from 4250 with pushes held at the official +-0.3; 1750 iterations to 5999.
 START_CK=${RUN_V3_START:-/home/jerrycheng/microduck/logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/2026-11-08_22-26-35/model_4250.pt}
 ITERS=${RUN_V3_ITERS:-1750}
 PREV=$(latest_with_ckpt microduck_run_flat_allcoll_mirror_hd1910_backlash)
-case "$PREV" in *2026-11-08_22-26-35*|*2026-11-08_23-24-57*|"") ;; *) PREV_CK=$(last_ckpt "$PREV"); [ "$PREV_CK" -lt 5999 ] && { START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((5999 - PREV_CK)); } ;; esac
-echo "[$(date +%F_%T)] start run-v3 take 2 (mirror loss, mild pushes, $ITERS its from $START_CK)" | tee -a logs/train_all.log
-uv run --project external/IsaacLab python scripts/train.py --task Microduck-RunV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
-  --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_run_v3.log 2>&1
-echo "[$(date +%F_%T)] end run-v3 take 2 exit=$?" | tee -a logs/train_all.log
+case "$PREV" in *2026-11-08_22-26-35*|*2026-11-08_23-24-57*|"") ;; *) PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt 5998 ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((5999 - PREV_CK)); else ITERS=0; fi ;; esac
+if [ "$ITERS" -gt 0 ]; then
+  echo "[$(date +%F_%T)] start run-v3 take 2 (mirror loss, mild pushes, $ITERS its from $START_CK)" | tee -a logs/train_all.log
+  uv run --project external/IsaacLab python scripts/train.py --task Microduck-RunV3-Flat-HD1910-AllColl --agent rsl_rl_with_symmetry_cfg_entry_point \
+    --max_iterations $ITERS $COMMON --checkpoint "$START_CK" >> logs/train_run_v3.log 2>&1
+  echo "[$(date +%F_%T)] end run-v3 take 2 exit=$?" | tee -a logs/train_all.log
+fi
 RUN3=$(latest_with_ckpt microduck_run_flat_allcoll_mirror_hd1910_backlash)
 RUN3_CK=$(last_ckpt "$RUN3")
 rm -rf "$RUN3/exported_model_$RUN3_CK"

@@ -49,6 +49,7 @@ def main() -> int:
     ap.add_argument("--num_envs", type=int, default=32)
     ap.add_argument("--push", type=float, default=1.0, help="push magnitude [m/s] for the standing_pushed family, every 1.5 s")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--zero_twist", action="store_true", help="velocity-command envs (VelStand): command exactly zero twist throughout")
     args, extra = ap.parse_known_args()
     run = args.run.resolve()
     name = args.checkpoint.replace(".pt", "").replace("model_", "")
@@ -71,6 +72,13 @@ def main() -> int:
         cfg.scene.num_envs = args.num_envs
         cfg.curriculum = None
         cfg.events.set_fallen_state.params.update(FAMILY_PARAMS[fam])
+        if args.zero_twist:  # a velocity env: pin every twist range to zero and make every env a standing env
+            rng = cfg.commands.base_velocity.ranges
+            for name in ("lin_vel_x", "lin_vel_y", "ang_vel_z"):
+                if hasattr(rng, name):
+                    setattr(rng, name, (0.0, 0.0))
+            if hasattr(cfg.commands.base_velocity, "rel_standing_envs"):
+                cfg.commands.base_velocity.rel_standing_envs = 1.0
         env = gym.make(args.task, cfg=cfg).unwrapped
         robot = env.scene["robot"]
         policy = torch.jit.load(str(policy_path), map_location=env.device).eval()
