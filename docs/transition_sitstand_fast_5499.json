@@ -1,0 +1,25 @@
+{
+ "policy": "logs/rsl_rl/microduck_sitstand_fast_flat_hd1910_backlash/2026-11-09_09-19-08//exported_model_5499/policy.pt",
+ "num_envs": 32,
+ "sit_z": 0.06,
+ "stand_z": 0.115,
+ "sit": {
+  "reached_frac": 1.0,
+  "time_s": {
+   "median": 0.32,
+   "p90": 0.36,
+   "max": 0.38
+  },
+  "z_end_median_m": 0.0617
+ },
+ "stand": {
+  "reached_frac": 1.0,
+  "time_s": {
+   "median": 0.26,
+   "p90": 0.28,
+   "max": 0.28
+  },
+  "z_end_median_m": 0.1149
+ },
+ "fell_frac": 0.0
+}

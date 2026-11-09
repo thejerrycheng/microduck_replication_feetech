@@ -1,0 +1,25 @@
+{
+ "policy": "checkpoints/sitstand_4000/policy.pt",
+ "num_envs": 32,
+ "sit_z": 0.06,
+ "stand_z": 0.115,
+ "sit": {
+  "reached_frac": 1.0,
+  "time_s": {
+   "median": 1.0,
+   "p90": 1.62,
+   "max": 2.14
+  },
+  "z_end_median_m": 0.0601
+ },
+ "stand": {
+  "reached_frac": 1.0,
+  "time_s": {
+   "median": 0.62,
+   "p90": 1.13,
+   "max": 2.02
+  },
+  "z_end_median_m": 0.1165
+ },
+ "fell_frac": 0.0
+}

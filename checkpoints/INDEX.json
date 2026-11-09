@@ -68,5 +68,35 @@
    "model_6000.pt",
    "policy.pt"
   ]
+ },
+ "sitstand_fast_5499": {
+  "run": null,
+  "iteration": 5499,
+  "files": [
+   "model_5499.pt",
+   "policy.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "env.yaml",
+   "agent.yaml"
+  ],
+  "task": "Microduck-SitStandFast-Flat-HD1910",
+  "description": "Sit/stand with a 0.4 s posture ramp (fine-tune of sitstand_4000). Deterministic transition times (32 envs): to seated 0.32 s median / 0.38 s max, to standing 0.26 / 0.28 s (previous policy 1.0 / 2.14 and 0.62 / 2.02); 100 % reached, 0 falls; standing tilt median 1.3 deg.",
+  "measured": "docs/transition_sitstand_fast_5499.json, docs/posture_sitstand_fast_5499.json",
+  "onnx": "exports/sitstand_fast_5499.onnx"
+ },
+ "run_v3_4250": {
+  "run": null,
+  "iteration": 4250,
+  "files": [
+   "model_4250.pt",
+   "policy.pt",
+   "env.yaml",
+   "agent.yaml"
+  ],
+  "task": "Microduck-RunV3-Flat-HD1910-AllColl",
+  "description": "Full-collision runner with the mirror loss, before the +-0.6 m/s push stage collapsed it: 0.60 m/s at the 0.7 command (run v2: 0.49), 0 falls, air-time L/R 0.91 (32 envs, deterministic).",
+  "measured": "docs/run_v3_probe_4250_vx0.7.json",
+  "onnx": null
  }
 }
