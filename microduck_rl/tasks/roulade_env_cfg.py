@@ -265,12 +265,14 @@ class MicroDuckHD1910RouladeHeadFlatEnvCfg(MicroDuckHD1910RouladeFlatEnvCfg):
         super().__post_init__()
         self.rewards.roulade_head_home = RewTerm(
             func=mdp.roulade_head_home_after_roll,
-            weight=2.0,
+            # std 0.25 paid 0.05/s at the 1.0 rad error the warm start lands with (exp(-16): no gradient); 0.8 reads
+            # 0.21 there and still 0.86 at 0.3 rad, so the term pulls the head home from where the policy is.
+            weight=3.0,
             params={
                 "asset_cfg": SceneEntityCfg("robot", joint_names=["neck_pitch", "head_pitch", "head_yaw", "head_roll"]),
                 "gate_lo": LANDING_GATE[0],
                 "gate_hi": LANDING_GATE[1],
-                "std": 0.25,
+                "std": 0.8,
             },
         )
         # the warm start already rolls from a stand: train on standing spawns from the first iteration
