@@ -275,6 +275,15 @@ class MicroDuckHD1910RouladeHeadFlatEnvCfg(MicroDuckHD1910RouladeFlatEnvCfg):
                 "std": 0.8,
             },
         )
+        self.rewards.roulade_head_l1 = RewTerm(
+            func=mdp.roulade_head_l1_after_roll,
+            weight=-3.0,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", joint_names=["neck_pitch", "head_pitch", "head_yaw", "head_roll"]),
+                "gate_lo": LANDING_GATE[0],
+                "gate_hi": LANDING_GATE[1],
+            },
+        )
         # the warm start already rolls from a stand: train on standing spawns from the first iteration
         self.events.set_roulade_state.params["standing_prob"] = 0.8
         self.curriculum.spawn_standing = None

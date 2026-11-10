@@ -425,3 +425,13 @@ def roulade_head_error(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> tor
     asset: Articulation = env.scene[asset_cfg.name]
     dev = asset.data.joint_pos.torch[:, asset_cfg.joint_ids] - asset.data.default_joint_pos.torch[:, asset_cfg.joint_ids]
     return torch.sqrt(torch.mean(dev**2, dim=1))
+
+
+def roulade_head_l1_after_roll(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, gate_lo: float, gate_hi: float) -> torch.Tensor:
+    """Landing-gated RMS head-joint deviation [rad] from the default pose (a positive cost: use a negative
+    weight). Constant pull regardless of how far off the head is -- the Gaussian bonus alone moved the error only
+    57.6 -> 50.0 deg in 500 iterations because its slope is small at a 1 rad error."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    update_accum(env, asset)
+    dev = asset.data.joint_pos.torch[:, asset_cfg.joint_ids] - asset.data.default_joint_pos.torch[:, asset_cfg.joint_ids]
+    return torch.sqrt(torch.mean(dev**2, dim=1)) * completion_gate(env, gate_lo, gate_hi)
