@@ -1,0 +1,25 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_roulade_head_flat_hd1910_backlash/2026-11-10_05-18-29/model_8000.pt",
+ "num_envs": 96,
+ "seconds": 4.9,
+ "frontier_deg": {
+  "min": 311.5,
+  "p10": 323.9,
+  "median": 341.6,
+  "p90": 357.4,
+  "max": 652.4
+ },
+ "head_latched_frac": 1.0,
+ "completed_frac": 0.76,
+ "completed_and_standing_frac": 0.76,
+ "final_standing_frac": 1.0,
+ "final_head_err_rad": {
+  "median": 0.037,
+  "p90": 0.075,
+  "max": 0.113
+ },
+ "final_head_err_deg_median": 2.1,
+ "final_z_median_m": 0.1192,
+ "final_tilt_median_deg": 5.8,
+ "peak_abs_omega_y_median": 9.58
+}

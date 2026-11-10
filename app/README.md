@@ -23,7 +23,8 @@ variant. Keyframe `INIT` stands the robot at z 0.12. Pollen's reference CPU runn
 | `walk_sym_hd1910_iter15000.onnx`, `run_v2_hd1910_iter2999.onnx` | the reduced-collision originals | same |
 | `sit_hd1910_iter12000.onnx` | sit-only (standing start) | twist = (1, 0, 0) |
 | `jump_hd1910_iter1500.onnx` | vertical hop (~3 cm, the servo ceiling): set the launch flag (twist slot 0) to 1 for one control step from a stand, keep the policy running ~2 s, then hand back to velstand. 83 % take-off, 94 % stable landing (96 trials) | twist = (launch flag once, 0, 0) |
-| `roulade_hd1910_iter6000.onnx` | front flip (forward roll over the head, lands on the feet): run it from a stand at zero twist; one roll takes ~1.5 s, then hand back to velstand. 96.9 % land standing (96 trials) | twist = (0, 0, 0) |
+| `roulade_head_hd1910_iter7000.onnx` | front flip (forward roll over the head, lands on the feet, head back to straight within 4 deg): run it from a stand at zero twist; one roll takes ~1.5 s, then hand back to velstand. 90.6 % complete the roll and stand, 100 % end standing (96 trials) | twist = (0, 0, 0) |
+| `roulade_hd1910_iter6000.onnx` | previous flip (96.9 % land standing but the head stays 58 deg off home; superseded) | twist = (0, 0, 0) |
 
 ## Observation (61 floats, this order, raw units; the ONNX normalises)
 1. `imu` (6): base angular velocity in the trunk frame [rad/s] (3), then projected gravity in the trunk frame (3)
