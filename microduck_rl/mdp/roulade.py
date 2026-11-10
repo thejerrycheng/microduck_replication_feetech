@@ -405,3 +405,23 @@ def roulade_standing_frac(env: ManagerBasedRLEnv, env_ids: torch.Tensor, asset_c
     _, max_accum, _ = _state(env)
     done = (max_accum[env_ids] >= math.radians(330.0)) & env._roulade_head_latch[env_ids]
     return (up & tall & done).float().mean()
+
+
+def roulade_head_home_after_roll(
+    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, gate_lo: float, gate_hi: float, std: float = 0.25
+) -> torch.Tensor:
+    """After the roll (completion gate), pay for the head joints (``asset_cfg.joint_ids``: neck, head pitch/yaw/
+    roll) being back at their default pose: exp(-(rms deviation / std)^2). The recipe scores only the trunk after
+    the roll, so the deployed 6000 checkpoint stood up with the head still where the tuck left it."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    update_accum(env, asset)
+    dev = asset.data.joint_pos.torch[:, asset_cfg.joint_ids] - asset.data.default_joint_pos.torch[:, asset_cfg.joint_ids]
+    rms = torch.sqrt(torch.mean(dev**2, dim=1))
+    return torch.exp(-((rms / std) ** 2)) * completion_gate(env, gate_lo, gate_hi)
+
+
+def roulade_head_error(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+    """RMS deviation [rad] of the head joints from their default pose (diagnostic)."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    dev = asset.data.joint_pos.torch[:, asset_cfg.joint_ids] - asset.data.default_joint_pos.torch[:, asset_cfg.joint_ids]
+    return torch.sqrt(torch.mean(dev**2, dim=1))

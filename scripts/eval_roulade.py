@@ -66,6 +66,10 @@ def main() -> int:
         for _ in range(steps):
             obs, *_ = env.step(policy(obs["policy"]))
             peak_omega = torch.maximum(peak_omega, robot.data.root_link_ang_vel_b.torch[:, 1].abs())
+    from microduck_rl.mdp.roulade import roulade_head_error
+    from isaaclab.managers import SceneEntityCfg as _SE
+    head_cfg = _SE("robot", joint_names=["neck_pitch", "head_pitch", "head_yaw", "head_roll"]); head_cfg.resolve(env.scene)
+    head_err = roulade_head_error(env, head_cfg)
     frontier = torch.rad2deg(env._roulade_max)
     head = env._roulade_head_latch
     z = robot.data.root_link_pos_w.torch[:, 2] - env.scene.env_origins[:, 2]
@@ -80,6 +84,8 @@ def main() -> int:
         "completed_frac": round(float(completed.float().mean()), 3),
         "completed_and_standing_frac": round(float((completed & standing).float().mean()), 3),
         "final_standing_frac": round(float(standing.float().mean()), 3),
+        "final_head_err_rad": {"median": round(float(head_err.median()), 3), "p90": round(float(head_err.quantile(0.9)), 3), "max": round(float(head_err.max()), 3)},
+        "final_head_err_deg_median": round(float(torch.rad2deg(head_err.median())), 1),
         "final_z_median_m": round(float(z.median()), 4), "final_tilt_median_deg": round(float(tilt.median()), 1),
         "peak_abs_omega_y_median": round(float(peak_omega.median()), 2),
     }

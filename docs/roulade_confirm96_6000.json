@@ -3,17 +3,23 @@
  "num_envs": 96,
  "seconds": 4.9,
  "frontier_deg": {
-  "min": 290.4,
-  "p10": 338.0,
-  "median": 348.9,
-  "p90": 362.1,
-  "max": 716.7
+  "min": 309.0,
+  "p10": 336.4,
+  "median": 349.7,
+  "p90": 366.5,
+  "max": 686.3
  },
  "head_latched_frac": 1.0,
  "completed_frac": 0.969,
  "completed_and_standing_frac": 0.969,
  "final_standing_frac": 1.0,
+ "final_head_err_rad": {
+  "median": 1.004,
+  "p90": 1.012,
+  "max": 1.021
+ },
+ "final_head_err_deg_median": 57.6,
  "final_z_median_m": 0.1123,
  "final_tilt_median_deg": 9.3,
- "peak_abs_omega_y_median": 9.19
+ "peak_abs_omega_y_median": 9.21
 }

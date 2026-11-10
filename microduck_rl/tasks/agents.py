@@ -184,3 +184,11 @@ class VelStandPPORunnerCfg(WalkV4AllCollPPORunnerCfg):
         # the two teachers; this stage only has to merge them.
         self.algorithm.entropy_coef = 0.001
         self.algorithm.learning_rate = 5.0e-4
+
+
+@configclass
+class RouladeHeadPPORunnerCfg(RouladePPORunnerCfg):
+    """Fine-tune of the roll with the post-roll head-home term (warm start from roulade 6000)."""
+
+    experiment_name = _names("microduck_roulade_head_flat")
+    max_iterations = 2000

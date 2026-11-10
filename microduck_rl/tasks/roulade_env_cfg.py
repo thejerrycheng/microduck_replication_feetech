@@ -253,3 +253,26 @@ class MicroDuckHD1910RouladeFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
         self.curriculum.completed_frac = None
         self.curriculum.completed_standing_frac = None
         self.sim.visualizer_cfgs = play_visualizer_cfg()
+
+
+@configclass
+class MicroDuckHD1910RouladeHeadFlatEnvCfg(MicroDuckHD1910RouladeFlatEnvCfg):
+    """Roll + stand STRAIGHT afterwards. The recipe scores only the trunk after the roll; checkpoint 6000 lands
+    standing in 97 % of rolls with the neck/head still where the tuck put them. This adds a landing-gated term
+    paying for the four head joints at their default pose (fine-tune from 6000, standing spawns only)."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.rewards.roulade_head_home = RewTerm(
+            func=mdp.roulade_head_home_after_roll,
+            weight=2.0,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", joint_names=["neck_pitch", "head_pitch", "head_yaw", "head_roll"]),
+                "gate_lo": LANDING_GATE[0],
+                "gate_hi": LANDING_GATE[1],
+                "std": 0.25,
+            },
+        )
+        # the warm start already rolls from a stand: train on standing spawns from the first iteration
+        self.events.set_roulade_state.params["standing_prob"] = 0.8
+        self.curriculum.spawn_standing = None
