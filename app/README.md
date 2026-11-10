@@ -22,6 +22,7 @@ variant. Keyframe `INIT` stands the robot at z 0.12. Pollen's reference CPU runn
 | `sitstand_hd1910_iter4000.onnx` | previous sit <-> stand (2 s transitions; superseded) | twist = (flag, 0, 0) |
 | `walk_sym_hd1910_iter15000.onnx`, `run_v2_hd1910_iter2999.onnx` | the reduced-collision originals | same |
 | `sit_hd1910_iter12000.onnx` | sit-only (standing start) | twist = (1, 0, 0) |
+| `jump_hd1910_iter1500.onnx` | vertical hop (~3 cm, the servo ceiling): set the launch flag (twist slot 0) to 1 for one control step from a stand, keep the policy running ~2 s, then hand back to velstand. 83 % take-off, 94 % stable landing (96 trials) | twist = (launch flag once, 0, 0) |
 | `roulade_hd1910_iter6000.onnx` | front flip (forward roll over the head, lands on the feet): run it from a stand at zero twist; one roll takes ~1.5 s, then hand back to velstand. 96.9 % land standing (96 trials) | twist = (0, 0, 0) |
 
 ## Observation (61 floats, this order, raw units; the ONNX normalises)
@@ -52,4 +53,4 @@ Running = run policy with vx in [0.2, 1.2] (it cannot turn). Stop = velstand at 
 fast sit/stand flag (0.3 s transitions); start sitting from velstand's stand, return to velstand once standing.
 Fall detection (tilt > 60 deg for 0.2 s): under velstand nothing to do, it gets up on its own; under run or sit,
 switch to velstand (or standup) at zero twist until tilt < 20 deg and trunk z > 0.095 m for 0.5 s, then hand back.
-R (front roll) = roulade policy for ~2 s from a stand, then back to velstand. Space (jump) = jump policy (see its row once confirmed).
+R (front roll) = roulade policy for ~2 s from a stand, then back to velstand. Space (jump) = jump policy with its launch flag for one step, ~2 s, then back to velstand.

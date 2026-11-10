@@ -183,5 +183,22 @@
   "measured": "docs/roulade_confirm96_6000.json, docs/roulade_roulade_*.json",
   "onnx": "exports/roulade_hd1910_iter6000.onnx",
   "role": "front flip (the R key)"
+ },
+ "jump_1500": {
+  "run": "microduck_jump_flat_hd1910_backlash/2026-11-09_21-59-03",
+  "iteration": 1500,
+  "task": "Microduck-Jump-Flat-HD1910",
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_1500.pt",
+   "policy.pt",
+   "policy.onnx",
+   "policy.onnx.data"
+  ],
+  "description": "Vertical jump (port of ThomasBurgess2000's max-height-jump v6 with chenp9527's lessons; one-shot launch flag in the twist slot). Selected by take-off x landing, not recency: on a fresh 96-env block 83 % valid take-offs, rise above the standing baseline 29.6 mm median / 34.0 p90 / 35.4 max, 100 ms air time, 94 % stable landings, 55 % durable (still standing at the horizon), 0 failed recoveries. Later checkpoints decay (4000-5000: 63 % take-off, 25 mm). The ~3 cm hop is the HD1910's ceiling (the XL330 community ceiling is 2.6 cm at that servo's speed wall).",
+  "measured": "docs/jump_confirm96_1500.json, docs/jump_jump_*.json",
+  "onnx": "exports/jump_hd1910_iter1500.onnx",
+  "role": "jump (the Space key)"
  }
 }
