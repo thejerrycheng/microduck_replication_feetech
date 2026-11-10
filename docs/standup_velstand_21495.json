@@ -10,9 +10,9 @@
    "fell_after_standing": 0.031,
    "time_to_stand_s": {
     "median": 0.28,
-    "p90": 0.3
+    "p90": 0.32
    },
-   "peak_omega_median": 7.53
+   "peak_omega_median": 7.9
   },
   "supine": {
    "standing_at_3s": 1.0,
@@ -23,62 +23,62 @@
     "median": 0.4,
     "p90": 0.42
    },
-   "peak_omega_median": 12.52
+   "peak_omega_median": 12.65
   },
   "side": {
    "standing_at_3s": 1.0,
-   "standing_at_end": 0.969,
+   "standing_at_end": 1.0,
    "ever_stood": 1.0,
-   "fell_after_standing": 0.062,
+   "fell_after_standing": 0.031,
    "time_to_stand_s": {
     "median": 0.4,
     "p90": 0.42
    },
-   "peak_omega_median": 12.46
+   "peak_omega_median": 12.59
   },
   "random": {
-   "standing_at_3s": 0.969,
+   "standing_at_3s": 1.0,
    "standing_at_end": 1.0,
    "ever_stood": 1.0,
-   "fell_after_standing": 0.094,
+   "fell_after_standing": 0.031,
    "time_to_stand_s": {
     "median": 0.5,
-    "p90": 0.72
+    "p90": 1.02
    },
-   "peak_omega_median": 9.77
+   "peak_omega_median": 10.24
   },
   "bank": {
    "standing_at_3s": 1.0,
    "standing_at_end": 1.0,
    "ever_stood": 1.0,
-   "fell_after_standing": 0.0,
+   "fell_after_standing": 0.031,
    "time_to_stand_s": {
     "median": 0.56,
     "p90": 0.7
    },
-   "peak_omega_median": 12.22
+   "peak_omega_median": 12.13
   },
   "sitting": {
-   "standing_at_3s": 1.0,
+   "standing_at_3s": 0.969,
    "standing_at_end": 1.0,
    "ever_stood": 1.0,
-   "fell_after_standing": 0.125,
+   "fell_after_standing": 0.156,
    "time_to_stand_s": {
     "median": 0.02,
-    "p90": 0.02
+    "p90": 0.04
    },
-   "peak_omega_median": 6.97
+   "peak_omega_median": 5.58
   },
   "standing_pushed": {
-   "standing_at_3s": 0.938,
-   "standing_at_end": 0.844,
+   "standing_at_3s": 0.906,
+   "standing_at_end": 0.938,
    "ever_stood": 1.0,
    "fell_after_standing": 1.0,
    "time_to_stand_s": {
     "median": 0.0,
     "p90": 0.0
    },
-   "peak_omega_median": 17.41
+   "peak_omega_median": 17.07
   }
  }
 }

@@ -3,34 +3,34 @@
  "phases": [
   {
    "phase": "walk 0.3",
-   "z_median_m": 0.1209,
-   "z_min_m": 0.1033,
-   "z_dip_first_0.5s_min_m": 0.1033,
-   "tilt_median_deg": 4.7,
-   "fallen_frac": 0.0
-  },
-  {
-   "phase": "stop",
-   "z_median_m": 0.1162,
-   "z_min_m": 0.0876,
-   "z_dip_first_0.5s_min_m": 0.0951,
-   "tilt_median_deg": 2.8,
-   "fallen_frac": 0.0
-  },
-  {
-   "phase": "turn 1.0 rad/s",
-   "z_median_m": 0.1208,
-   "z_min_m": 0.112,
-   "z_dip_first_0.5s_min_m": 0.1132,
+   "z_median_m": 0.1205,
+   "z_min_m": 0.1029,
+   "z_dip_first_0.5s_min_m": 0.1029,
    "tilt_median_deg": 4.8,
    "fallen_frac": 0.0
   },
   {
    "phase": "stop",
-   "z_median_m": 0.1159,
-   "z_min_m": 0.1104,
-   "z_dip_first_0.5s_min_m": 0.1104,
-   "tilt_median_deg": 2.4,
+   "z_median_m": 0.1163,
+   "z_min_m": 0.0383,
+   "z_dip_first_0.5s_min_m": 0.0829,
+   "tilt_median_deg": 3.4,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "turn 1.0 rad/s",
+   "z_median_m": 0.1207,
+   "z_min_m": 0.1115,
+   "z_dip_first_0.5s_min_m": 0.1131,
+   "tilt_median_deg": 4.6,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "stop",
+   "z_median_m": 0.1162,
+   "z_min_m": 0.1062,
+   "z_dip_first_0.5s_min_m": 0.1132,
+   "tilt_median_deg": 2.8,
    "fallen_frac": 0.0
   }
  ]

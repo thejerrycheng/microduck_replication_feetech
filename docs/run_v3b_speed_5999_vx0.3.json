@@ -1,50 +1,50 @@
 {
   "checkpoint_policy": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/2026-11-09_13-40-30/exported_model_5999/policy.pt",
   "vx_cmd": 0.3,
-  "vx_achieved_mean": 0.27396541833877563,
-  "vx_achieved_p10": 0.25135675072669983,
+  "vx_achieved_mean": 0.26507166028022766,
+  "vx_achieved_p10": 0.2490050196647644,
   "fallen_frac": 0.0,
   "air_time_s": {
-    "left": 0.11572784185409546,
-    "right": 0.12694668769836426
+    "left": 0.11372068524360657,
+    "right": 0.12740866839885712
   },
   "contact_time_s": {
-    "left": 0.13276983797550201,
-    "right": 0.12211963534355164
+    "left": 0.19990763068199158,
+    "right": 0.18809545040130615
   },
   "steps_per_episode": {
-    "left": 22.03125,
-    "right": 21.96875
+    "left": 21.65625,
+    "right": 21.625
   },
   "stride_length": {
     "left": {
-      "mean_m": 0.1238028034567833,
-      "std_m": 0.018022814765572548,
-      "cv": 0.14557678997516632
+      "mean_m": 0.12288135290145874,
+      "std_m": 0.016897745430469513,
+      "cv": 0.1375126838684082
     },
     "right": {
-      "mean_m": 0.12498670071363449,
-      "std_m": 0.018519390374422073,
-      "cv": 0.14817088842391968
+      "mean_m": 0.12241414189338684,
+      "std_m": 0.015441462397575378,
+      "cv": 0.12614116072654724
     }
   },
   "joint_amplitude_rad": {
     "left": {
       "hip_pitch": 0.858,
-      "knee": 0.928,
+      "knee": 0.925,
       "ankle": 0.7
     },
     "right": {
-      "hip_pitch": 0.954,
-      "knee": 0.941,
-      "ankle": 0.691
+      "hip_pitch": 0.922,
+      "knee": 0.924,
+      "ankle": 0.661
     }
   },
   "ratios_left_over_right": {
-    "air_time": 0.9116255331456485,
-    "contact_time": 1.0872112220282089,
-    "steps": 1.0028449502133712,
-    "knee_amplitude": 0.9865302380298424,
-    "stride_length": 0.9905278141586944
+    "air_time": 0.8925663117959929,
+    "contact_time": 1.062798862255753,
+    "steps": 1.0014450867052023,
+    "knee_amplitude": 1.0007795546371026,
+    "stride_length": 1.0038166424307315
   }
 }

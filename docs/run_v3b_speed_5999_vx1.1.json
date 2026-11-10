@@ -1,50 +1,50 @@
 {
   "checkpoint_policy": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/2026-11-09_13-40-30/exported_model_5999/policy.pt",
   "vx_cmd": 1.1,
-  "vx_achieved_mean": 0.6103166937828064,
-  "vx_achieved_p10": 0.1372794210910797,
-  "fallen_frac": 0.09375,
+  "vx_achieved_mean": 0.6020708084106445,
+  "vx_achieved_p10": 0.026556212455034256,
+  "fallen_frac": 0.0,
   "air_time_s": {
-    "left": 0.18359078466892242,
-    "right": 0.18139328062534332
+    "left": 0.20736879110336304,
+    "right": 0.25382503867149353
   },
   "contact_time_s": {
-    "left": 0.18689900636672974,
-    "right": 0.18717461824417114
+    "left": 0.18462981283664703,
+    "right": 0.16582179069519043
   },
   "steps_per_episode": {
-    "left": 24.75,
-    "right": 25.3125
+    "left": 24.5625,
+    "right": 25.84375
   },
   "stride_length": {
     "left": {
-      "mean_m": 0.26066097617149353,
-      "std_m": 0.2680323123931885,
-      "cv": 1.028279423713684
+      "mean_m": 0.24765191972255707,
+      "std_m": 0.09890669584274292,
+      "cv": 0.39937788248062134
     },
     "right": {
-      "mean_m": 0.2598373591899872,
-      "std_m": 0.27951112389564514,
-      "cv": 1.0757156610488892
+      "mean_m": 0.2395303100347519,
+      "std_m": 0.10562121868133545,
+      "cv": 0.4409513771533966
     }
   },
   "joint_amplitude_rad": {
     "left": {
-      "hip_pitch": 1.55,
-      "knee": 1.588,
-      "ankle": 1.16
+      "hip_pitch": 1.483,
+      "knee": 1.524,
+      "ankle": 1.144
     },
     "right": {
-      "hip_pitch": 1.58,
-      "knee": 1.562,
-      "ankle": 1.174
+      "hip_pitch": 1.53,
+      "knee": 1.529,
+      "ankle": 1.191
     }
   },
   "ratios_left_over_right": {
-    "air_time": 1.012114583495063,
-    "contact_time": 0.9985275146810672,
-    "steps": 0.9777777777777777,
-    "knee_amplitude": 1.0164547557742927,
-    "stride_length": 1.0031697404256026
+    "air_time": 0.8169753157084897,
+    "contact_time": 1.1134231035776778,
+    "steps": 0.9504232164449818,
+    "knee_amplitude": 0.9966505639485489,
+    "stride_length": 1.033906396591842
   }
 }

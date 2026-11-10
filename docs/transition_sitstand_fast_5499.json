@@ -6,11 +6,11 @@
  "sit": {
   "reached_frac": 1.0,
   "time_s": {
-   "median": 0.32,
+   "median": 0.34,
    "p90": 0.36,
-   "max": 0.38
+   "max": 0.42
   },
-  "z_end_median_m": 0.0617
+  "z_end_median_m": 0.0616
  },
  "stand": {
   "reached_frac": 1.0,
@@ -19,7 +19,7 @@
    "p90": 0.28,
    "max": 0.28
   },
-  "z_end_median_m": 0.1149
+  "z_end_median_m": 0.1148
  },
  "fell_frac": 0.0
 }
