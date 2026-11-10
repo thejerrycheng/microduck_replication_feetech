@@ -166,5 +166,22 @@
   "measured": "docs/sprint_max_speed_7998_vx*.json, docs/sprint_max_in_runv3env_7998_vx*.json",
   "onnx": "exports/sprint_max_allcoll_hd1910_iter7998.onnx",
   "role": "fastest straight run (the 'sprint' button)"
+ },
+ "roulade_6000": {
+  "run": "microduck_roulade_flat_hd1910_backlash/2026-11-09_16-40-57",
+  "iteration": 6000,
+  "task": "Microduck-Roulade-Flat-HD1910",
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_6000.pt",
+   "policy.pt",
+   "policy.onnx",
+   "policy.onnx.data"
+  ],
+  "description": "Front flip = Pollen's roulade (forward roll over the flat top of the head, back onto the feet); port of their run-5 recipe, entropy 0.001, 8000 its, selected by landing rate. Deterministic standing start: 32-env selection block 100 % complete+standing; fresh 96-env confirmation block 96.9 % complete (>=330 deg over the head) AND standing at the end, 100 % standing at the end, median rotation 349 deg, final tilt 9 deg. Other checkpoints on the same 96 block: 8000 95.8 %, 7000 91.7 %, 4000 85.4 %.",
+  "measured": "docs/roulade_confirm96_6000.json, docs/roulade_roulade_*.json",
+  "onnx": "exports/roulade_hd1910_iter6000.onnx",
+  "role": "front flip (the R key)"
  }
 }
