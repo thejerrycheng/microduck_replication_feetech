@@ -74,6 +74,7 @@ def main() -> int:
     ap.add_argument("--vx", type=float, default=0.3)
     ap.add_argument("--levels", default="0.5,1.0,1.5,2.0,2.5,3.0")
     ap.add_argument("--repeats", type=int, default=2)
+    ap.add_argument("--horizon_s", type=float, default=4.0, help="longest read-out after a push; the 2 s read-out is always reported (comparable with older files)")
     ap.add_argument("--num_envs", type=int, default=32)
     ap.add_argument("--out", default="rollouts/push")
     ap.add_argument("--seed", type=int, default=0)
@@ -83,9 +84,10 @@ def main() -> int:
     os.makedirs(args.out, exist_ok=True)
     torch.manual_seed(args.seed)
     dt = 0.02
-    period = int(3.0 / dt)
-    schedule = [(1.0 + k * 3.0, lvl) for k, lvl in enumerate([l for l in levels for _ in range(args.repeats)])]
-    total_s = schedule[-1][0] + 3.0
+    H = max(2.0, float(args.horizon_s))
+    period = int((H + 1.0) / dt)
+    schedule = [(1.0 + k * (H + 1.0), lvl) for k, lvl in enumerate([l for l in levels for _ in range(args.repeats)])]
+    total_s = schedule[-1][0] + H + 1.0
 
     def run(env, record):
         """record=True: one continuous take for the clip. record=False: statistics, RESET before every push so
@@ -124,10 +126,16 @@ def main() -> int:
                 z = robot.data.root_link_pos_w.torch[:, 2] - env.scene.env_origins[:, 2]
                 if pending is not None:
                     pending["fell"] |= tl > 60.0
-                    if t - pending["t"] >= 2.0 - dt / 2:
-                        up = (tl < 20.0) & (z > 0.095)
-                        stats.append({"t": round(pending["t"], 2), "level": pending["level"], "fell_frac": round(float(pending["fell"].float().mean()), 3),
-                                      "upright_after_2s_frac": round(float(up.float().mean()), 3), "recovered_after_fall_frac": round(float((pending["fell"] & up).float().sum() / max(1.0, float(pending["fell"].float().sum()))), 3)})
+                    up = (tl < 20.0) & (z > 0.095)
+                    nf = max(1.0, float(pending["fell"].float().sum()))
+                    if "row" not in pending and t - pending["t"] >= 2.0 - dt / 2:
+                        pending["row"] = {"t": round(pending["t"], 2), "level": pending["level"], "fell_frac": round(float(pending["fell"].float().mean()), 3),
+                                          "upright_after_2s_frac": round(float(up.float().mean()), 3), "recovered_after_fall_frac": round(float((pending["fell"] & up).float().sum() / nf), 3)}
+                    if t - pending["t"] >= H - dt / 2:
+                        row = pending.get("row") or {"t": round(pending["t"], 2), "level": pending["level"], "fell_frac": round(float(pending["fell"].float().mean()), 3)}
+                        row[f"upright_after_{H:g}s_frac"] = round(float(up.float().mean()), 3)
+                        row[f"recovered_after_fall_{H:g}s_frac"] = round(float((pending["fell"] & up).float().sum() / nf), 3)
+                        stats.append(row)
                         pending = None
                 if record:
                     p = robot.data.root_link_pos_w.torch[0]
@@ -153,8 +161,7 @@ def main() -> int:
     by_level = {}
     for s in stats:
         by_level.setdefault(s["level"], []).append(s)
-    summary = {lvl: {"fell_frac": round(sum(x["fell_frac"] for x in xs) / len(xs), 3), "upright_after_2s_frac": round(sum(x["upright_after_2s_frac"] for x in xs) / len(xs), 3),
-                     "recovered_after_fall_frac": round(sum(x["recovered_after_fall_frac"] for x in xs) / len(xs), 3)} for lvl, xs in by_level.items()}
+    summary = {lvl: {k: round(sum(x[k] for x in xs) / len(xs), 3) for k in xs[0] if k not in ("t", "level")} for lvl, xs in by_level.items()}
     print("policy", args.policy, "vx", args.vx, json.dumps(summary, indent=1))
     with open(os.path.join(args.out, f"push_{args.policy}_vx{args.vx}.json"), "w") as f:
         json.dump({"policy": args.policy, "vx": args.vx, "num_envs": args.num_envs, "per_push": stats, "by_level": summary}, f, indent=1)
