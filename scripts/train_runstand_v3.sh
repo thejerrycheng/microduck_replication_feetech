@@ -15,7 +15,9 @@ EXPERT=${RUNSTAND_EXPERT:-/home/jerrycheng/microduck/logs/rsl_rl/microduck_stand
 START_CK="$ANCHOR"; END=$((6000 + 2000)); ITERS=2000
 PREV=$(latest_with_ckpt $EXP)
 if [ -n "$PREV" ]; then PREV_CK=$(last_ckpt "$PREV"); if [ "$PREV_CK" -lt $((END - 1)) ]; then START_CK="$(readlink -f "$PREV")/model_$PREV_CK.pt"; ITERS=$((END - PREV_CK)); else ITERS=0; fi; fi
+gpu_gate() { while [ "$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1)" -lt "${MIN_GPU_FREE_MB:-5500}" ]; do sleep 60; done; }
 if [ "$ITERS" -gt 0 ]; then
+  gpu_gate
   echo "[$(date +%F_%T)] start runstand-v3 ($ITERS its from $START_CK; expert $EXPERT; anchor $ANCHOR)" | tee -a logs/train_all.log
   uv run --project external/IsaacLab python scripts/train.py --task $TASK --agent rsl_rl_with_symmetry_cfg_entry_point \
     --max_iterations $ITERS $COMMON --checkpoint "$START_CK" \
@@ -26,7 +28,7 @@ else
 fi
 RS=$(latest_with_ckpt $EXP); RS_CK=$(last_ckpt "$RS")
 [ -n "$RS" ] || exit 1
-gate() { while [ "$(free -m | awk 'NR==2{print $7}')" -lt 3300 ]; do sleep 30; done; }
+gate() { while [ "$(free -m | awk 'NR==2{print $7}')" -lt 3300 ] || [ "$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1)" -lt 1500 ]; do sleep 30; done; }
 mkdir -p docs/push
 for ck in ${RUNSTAND_EVAL_CKPTS:-$RS_CK}; do
   gate
