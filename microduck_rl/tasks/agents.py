@@ -230,6 +230,12 @@ class RunStandV3PPORunnerCfg(RunStandV2PPORunnerCfg):
         super().__post_init__()
         self.algorithm.bc_cfg.update({"anchor_trunk_m": 0.105})
 
+@configclass
+class RunStandV4PPORunnerCfg(RunStandV2PPORunnerCfg):
+    """RunStand v4: the v2 distillation (anchor on every upright frame) on the upright-gated tracking env."""
+
+    experiment_name = _names("microduck_runstand_v4_allcoll")
+
 
 @configclass
 class RouladeHeadPPORunnerCfg(RouladePPORunnerCfg):

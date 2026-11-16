@@ -17,7 +17,7 @@ from tensordict import TensorDict
 
 from isaaclab_tasks.contrib.microduck.mdp.symmetry import compute_symmetric_states
 
-__all__ = ["trunk_height_obs", "compute_symmetric_states_with_extras"]
+__all__ = ["trunk_height_obs", "compute_symmetric_states_with_extras", "track_linear_velocity_upright", "track_angular_velocity_upright"]
 
 
 def trunk_height_obs(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
@@ -43,3 +43,35 @@ def compute_symmetric_states_with_extras(
     for k, v in extras.items():
         obs_aug[k] = torch.cat((v, v), dim=0)
     return obs_aug, actions_aug
+
+
+def _tilt_gate(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, full_deg: float, zero_deg: float) -> torch.Tensor:
+    """1 below ``full_deg`` of trunk tilt, 0 above ``zero_deg``, linear in between."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    g = asset.data.projected_gravity_b.torch
+    tilt = torch.rad2deg(torch.acos(torch.clamp(-g[:, 2], -1.0, 1.0)))
+    return torch.clamp((zero_deg - tilt) / max(zero_deg - full_deg, 1e-6), 0.0, 1.0)
+
+
+def track_linear_velocity_upright(
+    env: ManagerBasedRLEnv, std: float, command_name: str, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    full_deg: float = 15.0, zero_deg: float = 25.0,
+) -> torch.Tensor:
+    """The contrib linear-velocity tracking reward, paid only when the trunk is upright.
+
+    Measured on RunStand v2 (`docs/standup_runstand_v2_7000_refall.json`): after a get-up the ducks that fall again
+    never straighten -- they shuffle forward at 0.3 m/s in a 30-48 deg stoop for 1-2 s and go down -- and the
+    ungated tracking term pays for that shuffle. The running gait sits at 3-6 deg and is unaffected."""
+    from isaaclab_tasks.contrib.microduck.mdp.rewards import track_linear_velocity
+
+    return track_linear_velocity(env, std, command_name, asset_cfg) * _tilt_gate(env, asset_cfg, full_deg, zero_deg)
+
+
+def track_angular_velocity_upright(
+    env: ManagerBasedRLEnv, std: float, command_name: str, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    full_deg: float = 15.0, zero_deg: float = 25.0,
+) -> torch.Tensor:
+    """The contrib angular-velocity tracking reward, paid only when the trunk is upright (see above)."""
+    from isaaclab_tasks.contrib.microduck.mdp.rewards import track_angular_velocity
+
+    return track_angular_velocity(env, std, command_name, asset_cfg) * _tilt_gate(env, asset_cfg, full_deg, zero_deg)

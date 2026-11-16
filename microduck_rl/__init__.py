@@ -96,6 +96,10 @@ _register(
     "Microduck-RunStandV3-Flat-HD1910-AllColl", "runstand_env_cfg:MicroDuckHD1910RunStandV2AllCollEnvCfg", "RunStandV3PPORunnerCfg", "RunStandV3PPORunnerCfg"
 )
 
+_register(
+    "Microduck-RunStandV4-Flat-HD1910-AllColl", "runstand_env_cfg:MicroDuckHD1910RunStandV4AllCollEnvCfg", "RunStandV4PPORunnerCfg", "RunStandV4PPORunnerCfg"
+)
+
 TASK_IDS = [
     "Microduck-Velocity-Flat-HD1910",
     "Microduck-Velocity-Rough-HD1910",
@@ -119,4 +123,5 @@ TASK_IDS = [
     "Microduck-RunStand-Flat-HD1910-AllColl",
     "Microduck-RunStandV2-Flat-HD1910-AllColl",
     "Microduck-RunStandV3-Flat-HD1910-AllColl",
+    "Microduck-RunStandV4-Flat-HD1910-AllColl",
 ]

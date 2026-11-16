@@ -124,3 +124,21 @@ class MicroDuckHD1910RunStandV2AllCollEnvCfg(MicroDuckHD1910RunStandAllCollEnvCf
     def __post_init__(self):
         super().__post_init__()
         self.observations.gate = GateObsCfg()
+
+
+@configclass
+class MicroDuckHD1910RunStandV4AllCollEnvCfg(MicroDuckHD1910RunStandV2AllCollEnvCfg):
+    """RunStand v4: v2 plus velocity tracking paid only when upright (full below 15 deg of tilt, none above 25).
+
+    Measured on v2 at 7000 (`docs/standup_runstand_v2_7000_refall.json`): every get-up crosses the standing
+    threshold at 17 deg leaning forward; the ducks that stay up straighten to 5 deg within 0.5 s and run at
+    0.5-0.6 m/s, the 31-52 % that fall again never straighten (17 -> 48 deg in 0.5 s, then 30-45 deg) and shuffle
+    forward at 0.3 m/s until they go down 1-2 s later. The ungated tracking terms pay for that stooped shuffle;
+    v3 (anchor only on risen frames) did not touch it. Here the only way to earn the run reward is upright."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        for name, fn in (("track_lin_vel", gate.track_linear_velocity_upright), ("track_ang_vel", gate.track_angular_velocity_upright)):
+            term = getattr(self.rewards, name)
+            term.func = fn
+            term.params = {**term.params, "full_deg": 15.0, "zero_deg": 25.0}
