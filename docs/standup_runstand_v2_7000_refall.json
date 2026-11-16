@@ -1,0 +1,210 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_runstand_v2_allcoll_hd1910_backlash/2026-11-16_14-35-15/model_7000.pt",
+ "num_envs": 64,
+ "push_m_s": 1.0,
+ "families": {
+  "prone": {
+   "standing_at_3s": 0.641,
+   "standing_at_end": 0.781,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.516,
+   "time_to_stand_s": {
+    "median": 0.3,
+    "p90": 0.32
+   },
+   "peak_omega_median": 12.91,
+   "tilt_end_median_deg": 4.8,
+   "trunk_end_median_m": 0.1138,
+   "end_tilt_20_60_frac": 0.172,
+   "end_down_frac": 0.031,
+   "end_low_trunk_upright_frac": 0.016,
+   "low_trunk_speed_median_m_s": 0.581,
+   "low_trunk_moving_frac": 1.0,
+   "low_trunk_trunk_median_m": 0.0822,
+   "low_trunk_left_knee_median_rad": -0.411,
+   "ok_left_knee_median_rad": 0.097,
+   "low_trunk_right_knee_median_rad": 0.475,
+   "ok_right_knee_median_rad": -0.043,
+   "low_trunk_left_hip_pitch_median_rad": 0.3,
+   "ok_left_hip_pitch_median_rad": -0.223,
+   "low_trunk_right_hip_pitch_median_rad": -0.563,
+   "ok_right_hip_pitch_median_rad": 0.136,
+   "mid_tilt_trunk_median_m": 0.0788,
+   "mid_tilt_tilt_median_deg": 43.0,
+   "mid_tilt_speed_median_m_s": 0.31,
+   "mid_tilt_pitch_sign_fwd_frac": 0.909,
+   "refalls_per_duck_mean": 0.7,
+   "refall_delay_s": {
+    "median": 1.08,
+    "p10": 0.36,
+    "p90": 3.44
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.116,
+    "stayers": 0.205
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     17.4,
+     20.1,
+     48.2,
+     29.8,
+     43.9,
+     37.0,
+     22.2,
+     38.9
+    ],
+    "stayers": [
+     17.5,
+     13.2,
+     6.6,
+     5.0,
+     4.9,
+     4.5,
+     4.9,
+     4.3
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.12,
+     0.5,
+     0.29,
+     0.29,
+     0.32,
+     0.29,
+     0.42,
+     0.27
+    ],
+    "stayers": [
+     0.21,
+     0.47,
+     0.45,
+     0.53,
+     0.5,
+     0.43,
+     0.47,
+     0.52
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.294,
+    "stayers": 0.296
+   },
+   "occupancy_after_2s": {
+    "standing": 0.711,
+    "low_upright": 0.018,
+    "mid_tilt": 0.206,
+    "down": 0.065
+   },
+   "stuck_mid_tilt_last2s_frac": 0.016,
+   "cmd_vx_median": 0.592
+  },
+  "bank": {
+   "standing_at_3s": 0.688,
+   "standing_at_end": 0.844,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.312,
+   "time_to_stand_s": {
+    "median": 0.58,
+    "p90": 0.72
+   },
+   "peak_omega_median": 13.57,
+   "tilt_end_median_deg": 3.8,
+   "trunk_end_median_m": 0.1149,
+   "end_tilt_20_60_frac": 0.109,
+   "end_down_frac": 0.047,
+   "end_low_trunk_upright_frac": 0.0,
+   "mid_tilt_trunk_median_m": 0.0938,
+   "mid_tilt_tilt_median_deg": 43.1,
+   "mid_tilt_speed_median_m_s": 0.139,
+   "mid_tilt_pitch_sign_fwd_frac": 0.857,
+   "refalls_per_duck_mean": 0.47,
+   "refall_delay_s": {
+    "median": 1.64,
+    "p10": 0.35,
+    "p90": 4.57
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.225,
+    "stayers": 0.415
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     17.1,
+     19.6,
+     39.7,
+     27.2,
+     36.8,
+     34.2,
+     21.2,
+     27.7
+    ],
+    "stayers": [
+     16.5,
+     10.7,
+     5.6,
+     3.9,
+     4.5,
+     4.6,
+     3.6,
+     4.9
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.23,
+     0.38,
+     0.33,
+     0.37,
+     0.43,
+     0.27,
+     0.3,
+     0.29
+    ],
+    "stayers": [
+     0.42,
+     0.29,
+     0.51,
+     0.6,
+     0.59,
+     0.58,
+     0.58,
+     0.58
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.272,
+    "stayers": 0.22
+   },
+   "occupancy_after_2s": {
+    "standing": 0.791,
+    "low_upright": 0.013,
+    "mid_tilt": 0.166,
+    "down": 0.03
+   },
+   "stuck_mid_tilt_last2s_frac": 0.031,
+   "cmd_vx_median": 0.745
+  }
+ }
+}
