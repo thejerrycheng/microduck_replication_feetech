@@ -1,0 +1,16 @@
+{
+ "policy": "checkpoints/sprint_max_7998/policy.pt",
+ "task": "Microduck-SprintMax-Flat-HD1910-AllColl",
+ "vx": 1.2,
+ "num_envs": 32,
+ "frames": 9600,
+ "upright_frac": 0.997,
+ "trunk_min": 0.0321,
+ "trunk_p01": 0.0347,
+ "trunk_p05": 0.0392,
+ "trunk_p50": 0.1169,
+ "trunk_p95": 0.1323,
+ "trunk_max": 0.1476,
+ "frac_below_0.085": 0.1816,
+ "frac_below_0.095": 0.1837
+}

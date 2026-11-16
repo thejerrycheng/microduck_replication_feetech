@@ -1,0 +1,16 @@
+{
+ "policy": "checkpoints/run_v3_5999/policy.pt",
+ "task": "Microduck-RunStand-Flat-HD1910-AllColl",
+ "vx": 0.7,
+ "num_envs": 32,
+ "frames": 9600,
+ "upright_frac": 1.0,
+ "trunk_min": 0.1017,
+ "trunk_p01": 0.1084,
+ "trunk_p05": 0.1115,
+ "trunk_p50": 0.118,
+ "trunk_p95": 0.1234,
+ "trunk_max": 0.1305,
+ "frac_below_0.085": 0.0,
+ "frac_below_0.095": 0.0
+}
