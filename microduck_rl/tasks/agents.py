@@ -204,6 +204,20 @@ class RunStandPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
         self.algorithm.entropy_coef = 0.001
         self.algorithm.learning_rate = 5.0e-4
 
+@configclass
+class RunStandV2PPORunnerCfg(RunStandPPORunnerCfg):
+    """RunStand v2: the expert gate also fires on upright frames with a low trunk (read from the ``gate`` observation
+    group), and the symmetry augmentation passes that group through untouched."""
+
+    experiment_name = _names("microduck_runstand_v2_allcoll")
+
+    def __post_init__(self):
+        super().__post_init__()
+        from microduck_rl.mdp.gate import compute_symmetric_states_with_extras
+
+        self.algorithm.symmetry_cfg.data_augmentation_func = compute_symmetric_states_with_extras
+        self.algorithm.bc_cfg.update({"gate_group": "gate", "gate_trunk_m": 0.085})
+
 
 @configclass
 class RouladeHeadPPORunnerCfg(RouladePPORunnerCfg):

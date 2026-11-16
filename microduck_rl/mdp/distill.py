@@ -50,6 +50,11 @@ def default_bc_cfg() -> dict:
         # anchored to the walk.
         "expert_on_zero_twist": True,
         "zero_twist_eps": 1.0e-3,
+        # Optional gate observation group (`microduck_rl/mdp/gate.py`): its first column is the trunk height, and
+        # frames below ``gate_trunk_m`` go to the expert whatever their tilt (a level squat after a half-rise;
+        # measured on RunStand v1: 31-36 % of get-ups parked at 0.040 m). Empty group name = off.
+        "gate_group": "",
+        "gate_trunk_m": 0.085,
     }
 
 
@@ -95,19 +100,28 @@ class PpoWithExpertBc(PPO):
 
     def update(self) -> dict[str, float]:
         # the raw (un-normalised) actor observations of the rollout, taken before PPO clears the storage
-        flat = _flat_obs(self._raw_actor, self.storage.observations.flatten(0, 1)).detach().clone()
+        stored = self.storage.observations.flatten(0, 1)
+        flat = _flat_obs(self._raw_actor, stored).detach().clone()
+        gate = self.bc_cfg.get("gate_group", "")
+        low = None
+        if gate and gate in stored.keys():
+            low = (stored[gate][:, 0] < float(self.bc_cfg["gate_trunk_m"])).detach().clone()
         loss_dict = super().update()
-        loss_dict.update(self._bc_update(flat))
+        loss_dict.update(self._bc_update(flat, low))
         return loss_dict
 
-    def _bc_update(self, flat: torch.Tensor) -> dict[str, float]:
+    def _bc_update(self, flat: torch.Tensor, low: torch.Tensor | None = None) -> dict[str, float]:
         cfg = self.bc_cfg
-        stats = {"bc_expert": 0.0, "bc_anchor": 0.0, "bc_fallen_frac": 0.0, "bc_standing_frac": 0.0}
+        stats = {"bc_expert": 0.0, "bc_anchor": 0.0, "bc_fallen_frac": 0.0, "bc_standing_frac": 0.0, "bc_low_frac": 0.0}
         if self.expert is None and self.anchor is None:
             return stats
         tilt = tilt_deg_from_obs(flat, tuple(cfg["gravity_slice"]))
         fallen = tilt > float(cfg["gate_tilt_deg"])
         upright = tilt < float(cfg["anchor_tilt_deg"])
+        if low is not None:
+            stats["bc_low_frac"] = float((low & ~fallen).float().mean())
+            fallen = fallen | low  # a low trunk is the expert's frame whatever its tilt; never the anchor's
+            upright = upright & ~low
         t0, t1 = cfg["twist_slice"]
         zero_cmd = flat[:, t0:t1].abs().amax(dim=1) < float(cfg["zero_twist_eps"])
         if cfg.get("expert_on_zero_twist", True):

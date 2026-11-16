@@ -19,6 +19,8 @@ fires and every upright frame is anchored to the run.
 """
 
 from isaaclab.managers import EventTermCfg as EventTerm
+from isaaclab.managers import ObservationGroupCfg as ObsGroup
+from isaaclab.managers import ObservationTermCfg as ObsTerm
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils.configclass import configclass
@@ -26,6 +28,7 @@ from isaaclab.utils.configclass import configclass
 from isaaclab_tasks.contrib.microduck.flat_env_cfg import _schedule
 
 from microduck_rl import mdp
+from microduck_rl.mdp import gate
 from microduck_rl.tasks.velocity_env_cfg import MicroDuckHD1910RunV3FlatAllCollEnvCfg
 
 RUNSTAND_START = 6000
@@ -93,3 +96,31 @@ class MicroDuckHD1910RunStandAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCfg
         self.events.set_fallen_state.params.update(
             {"standing_prob": 1.0, "sitting_prob": 0.0, "prone_prob": 0.0, "supine_prob": 0.0, "random_prob": 0.0, "bank_prob": 0.0}
         )
+
+
+@configclass
+class GateObsCfg(ObsGroup):
+    """Teacher-gate quantities (never fed to the networks; see `microduck_rl/mdp/gate.py`)."""
+
+    trunk_height = ObsTerm(func=gate.trunk_height_obs)
+
+    def __post_init__(self):
+        self.enable_corruption = False
+        self.concatenate_terms = True
+
+
+@configclass
+class MicroDuckHD1910RunStandV2AllCollEnvCfg(MicroDuckHD1910RunStandAllCollEnvCfg):
+    """RunStand v2: the expert also teaches UPRIGHT frames with a LOW trunk.
+
+    Measured on v1 at checkpoint 6500 (`docs/standup_runstand_6500_crouch.json`): every fallen duck rises, but
+    31-36 % of them park in a level squat -- trunk 0.040 m (standing 0.115), tilt 3 deg, knees +-0.9 rad, moving
+    at 0.04 m/s -- and stay there. The v1 gate hands over at 35 deg of tilt, the anchor then clones run v3's action
+    on a squat that policy never saw, and the run env has no height cost to pull it up. VelStand never showed this
+    because its zero-command upright frames were cloned from the expert; the run env has no zero command. Here the
+    trunk height rides along in a ``gate`` observation group and frames below ``gate_trunk_m`` (0.085, midway
+    between the squat and the running trunk) go to the expert whatever their tilt."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.observations.gate = GateObsCfg()

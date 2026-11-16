@@ -49,6 +49,7 @@ def main() -> int:
     ap.add_argument("--num_envs", type=int, default=32)
     ap.add_argument("--push", type=float, default=1.0, help="push magnitude [m/s] for the standing_pushed family, every 1.5 s")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--families", default=None, help="comma-separated subset of the fall families (default: all)")
     ap.add_argument("--zero_twist", action="store_true", help="velocity-command envs (VelStand): command exactly zero twist throughout")
     args, extra = ap.parse_known_args()
     run = args.run.resolve()
@@ -65,6 +66,8 @@ def main() -> int:
             if (run / "exported" / f).exists():
                 shutil.copy(run / "exported" / f, export_dir / f)
     families = [f for f in FAMILY_PARAMS if f != "bank" or os.path.exists("docs/fall_bank.json")]
+    if args.families:
+        families = [f for f in args.families.split(",") if f in families]
     results = {}
     for fam in families:
         cfg = parse_env_cfg(args.task, device="cuda:0", num_envs=args.num_envs, overrides=extra)
@@ -106,11 +109,41 @@ def main() -> int:
                     at3 = up.clone()
         up_end = (S._upright(robot) > math.cos(math.radians(20.0))) & (S._trunk_z(env, robot) > 0.095)
         tts = stood_step[stood_step >= 0].float() * dt
+        # End-state diagnostics: what "not standing" is (a lean past 20 deg, a low trunk, or down past 60 deg).
+        tilt_end = torch.rad2deg(torch.acos(torch.clamp(S._upright(robot), -1.0, 1.0)))
+        trunk_end = S._trunk_z(env, robot)
+        end_diag = {
+            "tilt_end_median_deg": round(float(tilt_end.median()), 1),
+            "trunk_end_median_m": round(float(trunk_end.median()), 4),
+            "end_tilt_20_60_frac": round(float(((tilt_end >= 20.0) & (tilt_end < 60.0)).float().mean()), 3),
+            "end_down_frac": round(float((tilt_end >= 60.0).float().mean()), 3),
+            "end_low_trunk_upright_frac": round(float(((tilt_end < 20.0) & (trunk_end <= 0.095)).float().mean()), 3),
+        }
+        low_up = (tilt_end < 20.0) & (trunk_end <= 0.095)
+        if bool(low_up.any()):
+            v_end = torch.linalg.norm(robot.data.root_lin_vel_w.torch[:, :2], dim=-1)
+            end_diag["low_trunk_speed_median_m_s"] = round(float(v_end[low_up].median()), 3)
+            end_diag["low_trunk_moving_frac"] = round(float((v_end[low_up] > 0.15).float().mean()), 3)
+            end_diag["low_trunk_trunk_median_m"] = round(float(trunk_end[low_up].median()), 4)
+            names = list(robot.joint_names)
+            q = robot.data.joint_pos.torch
+            for key in ("left_knee", "right_knee", "left_hip_pitch", "right_hip_pitch"):
+                if key in names:
+                    j = names.index(key)
+                    end_diag[f"low_trunk_{key}_median_rad"] = round(float(q[low_up, j].median()), 3)
+                    end_diag[f"ok_{key}_median_rad"] = round(float(q[~low_up & (tilt_end < 20.0), j].median()), 3) if bool((~low_up & (tilt_end < 20.0)).any()) else None
+        if hasattr(env, "command_manager"):
+            try:
+                cmd = env.command_manager.get_command("base_velocity")
+                end_diag["cmd_vx_median"] = round(float(cmd[:, 0].median()), 3)
+            except Exception:
+                pass
         results[fam] = {
             "standing_at_3s": round(float(at3.float().mean()), 3), "standing_at_end": round(float(up_end.float().mean()), 3),
             "ever_stood": round(float((stood_step >= 0).float().mean()), 3), "fell_after_standing": round(float(fell_after.float().mean()), 3),
             "time_to_stand_s": {"median": round(float(tts.median()), 2) if tts.numel() else None, "p90": round(float(tts.quantile(0.9)), 2) if tts.numel() else None},
             "peak_omega_median": round(float(peak_w.median()), 2),
+            **end_diag,
         }
         print(fam, results[fam])
         env.close()

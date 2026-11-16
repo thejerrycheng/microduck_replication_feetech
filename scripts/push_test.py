@@ -69,7 +69,8 @@ def tilt_deg(robot):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--task", default="Microduck-SitStand-Flat-HD1910")
-    ap.add_argument("--policy", default="walk", choices=list(POLICIES))
+    ap.add_argument("--policy", default="walk", help=f"one of {list(POLICIES)}, or any label when --policy_path is given")
+    ap.add_argument("--policy_path", default=None, help="explicit exported policy.pt (overrides --policy; the name is used for the output file)")
     ap.add_argument("--vx", type=float, default=0.3)
     ap.add_argument("--levels", default="0.5,1.0,1.5,2.0,2.5,3.0")
     ap.add_argument("--repeats", type=int, default=2)
@@ -92,7 +93,7 @@ def main() -> int:
         robot = env.scene["robot"]
         arrow = VisualizationMarkers(RED_ARROW_X_MARKER_CFG.replace(prim_path="/Visuals/push_arrow")) if record else None
         push_vis = {"until": -1.0, "dir": 0.0, "level": 0.0}
-        pol = torch.jit.load(POLICIES[args.policy], map_location=env.device).eval()
+        pol = torch.jit.load(args.policy_path or POLICIES[args.policy], map_location=env.device).eval()  # KeyError = unknown label
         obs, _ = env.reset()
         buf = env.command_manager.get_term("base_velocity").command
         n = env.num_envs
