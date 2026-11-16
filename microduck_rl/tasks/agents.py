@@ -218,6 +218,18 @@ class RunStandV2PPORunnerCfg(RunStandPPORunnerCfg):
         self.algorithm.symmetry_cfg.data_augmentation_func = compute_symmetric_states_with_extras
         self.algorithm.bc_cfg.update({"gate_group": "gate", "gate_trunk_m": 0.085})
 
+@configclass
+class RunStandV3PPORunnerCfg(RunStandV2PPORunnerCfg):
+    """RunStand v3: v2 plus an anchor that clones the run only on fully risen frames (trunk >= 0.105 m; the
+    0.7 m/s stride never goes below 0.102). Measured on v2 at 6500: the squat is gone (0-2 %) but 48-52 % of the
+    get-ups fall again and 28 % end tilted 20-60 deg -- the anchor took over at the 0.085 m gate mid-rise."""
+
+    experiment_name = _names("microduck_runstand_v3_allcoll")
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.algorithm.bc_cfg.update({"anchor_trunk_m": 0.105})
+
 
 @configclass
 class RouladeHeadPPORunnerCfg(RouladePPORunnerCfg):

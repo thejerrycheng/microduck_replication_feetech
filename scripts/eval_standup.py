@@ -103,7 +103,13 @@ def main() -> int:
                 obs, *_ = env.step(policy(obs["policy"]))
                 up = (S._upright(robot) > math.cos(math.radians(20.0))) & (S._trunk_z(env, robot) > 0.095)
                 stood_step = torch.where(up & (stood_step < 0), torch.full_like(stood_step, t), stood_step)
-                fell_after |= (stood_step >= 0) & (S._upright(robot) < math.cos(math.radians(60.0)))
+                down_now = S._upright(robot) < math.cos(math.radians(60.0))
+                fell_after |= (stood_step >= 0) & down_now
+                if t == 0:
+                    n_refalls = torch.zeros(n, dtype=torch.long, device=env.device)
+                    was_up = torch.zeros(n, dtype=torch.bool, device=env.device)
+                n_refalls += (was_up & down_now).long()
+                was_up = up | (was_up & ~down_now)
                 peak_w = torch.maximum(peak_w, torch.linalg.norm(robot.data.root_ang_vel_w.torch, dim=-1))
                 if t == int(3.0 / dt):
                     at3 = up.clone()
@@ -132,6 +138,16 @@ def main() -> int:
                     j = names.index(key)
                     end_diag[f"low_trunk_{key}_median_rad"] = round(float(q[low_up, j].median()), 3)
                     end_diag[f"ok_{key}_median_rad"] = round(float(q[~low_up & (tilt_end < 20.0), j].median()), 3) if bool((~low_up & (tilt_end < 20.0)).any()) else None
+        mid = (tilt_end >= 20.0) & (tilt_end < 60.0)
+        if bool(mid.any()):
+            v_end = torch.linalg.norm(robot.data.root_lin_vel_w.torch[:, :2], dim=-1)
+            end_diag["mid_tilt_trunk_median_m"] = round(float(trunk_end[mid].median()), 4)
+            end_diag["mid_tilt_tilt_median_deg"] = round(float(tilt_end[mid].median()), 1)
+            end_diag["mid_tilt_speed_median_m_s"] = round(float(v_end[mid].median()), 3)
+            end_diag["mid_tilt_pitch_sign_fwd_frac"] = round(float((robot.data.projected_gravity_b.torch[mid, 0] > 0).float().mean()), 3)
+        # how many times each duck crossed from standing to fallen (>60 deg) and back: a chattering hand-over
+        if "n_refalls" in locals():
+            end_diag["refalls_per_duck_mean"] = round(float(n_refalls.float().mean()), 2)
         if hasattr(env, "command_manager"):
             try:
                 cmd = env.command_manager.get_command("base_velocity")

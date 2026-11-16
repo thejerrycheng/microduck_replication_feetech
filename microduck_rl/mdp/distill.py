@@ -55,6 +55,11 @@ def default_bc_cfg() -> dict:
         # measured on RunStand v1: 31-36 % of get-ups parked at 0.040 m). Empty group name = off.
         "gate_group": "",
         "gate_trunk_m": 0.085,
+        # With a gate group: the anchor clones the warm start only on frames with the trunk ABOVE this (a fully
+        # risen duck); between gate_trunk_m and anchor_trunk_m PPO alone owns the hand-over, as it owns the
+        # 25-35 deg tilt band. None = anchor on every upright frame (RunStand v2, measured: the anchor took over
+        # at 0.085 m mid-rise and toppled half the get-ups).
+        "anchor_trunk_m": None,
     }
 
 
@@ -103,14 +108,17 @@ class PpoWithExpertBc(PPO):
         stored = self.storage.observations.flatten(0, 1)
         flat = _flat_obs(self._raw_actor, stored).detach().clone()
         gate = self.bc_cfg.get("gate_group", "")
-        low = None
+        low = risen = None
         if gate and gate in stored.keys():
-            low = (stored[gate][:, 0] < float(self.bc_cfg["gate_trunk_m"])).detach().clone()
+            trunk = stored[gate][:, 0].detach().clone()
+            low = trunk < float(self.bc_cfg["gate_trunk_m"])
+            if self.bc_cfg.get("anchor_trunk_m") is not None:
+                risen = trunk >= float(self.bc_cfg["anchor_trunk_m"])
         loss_dict = super().update()
-        loss_dict.update(self._bc_update(flat, low))
+        loss_dict.update(self._bc_update(flat, low, risen))
         return loss_dict
 
-    def _bc_update(self, flat: torch.Tensor, low: torch.Tensor | None = None) -> dict[str, float]:
+    def _bc_update(self, flat: torch.Tensor, low: torch.Tensor | None = None, risen: torch.Tensor | None = None) -> dict[str, float]:
         cfg = self.bc_cfg
         stats = {"bc_expert": 0.0, "bc_anchor": 0.0, "bc_fallen_frac": 0.0, "bc_standing_frac": 0.0, "bc_low_frac": 0.0}
         if self.expert is None and self.anchor is None:
@@ -122,6 +130,9 @@ class PpoWithExpertBc(PPO):
             stats["bc_low_frac"] = float((low & ~fallen).float().mean())
             fallen = fallen | low  # a low trunk is the expert's frame whatever its tilt; never the anchor's
             upright = upright & ~low
+        if risen is not None:
+            stats["bc_handover_frac"] = float((upright & ~risen).float().mean())
+            upright = upright & risen  # the anchor only on fully risen frames
         t0, t1 = cfg["twist_slice"]
         zero_cmd = flat[:, t0:t1].abs().amax(dim=1) < float(cfg["zero_twist_eps"])
         if cfg.get("expert_on_zero_twist", True):
