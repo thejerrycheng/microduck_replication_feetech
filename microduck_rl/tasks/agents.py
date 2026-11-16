@@ -185,6 +185,25 @@ class VelStandPPORunnerCfg(WalkV4AllCollPPORunnerCfg):
         self.algorithm.entropy_coef = 0.001
         self.algorithm.learning_rate = 5.0e-4
 
+@configclass
+class RunStandPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
+    """RunStand: the VelStand distillation on the run v3 recipe (fallen-gated BC from the stand-up expert, upright
+    anchor to the warm-start run checkpoint; `microduck_rl.mdp.distill.PpoWithExpertBc`). Mirror loss kept.
+    Teachers on the command line: ``agent.algorithm.bc_cfg.expert_checkpoint=... anchor_checkpoint=...``.
+    Entropy 0.001 / lr 5e-4 as VelStand measured (falls are not terminated here; 0.01 blew the std up)."""
+
+    experiment_name = _names("microduck_runstand_allcoll")
+    max_iterations = 2000
+
+    def __post_init__(self):
+        super().__post_init__()
+        from microduck_rl.mdp.distill import default_bc_cfg
+
+        self.algorithm.class_name = "microduck_rl.mdp.distill:PpoWithExpertBc"
+        self.algorithm.bc_cfg = default_bc_cfg()
+        self.algorithm.entropy_coef = 0.001
+        self.algorithm.learning_rate = 5.0e-4
+
 
 @configclass
 class RouladeHeadPPORunnerCfg(RouladePPORunnerCfg):
