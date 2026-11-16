@@ -110,6 +110,17 @@ def main() -> int:
                     was_up = torch.zeros(n, dtype=torch.bool, device=env.device)
                 n_refalls += (was_up & down_now).long()
                 was_up = up | (was_up & ~down_now)
+                # occupancy of the state bands over the rollout, and the band of the last 2 s
+                if t == 0:
+                    occ = torch.zeros(n, 4, device=env.device)  # standing / low-upright / mid-tilt / down
+                    tail_mid = torch.zeros(n, device=env.device)
+                tl_now = torch.rad2deg(torch.acos(torch.clamp(S._upright(robot), -1.0, 1.0)))
+                tz_now = S._trunk_z(env, robot)
+                band = torch.where(tl_now >= 60.0, 3, torch.where(tl_now >= 20.0, 2, torch.where(tz_now <= 0.095, 1, 0)))
+                if t >= int(2.0 / dt):
+                    occ[torch.arange(n, device=env.device), band] += 1.0
+                if t >= steps - int(2.0 / dt):
+                    tail_mid += (band == 2).float()
                 peak_w = torch.maximum(peak_w, torch.linalg.norm(robot.data.root_ang_vel_w.torch, dim=-1))
                 if t == int(3.0 / dt):
                     at3 = up.clone()
@@ -148,6 +159,9 @@ def main() -> int:
         # how many times each duck crossed from standing to fallen (>60 deg) and back: a chattering hand-over
         if "n_refalls" in locals():
             end_diag["refalls_per_duck_mean"] = round(float(n_refalls.float().mean()), 2)
+            o = occ / occ.sum(dim=1, keepdim=True).clamp(min=1.0)
+            end_diag["occupancy_after_2s"] = {k: round(float(o[:, i].mean()), 3) for i, k in enumerate(("standing", "low_upright", "mid_tilt", "down"))}
+            end_diag["stuck_mid_tilt_last2s_frac"] = round(float((tail_mid >= int(2.0 / dt) - 1).float().mean()), 3)
         if hasattr(env, "command_manager"):
             try:
                 cmd = env.command_manager.get_command("base_velocity")
