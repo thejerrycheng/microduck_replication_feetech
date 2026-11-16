@@ -104,6 +104,16 @@ def main() -> int:
                 up = (S._upright(robot) > math.cos(math.radians(20.0))) & (S._trunk_z(env, robot) > 0.095)
                 stood_step = torch.where(up & (stood_step < 0), torch.full_like(stood_step, t), stood_step)
                 down_now = S._upright(robot) < math.cos(math.radians(60.0))
+                if t == 0:
+                    refall_step = torch.full((n,), -1, device=env.device)
+                    speed_at_stand = torch.zeros(n, device=env.device)
+                    pitch_at_stand = torch.zeros(n, device=env.device)
+                v_xy = torch.linalg.norm(robot.data.root_lin_vel_w.torch[:, :2], dim=-1)
+                just_stood = up & (stood_step < 0)
+                speed_at_stand = torch.where(just_stood, v_xy, speed_at_stand)
+                pitch_at_stand = torch.where(just_stood, robot.data.projected_gravity_b.torch[:, 0], pitch_at_stand)
+                refall_now = (stood_step >= 0) & down_now & (refall_step < 0)
+                refall_step = torch.where(refall_now, torch.full_like(refall_step, t), refall_step)
                 fell_after |= (stood_step >= 0) & down_now
                 if t == 0:
                     n_refalls = torch.zeros(n, dtype=torch.long, device=env.device)
@@ -159,6 +169,14 @@ def main() -> int:
         # how many times each duck crossed from standing to fallen (>60 deg) and back: a chattering hand-over
         if "n_refalls" in locals():
             end_diag["refalls_per_duck_mean"] = round(float(n_refalls.float().mean()), 2)
+            rf = refall_step >= 0
+            if bool(rf.any()):
+                delay = (refall_step[rf] - stood_step[rf]).float() * dt
+                end_diag["refall_delay_s"] = {"median": round(float(delay.median()), 2), "p10": round(float(delay.quantile(0.1)), 2), "p90": round(float(delay.quantile(0.9)), 2)}
+                end_diag["speed_at_first_stand_m_s"] = {"refallers": round(float(speed_at_stand[rf].median()), 3),
+                                                        "stayers": round(float(speed_at_stand[(stood_step >= 0) & ~rf].median()), 3) if bool(((stood_step >= 0) & ~rf).any()) else None}
+                end_diag["fwd_pitch_at_first_stand"] = {"refallers": round(float(pitch_at_stand[rf].median()), 3),
+                                                        "stayers": round(float(pitch_at_stand[(stood_step >= 0) & ~rf].median()), 3) if bool(((stood_step >= 0) & ~rf).any()) else None}
             o = occ / occ.sum(dim=1, keepdim=True).clamp(min=1.0)
             end_diag["occupancy_after_2s"] = {k: round(float(o[:, i].mean()), 3) for i, k in enumerate(("standing", "low_upright", "mid_tilt", "down"))}
             end_diag["stuck_mid_tilt_last2s_frac"] = round(float((tail_mid >= int(2.0 / dt) - 1).float().mean()), 3)
