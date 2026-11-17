@@ -1,0 +1,16 @@
+{
+  "_comment": "Copy to <project>/.claude/settings.json. Rebuilds a doc's PDF whenever its .tex is edited. Assumes docs/rebuild_on_tex_change.sh exists; if docs/ is not at the project root, adjust the path.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/docs/rebuild_on_tex_change.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

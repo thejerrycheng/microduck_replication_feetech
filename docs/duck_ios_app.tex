@@ -1,0 +1,167 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,booktabs,amsmath,hyperref}
+\sloppy
+\input{duck_ios_numbers}
+
+\title{Duck for iPhone: one screen for the Microduck's state, calibration, driving and policies}
+\author{Microduck replication (Feetech HD1910)}
+\date{2026-11-17}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A SwiftUI app (iOS 26, Liquid Glass) that puts the servo studio and the Duck Live engine on a phone. It finds both
+servers on the Wi-Fi by itself, draws the same 3-D duck, and has three modes: \emph{Duck} (which servos and sensors
+answer, live plots, zero / test / gains per servo), \emph{Play} (a joystick, sit, run, jump, flip, 27 emotions) and
+\emph{Policy} (which ONNX export each skill runs). It was tested in the iOS simulator with XCUITest against a mock
+servo bus and the real engine: \iosPassed{} test runs passed, \iosFailed{} failed. It has not run on a physical
+iPhone, and Play and Policy drive the simulated duck, because no policy runtime for the real duck exists in this
+repository yet.
+\end{abstract}
+
+\textbf{Keywords:} teleoperation interface, SwiftUI, SceneKit, Bonjour, bipedal robot, servo calibration.
+
+\section{Overview}
+Two servers already exist on the Mac. \texttt{firmware/studio.py} talks to the real servos and, over SSH, to the
+duck's computer and its sensors. \texttt{app/server.py} runs the policies on a MuJoCo plant at 50~Hz
+(\texttt{docs/duck\_live\_app.pdf}). Both listened on 127.0.0.1 only. The app adds no third server: each gained a
+\texttt{--lan} flag (\texttt{ios/lan.py}) that listens on every interface and registers a Bonjour service
+\texttt{\_microduck.\_tcp} whose TXT record says which server it is (and, for the engine, its WebSocket port and
+token). The phone browses for that type, so nothing is typed and there is no setup screen.
+
+Left out on purpose: setting servo IDs and baud rates (bench work, done once at the Mac), the plant settings,
+and the 3-D camera and ToF overlays.
+
+\section{Method}
+\subsection{One model, two looks}
+The app bundles \texttt{firmware/web/duck.bin}, the file the studio page draws. \texttt{bake\_duck.py} now also
+writes, per part, the body it belongs to and its pose in that body's frame $(\mathbf{p}_\ell, q_\ell)$, and per body
+its standing pose. The mesh payload is byte-identical to the previous bake, so the studio page is unaffected. A part's
+world pose is
+\begin{equation}
+\mathbf{x} = \mathbf{p}_b + q_b\,\mathbf{p}_\ell\,q_b^{-1}, \qquad q = q_b\,q_\ell ,
+\end{equation}
+with $(\mathbf{p}_b, q_b)$ either the baked standing pose (Duck mode) or the body pose in the engine's snapshot,
+matched by body name (Play and Policy). The visual geoms and their body-frame poses are identical in
+\texttt{scene.xml} (baked) and \texttt{scene\_backlash.xml} (simulated); this was checked for all 70 geoms on 15
+bodies. In the live look the duck is held over the origin and the grid floor is shifted by
+$-(x \bmod 0.2, y \bmod 0.2)$~m, so the camera needs no follow logic.
+
+Duck mode colours follow the studio: green = answering, red = found but silent, see-through = not on the bus,
+blue = selected. With the IMU window open its quaternion turns the whole duck.
+
+\subsection{Joystick}
+The engine is driven by held keys, as the Mac app is, so the phone needs no new command path. With the knob at
+$(x, y) \in [-1,1]^2$ ($y$ forward), the held set is
+\begin{equation}
+\{\text{up} : y > \theta\} \cup \{\text{down} : y < -\theta\} \cup \{\text{left} : x < -\theta\} \cup \{\text{right} : x > \theta\}, \qquad \theta = 0.35,
+\end{equation}
+and the run modifier is sent only while the run switch is on and the set is exactly $\{\text{up}\}$, because the
+run and sprint policies cannot turn. The stick is therefore eight-way, not proportional; speed is the five-step
+level under it. Letting go, leaving the Play mode, or the app leaving the screen sends an empty set, and the engine
+clears the keys itself when the socket drops.
+
+\subsection{Data paths}
+Studio: \texttt{GET /api/state?since=n} every 100~ms with the bus open (700~ms otherwise); the reply carries the
+samples newer than $n$, which fill a 10~s window per servo. Commands are the studio's own routes
+(\texttt{connect}, \texttt{torque}, \texttt{move}, \texttt{wiggle}, \texttt{center}, \texttt{gains},
+\texttt{set\_gains}, \texttt{say}, \texttt{brain\_connect}). The slider sends at most 25 positions a second and
+always the last one. Zero asks for confirmation, since it rewrites the servo's EEPROM offset. Engine: one WebSocket
+for the 50~Hz snapshots and the key, press and emote messages; \texttt{POST /api/policies} and \texttt{/api/config}
+for the policy and the speed level.
+
+\section{Experiments}
+All numbers come from \texttt{ios/tools/test.sh}: the app in the iPhone~17~Pro simulator (iOS~26), driven by
+XCUITest, against \texttt{studio.py --mock --lan} (a simulated bus of 15 servos, one of them on a factory ID, and
+simulated sensors) and \texttt{server.py --lan} (the real engine and exports). The suite runs once in light and
+once in dark appearance, then once with both servers stopped and restarted. Every assertion reads back what the
+servers did through the app's own accessibility values.
+
+\begin{table}[h]\centering
+\begin{tabular}{lrrlr}\toprule
+quantity & mean & range & unit & runs \\\midrule
+\iosTable
+\bottomrule\end{tabular}
+\caption{Measured through the UI. Times include XCUITest's own polling (0.1~s) and tap synthesis. The studio
+samples at 40~Hz; the phone receives them in 100~ms batches.}
+\end{table}
+
+What the tests establish, beyond ``it launches'':
+\begin{itemize}\itemsep0pt
+\item \textbf{Connections.} Both servers are found over Bonjour; the bus switch brings up 14/15 joints plus the
+factory-ID servo; the duck switch brings the five sensors up and down.
+\item \textbf{Servo.} Samples keep arriving; torque on; the slider at 0.8, 0.2 and 0.5 of its travel drives the
+goal into the matching band of the joint's range; Test swings the joint and releases it; the factory gains
+32/40 are read, the replica's 5/20 filled, written and read back; Zero asks, then the pose reads 2048.
+\item \textbf{Sensors.} Camera (a decoded 320$\times$240 NV12 frame), ToF, IMU and microphone each show a reading;
+two voice sounds play without an error.
+\item \textbf{Play.} A 3~s forward push covers more than 0.3~m and the duck stops within 3~cm afterwards;
+backward, turning and a diagonal leave it standing; sit, stand, jump, flip and an emotion each pass through their
+state and return to standing.
+\item \textbf{Policy.} The walk policy is swapped and restored; with the jump policy off the jump button is
+disabled, and enabled again once it is back.
+\item \textbf{Offline.} With nothing on the network the app shows the command to start; when the servers start it
+connects without being relaunched.
+\end{itemize}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/duck_ios_drive.pdf}
+\caption{Distance covered in one 3~s forward push of the joystick, per speed level, with the run switch off and
+on (one push each). Dashed: the level's commanded speed times 3~s. Level 5 with run on is the sprint policy.}
+\end{figure}
+
+\begin{table}[h]\centering
+\begin{tabular}{crrrr}\toprule
+level & walk cmd [m/s] & walk dist. [m] & run cmd [m/s] & run dist. [m] \\\midrule
+\iosDrive
+\bottomrule\end{tabular}
+\caption{The data of the figure. Distance is the engine's odometer, which also counts the stop after release.}
+\end{table}
+
+Two defects were found by the tests and fixed: positions above 999 were printed with a thousands separator, and the
+servo card's bottom row was wider than the screen, which squeezed Test and Zero to 38~pt.
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.23\linewidth]{figures/ios/03_connected.png}\hfill
+\includegraphics[width=0.23\linewidth]{figures/ios/04_servo.png}\hfill
+\includegraphics[width=0.23\linewidth]{figures/ios/07_play.png}\hfill
+\includegraphics[width=0.23\linewidth]{figures/ios/12_policy.png}
+\caption{Duck mode, a selected servo, Play, Policy (simulator screenshots written by the tests).}
+\end{figure}
+
+\section{Implementation and usage}
+\begin{verbatim}
+firmware/studio.py --lan     # on the Mac (add --mock for no hardware)
+app/server.py --lan
+cd ios && xcodegen generate && open Duck.xcodeproj
+                             # pick a team under Signing, run on the phone
+ios/tools/test.sh            # the whole simulator test
+ios/tools/plot_tests.py      # figure and numbers from its log
+\end{verbatim}
+\texttt{Link.swift} holds discovery and both clients in one observable model; \texttt{Scene.swift} the model
+loader and SceneKit scene; \texttt{Views.swift} the screen. The hardware path is unchanged from the studio: the
+phone only ever speaks to \texttt{studio.py}, which owns the serial bus.
+
+\section{Limitations}
+\begin{itemize}\itemsep0pt
+\item Simulator only. Local-network permission, Wi-Fi latency, and touch feel on a real iPhone are untested.
+\item The servo side was tested against the mock bus; on real servos the studio's own caveats apply
+(\texttt{firmware/README.md}).
+\item Play and Policy act on the simulated duck. ``Deploying'' a policy means loading it into the engine.
+\item \texttt{--lan} gives everyone on the network access; the studio has no login and the engine's token is
+readable in its Bonjour record.
+\item The stick is eight-way, there is no sidestep, and emotion sounds are not played on the phone.
+\item The speed sweep is one push per setting; the hold time is XCUITest's, not a calibrated timer.
+\item The studio was being changed while this was built (its speaker route became \texttt{say}); the app matches
+the studio as of this date.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{pollen} Pollen Robotics, \emph{microduck} and \emph{microduck\_emotions}, GitHub, Apache-2.0.
+\bibitem{mujoco} E.~Todorov, T.~Erez, Y.~Tassa, ``MuJoCo: A physics engine for model-based control,'' IROS 2012.
+\bibitem{dnssd} S.~Cheshire, M.~Krochmal, ``DNS-Based Service Discovery,'' RFC~6763, 2013.
+\bibitem{kissqy} kissqy, \emph{Microduck-kissqy}, GitHub (HD1910 replica: ID map, registers, gains).
+\end{thebibliography}
+\end{document}

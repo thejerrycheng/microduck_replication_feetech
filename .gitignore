@@ -24,3 +24,14 @@ dist/
 # Selected checkpoints (RSL-RL .pt + TorchScript policy + the run's configs), ~6 MB each.
 !checkpoints/
 !checkpoints/**
+# macOS, LaTeX build files
+.DS_Store
+docs/*.aux
+docs/*.fls
+docs/*.fdb_latexmk
+docs/*.log
+docs/*.out
+# third-party system images (several GB each); see firmware/README.md for where they come from
+openmicroduck_image/
+# this duck's own calibration: lives on the duck, with a local copy here
+firmware/calibration.json

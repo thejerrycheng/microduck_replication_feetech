@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duck Servo Studio</title>
+<style>
+  :root {
+    --ink: #1d1d1f; --dim: rgba(60, 60, 67, .6); --glass: rgba(255, 255, 255, .52); --edge: rgba(255, 255, 255, .75);
+    --fill: rgba(120, 120, 128, .14); --shadow: 0 12px 40px rgba(31, 38, 60, .14); --line: rgba(60, 60, 67, .28);
+    --blue: #007aff; --green: #34c759; --orange: #ff9500; --red: #ff3b30;
+    --bg: radial-gradient(60vw 60vh at 12% 8%, #dfe9ff, transparent 70%), radial-gradient(50vw 55vh at 92% 18%, #ffe9d6, transparent 70%),
+          radial-gradient(60vw 60vh at 60% 105%, #dff7ea, transparent 70%), #f5f5f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #f5f5f7; --dim: rgba(235, 235, 245, .6); --glass: rgba(44, 44, 50, .5); --edge: rgba(255, 255, 255, .16);
+      --fill: rgba(120, 120, 128, .28); --shadow: 0 12px 40px rgba(0, 0, 0, .45); --line: rgba(235, 235, 245, .3);
+      --blue: #0a84ff; --green: #30d158; --orange: #ff9f0a; --red: #ff453a;
+      --bg: radial-gradient(60vw 60vh at 12% 8%, #1c2a4d, transparent 70%), radial-gradient(50vw 55vh at 92% 18%, #45291c, transparent 70%),
+            radial-gradient(60vw 60vh at 60% 105%, #153828, transparent 70%), #0b0b0d;
+    }
+  }
+  :root { --spring: cubic-bezier(.3, 1.5, .5, 1); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg); color: var(--ink);
+    font: 15px/1.3 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; }
+  #vw, #lines, #tags { position: fixed; inset: 0; }
+  #vw canvas { width: 100%; height: 100%; display: block; }
+  #lines, #tags { pointer-events: none; width: 100%; height: 100%; }
+  #lines line { stroke: var(--line); stroke-width: 1; }
+  #lines circle { fill: var(--line); }
+  #lines .on line { stroke: var(--blue); stroke-width: 1.5; } #lines .on circle { fill: var(--blue); }
+
+  .glass { background: var(--glass); border: 1px solid var(--edge); box-shadow: var(--shadow), inset 0 1px 0 var(--edge);
+    -webkit-backdrop-filter: blur(28px) saturate(180%); backdrop-filter: blur(28px) saturate(180%); }
+  button, select, input { font: inherit; color: inherit; }
+  button, select { border: 0; border-radius: 999px; padding: 8px 16px; background: var(--fill); cursor: pointer; font-weight: 500;
+    transition: transform .35s var(--spring), background .3s, color .3s, opacity .3s; -webkit-appearance: none; appearance: none; }
+  button:active { transform: scale(.92); }
+  button:disabled { opacity: .35; cursor: default; }
+  button.pri { background: var(--blue); color: #fff; }
+  [hidden] { display: none !important; }
+
+  #bar { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: center;
+    padding: 8px; border-radius: 999px; white-space: nowrap; }
+  #dot, #bdot { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); margin: 0 4px 0 10px; transition: background .3s; }
+  #dot.on, #bdot.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
+  #bdot { margin: 0 -2px 0 6px; }
+  #count { color: var(--dim); font-variant-numeric: tabular-nums; padding-right: 10px; }
+  /* found servos: a pill under the bar that pours in, each servo popping after the last */
+  #found { position: fixed; top: 76px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; padding: 6px; border-radius: 999px;
+    max-width: calc(100% - 36px); overflow-x: auto; scrollbar-width: none;
+    transition: opacity .35s, filter .35s, transform .6s cubic-bezier(.3, 1.5, .5, 1); }
+  #found.empty { opacity: 0; filter: blur(10px); transform: translateX(-50%) translateY(-16px) scale(.6); pointer-events: none; }
+  #found a { display: flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; cursor: pointer; user-select: none;
+    animation: pop .6s cubic-bezier(.3, 1.5, .5, 1) backwards; animation-delay: calc(var(--i) * 30ms + 120ms);
+    transition: background .25s, color .25s, transform .25s cubic-bezier(.3, 1.5, .5, 1); }
+  #found a:hover { background: var(--fill); transform: scale(1.08); } #found a:active { transform: scale(.94); }
+  #found a { position: relative; z-index: 1; } #found a.sel { color: #fff; }
+  /* one highlight that slides and stretches between choices, instead of one switching off and another on */
+  .blob { position: absolute; top: 6px; bottom: 6px; left: 0; width: 0; border-radius: 999px; background: var(--blue); opacity: 0; pointer-events: none;
+    transition: left .5s var(--spring), width .5s var(--spring), opacity .25s; }
+  .seg { position: relative; } .seg .blob { top: 2px; bottom: 2px; background: var(--glass); box-shadow: 0 1px 4px rgba(0, 0, 0, .12); }
+  .seg button { position: relative; z-index: 1; }
+  #found b { font-size: 16px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  #found u { width: 8px; height: 8px; border-radius: 50%; background: var(--green); transition: background .3s; }
+  #found u.bad { background: var(--red); } #found u.new { background: var(--orange); } #found a.sel u { background: #fff; }
+  @keyframes pop { from { opacity: 0; filter: blur(6px); transform: scale(.3) translateY(-10px); } }
+  @media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important; } }
+
+  .tag { position: absolute; transform: translate(-50%, -50%); pointer-events: auto; cursor: pointer; display: flex; align-items: baseline;
+    gap: 7px; padding: 6px 13px; border-radius: 999px; user-select: none;
+    transition: background .3s, color .3s, opacity .3s, box-shadow .3s, transform .45s var(--spring);
+    animation: tagpop .6s var(--spring) backwards; animation-delay: calc(var(--i) * 28ms + 150ms); }
+  .tag:hover { transform: translate(-50%, -50%) scale(1.06); }
+  @keyframes tagpop { from { opacity: 0; filter: blur(6px); transform: translate(-50%, -50%) scale(.4); } }
+  .tag b { font-size: 16px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .tag i { font-style: normal; font-size: 12px; color: var(--dim); }
+  .tag.off { opacity: .5; }
+  .tag.ok b { color: var(--green); } .tag.bad b { color: var(--red); }
+  .tag.sel { background: var(--blue); border-color: transparent; transform: translate(-50%, -50%) scale(1.1); } .tag.sel b, .tag.sel i { color: #fff; }
+  .tag.aim { box-shadow: 0 0 0 2px var(--blue), var(--shadow); opacity: 1; }
+
+  #card { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 22px;
+    padding: 16px 22px; border-radius: 28px; white-space: nowrap; }
+  #who b { display: block; font-size: 40px; font-weight: 700; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  #who span { color: var(--dim); font-size: 13px; }
+  .sw { width: 51px; height: 31px; padding: 0; background: var(--fill); position: relative; }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .25); transition: transform .22s cubic-bezier(.3, 1.3, .6, 1); }
+  .sw.on { background: var(--green); } .sw.on::after { transform: translateX(20px); }
+  input[type=range] { width: 170px; accent-color: var(--blue); }
+  .lab { color: var(--dim); }
+  .num { width: 62px; border: 0; border-radius: 12px; padding: 8px 0; text-align: center; background: var(--fill); font-weight: 600;
+    font-variant-numeric: tabular-nums; outline: none; -moz-appearance: textfield; }
+  .num::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .sep { width: 1px; align-self: stretch; background: var(--line); opacity: .5; }
+  .seg { display: flex; background: var(--fill); border-radius: 999px; padding: 2px; }
+  .seg button { background: none; padding: 6px 14px; color: var(--dim); }
+  .seg button.on { color: var(--ink); }
+  #card { flex-direction: column; align-items: stretch; gap: 14px; transform-origin: 50% 100%;
+    transition: opacity .3s, filter .3s, transform .6s var(--spring); }
+  #card.empty { opacity: 0; filter: blur(14px); transform: translateX(-50%) translateY(46px) scale(.78); pointer-events: none; }
+  #card > .row { gap: 22px; }
+  #plots { display: flex; gap: 8px; height: 96px; }
+  #plots canvas { flex: 1; min-width: 0; height: 100%; background: var(--fill); border-radius: 14px; }
+  #plots .tools { display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; }
+  #plots .tools button { padding: 6px 12px; font-size: 13px; }
+  .sw8 { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: middle; }
+  /* the duck's sensors: a dock of round buttons; one that is on grows into its window */
+  #dock { position: fixed; left: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px;
+    max-height: calc(100% - 36px); overflow-y: auto; scrollbar-width: none; padding: 30px; margin: -30px; }
+  .sn { width: 46px; height: 46px; flex: none; border-radius: 23px; overflow: hidden; position: relative; white-space: nowrap;
+    transition: width .55s var(--spring), height .55s var(--spring), border-radius .4s;
+    animation: pop .6s var(--spring) backwards; animation-delay: calc(var(--i) * 50ms + 250ms); }
+  .sn.on { width: 216px; height: var(--h); border-radius: 22px; }
+  .sn .ic { width: 44px; height: 44px; padding: 0; background: none; display: grid; place-items: center; color: var(--dim); }
+  .sn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .sn.ok .ic { color: var(--green); } .sn.bad .ic { color: var(--red); } .sn.on .ic { color: var(--blue); }
+  .sn b, .sn i { position: absolute; top: 13px; opacity: 0; transition: opacity .3s; } .sn.on b, .sn.on i { opacity: 1; transition-delay: .15s; }
+  .sn b { left: 46px; font-weight: 600; } .sn i { right: 14px; top: 15px; font-style: normal; font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .sn.bad i { color: var(--red); }
+  .sn .view { position: absolute; left: 11px; top: 46px; width: 192px; }
+  .sn canvas { width: 192px; display: block; border-radius: 12px; background: var(--fill); }
+  #level { width: 100%; margin-top: 6px; }
+  .sn .view:not(:has(canvas)) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .sn .view button { padding: 8px 0; font-size: 13px; }
+  /* calibration: a strip that drops in under the found row while the duck is being posed at home */
+  #cal { position: fixed; top: 130px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px;
+    padding: 8px 8px 8px 18px; border-radius: 999px; white-space: nowrap;
+    transition: opacity .3s, filter .3s, transform .6s var(--spring); }
+  #cal.empty { opacity: 0; filter: blur(10px); transform: translateX(-50%) translateY(-18px) scale(.7); pointer-events: none; }
+  #cal i { font-style: normal; color: var(--dim); font-size: 13px; }
+  #calib u { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 7px; vertical-align: 1px; }
+  .nudge { width: 31px; height: 31px; padding: 0; font-size: 17px; line-height: 1; }
+  #tip { position: fixed; padding: 5px 10px; border-radius: 999px; color: var(--dim); pointer-events: none; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #tip div { display: flex; gap: 8px; align-items: center; } #tip span:last-child { margin-left: auto; padding-left: 12px; font-weight: 600; }
+  #tip small { color: var(--dim); }
+  #toast { position: fixed; top: 186px; left: 50%; transform: translate(-50%, -8px); padding: 9px 18px; border-radius: 999px; opacity: 0;
+    transition: opacity .25s, filter .25s, transform .5s var(--spring); filter: blur(8px); pointer-events: none; }
+  #toast { transform: translate(-50%, -14px) scale(.7); } #toast.show { opacity: 1; filter: none; transform: translate(-50%, 0); }
+  #toast.bad { color: var(--red); }
+</style>
+</head>
+<body>
+<div id="vw"></div>
+<svg id="lines"></svg>
+<div id="tags"></div>
+
+<header id="bar" class="glass">
+  <span id="dot"></span>
+  <select id="port" title="Serial port"></select>
+  <select id="baud" title="Baud rate"></select>
+  <button id="link" class="pri">Connect</button>
+  <button id="scan" disabled>Scan</button>
+  <button id="calib" hidden title="Calibrate: lay the duck on its back, pose every joint at home, save">Calibrate</button>
+  <button id="fix" hidden title="Move every found servo to 1 Mbit">Set 1M</button>
+  <span id="count"></span>
+  <span class="sep"></span>
+  <span id="bdot"></span>
+  <button id="blink" title="The duck's own computer and its sensors, over SSH">Duck</button>
+</header>
+<aside id="dock"></aside>
+<div id="cal" class="glass empty">
+  <b>Home pose</b><i>duck on its back, joints straight</i>
+  <button id="chold" class="sw" title="Hold: torque on, so each joint can be trimmed"></button>
+  <button id="csave" class="pri">Save</button><button id="ccancel">Cancel</button>
+</div>
+<nav id="found" class="glass empty"></nav>
+
+<section id="card" class="glass empty">
+  <div id="plots">
+    <canvas data-k="pos"></canvas><canvas data-k="vel"></canvas><canvas data-k="load"></canvas><canvas data-k="temp"></canvas>
+    <div class="tools">
+      <div id="win" class="seg"><button data-w="10" class="on">10s</button><button data-w="60">60s</button></div>
+      <button id="csv">CSV</button>
+    </div>
+  </div>
+  <div class="row">
+  <div id="who"><b></b><span></span></div>
+  <div class="sep"></div>
+  <div class="row"><button id="torque" class="sw" title="Torque"></button><button id="dn" class="nudge" title="Nudge 0.2°">‹</button><input id="slide" type="range"><button id="up" class="nudge" title="Nudge 0.2°">›</button><button id="test">Test</button><button id="zero" title="Make the present position read 2048 (mid-travel)">Zero</button></div>
+  <div class="sep"></div>
+  <div class="row"><span class="lab">ID</span><input id="to" class="num" type="number" min="0" max="253"><button id="set" class="pri">Set</button></div>
+  <div class="sep"></div>
+  <div class="row"><span class="lab">P</span><input id="kp" class="num" type="number" min="0" max="254"><span class="lab">D</span><input id="kd" class="num" type="number" min="0" max="254"><button id="gduck" title="Fill the replica's gains: P 5, D 20 (beak P 10)">Duck</button><button id="gset" class="pri" disabled>Set</button></div>
+  </div>
+</section>
+<div id="tip" class="glass" hidden></div>
+<div id="toast" class="glass"></div>
+
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const dark = matchMedia("(prefers-color-scheme: dark)");
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const nice = n => n.replace("left_", "L ").replace("right_", "R ").replace(/_/g, " ");
+const found = new Map();
+function slide(box, to) {                       // move a container's highlight under `to` (or hide it)
+  const b = box.querySelector(".blob") || box.insertBefore(Object.assign(document.createElement("span"), { className: "blob" }), box.firstChild);
+  if (!to) return b.style.opacity = 0;
+  if (b.style.opacity !== "1") b.style.transition = "opacity .25s";            // first showing: appear in place, do not fly in
+  b.style.left = to.offsetLeft + "px"; b.style.width = to.offsetWidth + "px"; b.offsetWidth; b.style.transition = ""; b.style.opacity = 1;
+}
+let scanning = false, S = { connected: false, ids: [], motors: {}, duck: {}, ports: [], bauds: [] }, sel = null, aim = null, servos = [], housings = {};
+const marks = {}, open = new Set(), proj = {};         // sensors: 3-D marker, which are on, their 3-D overlay
+
+// ---- server ------------------------------------------------------------------------------------------------------
+async function api(name, body) {
+  const r = await fetch("/api/" + name, body === undefined ? {} : { method: "POST", body: JSON.stringify(body) });
+  const j = await r.json();
+  if (!r.ok) { toast(j.error || "failed", true); throw new Error(j.error); }
+  if (j.ids) {
+    const before = S.ids, was = S.connected, duck = S.brain && S.brain.on; S = j;
+    if (name.startsWith("state") && duck !== undefined && duck !== j.brain.on) toast(j.brain.on ? "Duck connected" : "Duck lost", !j.brain.on);
+    const fresh = j.ids.filter(id => !before.includes(id));
+    if (was && j.connected && name.startsWith("state")) {            // hot-plug, noticed by the server
+      if (fresh.length) toast(fresh.join(", ") + " connected");
+      else if (before.some(id => !j.ids.includes(id))) toast(before.filter(id => !j.ids.includes(id)).join(", ") + " removed");
+    }
+    if (fresh.length && j.ids.length === 1 && sel == null) pick(fresh[0]);           // a lone new servo opens by itself
+    else render();
+  }
+  return j;
+}
+let toastT;
+function toast(msg, bad) {
+  const t = $("toast"); t.textContent = msg; t.className = "glass show" + (bad ? " bad" : "");
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = "glass", 2600);
+}
+let seq = 0;
+(async function poll() {
+  try { ingest(await api("state?since=" + seq)); } catch (e) {}
+  setTimeout(poll, S.connected ? 100 : 1500);
+})();
+
+// ---- 3-D duck: translucent shell, solid servos --------------------------------------------------------------------
+const el = $("vw"), R = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+R.setPixelRatio(Math.min(2, devicePixelRatio)); el.appendChild(R.domElement);
+const scene = new THREE.Scene(), body = new THREE.Group(), cam = new THREE.PerspectiveCamera(30, 1, .01, 20);
+cam.up.set(0, 0, 1); cam.position.set(.44, -.5, .27);
+scene.add(body, new THREE.HemisphereLight(0xffffff, 0x8890a0, 1.1));      // body = the whole duck; the IMU tilts it
+const sun = new THREE.DirectionalLight(0xffffff, .9); sun.position.set(.6, -.8, 1.4); scene.add(sun);
+const ctl = new THREE.OrbitControls(cam, R.domElement);
+ctl.enableDamping = true; ctl.enablePan = false; ctl.target.set(0, 0, .125); ctl.minDistance = .3; ctl.maxDistance = 4;
+function size() { R.setSize(el.clientWidth, el.clientHeight, false); cam.aspect = el.clientWidth / el.clientHeight; cam.updateProjectionMatrix(); }
+addEventListener("resize", () => { size(); dirty = true; }); size();
+
+fetch("duck.bin").then(r => r.arrayBuffer()).then(buf => {
+  const n = new Uint32Array(buf, 0, 1)[0], meta = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, n)));
+  let o = 4 + n;
+  const geos = meta.meshes.map(m => {
+    const g = new THREE.BufferGeometry(), p = Float32Array.from(new Int16Array(buf, o, m.nv * 3), v => v * 1e-5);
+    o += m.nv * 6 + m.nv * 6 % 4;
+    g.setAttribute("position", new THREE.BufferAttribute(p, 3));
+    g.setAttribute("normal", new THREE.BufferAttribute(new Int8Array(buf.slice(o, o + m.nv * 3)), 3, true));
+    o += m.nv * 3 + (4 - m.nv * 3 % 4) % 4;
+    g.setIndex(new THREE.BufferAttribute(new Uint32Array(buf.slice(o, o + m.ni * 4)), 1));
+    o += m.ni * 4;
+    return g;
+  });
+  const shell = {};
+  meta.parts.forEach(p => {
+    let mat;
+    if (p.servo || p.sensor) mat = new THREE.MeshStandardMaterial({ roughness: .45, metalness: .1 });
+    else mat = shell[p.rgba] = shell[p.rgba] || new THREE.MeshStandardMaterial({ color: new THREE.Color(...p.rgba), transparent: true,
+      opacity: .2, depthWrite: false, roughness: .3 });
+    const mesh = new THREE.Mesh(geos[p.mesh], mat), r = p.rot;
+    mesh.matrixAutoUpdate = false; mesh.renderOrder = p.servo ? 0 : 1;
+    mesh.matrix.set(r[0], r[1], r[2], p.pos[0], r[3], r[4], r[5], p.pos[1], r[6], r[7], r[8], p.pos[2], 0, 0, 0, 1);
+    body.add(mesh);
+    if (p.servo) housings[p.servo] = mesh;
+    if (p.sensor) (marks[p.sensor] = marks[p.sensor] || []).push(mesh);
+  });
+  servos = meta.servos; servos.forEach(s => { s.p = new THREE.Vector3(...s.at); s.tag = mkTag(s); });
+  (meta.sensors || []).forEach(mkSensor);
+  render();
+});
+
+// click a servo on the duck to select it (a drag is an orbit, not a click)
+const ray = new THREE.Raycaster(), hit = e => {
+  const r = el.getBoundingClientRect();
+  ray.setFromCamera(new THREE.Vector2((e.clientX - r.left) / r.width * 2 - 1, 1 - (e.clientY - r.top) / r.height * 2), cam);
+  const h = ray.intersectObjects([...Object.values(housings), ...Object.values(marks).flat()])[0];
+  return !h ? null : Object.keys(marks).find(k => marks[k].includes(h.object)) || +Object.keys(housings).find(id => housings[id] === h.object);
+};
+let down = null, lift = 0, dirty = true;
+el.addEventListener("pointerdown", e => down = [e.clientX, e.clientY]);
+el.addEventListener("pointerup", e => { if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 5) { const id = hit(e); if (typeof id === "string") toggle(id); else if (id != null) pick(id); else if (sel == null && aim != null) { aim = null; render(); } } down = null; });
+el.addEventListener("pointermove", e => { if (!e.buttons) el.style.cursor = hit(e) != null ? "pointer" : ""; });
+
+// ---- ID tags: two columns either side of the duck, leader lines to each servo ---------------------------------------
+function mkTag(s) {
+  const t = document.createElement("div");
+  t.className = "tag glass"; t.style.setProperty("--i", $("tags").children.length); t.innerHTML = `<b>${s.id}</b><i>${nice(s.name)}</i>`;
+  t.onclick = () => pick(s.id);
+  $("tags").appendChild(t);
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  g.innerHTML = "<line/><circle r='3'/>"; $("lines").appendChild(g); s.g = g;
+  return t;
+}
+function layout() {
+  const w = el.clientWidth, h = el.clientHeight, c = ctl.target.clone().project(cam), cx = (c.x + 1) * w / 2;
+  const D = Math.min(w * .34, 400), mid = (h - 150) * .5, gap = Math.min(46, (h - 400) / 10), cols = [[], []];
+  const mean = g => { const m = servos.filter(s => (s.id / 10 | 0) === g); return m.reduce((a, s) => a + s.x, 0) / m.length; };
+  servos.forEach(s => { const v = s.p.clone().applyMatrix4(body.matrixWorld).project(cam); s.x = (v.x + 1) * w / 2; s.y = (1 - v.y) * h / 2; });
+  // each leg keeps its own side of the screen; the head's five go above the right leg's, so both columns stay short
+  const rightLegLeft = mean(1) < mean(2);
+  servos.forEach(s => cols[((s.id / 10 | 0) === 2) === rightLegLeft ? 1 : 0].push(s));
+  cols.forEach((col, k) => col.sort((a, b) => a.y - b.y).forEach((s, i) => {
+    const x = cx + (k ? D : -D), y = mid + (i - (col.length - 1) / 2) * gap, half = s.tag.offsetWidth / 2 + 4;
+    s.tag.style.left = x + "px"; s.tag.style.top = y + "px";
+    const ln = s.g.firstChild, dot = s.g.lastChild;
+    ln.setAttribute("x1", x + (k ? -half : half)); ln.setAttribute("y1", y); ln.setAttribute("x2", s.x); ln.setAttribute("y2", s.y);
+    dot.setAttribute("cx", s.x); dot.setAttribute("cy", s.y);
+  }));
+}
+(function frame() {
+  requestAnimationFrame(frame);
+  const want = sel != null ? 1 : 0;
+  if (sel != null) charts.forEach(draw);
+  if (!dirty && Math.abs(want - lift) < .002 && !ctl.update()) return;      // nothing moved: skip the 3-D redraw
+  dirty = false; lift += (want - lift) * .14;                  // card open: slide the duck up and back, clear of it
+  cam.zoom = .9 - .2 * lift; cam.setViewOffset(el.clientWidth, el.clientHeight, 0, 82 * lift - 44, el.clientWidth, el.clientHeight);
+  ctl.update(); R.render(scene, cam); layout();
+})();
+
+// ---- state -> page -----------------------------------------------------------------------------------------------
+function pick(id) {
+  if (S.ids.includes(id)) {
+    if (sel != null && sel !== id) $("card").animate([{ transform: "translateX(-50%) scale(.95)" }, { transform: "translateX(-50%) scale(1)" }],
+      { duration: 500, easing: css("--spring") });
+    sel = id; aim = null; $("to").value = id; loadGains(); }
+  else if (sel != null) { aim = id; $("to").value = id; }       // a missing joint: aim the selected servo at its ID
+  else aim = aim === id ? null : id;                            // nothing on the bus: just light the joint up
+  render();
+}
+function render() {
+  dirty = true;
+  const on = S.connected, live = id => S.ids.includes(id);
+  if (sel != null && !live(sel)) sel = aim = null;
+  $("dot").className = on ? "on" : "";
+  $("link").textContent = on ? "Disconnect" : "Connect"; $("link").className = on ? "" : "pri";
+  $("scan").disabled = !on || scanning; $("port").disabled = $("baud").disabled = on;
+  const fill = (node, list, cur, label) => {
+    if (node.dataset.k === list.join()) return;
+    node.dataset.k = list.join();
+    node.innerHTML = list.map(v => `<option value="${v}">${label(v)}</option>`).join("") || "<option value=''>No adapter</option>";
+    if (cur) node.value = cur;
+  };
+  fill($("port"), S.ports, S.port, p => p.replace("/dev/cu.", ""));
+  fill($("baud"), S.bauds, S.baud, b => b >= 1e6 ? b / 1e6 + "M" : b / 1e3 + "k");
+  $("link").disabled = scanning || (!on && !S.ports.length);
+  $("fix").hidden = !(on && S.ids.length && S.baud !== S.bauds[0]);
+  const C = S.cal || {}, all = Object.keys(S.duck).every(id => live(+id));
+  $("calib").hidden = !on; $("calib").disabled = !all || C.on;
+  $("calib").innerHTML = (C.saved ? "<u></u>" : "") + "Calibrate";
+  $("calib").title = C.saved ? "Calibrated " + C.saved.slice(0, 16).replace("T", " ") + ". Press to calibrate again."
+    : all ? "Calibrate: lay the duck on its back, pose every joint at home, save" : "Needs all 15 servos";
+  $("cal").classList.toggle("empty", !C.on);
+  $("chold").className = "sw" + (C.on && S.ids.length && S.ids.every(id => S.motors[id] && S.motors[id].torque) ? " on" : "");
+  $("test").hidden = $("zero").hidden = !!C.on;
+  const have = Object.keys(S.duck).filter(id => live(+id)).length;
+  $("count").textContent = on ? `${have}/${Object.keys(S.duck).length}` : "";
+  // the found servos, as a row to click. Elements are kept and only added / removed, so clicks and animations survive
+  const box = $("found"); let fresh = 0;
+  box.querySelector(".blob") || slide(box, null);
+  for (const [id, a] of found) if (!S.ids.includes(id)) { a.remove(); found.delete(id); }
+  S.ids.forEach((id, i) => {
+    let a = found.get(id);
+    if (!a) { a = document.createElement("a"); a.dataset.id = id; a.innerHTML = `<u></u><b>${id}</b>`; a.style.setProperty("--i", fresh++); found.set(id, a); }
+    if (box.children[i + 1] !== a) box.insertBefore(a, box.children[i + 1] || null);
+    a.className = id === sel ? "sel" : ""; a.title = S.duck[id] ? nice(S.duck[id]) : "new servo";
+    a.firstChild.className = !S.motors[id] ? "bad" : id in S.duck ? "" : "new";
+  });
+  box.classList.toggle("empty", !S.ids.length);
+  slide(box, found.get(sel));
+
+  // green = answering, red = found by the scan but silent now, see-through = not on the bus, blue = selected
+  const col = { ok: css("--green"), bad: css("--red"), sel: css("--blue"), off: dark.matches ? 0x8a8d96 : 0xc3c6ce };
+  servos.forEach(s => {
+    const st = s.id === sel ? "sel" : !live(s.id) ? "off" : S.motors[s.id] ? "ok" : "bad", hot = st === "sel" || s.id === aim;
+    s.tag.className = "tag glass " + st + (s.id === aim ? " aim" : "");
+    s.g.setAttribute("class", hot ? "on" : "");
+    const m = housings[s.id].material, ghost = st === "off" && !hot;
+    if (m.transparent !== ghost) { m.transparent = ghost; m.depthWrite = !ghost; m.needsUpdate = true; }
+    m.opacity = ghost ? .22 : 1; housings[s.id].renderOrder = ghost ? 1 : 0;
+    m.color.set(s.id === aim ? col.sel : col[st]); m.emissive.set(hot ? col.sel : 0x000000);
+    m.emissiveIntensity = st === "sel" ? .55 : .25;
+  });
+
+  dock();
+  const m = S.motors[sel];
+  $("card").classList.toggle("empty", sel == null);
+  if (sel == null) return;
+  $("who").firstChild.textContent = sel;
+  $("who").lastChild.textContent = S.duck[sel] ? nice(S.duck[sel]) : "unassigned";
+  if (m) {
+    $("who").lastChild.textContent += (m.deg == null ? "" : ` · ${m.deg.toFixed(1)}°`) + ` · ${m.pos} · ${m.volt.toFixed(1)} V`;
+    $("torque").className = "sw" + (m.torque ? " on" : "");
+    const sl = $("slide"), deg = t => Math.round((t - 2048) * 360 / 4096);   // the slider spans the joint's own travel
+    [sl.min, sl.max] = m.span; sl.title = S.duck[sel] ? `${deg(m.span[0])}° … ${deg(m.span[1])}°` : "±45°";
+    if (!m.torque || document.activeElement !== sl) sl.value = m.torque ? m.goal : m.pos;
+  }
+  const to = +$("to").value;
+  $("set").disabled = $("to").value === "" || to === sel || live(to);
+}
+
+// ---- controls ----------------------------------------------------------------------------------------------------
+// a sweep takes a second or two: hold the buttons and keep the toast up until it is back
+async function sweep(name, body) {
+  $("scan").disabled = $("link").disabled = scanning = true;
+  const t = $("toast"); clearTimeout(toastT); t.textContent = "Scanning…"; t.className = "glass show";
+  try { const s = await api(name, body); scanning = false; render(); toast(s.ids.length ? `${s.ids.length} found` : "No servos answered", !s.ids.length); }
+  catch (e) { scanning = false; render(); }
+}
+$("link").onclick = () => S.connected ? api("disconnect", {}) : sweep("connect", { port: $("port").value, baud: +$("baud").value });
+$("scan").onclick = () => sweep("scan", {});
+$("fix").onclick = () => api("set_baud", {});
+$("found").onclick = e => { const a = e.target.closest("a"); if (a) pick(+a.dataset.id); };
+$("torque").onclick = () => api("torque", { id: sel, on: !$("torque").classList.contains("on") });
+$("test").onclick = () => api("wiggle", { id: sel });
+$("zero").onclick = () => api("center", { id: sel }).then(s => { toast(`${sel} zeroed → ${s.motors[sel].pos}`); });
+let moveT = 0;
+$("slide").oninput = () => { const now = Date.now(); if (now - moveT > 40) { moveT = now; api("move", { id: sel, pos: +$("slide").value }); } };
+$("slide").onchange = () => api("move", { id: sel, pos: +$("slide").value });
+const nudge = d => { const m = S.motors[sel]; if (m) api("move", { id: sel, pos: (m.torque ? m.goal : m.pos) + d }); };
+$("dn").onclick = () => nudge(-2); $("up").onclick = () => nudge(2);
+// calibration: limp -> pose by hand -> Hold -> trim each joint -> Save. The file changes only on Save.
+$("calib").onclick = () => api("cal_start", {}).then(() => toast("Lay the duck on its back and pose it at home"));
+$("chold").onclick = () => api("cal_hold", { on: !$("chold").classList.contains("on") });
+$("csave").onclick = () => api("cal_save", {}).then(s => toast("Calibration saved" + (s.brain.on ? " on the duck" : "") + (s.cal.imu ? "" : " (no IMU)")));
+$("ccancel").onclick = () => api("cal_cancel", {});
+// gains: shown as stored in the servo; Set lights up only once a value differs
+let gains = null;
+function loadGains() { gains = null; $("kp").value = $("kd").value = ""; $("gset").disabled = true;
+  const id = sel; api("gains", { id }).then(g => { if (id !== sel) return; gains = g; $("kp").value = g.p; $("kd").value = g.d; }).catch(() => {}); }
+$("kp").oninput = $("kd").oninput = () => $("gset").disabled = !gains || $("kp").value === "" || $("kd").value === "" || (+$("kp").value === gains.p && +$("kd").value === gains.d);
+$("gduck").onclick = () => { if (gains) { [$("kp").value, $("kd").value] = gains.duck; $("kp").oninput(); } };
+$("gset").onclick = () => api("set_gains", { id: sel, p: +$("kp").value, d: +$("kd").value }).then(g => { gains = g; $("kp").value = g.p; $("kd").value = g.d; $("gset").disabled = true; toast(`${sel}  P ${g.p}  D ${g.d}`); });
+$("to").oninput = () => { aim = null; render(); };
+$("set").onclick = () => { const to = +$("to").value; api("set_id", { id: sel, to }).then(() => { toast(`${sel} → ${to}`); sel = to; aim = null; render(); loadGains(); }); };
+dark.addEventListener("change", render);
+
+// ---- live plots for the selected servo: one small chart per quantity, last `win` seconds ----------------------------
+const KEYS = { pos: ["Position", "°", 1], vel: ["Velocity", "°/s", 0], load: ["Load", "%", 0], temp: ["Temp", "°C", 0] };
+const DEG = 360 / 4096, UNIT = { pos: v => (v - 2048) * DEG, vel: v => v * 50 * DEG, load: v => v / 10, temp: v => v };
+const D = {}, charts = [...document.querySelectorAll("#plots canvas")];
+let win = 10, hover = null, raw = [];
+function ingest(s) {
+  if (s.seq < seq) { for (const k in D) delete D[k]; raw = []; }      // the server restarted
+  seq = s.seq;
+  for (const [n, t, m] of s.samples) {
+    raw.push([t, m]);
+    for (const id in m) {
+      const d = D[id] = D[id] || { t: [], pos: [], vel: [], load: [], temp: [] }, v = m[id];
+      d.t.push(t); s.signals.forEach((k, i) => UNIT[k] && d[k].push(UNIT[k](v[i])));
+    }
+  }
+  while (raw.length && raw[0][0] < raw[raw.length - 1][0] - 120) raw.shift();
+  for (const id in D) { const d = D[id], cut = d.t.findIndex(t => t >= d.t[d.t.length - 1] - 120); if (cut > 0) for (const k in d) d[k].splice(0, cut); }
+}
+const tEnd = () => D[sel]?.t.at(-1) ?? 0;
+function draw(cv) {
+  const key = cv.dataset.k, [title, unit, n] = KEYS[key], dpr = devicePixelRatio, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== w * dpr || cv.height !== h * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
+  const c = cv.getContext("2d"), ink = css("--ink"), dim = css("--dim"), d = D[sel], end = tEnd(), L = 10, Rr = 10, T = 28, B = 8;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+  c.font = "12px -apple-system, sans-serif"; c.fillStyle = dim; c.textAlign = "left"; c.fillText(title, 10, 17);
+  if (!d) return;
+  let i = d.t.length, j = d.t.length;
+  while (j > 0 && d.t[j - 1] > end) j--;
+  for (i = j; i > 0 && d.t[i - 1] >= end - win;) i--;
+  if (j <= i) return;
+  const k = hover == null ? j - 1 : Math.min(j - 1, Math.max(i, at(d, end - hover)));
+  c.font = "600 12px -apple-system, sans-serif"; c.fillStyle = ink; c.textAlign = "right";      // the value: now, or under the cursor
+  c.fillText(d[key][k].toFixed(n) + " " + unit, w - 10, 17);
+  let lo = Infinity, hi = -Infinity;
+  for (let q = i; q < j; q++) { const v = d[key][q]; if (v < lo) lo = v; if (v > hi) hi = v; }
+  const pad = Math.max((hi - lo) * .12, key === "pos" ? .5 : 1); lo -= pad; hi += pad;
+  const X = t => L + (t - (end - win)) / win * (w - L - Rr), Y = v => T + (hi - v) / (hi - lo) * (h - T - B);
+  if (lo < 0 && hi > 0) { c.strokeStyle = css("--line"); c.lineWidth = 1; c.beginPath(); c.moveTo(L, Y(0)); c.lineTo(w - Rr, Y(0)); c.stroke(); }
+  const step = Math.max(1, Math.floor((j - i) / (w * 2)));
+  c.strokeStyle = css("--blue"); c.lineWidth = 2; c.lineJoin = c.lineCap = "round"; c.beginPath();
+  for (let q = i; q < j; q += step) c.lineTo(X(d.t[q]), Y(d[key][q]));
+  c.lineTo(X(d.t[j - 1]), Y(d[key][j - 1])); c.stroke();
+  if (hover == null) return;
+  c.strokeStyle = dim; c.lineWidth = 1; c.beginPath(); c.moveTo(X(d.t[k]), T); c.lineTo(X(d.t[k]), h - B); c.stroke();
+  c.fillStyle = css("--blue"); c.strokeStyle = css("--glass"); c.lineWidth = 2; c.beginPath(); c.arc(X(d.t[k]), Y(d[key][k]), 4, 0, 7); c.fill(); c.stroke();
+}
+function at(d, t) { let lo = 0, hi = d.t.length - 1; while (lo < hi) { const m = lo + hi >> 1; d.t[m] < t ? lo = m + 1 : hi = m; } return lo; }
+charts.forEach(cv => {                                   // hover: one crosshair across all four, values in their headers
+  cv.onmousemove = e => { const r = cv.getBoundingClientRect(), f = (e.clientX - r.left - 10) / (r.width - 20);
+    hover = f < 0 || f > 1 ? null : (1 - f) * win; $("tip").hidden = hover == null;
+    if (hover != null) { $("tip").textContent = "−" + hover.toFixed(1) + " s"; $("tip").style.left = e.clientX + 12 + "px"; $("tip").style.top = r.top - 34 + "px"; } };
+  cv.onmouseleave = () => { hover = null; $("tip").hidden = true; };
+});
+const seg = (node, attr, fn) => node.onclick = e => { const v = e.target.dataset[attr]; if (!v) return;
+  [...node.children].forEach(b => b.classList.toggle("on", b === e.target)); slide(node, e.target); fn(v); };
+seg($("win"), "w", v => win = +v);
+requestAnimationFrame(() => slide($("win"), $("win").querySelector(".on")));
+$("csv").onclick = () => {
+  const rows = ["t_s,id," + S.signals.join(",")];
+  raw.forEach(([t, m]) => m[sel] && rows.push([t, sel, ...m[sel]].join(",")));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([rows.join("\n")], { type: "text/csv" })); a.download = `servo_${sel}.csv`; a.click();
+};
+
+// ---- the duck's sensors -------------------------------------------------------------------------------------------
+// Five, each a button in the dock and a marker on the duck. On = its window opens and it draws into the 3-D scene:
+// the camera's picture on its view frustum, the ToF ranger's 8 x 8 distances where they land; the IMU tilts the duck.
+const SENS = {       // name, window height, icon
+  camera: ["Camera", 144, '<rect x="3" y="7" width="13" height="10" rx="2.5"/><path d="M16 10.5l5-2.5v8l-5-2.5z"/>'],
+  tof: ["ToF", 150, '<circle cx="5" cy="12" r="1.6"/><path d="M9.5 7.5a6.5 6.5 0 010 9M13 5a10 10 0 010 14M16.5 2.8a13.5 13.5 0 010 18.4"/>'],
+  imu: ["IMU", 106, '<path d="M12 12V3m0 9l8 4.5M12 12l-8 4.5"/><circle cx="12" cy="12" r="1.6"/>'],
+  mic: ["Mic", 56, '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'],
+  speaker: ["Speaker", 82, '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4.2 4.2 0 010 6M18 6.5a7.6 7.6 0 010 11"/>'],
+};
+const VOICE = [["chirp", "Quack"], ["greet", "Greet"], ["coo", "Coo"], ["peck", "Peck"], ["inquire", "Ask"], ["alarm", "Alarm"]];      // the duck's own sounds
+const FOV = { camera: 62, tof: 45 }, rad = Math.PI / 180;        // horizontal field of view, degrees (IMX219; VL53L5CX)
+Object.entries(SENS).forEach(([k, v], i) => {
+  const n = document.createElement("div"), cw = k === "camera" ? 320 : 384;
+  n.className = "sn glass"; n.style.setProperty("--h", v[1] + 58 + "px"); n.style.setProperty("--i", i);
+  n.innerHTML = `<button class="ic" title="${v[0]}"><svg viewBox="0 0 24 24">${v[2]}</svg></button><b>${v[0]}</b><i></i><div class="view">` +
+    (k === "speaker" ? VOICE.map(([t, n]) => `<button data-t="${t}">${n}</button>`).join("")
+      : `<canvas width="${cw}" height="${cw * (k === "imu" ? 64 : v[1]) / 192}"></canvas>` +
+        (k === "imu" ? '<button id="level" title="The duck is standing upright on a level surface: make this reading level">Level</button>' : "")) + "</div>";
+  n.firstChild.onclick = () => toggle(k);
+  $("dock").appendChild(n); v.node = n; v.cv = n.querySelector("canvas"); v.note = n.querySelector("i");
+});
+SENS.speaker.node.querySelector(".view").onclick = e => e.target.dataset.t && api("say", { tag: e.target.dataset.t }).catch(() => {});
+$("level").onclick = () => api("cal_level", {}).then(() => toast("IMU levelled")).catch(() => {});
+$("blink").onclick = async () => {
+  $("blink").disabled = true;
+  try { const on = S.brain && S.brain.on; await api(on ? "brain_disconnect" : "brain_connect", {}); toast(on ? "Duck disconnected" : "Duck connected"); }
+  catch (e) {} $("blink").disabled = false;
+};
+function toggle(k) { open.has(k) ? open.delete(k) : open.add(k); if (proj[k]) proj[k].visible = open.has(k); render(); }
+function dock() {
+  const B = S.brain || { on: false, sensors: {} }, col = { ok: css("--green"), bad: css("--red"), sel: css("--blue"), off: dark.matches ? 0x8a8d96 : 0xc3c6ce };
+  $("bdot").className = B.on ? "on" : "";
+  for (const k in SENS) {
+    const st = B.on ? (B.sensors[k] && B.sensors[k].ok ? "ok" : "bad") : "", on = open.has(k);
+    SENS[k].node.className = "sn glass " + st + (on ? " on" : "");
+    if (st === "bad") SENS[k].note.textContent = B.sensors[k] ? B.sensors[k].note : "";
+    else if (!B.on) {                                    // no duck: nothing to show, in the window or on the model
+      SENS[k].note.textContent = ""; (SENS[k].pic || []).forEach(q => q.visible = false);
+      if (SENS[k].cv) SENS[k].cv.getContext("2d").clearRect(0, 0, SENS[k].cv.width, SENS[k].cv.height);
+    }
+    (marks[k] || []).forEach(q => {                     // the sensor's own part, lit like a servo housing
+      const m = q.material, ghost = !on && !st;
+      m.color.set(on ? col.sel : col[st || "off"]); m.emissive.set(on ? col.sel : 0x000000); m.emissiveIntensity = .5;
+      if (m.transparent !== ghost) { m.transparent = ghost; m.depthWrite = !ghost; m.needsUpdate = true; }
+      m.opacity = ghost ? .22 : 1; q.renderOrder = ghost ? 1 : 0;
+    });
+    if (k === "imu" && (!on || !B.on)) body.quaternion.set(0, 0, 0, 1);
+  }
+}
+function mkSensor(s) {
+  const o = new THREE.Vector3(...s.at), f = new THREE.Vector3(...(s.dir || [1, 0, 0])), u = new THREE.Vector3(...(s.up || [0, 0, 1])), r = f.clone().cross(u);
+  if (!marks[s.id]) {                                    // no part of its own in the model (ToF, IMU): a small chip where it sits
+    const m = new THREE.Mesh(new THREE.BoxGeometry(.011, .011, .0025), new THREE.MeshStandardMaterial({ roughness: .45, metalness: .1 }));
+    m.position.copy(o); if (s.dir) m.lookAt(o.clone().add(f)); body.add(m); marks[s.id] = [m];
+  }
+  const g = proj[s.id] = new THREE.Group(); g.visible = open.has(s.id); body.add(g);
+  const at = (d, a, b) => o.clone().addScaledVector(f, d).addScaledVector(r, a * d).addScaledVector(u, b * d);      // a, b = tan of the angle right / up
+  const edges = (d, ta, tb) => {                         // the four rays to the corners of the view at distance d, and its outline
+    const c = [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([a, b]) => at(d, a * ta, b * tb)), pts = [];
+    c.forEach((p, i) => pts.push(o, p, p, c[(i + 1) % 4]));
+    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: css("--blue"), transparent: true, opacity: .45 }));
+  };
+  if (s.id === "camera") {                               // the picture, held up in front of the lens
+    const d = .1, ta = Math.tan(FOV.camera / 2 * rad), tb = ta * .75, geo = new THREE.BufferGeometry();
+    geo.setFromPoints([at(d, -ta, tb), at(d, ta, tb), at(d, -ta, -tb), at(d, ta, -tb)]);
+    geo.setAttribute("uv", new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 0, 0, 1, 0]), 2)); geo.setIndex([0, 2, 1, 1, 2, 3]);
+    s.tex = new THREE.CanvasTexture(SENS.camera.cv);
+    const pic = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: s.tex, side: THREE.DoubleSide }));
+    g.add(pic, edges(d, ta, tb)); SENS.camera.pic = [pic]; pic.visible = false;
+  } else if (s.id === "tof") {                           // 64 tiles, each where its zone's distance puts it
+    const t = Math.tan(FOV.tof / 2 * rad), quad = new THREE.PlaneGeometry(1, 1);
+    s.tiles = [...Array(64)].map(() => { const q = new THREE.Mesh(quad, new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, transparent: true, opacity: .8 })); q.visible = false; g.add(q); return q; });
+    SENS.tof.pic = s.tiles;
+    SENS.tof.place = mm => mm.forEach((v, i) => {
+      const d = Math.min(3, Math.max(.02, v / 1000)), q = s.tiles[i], a = ((i % 8) - 3.5) / 4 * t, b = (3.5 - (i >> 3)) / 4 * t;
+      q.visible = v >= 0; q.position.copy(at(d / Math.hypot(1, a, b), a, b)); q.lookAt(o); q.scale.setScalar(d * t / 4 * .92); q.material.color.set(heat(v));
+    });
+    g.add(edges(.12, t, t));
+  } else if (s.id === "imu") {
+    SENS.imu.tilt = v => v.quat ? body.quaternion.set(v.quat[1], v.quat[2], v.quat[3], v.quat[0])      // the whole duck turns as the IMU says
+      : body.rotation.set(v.roll * rad, v.pitch * rad, 0, "ZYX");
+  }
+  dock(); dirty = true;
+}
+const heat = mm => `hsl(${Math.round(18 + 200 * Math.min(1, mm / 2000))}, 85%, 55%)`;      // near = warm, far = cool
+function feed(k, v) {
+  if (v == null) return;
+  const cv = SENS[k].cv, c = cv.getContext("2d"), w = cv.width, h = cv.height, note = t => { if (!SENS[k].node.classList.contains("bad")) SENS[k].note.textContent = t; };
+  if (k === "camera") {
+    const [W, H] = S.brain.size; if (v.byteLength !== W * H * 1.5) return;
+    const y = new Uint8Array(v, 0, W * H), uv = new Uint8Array(v, W * H), img = c.createImageData(W, H), o = img.data;
+    for (let j = 0, p = 0; j < H; j++) for (let i = 0; i < W; i++, p += 4) {                    // NV12 -> RGB
+      const Y = y[j * W + i], q = (j >> 1) * W + (i & ~1), U = uv[q] - 128, V = uv[q + 1] - 128;
+      o[p] = Y + 1.402 * V; o[p + 1] = Y - .344 * U - .714 * V; o[p + 2] = Y + 1.772 * U; o[p + 3] = 255;
+    }
+    c.putImageData(img, 0, 0); if (SENS.camera.pic) { SENS.camera.pic[0].visible = true; SENS.camera.pic[0].material.map.needsUpdate = true; } note(`${W}×${H}`);
+  } else if (k === "tof") {
+    c.clearRect(0, 0, w, h); const s = h / 8, x0 = (w - h) / 2;
+    v.forEach((mm, i) => { c.fillStyle = mm < 0 ? css("--fill") : heat(mm); c.beginPath(); c.roundRect(x0 + (i % 8) * s + 3, (i >> 3) * s + 3, s - 6, s - 6, 8); c.fill(); });
+    SENS.tof.place && SENS.tof.place(v); const seen = v.filter(mm => mm >= 0); note(seen.length ? (Math.min(...seen) / 1000).toFixed(2) + " m" : "nothing in range");
+  } else if (k === "imu") {
+    c.clearRect(0, 0, w, h); c.save(); c.translate(w / 2, h / 2); c.rotate(-v.roll * rad); c.translate(0, v.pitch * 3);
+    c.fillStyle = css("--blue"); c.globalAlpha = .28; c.fillRect(-w, -h * 2, w * 2, h * 2); c.globalAlpha = 1;
+    c.strokeStyle = css("--blue"); c.lineWidth = 4; c.beginPath(); c.moveTo(-w, 0); c.lineTo(w, 0); c.stroke(); c.restore();
+    c.strokeStyle = css("--ink"); c.lineWidth = 5; c.lineCap = "round"; c.beginPath(); c.moveTo(w / 2 - 46, h / 2); c.lineTo(w / 2 - 14, h / 2); c.moveTo(w / 2 + 14, h / 2); c.lineTo(w / 2 + 46, h / 2); c.stroke();
+    SENS.imu.tilt && SENS.imu.tilt(v); note(`${v.roll.toFixed(0)}° ${v.pitch.toFixed(0)}°` + (v.yaw == null ? "" : ` ${v.yaw.toFixed(0)}°`));
+  } else if (k === "mic") {
+    c.clearRect(0, 0, w, h); c.strokeStyle = css("--blue"); c.lineWidth = 4; c.lineJoin = c.lineCap = "round"; c.beginPath();
+    v.wave.forEach((a, i) => c.lineTo(10 + i * (w - 20) / 63, h / 2 - Math.max(-1, Math.min(1, a * 3)) * (h / 2 - 8))); c.stroke();
+    (marks.mic || []).forEach(q => q.material.emissiveIntensity = .3 + Math.min(1.2, Math.pow(10, v.level / 20) * 6));      // the board glows with the sound note(v.live ? v.level.toFixed(0) + " dB" : "no signal");
+  }
+  dirty = true;
+}
+const busy = {};
+setInterval(() => {                                      // readings, for the sensors that are on
+  if (!S.brain || !S.brain.on) return;
+  for (const k of open) if (k !== "speaker" && !busy[k]) {
+    busy[k] = 1;
+    fetch("/sense/" + k).then(r => k === "camera" ? r.arrayBuffer() : r.json()).then(v => feed(k, v)).catch(() => {}).finally(() => busy[k] = 0);
+  }
+}, 100);
+</script>
+</body>
+</html>

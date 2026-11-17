@@ -1,0 +1,45 @@
+# xcodegen generate   ->  Duck.xcodeproj   (see README.md)
+name: Duck
+options:
+  bundleIdPrefix: com.microduck
+  deploymentTarget: { iOS: "26.0" }
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+targets:
+  Duck:
+    type: application
+    platform: iOS
+    sources:
+      - Duck
+      - path: ../firmware/web/duck.bin        # the 3-D duck the studio draws; one copy, baked by firmware/bake_duck.py
+        buildPhase: resources
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    info:
+      path: Duck/Info.plist
+      properties:
+        CFBundleDisplayName: Duck
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSLocalNetworkUsageDescription: Finds the duck's studio and engine on this network.
+        NSBonjourServices: [_microduck._tcp]
+        NSAppTransportSecurity: { NSAllowsLocalNetworking: true }
+  DuckUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [DuckUITests]
+    dependencies: [{ target: Duck }]
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Duck:
+    build: { targets: { Duck: all } }
+    run: { config: Debug }
+    test: { config: Debug, targets: [DuckUITests] }
