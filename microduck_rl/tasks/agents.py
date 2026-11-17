@@ -243,3 +243,12 @@ class RouladeHeadPPORunnerCfg(RouladePPORunnerCfg):
 
     experiment_name = _names("microduck_roulade_head_flat")
     max_iterations = 2000
+
+
+@configclass
+class PickPPORunnerCfg(MicroDuckPPORunnerCfg):
+    """Pick-up (walk to an object, lift it with the beak): plain PPO warm-started from velstand (no mirror loss: the
+    object slots are not mirrored by the contrib symmetry map)."""
+
+    experiment_name = _names("microduck_pick_allcoll")
+    max_iterations = 3000
