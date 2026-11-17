@@ -36,7 +36,7 @@ def main() -> int:
     parser.add_argument("--seconds", type=float, default=10.0)
     parser.add_argument("--vx", type=float, default=0.3)
     parser.add_argument("--out", default=None)
-    args, _ = parser.parse_known_args()
+    args, extra = parser.parse_known_args()  # hydra overrides (presets=..., env.*) go to the env cfg
 
     import gymnasium as gym
     from isaaclab_tasks.utils.parse_cfg import parse_env_cfg
@@ -62,7 +62,7 @@ def main() -> int:
                 src = args.run / "exported" / f
                 if src.exists():
                     shutil.copy(src, export_dir / f)
-    env_cfg = parse_env_cfg(args.task, device="cuda:0", num_envs=args.num_envs)
+    env_cfg = parse_env_cfg(args.task, device="cuda:0", num_envs=args.num_envs, overrides=extra)
     env_cfg.play_mode()
     env_cfg.curriculum = None
     env = gym.make(args.task, cfg=env_cfg).unwrapped

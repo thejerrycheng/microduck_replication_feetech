@@ -38,7 +38,7 @@ def main() -> int:
     parser.add_argument("--out", default=None)
     parser.add_argument("--train_env_cfg", action="store_true", help="Evaluate in the TRAINING configuration (no play_mode: noise, delays, pushes as trained)")
     parser.add_argument("--action_noise_std", type=float, default=0.0, help="Gaussian noise added to the policy's mean action (the training rollouts sample at the actor's std)")
-    args, _ = parser.parse_known_args()
+    args, extra = parser.parse_known_args()  # hydra overrides (presets=..., env.*) go to the env cfg
     extra = [a for a in sys.argv[1:] if "=" in a and not a.startswith("-")]
 
     import gymnasium as gym
@@ -61,7 +61,7 @@ def main() -> int:
             if (run / "exported" / f).exists():
                 shutil.copy(run / "exported" / f, export_dir / f)
 
-    env_cfg = parse_env_cfg(args.task, device="cuda:0", num_envs=args.num_envs)
+    env_cfg = parse_env_cfg(args.task, device="cuda:0", num_envs=args.num_envs, overrides=extra)
     if not args.train_env_cfg:
         env_cfg.play_mode()
     env_cfg.curriculum = None

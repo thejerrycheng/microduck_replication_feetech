@@ -44,6 +44,16 @@ servo target = DEFAULT_POSE + action (scale 1.0, no clipping in training beyond 
 50 Hz, physics 0.005 s (decimation 4). Keep ONE shared last-action buffer across policies when hot-swapping.
 
 ## Servo (Feetech HD1910, BAM m6 fit used in training)
+**Servo registers on the real robot (set at power-up, before any policy runs):** firmware P between 5 and 8, firmware
+D = 0, I = 0. Every policy here was trained on the identified HD1910 law, which has a P path only (Rhoban BAM
+`STS3215Actuator`, kept unchanged in Feetech's own `ftservo/ftservo-bam`): duty = error x P x 0.166 x 1.3217, clamped
+at 0.97. The replica runtimes write KP 5 (stored, register 0x15 = P byte then D byte), KP 6 (the LuwuDynamics
+`xgoduck_runtime_arduino` run gain, temporary registers 50 = KP, 51 = KD) or KP 8 (duckyduck369's walkers); the policies
+tagged `_kp58` are fine-tuned with P drawn per servo in [5, 8], the others at 5 x [0.85, 1.15]. Nobody has identified
+what the HD1910's D register does: the community writes KD 20 and the vendor fork measured the legs following only
+40-50 % of each commanded swing, 85 ms late, at KP 6 / KD 20. Leave D at 0 until a step response at KD 0 vs 20 has been
+measured; a D value in the servo is a plant the policies have never seen.
+
 kt 0.6238 N.m/A, R 4.910 ohm, kp_fw 5, error gain 0.166 x 1.3217 duty/rad per unit, max PWM 0.97, no current
 limit, supply 7.4-8.0 V (sag 0-0.2 V/A, floor 7.0 V), command delay 3-6 physics steps, backlash +-1 deg
 hinges. Full dict: `microduck_rl/assets/microduck_hd1910.py::HD1910_BAM_FIT`.
