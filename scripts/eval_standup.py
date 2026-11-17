@@ -102,15 +102,27 @@ def main() -> int:
                     robot.write_root_link_velocity_to_sim_index(root_velocity=torch.cat([v, robot.data.root_ang_vel_w.torch], 1), env_ids=torch.arange(n, device=env.device))
                 obs, *_ = env.step(policy(obs["policy"]))
                 up = (S._upright(robot) > math.cos(math.radians(20.0))) & (S._trunk_z(env, robot) > 0.095)
-                stood_step = torch.where(up & (stood_step < 0), torch.full_like(stood_step, t), stood_step)
+                just_stood = up & (stood_step < 0)
+                stood_step = torch.where(just_stood, torch.full_like(stood_step, t), stood_step)
                 down_now = S._upright(robot) < math.cos(math.radians(60.0))
                 if t == 0:
                     refall_step = torch.full((n,), -1, device=env.device)
                     speed_at_stand = torch.zeros(n, device=env.device)
                     pitch_at_stand = torch.zeros(n, device=env.device)
                 v_xy = torch.linalg.norm(robot.data.root_lin_vel_w.torch[:, :2], dim=-1)
-                just_stood = up & (stood_step < 0)
                 speed_at_stand = torch.where(just_stood, v_xy, speed_at_stand)
+                # tilt / speed trajectory after the first stand (0.25 s bins up to 2 s)
+                if t == 0:
+                    nb = 8
+                    traj_tilt = torch.zeros(n, nb, device=env.device)
+                    traj_speed = torch.zeros(n, nb, device=env.device)
+                since = t - stood_step
+                b = (since.float() * dt / 0.25).long()
+                hit = (stood_step >= 0) & (b >= 0) & (b < nb) & ((since.float() * dt) % 0.25 < dt * 0.999)
+                if bool(hit.any()):
+                    idx = torch.nonzero(hit).squeeze(-1)
+                    traj_tilt[idx, b[idx]] = torch.rad2deg(torch.acos(torch.clamp(S._upright(robot), -1.0, 1.0)))[idx]
+                    traj_speed[idx, b[idx]] = v_xy[idx]
                 pitch_at_stand = torch.where(just_stood, robot.data.projected_gravity_b.torch[:, 0], pitch_at_stand)
                 refall_now = (stood_step >= 0) & down_now & (refall_step < 0)
                 refall_step = torch.where(refall_now, torch.full_like(refall_step, t), refall_step)
@@ -175,6 +187,12 @@ def main() -> int:
                 end_diag["refall_delay_s"] = {"median": round(float(delay.median()), 2), "p10": round(float(delay.quantile(0.1)), 2), "p90": round(float(delay.quantile(0.9)), 2)}
                 end_diag["speed_at_first_stand_m_s"] = {"refallers": round(float(speed_at_stand[rf].median()), 3),
                                                         "stayers": round(float(speed_at_stand[(stood_step >= 0) & ~rf].median()), 3) if bool(((stood_step >= 0) & ~rf).any()) else None}
+                stay = (stood_step >= 0) & ~rf
+                end_diag["tilt_after_stand_deg"] = {"t": [round(0.25 * i, 2) for i in range(8)],
+                                                    "refallers": [round(float(traj_tilt[rf, i].median()), 1) for i in range(8)],
+                                                    "stayers": [round(float(traj_tilt[stay, i].median()), 1) for i in range(8)] if bool(stay.any()) else None}
+                end_diag["speed_after_stand_m_s"] = {"refallers": [round(float(traj_speed[rf, i].median()), 2) for i in range(8)],
+                                                     "stayers": [round(float(traj_speed[stay, i].median()), 2) for i in range(8)] if bool(stay.any()) else None}
                 end_diag["fwd_pitch_at_first_stand"] = {"refallers": round(float(pitch_at_stand[rf].median()), 3),
                                                         "stayers": round(float(pitch_at_stand[(stood_step >= 0) & ~rf].median()), 3) if bool(((stood_step >= 0) & ~rf).any()) else None}
             o = occ / occ.sum(dim=1, keepdim=True).clamp(min=1.0)
