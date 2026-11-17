@@ -39,12 +39,18 @@ class Brain:
     anything `ssh` accepts without a password prompt (an alias in ~/.ssh/config). Closing the connection stops it."""
 
     def __init__(self, host):
+        # Two SSH connections in all: one copies both files and checks the ToF readers, one runs the agent.
         ssh = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8"]
         subprocess.run(["pkill", "-f", f"{TUNNEL}:127.0.0.1:{duck_agent.PORT}"])       # a tunnel left by an earlier studio
-        for name in ("duck_agent.py", "duck_voice.py"):
-            subprocess.run([*ssh, host, f"cat > /tmp/{name}"], input=(HERE / name).read_bytes(),
-                           check=True, timeout=30, capture_output=True)
-        if subprocess.run([*ssh, host, "test -x ~/microduck/tof_vl53l5cx -a -x ~/microduck/tof_vl53l8cx"]).returncode:
+        both = b"".join((HERE / n).read_bytes() for n in ("duck_agent.py", "duck_voice.py"))
+        cut = len((HERE / "duck_agent.py").read_bytes())
+        have = subprocess.run(                       # both files in one go, and the answer to "are the ToF readers built?"
+            [*ssh, host, f"head -c {cut} > /tmp/duck_agent.py; cat > /tmp/duck_voice.py; "
+                         "test -x ~/microduck/tof_vl53l5cx -a -x ~/microduck/tof_vl53l8cx"],
+            input=both, timeout=30, capture_output=True)
+        if have.returncode == 255:
+            raise ValueError(f"cannot reach {host} over SSH")
+        if have.returncode:
             src = subprocess.run(["tar", "czf", "-", "-C", str(HERE), "tof"], capture_output=True, check=True,
                                  env={"COPYFILE_DISABLE": "1", "PATH": "/usr/bin:/bin"}).stdout
             subprocess.run([*ssh, host, "rm -rf /tmp/tof && tar xzf - -C /tmp 2>/dev/null; sh /tmp/tof/build.sh"],
@@ -142,7 +148,7 @@ class Studio:
             try:
                 if self.brain:
                     self.sensors = self.brain.status()
-                elif self.auto and (self.mock or tick % 4 == 0) and not self.linking.locked():
+                elif self.auto and (self.mock or tick % 3 == 1) and not self.linking.locked():
                     if not self.mock:
                         if addr is None:                 # the alias's real host name, from ~/.ssh/config
                             out = subprocess.run(["ssh", "-G", self.host], capture_output=True, text=True, timeout=5).stdout
@@ -223,6 +229,19 @@ class Studio:
     def _zero(self, sid):
         return next((j["zero_raw"] for j in self.cal.get("joints", []) if j["id"] == sid), None)
 
+    def _dir(self, sid):
+        """Which way the joint's positive angle runs on its servo: the calibration's word, else the built-in guess."""
+        return next((j["direction"] for j in self.cal.get("joints", []) if j["id"] == sid), feetech.sign(sid))
+
+    def flip(self, q):
+        """Reverse one joint's direction in the saved calibration. Its zero stays; its angle changes sign."""
+        sid = int(q["id"])
+        if self._zero(sid) is None:
+            raise ValueError("calibrate first: a direction is stored with the calibration")
+        self._hold(sid, False)                   # its limits are about to mirror: never under torque
+        self._write(joints=[dict(j, direction=-j["direction"]) if j["id"] == sid else j for j in self.cal["joints"]])
+        return self._fresh()
+
     def _write(self, **parts):
         cal = dict(self.cal, updated=time.strftime("%Y-%m-%dT%H:%M:%S%z"), **parts)
         if self.brain:
@@ -270,7 +289,7 @@ class Studio:
         missing = [i for i in DUCK if i not in now]
         if missing:
             raise ValueError(f"not answering: {missing}")
-        joints = [dict(name=DUCK[i], id=i, zero_raw=now[i]["pos"], direction=feetech.sign(i), calibrated=True,
+        joints = [dict(name=DUCK[i], id=i, zero_raw=now[i]["pos"], direction=self._dir(i), calibrated=True,
                        min_rad=feetech.RANGE[DUCK[i]][0], max_rad=feetech.RANGE[DUCK[i]][1]) for i in DUCK]
         imu = self._mount(BACK)
         self._write(joints=joints, pose="home: duck flat on its back, every joint at the model's zero pose",
@@ -361,7 +380,7 @@ class Studio:
         home = self.home.get(sid, pos)
         if self.calibrating:                     # not calibrated yet: small trims around where it was caught
             return (home - TRIM, home + TRIM)
-        return feetech.limits(sid, self._zero(sid) or feetech.ZERO) or (home - SPAN, home + SPAN)
+        return feetech.limits(sid, self._zero(sid) or feetech.ZERO, self._dir(sid)) or (home - SPAN, home + SPAN)
 
     def _reach(self, sid, pos):
         """`pos` clamped to the servo's span. Refuses a servo that is not inside its joint range to begin with:
@@ -377,7 +396,8 @@ class Studio:
         """Everything the page shows. `since` = last sample number it has; newer ones ride along."""
         since = int((q or {}).get("since", self.seq))
         motors = {i: dict(m, span=self._span(i, m["pos"]),
-                          deg=None if self._zero(i) is None else round(feetech.angle(i, m["pos"], self._zero(i)), 1))
+                          deg=None if self._zero(i) is None else round(feetech.angle(i, m["pos"], self._zero(i), self._dir(i)), 1),
+                          dir=self._dir(i))
                   for i, m in self.now.items() if i in self.ids}
         seen = sorted(m["volt"] for m in motors.values()) or [v for v in [self.sensors.get("volts")] if v]
         if seen:                                 # median servo voltage, smoothed: one reading is only good to 0.1 V
@@ -392,7 +412,7 @@ class Studio:
                     cal=dict(on=self.calibrating, saved=self.cal.get("updated") if self.cal.get("joints") else None,
                              imu=bool(self.cal.get("imu")),
                              edge=[i for i, m in motors.items() if self.calibrating and not EDGE < m["pos"] < 4095 - EDGE]),
-                    brain=dict(on=self.brain is not None, host=self.host, sensors=self.sensors,
+                    brain=dict(on=self.brain is not None, linking=self.linking.locked(), host=self.host, sensors=self.sensors,
                                size=(duck_agent.W, duck_agent.H)),
                     samples=[r for r in list(self.log) if r[0] > since][-600:])
 

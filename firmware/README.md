@@ -210,6 +210,8 @@ IMU maths: the chip reports q_raw (sensor to its own gravity-aligned world). Wit
 q_pose, mount = q_raw^-1 x q_pose, and from then on body orientation = q_raw x mount. Roll and pitch are absolute;
 yaw has no reference and drifts.
 
-Directions (`direction`) are not measured: they are kissqy's, and with a zero-pose home they do not affect the
-zeros, only which way positive angle runs. Checked against the mock only; no real duck has been calibrated yet.
+Directions (`direction`) start as kissqy's and are not measured; with a zero-pose home they do not affect the
+zeros, only which way positive angle runs. **Flip**, in a calibrated joint's card, reverses one: use it when the
+joint on screen turns the opposite way to the real one. The choice is stored in the calibration and kept when
+the duck is calibrated again. Checked against the mock only; no real duck has been calibrated yet.
 

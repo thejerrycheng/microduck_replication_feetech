@@ -47,6 +47,8 @@
   #dot, #bdot { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); margin: 0 4px 0 10px; transition: background .3s; }
   #dot.on, #bdot.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
   #bdot { margin: 0 -2px 0 6px; }
+  #bdot.busy { background: var(--orange); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; transform: scale(.7); } }
   #count { color: var(--dim); font-variant-numeric: tabular-nums; padding-right: 10px; }
   /* found servos: a pill under the bar that pours in, each servo popping after the last */
   #found { position: fixed; top: 76px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; padding: 6px; border-radius: 999px;
@@ -188,7 +190,7 @@
   <div class="row">
   <div id="who"><b></b><span></span></div>
   <div class="sep"></div>
-  <div class="row"><button id="torque" class="sw" title="Torque"></button><button id="dn" class="nudge" title="Nudge 0.2°">‹</button><input id="slide" type="range"><button id="up" class="nudge" title="Nudge 0.2°">›</button><button id="test">Test</button><button id="zero" title="Re-centre this servo's encoder: the present position will read 2048 (mid-travel), giving it full range both ways. The joint goes limp; switch its torque back on after.">Zero</button></div>
+  <div class="row"><button id="torque" class="sw" title="Torque"></button><button id="dn" class="nudge" title="Nudge 0.2°">‹</button><input id="slide" type="range"><button id="up" class="nudge" title="Nudge 0.2°">›</button><button id="test">Test</button><button id="zero" title="Re-centre this servo's encoder: the present position will read 2048 (mid-travel), giving it full range both ways. The joint goes limp; switch its torque back on after.">Zero</button><button id="flip" hidden title="Reverse this joint's direction: its angle changes sign. Use it when the joint on screen turns the opposite way to the real one.">Flip</button></div>
   <div class="sep"></div>
   <div class="row"><span class="lab">ID</span><input id="to" class="num" type="number" min="0" max="253"><button id="set" class="pri">Set</button></div>
   <div class="sep"></div>
@@ -401,7 +403,7 @@ function render() {
     : all ? "Calibrate: lay the duck on its back, pose every joint at home, save" : "Needs all 15 servos";
   $("cal").classList.toggle("empty", !C.on);
   $("chold").className = "sw" + (C.on && S.ids.length && S.ids.every(id => S.motors[id] && S.motors[id].torque) ? " on" : "");
-  $("test").hidden = !!C.on;
+  $("test").hidden = !!C.on; $("flip").hidden = !(S.motors[sel] && S.motors[sel].deg != null) || !!C.on;
   const edge = C.on && C.edge || [];                     // joints sitting on the end of their encoder: they need Zero
   if (edge.join() !== edgeT) { edgeT = edge.join(); if (edge.length) toast(`${edge.join(", ")}: at the end of its encoder. Select it and press Zero.`, true); }
   $("zero").className = edge.includes(sel) ? "pri" : "";
@@ -470,6 +472,7 @@ let moveT = 0;
 $("slide").oninput = () => { const now = Date.now(); if (now - moveT > 40) { moveT = now; api("move", { id: sel, pos: +$("slide").value }); } };
 $("slide").onchange = () => api("move", { id: sel, pos: +$("slide").value });
 const nudge = d => { const m = S.motors[sel]; if (m) api("move", { id: sel, pos: (m.torque ? m.goal : m.pos) + d }); };
+$("flip").onclick = () => api("flip", { id: sel }).then(s => toast(`${sel} reversed`));
 $("dn").onclick = () => nudge(-2); $("up").onclick = () => nudge(2);
 // calibration: limp -> pose by hand -> Hold -> trim each joint -> Save. The file changes only on Save.
 $("calib").onclick = () => api("cal_start", {}).then(() => toast("Lay the duck on its back and pose it at home"));
@@ -587,7 +590,8 @@ $("blink").onclick = async () => {
 function toggle(k) { open.has(k) ? open.delete(k) : open.add(k); if (proj[k]) proj[k].visible = open.has(k); render(); }
 function dock() {
   const B = S.brain || { on: false, sensors: {} }, col = { ok: css("--green"), bad: css("--red"), sel: css("--blue"), off: dark.matches ? 0x8a8d96 : 0xc3c6ce };
-  $("bdot").className = B.on ? "on" : "";
+  $("bdot").className = B.on ? "on" : B.linking ? "busy" : "";        // orange and pulsing while the link comes up
+  $("blink").title = B.on ? "Connected to the duck. Press to disconnect." : B.linking ? "Connecting to the duck…" : "The duck is not on the network yet. The studio connects by itself when it is.";
   for (const k in SENS) {
     const st = B.on ? (B.sensors[k] && B.sensors[k].ok ? "ok" : "bad") : "", on = open.has(k);
     SENS[k].node.className = "sn glass " + st + (on ? " on" : "");

@@ -15,7 +15,7 @@ from serial.tools import list_ports
 
 BAUDS = (1_000_000, 500_000, 250_000, 128_000, 115_200, 76_800, 57_600, 38_400)   # index = register 6
 PING, READ, WRITE, OFSCAL, SYNC_READ, SYNC_WRITE = 1, 2, 3, 0x0B, 0x82, 0x83
-ID, BAUD, KP, KD, LOCK, TORQUE, GOAL, KP_RAM, KD_RAM = 5, 6, 21, 22, 55, 40, 42, 50, 51
+ID, BAUD, KP, KD, OFFSET, LOCK, TORQUE, GOAL, KP_RAM, KD_RAM = 5, 6, 21, 22, 31, 55, 40, 42, 50, 51
 BLOCK, BLOCK_LEN = 40, 31          # torque .. present current, read as one block
 
 # servo ID -> joint. Right leg 10-14, left leg 20-24, neck / head / mouth 30-34.
@@ -48,18 +48,19 @@ def sign(sid):
     return -1 if sid in FLIP else 1
 
 
-def limits(sid, zero=ZERO):
+def limits(sid, zero=ZERO, direction=None):
     """(lo, hi) ticks a joint's servo may be sent to: the model's range about `zero`, the tick count at the joint's
-    zero pose (from the calibration, else ZERO). None if `sid` is not a joint."""
+    zero pose (from the calibration, else ZERO). `direction` is +1 or -1 (from the calibration, else `sign`).
+    None if `sid` is not a joint."""
     if sid not in DUCK:
         return None
-    k = sign(sid) * 4096 / (2 * pi)
+    k = (direction or sign(sid)) * 4096 / (2 * pi)
     return tuple(sorted(round(zero + k * r) for r in RANGE[DUCK[sid]]))
 
 
-def angle(sid, ticks, zero):
-    """Joint angle in degrees for a servo position, given the calibrated zero."""
-    return (ticks - zero) * 360 / 4096 * sign(sid)
+def angle(sid, ticks, zero, direction=None):
+    """Joint angle in degrees for a servo position, given the calibrated zero and direction."""
+    return (ticks - zero) * 360 / 4096 * (direction or sign(sid))
 
 
 # Charge left in a lithium-ion cell against its resting voltage (a typical 18650 discharge curve). Rough by nature:
@@ -215,15 +216,28 @@ class Bus:
         if fb is None:
             raise ValueError(f"{sid} stopped answering")
         if abs(fb["pos"] - target) > 120:
-            raise ValueError(f"zero did not take: still reads {fb['pos']}")
+            # The servo keeps its offset within +-2047 and will not go past that, so a pose more than half a turn
+            # from where the old offset put it cannot be reached by the instruction (seen on a real HD1910: home
+            # read 1 with an offset of -2025). Offsets repeat every turn, so write the wrapped value ourselves.
+            # position = encoder - offset, measured: the instruction moved both by the same amount.
+            old = self.read(sid, OFFSET, 2)
+            if old is None:
+                raise ValueError(f"{sid} stopped answering")
+            want = (_sm(old, 15) + fb["pos"] - target + 2048) % 4096 - 2048
+            self._eeprom(sid, OFFSET, abs(want) | (0x8000 if want < 0 else 0), n=2)
+            time.sleep(0.15)
+            fb = self.feedback(sid)
+            if fb is None or abs(fb["pos"] - target) > 120:
+                self._eeprom(sid, OFFSET, old, n=2)          # leave the servo as it was
+                raise ValueError(f"zero did not take: {sid} reads {fb and fb['pos']}")
         self.goto(sid, fb["pos"])        # the goal register is in the old frame; torque is off, so this moves nothing
         return fb["pos"]
 
-    def _eeprom(self, sid, addr, value, after=None):
+    def _eeprom(self, sid, addr, value, after=None, n=1):
         with self.lock:
             self.write(sid, LOCK, 0)
             time.sleep(0.02)
-            self.write(sid, addr, value)
+            self.write(sid, addr, value, n)
             time.sleep(0.05)
             self.write(sid if after is None else after, LOCK, 1)
 
@@ -323,5 +337,5 @@ class MockBus(Bus):
         if inst == OFSCAL and sid in self.m:
             self.m[sid]["pos"], self.m[sid]["goal"] = params[0] | params[1] << 8, None
 
-    def _eeprom(self, sid, addr, value, after=None):
+    def _eeprom(self, sid, addr, value, after=None, n=1):
         self.write(sid, addr, value)
