@@ -188,7 +188,7 @@
   <div class="row">
   <div id="who"><b></b><span></span></div>
   <div class="sep"></div>
-  <div class="row"><button id="torque" class="sw" title="Torque"></button><button id="dn" class="nudge" title="Nudge 0.2°">‹</button><input id="slide" type="range"><button id="up" class="nudge" title="Nudge 0.2°">›</button><button id="test">Test</button><button id="zero" title="Make the present position read 2048 (mid-travel)">Zero</button></div>
+  <div class="row"><button id="torque" class="sw" title="Torque"></button><button id="dn" class="nudge" title="Nudge 0.2°">‹</button><input id="slide" type="range"><button id="up" class="nudge" title="Nudge 0.2°">›</button><button id="test">Test</button><button id="zero" title="Re-centre this servo's encoder: the present position will read 2048 (mid-travel), giving it full range both ways. The joint goes limp; switch its torque back on after.">Zero</button></div>
   <div class="sep"></div>
   <div class="row"><span class="lab">ID</span><input id="to" class="num" type="number" min="0" max="253"><button id="set" class="pri">Set</button></div>
   <div class="sep"></div>
@@ -234,7 +234,7 @@ async function api(name, body) {
   }
   return j;
 }
-let toastT, lowT = 0;
+let toastT, lowT = 0, edgeT = "";
 function toast(msg, bad) {
   const t = $("toast"); t.textContent = msg; t.className = "glass show" + (bad ? " bad" : "");
   clearTimeout(toastT); toastT = setTimeout(() => t.className = "glass", 2600);
@@ -401,7 +401,10 @@ function render() {
     : all ? "Calibrate: lay the duck on its back, pose every joint at home, save" : "Needs all 15 servos";
   $("cal").classList.toggle("empty", !C.on);
   $("chold").className = "sw" + (C.on && S.ids.length && S.ids.every(id => S.motors[id] && S.motors[id].torque) ? " on" : "");
-  $("test").hidden = $("zero").hidden = !!C.on;
+  $("test").hidden = !!C.on;
+  const edge = C.on && C.edge || [];                     // joints sitting on the end of their encoder: they need Zero
+  if (edge.join() !== edgeT) { edgeT = edge.join(); if (edge.length) toast(`${edge.join(", ")}: at the end of its encoder. Select it and press Zero.`, true); }
+  $("zero").className = edge.includes(sel) ? "pri" : "";
   const have = Object.keys(S.duck).filter(id => live(+id)).length;
   $("count").textContent = on ? `${have}/${Object.keys(S.duck).length}` : "";
   // the found servos, as a row to click. Elements are kept and only added / removed, so clicks and animations survive

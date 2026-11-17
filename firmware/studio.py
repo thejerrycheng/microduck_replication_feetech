@@ -22,6 +22,7 @@ FILES = {"/": HERE / "web/index.html", "/duck.bin": HERE / "web/duck.bin",
 TYPES = {".html": "text/html", ".js": "text/javascript", ".bin": "application/octet-stream"}
 RATE = 500          # ticks/s the Test wiggle ramps at (44 deg/s): slow enough to stop by hand
 SPAN = 512          # a servo with no joint ID yet: the slider reaches +-45 deg from where its torque came on
+EDGE = 400          # ticks from either end of the encoder inside which a joint cannot be trimmed both ways
 TRIM = 256          # while calibrating, a held joint can be nudged +-22 deg from where it was caught
 STILL = 3.0         # deg/s: the IMU must be quieter than this to be calibrated
 BACK = (0.70711, 0.0, -0.70711, 0.0)         # body orientation of a duck lying flat on its back: nose (+x) up
@@ -243,17 +244,23 @@ class Studio:
         w, x, y, z = imu["raw"]
         return dict(mount=[round(v, 6) for v in duck_agent.qmul((w, -x, -y, -z), pose)], calibrated=True)
 
+    def _hold_all(self, on):
+        """Every servo at once: three packets on the bus instead of three per servo."""
+        for d in (self.goal, self.sent, self.home):
+            d.clear()
+        held = self.bus.hold_all(self.ids, on)
+        self.home.update(held)
+        self.sent.update(held)
+
     def cal_start(self, _=None):
         """Begin: every servo limp, so the duck can be laid on its back and posed at home by hand."""
         self.calibrating = True
-        for sid in self.ids:
-            self._hold(sid, False)
+        self._hold_all(False)
         return self._fresh()
 
     def cal_hold(self, q):
         """Torque on (hold where each joint is now) or off, for all of them."""
-        for sid in self.ids:
-            self._hold(sid, bool(q["on"]))
+        self._hold_all(bool(q["on"]))
         return self._fresh()
 
     def cal_save(self, _=None):
@@ -272,8 +279,7 @@ class Studio:
 
     def cal_cancel(self, _=None):
         self.calibrating = False
-        for sid in self.ids:
-            self._hold(sid, False)
+        self._hold_all(False)
         return self._fresh()
 
     def cal_level(self, _=None):
@@ -384,7 +390,8 @@ class Studio:
                     bauds=feetech.BAUDS,
                     ids=self.ids, motors=motors, duck=DUCK, signals=SIGNALS, seq=self.seq,
                     cal=dict(on=self.calibrating, saved=self.cal.get("updated") if self.cal.get("joints") else None,
-                             imu=bool(self.cal.get("imu"))),
+                             imu=bool(self.cal.get("imu")),
+                             edge=[i for i, m in motors.items() if self.calibrating and not EDGE < m["pos"] < 4095 - EDGE]),
                     brain=dict(on=self.brain is not None, host=self.host, sensors=self.sensors,
                                size=(duck_agent.W, duck_agent.H)),
                     samples=[r for r in list(self.log) if r[0] > since][-600:])
@@ -407,11 +414,10 @@ class Studio:
 
     def disconnect(self, _=None):
         if self.bus:
-            for sid in self.ids:
-                try:
-                    self.bus.torque(sid, False)
-                except Exception:
-                    pass
+            try:
+                self.bus.hold_all(self.ids, False)
+            except Exception:
+                pass
             self.bus.close()
         self.bus, self.ids, self.goal, self.sent, self.home, self.now, self.lost = None, [], {}, {}, {}, {}, False
         self.calibrating = False

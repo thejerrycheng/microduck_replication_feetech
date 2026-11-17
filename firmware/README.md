@@ -184,6 +184,9 @@ is measured from the real mechanism instead of from an assumed 2048.
 2. Switch **Hold** on: every joint holds where it is. Click a joint and trim it with the slider or the ‹ › buttons
    (0.2° a step, at most ±22° from where it was caught). A joint's own torque switch releases just that joint to
    move it by hand again.
+   If a joint cannot be trimmed, its home pose sits at the end of the servo's encoder (within 400 ticks of 0 or
+   4095), where the servo cannot move both ways. The studio names such joints; select one and press **Zero**
+   (Feetech offset calibration: the present position will read 2048), then switch its torque back on.
 3. **Save**. Each joint's present servo position becomes its zero, the IMU's mounting rotation is taken from the
    same pose (a duck on its back has its nose pointing up), and the torque is released. **Cancel** changes nothing.
 

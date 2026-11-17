@@ -14,7 +14,7 @@ import serial
 from serial.tools import list_ports
 
 BAUDS = (1_000_000, 500_000, 250_000, 128_000, 115_200, 76_800, 57_600, 38_400)   # index = register 6
-PING, READ, WRITE, OFSCAL, SYNC_READ = 1, 2, 3, 0x0B, 0x82
+PING, READ, WRITE, OFSCAL, SYNC_READ, SYNC_WRITE = 1, 2, 3, 0x0B, 0x82, 0x83
 ID, BAUD, KP, KD, LOCK, TORQUE, GOAL, KP_RAM, KD_RAM = 5, 6, 21, 22, 55, 40, 42, 50, 51
 BLOCK, BLOCK_LEN = 40, 31          # torque .. present current, read as one block
 
@@ -89,6 +89,13 @@ def ports():
 def _sm(v, bit):
     """Feetech sign-magnitude word -> int."""
     return -(v & ((1 << bit) - 1)) if v >> bit & 1 else v & ((1 << bit) - 1)
+
+
+def _word(pos):
+    """A position as the servo's two bytes: magnitude, low byte first, with bit 15 as the sign."""
+    pos = max(-32767, min(32767, int(pos)))
+    w = abs(pos) | (0x8000 if pos < 0 else 0)
+    return w & 0xFF, w >> 8
 
 
 class Bus:
@@ -173,13 +180,28 @@ class Bus:
     def torque(self, sid, on):
         return self.write(sid, TORQUE, int(bool(on)))
 
+    def sync_write(self, addr, values):
+        """One packet that writes `addr` on many servos at once: {id: bytes}, every value the same length. Nobody
+        answers a sync write, so this is as fast as a single packet however many servos there are."""
+        if values:
+            n = len(next(iter(values.values())))
+            self._tx(0xFE, SYNC_WRITE, [addr, n, *[b for sid, v in values.items() for b in (sid, *v)]])
+
+    def hold_all(self, ids, on):
+        """Torque on (each servo holding where it is now) or off for all of `ids`, in three packets, not three per
+        servo. Returns {id: position held} when switching on."""
+        held = {}
+        if on:
+            held = {sid: fb["pos"] for sid, fb in self.sample(ids).items()}
+            self.sync_write(GOAL, {sid: bytes([*_word(p), 0, 0, 0, 0]) for sid, p in held.items()})
+        self.sync_write(TORQUE, {sid: bytes([1]) for sid in held} if on else {sid: bytes([0]) for sid in ids})
+        return held
+
     def goto(self, sid, pos):
         """Goal position in ticks; the 6-byte command at 42 (position, time 0, speed 0) the robot itself sends.
         The HD1910 reports and takes sign-magnitude positions that can lie outside 0-4095, so nothing is clamped
         to one turn here: a clamp would make "hold where you are" jump a servo that reads e.g. 4798."""
-        pos = max(-32767, min(32767, int(pos)))
-        w = abs(pos) | (0x8000 if pos < 0 else 0)
-        return self._tx(sid, WRITE, [GOAL, w & 0xFF, w >> 8, 0, 0, 0, 0]) is not None
+        return self._tx(sid, WRITE, [GOAL, *_word(pos), 0, 0, 0, 0]) is not None
 
     def center(self, sid, target=2048):
         """Zero: make the servo's present pose read `target` (2048 = mid-travel, so it can swing a half turn either
@@ -289,6 +311,13 @@ class MockBus(Bus):
         if sid in self.m:
             self.m[sid]["goal"] = int(pos)
         return sid in self.m
+
+    def sync_write(self, addr, values):
+        for sid, v in values.items():
+            if sid in self.m and addr == TORQUE:
+                self.m[sid][TORQUE] = v[0]
+            elif sid in self.m and addr == GOAL:
+                self.m[sid]["goal"] = _sm(v[0] | v[1] << 8, 15)
 
     def _tx(self, sid, inst, params=(), reply=0):
         if inst == OFSCAL and sid in self.m:
