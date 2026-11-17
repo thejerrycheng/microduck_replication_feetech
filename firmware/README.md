@@ -194,7 +194,9 @@ is measured from the real mechanism instead of from an assumed 2048.
 a second over Wi-Fi) each calibrated joint's angle is applied to the model, and the ID tags, sensor parts and
 overlays move with it. `bake_duck.py` stores, for every part, the chain of joints that carries it; the page poses
 a chain as the product, trunk first, of each joint's rotation about its baked zero-pose axis. While calibrating,
-the model stays at home, as the target to match. The beak (34) has no joint in the model and does not move.
+the model stays at home, as the target to match. The beak (34) has no joint in Pollen's model, so `bake_duck.py`
+adds one the way the Duck Live app draws it: the two lower-beak meshes turn about the beak servo's axis, positive =
+open. The iOS app does the same from the `jaw` entry in `duck.bin`.
 Joint directions are still kissqy's, unmeasured: a joint that turns the wrong way on screen has the wrong sign.
 
 The IMU can also be re-levelled alone: stand the duck upright on a level surface and press **Level** in the IMU

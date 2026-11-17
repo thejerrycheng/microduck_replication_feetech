@@ -56,7 +56,14 @@ for sid, name in DUCK.items():
     servos.append(dict(id=sid, name=name, at=d.xanchor[j], axis=d.xaxis[j], chain=chain(m.jnt_bodyid[j])))
 (g,) = [g for g in housings if g not in used]
 used[g] = mouth = next(s for s, n in DUCK.items() if n == "mouth")
-servos.append(dict(id=mouth, name="mouth", at=d.geom_xpos[g], axis=np.array([0.0, 1.0, 0.0]), chain=chain(m.geom_bodyid[g])))
+# The beak: the model has no jaw joint (the jaw is welded into the head), so one is added here, as the Duck Live app
+# draws it: the two lower-beak meshes turn about the beak servo's axis (engine.JAW_PIVOT / JAW_AXIS, head frame; + opens).
+hb = m.body(engine.HEAD_BODY).id
+hR = d.xmat[hb].reshape(3, 3)
+servos.append(dict(id=mouth, name="mouth", at=d.xpos[hb] + hR @ np.array(engine.JAW_PIVOT), axis=hR @ np.array(engine.JAW_AXIS),
+                   chain=chain(hb) + [mouth]))
+jaw = dict(body=engine.HEAD_BODY, pivot=list(engine.JAW_PIVOT), axis=list(engine.JAW_AXIS), open_rad=engine.JAW_OPEN_RAD)
+is_jaw = lambda g: m.geom_bodyid[g] == hb and m.mesh(m.geom_dataid[g]).name in engine.JAW_MESHES
 
 # parts that are a sensor: they light up in the studio the way the servo housings do
 PART = dict(lens="camera", m12_lens_holder="camera", speaker="speaker", elec_rpi_robot_hat_pcb="mic")
@@ -90,7 +97,7 @@ for g in geoms:
     rgba = m.mat_rgba[m.geom_matid[g]] if m.geom_matid[g] >= 0 else m.geom_rgba[g]
     parts.append(dict(mesh=list(meshes).index(i), rgba=[round(float(x), 3) for x in rgba], servo=used.get(g, 0),
                       sensor=PART.get(m.mesh(i).name, ""),
-                      chain=chain(m.geom_bodyid[g]),
+                      chain=chain(m.geom_bodyid[g]) + [mouth] * int(is_jaw(g)), jaw=bool(is_jaw(g)),
                       body=m.body(m.geom_bodyid[g]).name,            # for a posed duck (the iOS app): the part's body
                       lpos=[round(float(x), 6) for x in m.geom_pos[g]], lquat=[round(float(x), 6) for x in m.geom_quat[g]],
                       pos=[round(float(x), 5) for x in d.geom_xpos[g] - [0, 0, z0]],
@@ -119,7 +126,7 @@ for s in servos:
 # the standing pose of every body (world frame, quaternion w x y z), so a viewer can pose the parts by body
 bodies = [dict(name=m.body(b).name, pos=[round(float(x), 5) for x in d.xpos[b] - [0, 0, z0]],
                quat=[round(float(x), 5) for x in d.xquat[b]]) for b in range(1, m.nbody)]
-head = json.dumps(dict(meshes=list(meshes.values()), parts=parts, servos=servos, sensors=sensors, bodies=bodies, z0=round(float(z0), 5)),
+head = json.dumps(dict(meshes=list(meshes.values()), parts=parts, servos=servos, sensors=sensors, bodies=bodies, jaw=jaw, z0=round(float(z0), 5)),
                   separators=(",", ":")).encode()
 head += b" " * (-len(head) % 4)
 out = HERE / "web/duck.bin"

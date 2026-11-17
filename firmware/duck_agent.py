@@ -128,18 +128,25 @@ class Uart:
         """Send `tx`, return up to `n` reply bytes. A half-duplex adapter that echoes what was sent is handled:
         the echo is recognised and dropped."""
         with self.lock:
-            termios.tcflush(self.fd, termios.TCIFLUSH)
-            os.write(self.fd, tx)
-            if not n:
-                return b""
-            end = time.time() + timeout + (len(tx) + 2 * n) * 1e-5         # a byte takes 10 us at 1 Mbit
-            buf = self._read(n, end)
-            if tx and buf[:len(tx)] == tx[:len(buf)]:                       # our own bytes came back first
-                buf = (buf + self._read(len(tx), end + timeout))[len(tx):]
-            if len(buf) < n:                                                # a slow or partial answer: let the bus
-                while select.select([self.fd], [], [], 0.003)[0]:           # go quiet before anyone talks again,
-                    os.read(self.fd, 256)                                   # or the next packet collides with it
-            return buf
+            fcntl.flock(self.fd, fcntl.LOCK_EX)         # two programs on the duck may share the bus (this agent and
+            try:                                        # `studio.py --duck`, the phone's server): one packet at a time
+                return self._xfer(tx, n, timeout)
+            finally:
+                fcntl.flock(self.fd, fcntl.LOCK_UN)
+
+    def _xfer(self, tx, n, timeout):
+        termios.tcflush(self.fd, termios.TCIFLUSH)
+        os.write(self.fd, tx)
+        if not n:
+            return b""
+        end = time.time() + timeout + (len(tx) + 2 * n) * 1e-5         # a byte takes 10 us at 1 Mbit
+        buf = self._read(n, end)
+        if tx and buf[:len(tx)] == tx[:len(buf)]:                       # our own bytes came back first
+            buf = (buf + self._read(len(tx), end + timeout))[len(tx):]
+        if len(buf) < n:                                                # a slow or partial answer: let the bus
+            while select.select([self.fd], [], [], 0.003)[0]:           # go quiet before anyone talks again,
+                os.read(self.fd, 256)                                   # or the next packet collides with it
+        return buf
 
 
 class Sensors:

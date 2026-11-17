@@ -16,6 +16,9 @@ final class DuckScene {
     private var bodies: [String: SCNNode] = [:], standing: [String: (SIMD3<Float>, simd_quatf)] = [:]
     private var parts: [(node: SCNNode, rgba: [CGFloat], servo: Int, sensor: String)] = []
     private var chips: [SCNNode] = []
+    private let jaw = SCNNode()                 // the lower beak hangs from this, at the beak servo's axis (the model has no jaw joint)
+    private var jawAxis: SIMD3<Float> = [0, 1, 0]
+    private(set) var jawOpen = 0.42             // radians at fully open, for the live engine's 0...1 "mouth"
     private var look = Look(), trunk = "trunk_base", painted = false
     static let tile: Float = 0.2
 
@@ -67,6 +70,13 @@ final class DuckScene {
             bodies[name] = node
             robot.addChildNode(node)
         }
+        var pivot = SIMD3<Float>.zero
+        if let j = meta["jaw"] as? [String: Any], let head = bodies[j["body"] as? String ?? ""], let pv = j["pivot"] as? [Double],
+           let ax = j["axis"] as? [Double] {
+            pivot = Self.vec(pv); jawAxis = Self.vec(ax); jawOpen = j["open_rad"] as? Double ?? jawOpen
+            jaw.simdPosition = pivot
+            head.addChildNode(jaw)
+        }
         for p in meta["parts"] as? [[String: Any]] ?? [] {
             guard let mi = p["mesh"] as? Int, let body = bodies[p["body"] as? String ?? ""], let lp = p["lpos"] as? [Double],
                   let lq = p["lquat"] as? [Double], let rgba = p["rgba"] as? [Double] else { continue }
@@ -77,7 +87,10 @@ final class DuckScene {
             node.simdPosition = Self.vec(lp); node.simdOrientation = Self.quat(lq)
             let servo = p["servo"] as? Int ?? 0, sensor = p["sensor"] as? String ?? ""
             if servo > 0 { node.name = "servo:\(servo)" } else if !sensor.isEmpty { node.name = "sensor:\(sensor)" }
-            body.addChildNode(node)
+            if p["jaw"] as? Bool == true, jaw.parent != nil {      // a lower-beak mesh: carried by the jaw, not the head
+                node.simdPosition -= pivot
+                jaw.addChildNode(node)
+            } else { body.addChildNode(node) }
             parts.append((node, rgba.map { CGFloat($0) }, servo, sensor))
         }
         // the two sensors with no part of their own in the model: a small chip where each sits
@@ -158,6 +171,13 @@ final class DuckScene {
                 floor.simdPosition = [-x.truncatingRemainder(dividingBy: Self.tile), -y.truncatingRemainder(dividingBy: Self.tile), 0]
             }
         }
+    }
+
+    /// The beak: `rad` about the beak servo's axis, positive = open.
+    func mouth(_ rad: Double) {
+        SCNTransaction.begin(); SCNTransaction.animationDuration = 0.1
+        jaw.simdOrientation = simd_quatf(angle: Float(rad), axis: jawAxis)
+        SCNTransaction.commit()
     }
 
     /// The IMU turns the whole duck (studio look). nil = upright.

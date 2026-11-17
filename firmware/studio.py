@@ -127,7 +127,8 @@ class Wire:
 
 
 class Studio:
-    def __init__(self, mock=False):
+    def __init__(self, mock=False, local=False):
+        self.local = local                       # `--duck`: this studio runs on the duck itself and serves the phone
         self.mock, self.bus, self.port, self.baud = mock, None, None, feetech.BAUDS[0]
         self.ids, self.home, self.goal, self.sent = [], {}, {}, {}
         self.log, self.seq, self.now, self.lost = collections.deque(maxlen=KEEP), 0, {}, False
@@ -148,8 +149,8 @@ class Studio:
             try:
                 if self.brain:
                     self.sensors = self.brain.status()
-                elif self.auto and (self.mock or tick % 3 == 1) and not self.linking.locked():
-                    if not self.mock:
+                elif self.auto and (self.mock or self.local or tick % 3 == 1) and not self.linking.locked():
+                    if not self.mock and not self.local:
                         if addr is None:                 # the alias's real host name, from ~/.ssh/config
                             out = subprocess.run(["ssh", "-G", self.host], capture_output=True, text=True, timeout=5).stdout
                             addr = next(l.split()[1] for l in out.splitlines() if l.startswith("hostname "))
@@ -163,7 +164,7 @@ class Studio:
         with self.linking:                       # one at a time: two starts would kill each other's agent
             self.brain_disconnect(auto=True)
             self.host = q.get("host") or self.host
-            brain = duck_agent.Mock() if self.mock else Brain(self.host)
+            brain = duck_agent.Mock() if self.mock else duck_agent.Sensors() if self.local else Brain(self.host)
             try:
                 self.sensors = brain.status()
             except Exception:
@@ -178,7 +179,7 @@ class Studio:
         """Bring everything up without a click: take the devices from the duck's runtime (Setup) and connect the
         servo bus through the duck. Skipped if Run was chosen by hand, or a USB adapter is already in use."""
         try:
-            if self.want == "setup" and not self.mock:
+            if self.want == "setup" and not self.mock and not self.local:      # on the duck: never take over unasked
                 if self.sensors.get("mode") == "run":
                     self.brain.set_mode("setup")
                     self.sensors = self.brain.status()
@@ -479,12 +480,18 @@ class Studio:
         return {}
 
     def center(self, q):
-        """Zero the servo where it stands: the present pose becomes 2048."""
+        """Zero the servo where it stands: the present pose becomes 2048. This renumbers the servo's positions, so a
+        saved calibration is renumbered with it: the joint's zero moves by the same amount and still means the same
+        physical pose. (Without that, a joint zeroed after Save sat "outside its range" and could not be moved.)"""
         sid = int(q["id"])
         self._hold(sid, False)
         self.sent.pop(sid, None)
         self.home.pop(sid, None)
-        self.bus.center(sid)
+        before = self.bus.feedback(sid)
+        after = self.bus.center(sid)
+        if before and self._zero(sid) is not None:
+            shift = after - before["pos"]
+            self._write(joints=[dict(j, zero_raw=j["zero_raw"] + shift) if j["id"] == sid else j for j in self.cal["joints"]])
         return self._fresh()
 
     def gains(self, q):
@@ -560,6 +567,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", type=int, default=8770)
     ap.add_argument("--no-open", action="store_true")
     ap.add_argument("--lan", action="store_true", help="also serve the phone app (ios/): every interface + Bonjour; no login")
+    ap.add_argument("--duck", action="store_true", help="run on the duck itself (duck_serve.sh): its own sensors and servo port, no SSH")
     a = ap.parse_args()
     url = f"http://127.0.0.1:{a.port}"
     addr = ("0.0.0.0" if a.lan else "127.0.0.1", a.port)
@@ -585,7 +593,7 @@ if __name__ == "__main__":
         else:
             raise SystemExit("the old studio did not stop")
     srv.daemon_threads = True
-    STUDIO = Studio(a.mock)
+    STUDIO = Studio(a.mock, a.duck)
 
     def bye(*_):                                     # stopped from outside: release the servos and the duck first
         STUDIO.disconnect()
@@ -597,7 +605,7 @@ if __name__ == "__main__":
         import sys
         sys.path.insert(0, str(HERE.parent / "ios"))
         import lan
-        print(lan.announce("studio", a.port, mock=int(a.mock)), f"http://{lan.address()}:{a.port}")   # the app prefers a real studio to a mock
+        print(lan.announce("studio", a.port, mock=int(a.mock), duck=int(a.duck)), f"http://{lan.address()}:{a.port}", flush=True)   # the app prefers a real studio to a mock
     print(url)
     if not a.no_open:
         webbrowser.open(url)

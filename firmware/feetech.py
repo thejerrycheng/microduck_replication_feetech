@@ -10,8 +10,11 @@ import time
 from math import pi, radians
 from pathlib import Path
 
-import serial
-from serial.tools import list_ports
+try:
+    import serial
+    from serial.tools import list_ports
+except ImportError:                 # on the duck itself (`studio.py --duck`): no pyserial, and no USB adapter either
+    serial = list_ports = None
 
 BAUDS = (1_000_000, 500_000, 250_000, 128_000, 115_200, 76_800, 57_600, 38_400)   # index = register 6
 PING, READ, WRITE, OFSCAL, SYNC_READ, SYNC_WRITE = 1, 2, 3, 0x0B, 0x82, 0x83
@@ -82,6 +85,8 @@ LIKELY = (0, 1, *DUCK)              # where a servo can be: factory IDs, then th
 
 def ports():
     """USB serial adapters, never the macOS pseudo-ports."""
+    if list_ports is None:
+        return []
     return [p.device for p in list_ports.comports()
             if not any(s in p.device.lower() for s in ("bluetooth", "debug", "wlan"))
             and "monitor" not in (p.description or "").lower()]          # a display's control port is no servo adapter
