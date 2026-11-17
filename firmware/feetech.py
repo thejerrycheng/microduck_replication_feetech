@@ -62,13 +62,28 @@ def angle(sid, ticks, zero):
     return (ticks - zero) * 360 / 4096 * sign(sid)
 
 
+# Charge left in a lithium-ion cell against its resting voltage (a typical 18650 discharge curve). Rough by nature:
+# under load the voltage sags, so a working duck reads a few percent low, and 0.1 V per servo reading is ~8 %.
+CELL = ((3.0, 0), (3.3, 4), (3.4, 8), (3.5, 14), (3.6, 25), (3.7, 42), (3.8, 58), (3.9, 72), (4.0, 83), (4.1, 92), (4.2, 100))
+
+
+def battery(volts, cells=2):
+    """Percent of charge left in the duck's pack (2 cells in series) at `volts`."""
+    v = volts / cells
+    for (v0, p0), (v1, p1) in zip(CELL, CELL[1:]):
+        if v <= v1:
+            return max(0, round(p0 + (p1 - p0) * (v - v0) / (v1 - v0)))
+    return 100
+
+
 LIKELY = (0, 1, *DUCK)              # where a servo can be: factory IDs, then the joint IDs
 
 
 def ports():
     """USB serial adapters, never the macOS pseudo-ports."""
     return [p.device for p in list_ports.comports()
-            if not any(s in p.device.lower() for s in ("bluetooth", "debug", "wlan"))]
+            if not any(s in p.device.lower() for s in ("bluetooth", "debug", "wlan"))
+            and "monitor" not in (p.description or "").lower()]          # a display's control port is no servo adapter
 
 
 def _sm(v, bit):

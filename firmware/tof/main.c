@@ -31,8 +31,16 @@ int main(int argc, char **argv)
     uint8_t status[64];
     if (P(open)(bus, 0x29)) { perror(bus); return 1; }
     if (!P(is_alive)()) { fprintf(stderr, "no sensor at 0x29 on %s\n", bus); return 2; }
-    if (P(init)()) { fprintf(stderr, "firmware upload failed\n"); return 3; }
-    if (P(start)((uint8_t)hz)) { fprintf(stderr, "could not start ranging\n"); return 4; }
+    /* A sensor that already has its firmware (another program ranged with it since power-up) refuses a second
+     * upload for a full minute and then reports an error, yet ranges fine. So: try to range first, and upload
+     * only if no frame comes within a second and a half. */
+    int live = 0;
+    if (!P(start)((uint8_t)hz))
+        for (int i = 0; i < 150 && !live; i++) { live = P(data_ready)() > 0; if (!live) usleep(10000); }
+    if (!live) {
+        if (P(init)()) { fprintf(stderr, "firmware upload failed\n"); return 3; }
+        if (P(start)((uint8_t)hz)) { fprintf(stderr, "could not start ranging\n"); return 4; }
+    }
     for (;;) {
         int ready = P(data_ready)();
         if (ready < 0) return 5;

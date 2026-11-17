@@ -135,6 +135,11 @@
   #cal i { font-style: normal; color: var(--dim); font-size: 13px; }
   #calib u { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 7px; vertical-align: 1px; }
   .nudge { width: 31px; height: 31px; padding: 0; font-size: 17px; line-height: 1; }
+  #batt { display: flex; align-items: center; gap: 6px; padding: 0 12px 0 6px; font-variant-numeric: tabular-nums; color: var(--green); }
+  #batt svg { width: 30px; height: 14px; } #batt b { color: var(--ink); font-weight: 600; }
+  #batt rect:first-child, #batt path { fill: none; stroke: var(--dim); stroke-width: 1.5; stroke-linecap: round; }
+  #bfill { fill: currentColor; transition: width .6s var(--spring); }
+  #batt.mid { color: var(--orange); } #batt.low { color: var(--red); } #batt.low b { color: var(--red); }
   #tip { position: fixed; padding: 5px 10px; border-radius: 999px; color: var(--dim); pointer-events: none; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   #tip div { display: flex; gap: 8px; align-items: center; } #tip span:last-child { margin-left: auto; padding-left: 12px; font-weight: 600; }
   #tip small { color: var(--dim); }
@@ -161,6 +166,8 @@
   <span class="sep"></span>
   <span id="bdot"></span>
   <button id="blink" title="The duck's own computer and its sensors, over SSH">Duck</button>
+  <div id="mode" class="seg" hidden title="Setup: the studio has the servos and sensors, the duck's own runtime is paused. Run: the runtime drives the duck."><button data-m="setup">Setup</button><button data-m="run">Run</button></div>
+  <span id="batt" hidden><svg viewBox="0 0 30 14"><rect x=".75" y=".75" width="25" height="12.5" rx="3.5"/><path d="M28 4.5v5"/><rect id="bfill" x="2.5" y="2.5" height="9" rx="2"/></svg><b></b></span>
 </header>
 <aside id="dock"></aside>
 <div id="cal" class="glass empty">
@@ -227,7 +234,7 @@ async function api(name, body) {
   }
   return j;
 }
-let toastT;
+let toastT, lowT = 0;
 function toast(msg, bad) {
   const t = $("toast"); t.textContent = msg; t.className = "glass show" + (bad ? " bad" : "");
   clearTimeout(toastT); toastT = setTimeout(() => t.className = "glass", 2600);
@@ -352,10 +359,21 @@ function render() {
     node.innerHTML = list.map(v => `<option value="${v}">${label(v)}</option>`).join("") || "<option value=''>No adapter</option>";
     if (cur) node.value = cur;
   };
-  fill($("port"), S.ports, S.port, p => p.replace("/dev/cu.", ""));
+  fill($("port"), S.ports, S.port || (S.ports.includes("duck") ? "duck" : ""), p => p.replace("/dev/cu.", ""));      // the duck's own bus first
   fill($("baud"), S.bauds, S.baud, b => b >= 1e6 ? b / 1e6 + "M" : b / 1e3 + "k");
   $("link").disabled = scanning || (!on && !S.ports.length);
   $("fix").hidden = !(on && S.ids.length && S.baud !== S.bauds[0]);
+  const md = S.brain && S.brain.on && S.brain.sensors.mode;       // who has the duck's devices
+  $("mode").hidden = !md;
+  if (md) { [...$("mode").children].forEach(b => b.classList.toggle("on", b.dataset.m === md)); slide($("mode"), $("mode").querySelector(".on")); }
+  const bt = S.battery;                                  // the pack, from the servos' own voltage reading
+  $("batt").hidden = !bt;
+  if (bt) {
+    $("batt").className = bt.percent < 15 ? "low" : bt.percent < 40 ? "mid" : "";
+    $("batt").lastChild.textContent = bt.percent + "%"; $("bfill").setAttribute("width", Math.max(1.5, 21 * bt.percent / 100));
+    $("batt").title = `${bt.volts.toFixed(1)} V  (2 cells; an estimate from voltage)`;
+    if (bt.percent < 15 && !lowT) { lowT = 1; toast(`Battery ${bt.percent}%: charge it`, true); } else if (bt.percent >= 20) lowT = 0;
+  }
   const C = S.cal || {}, all = Object.keys(S.duck).every(id => live(+id));
   $("calib").hidden = !on; $("calib").disabled = !all || C.on;
   $("calib").innerHTML = (C.saved ? "<u></u>" : "") + "Calibrate";
@@ -514,7 +532,7 @@ $("csv").onclick = () => {
 // Five, each a button in the dock and a marker on the duck. On = its window opens and it draws into the 3-D scene:
 // the camera's picture on its view frustum, the ToF ranger's 8 x 8 distances where they land; the IMU tilts the duck.
 const SENS = {       // name, window height, icon
-  camera: ["Camera", 144, '<rect x="3" y="7" width="13" height="10" rx="2.5"/><path d="M16 10.5l5-2.5v8l-5-2.5z"/>'],
+  camera: ["Camera", 256, '<rect x="3" y="7" width="13" height="10" rx="2.5"/><path d="M16 10.5l5-2.5v8l-5-2.5z"/>'],
   tof: ["ToF", 150, '<circle cx="5" cy="12" r="1.6"/><path d="M9.5 7.5a6.5 6.5 0 010 9M13 5a10 10 0 010 14M16.5 2.8a13.5 13.5 0 010 18.4"/>'],
   imu: ["IMU", 106, '<path d="M12 12V3m0 9l8 4.5M12 12l-8 4.5"/><circle cx="12" cy="12" r="1.6"/>'],
   mic: ["Mic", 56, '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'],
@@ -523,7 +541,7 @@ const SENS = {       // name, window height, icon
 const VOICE = [["chirp", "Quack"], ["greet", "Greet"], ["coo", "Coo"], ["peck", "Peck"], ["inquire", "Ask"], ["alarm", "Alarm"]];      // the duck's own sounds
 const FOV = { camera: 62, tof: 45 }, rad = Math.PI / 180;        // horizontal field of view, degrees (IMX219; VL53L5CX)
 Object.entries(SENS).forEach(([k, v], i) => {
-  const n = document.createElement("div"), cw = k === "camera" ? 320 : 384;
+  const n = document.createElement("div"), cw = k === "camera" ? 240 : 384;      // the camera's window is upright: see feed()
   n.className = "sn glass"; n.style.setProperty("--h", v[1] + 58 + "px"); n.style.setProperty("--i", i);
   n.innerHTML = `<button class="ic" title="${v[0]}"><svg viewBox="0 0 24 24">${v[2]}</svg></button><b>${v[0]}</b><i></i><div class="view">` +
     (k === "speaker" ? VOICE.map(([t, n]) => `<button data-t="${t}">${n}</button>`).join("")
@@ -533,6 +551,10 @@ Object.entries(SENS).forEach(([k, v], i) => {
   $("dock").appendChild(n); v.node = n; v.cv = n.querySelector("canvas"); v.note = n.querySelector("i");
 });
 SENS.speaker.node.querySelector(".view").onclick = e => e.target.dataset.t && api("say", { tag: e.target.dataset.t }).catch(() => {});
+$("mode").onclick = e => { const to = e.target.dataset.m; if (!to || to === S.brain.sensors.mode) return;
+  $("mode").style.opacity = .5;
+  api("mode", { to }).then(() => toast(to === "run" ? "Run: the duck's runtime has the servos" : "Setup: the studio has the servos"))
+    .catch(() => {}).finally(() => $("mode").style.opacity = ""); };
 $("level").onclick = () => api("cal_level", {}).then(() => toast("IMU levelled")).catch(() => {});
 $("blink").onclick = async () => {
   $("blink").disabled = true;
@@ -574,7 +596,7 @@ function mkSensor(s) {
     return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: css("--blue"), transparent: true, opacity: .45 }));
   };
   if (s.id === "camera") {                               // the picture, held up in front of the lens
-    const d = .1, ta = Math.tan(FOV.camera / 2 * rad), tb = ta * .75, geo = new THREE.BufferGeometry();
+    const d = .1, tb = Math.tan(FOV.camera / 2 * rad), ta = tb * .75, geo = new THREE.BufferGeometry();      // upright: taller than wide
     geo.setFromPoints([at(d, -ta, tb), at(d, ta, tb), at(d, -ta, -tb), at(d, ta, -tb)]);
     geo.setAttribute("uv", new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 0, 0, 1, 0]), 2)); geo.setIndex([0, 2, 1, 1, 2, 3]);
     s.tex = new THREE.CanvasTexture(SENS.camera.cv);
@@ -602,11 +624,14 @@ function feed(k, v) {
   if (k === "camera") {
     const [W, H] = S.brain.size; if (v.byteLength !== W * H * 1.5) return;
     const y = new Uint8Array(v, 0, W * H), uv = new Uint8Array(v, W * H), img = c.createImageData(W, H), o = img.data;
+    const raw = SENS.camera.raw = SENS.camera.raw || Object.assign(document.createElement("canvas"), { width: W, height: H });
     for (let j = 0, p = 0; j < H; j++) for (let i = 0; i < W; i++, p += 4) {                    // NV12 -> RGB
       const Y = y[j * W + i], q = (j >> 1) * W + (i & ~1), U = uv[q] - 128, V = uv[q + 1] - 128;
       o[p] = Y + 1.402 * V; o[p + 1] = Y - .344 * U - .714 * V; o[p + 2] = Y + 1.772 * U; o[p + 3] = 255;
     }
-    c.putImageData(img, 0, 0); if (SENS.camera.pic) { SENS.camera.pic[0].visible = true; SENS.camera.pic[0].material.map.needsUpdate = true; } note(`${W}×${H}`);
+    raw.getContext("2d").putImageData(img, 0, 0);             // the sensor sits on its side in the head: turn the picture
+    c.save(); c.translate(w, 0); c.rotate(Math.PI / 2); c.drawImage(raw, 0, 0, h, w); c.restore();       // a quarter turn clockwise
+    if (SENS.camera.pic) { SENS.camera.pic[0].visible = true; SENS.camera.pic[0].material.map.needsUpdate = true; } note(`${H}×${W}`);
   } else if (k === "tof") {
     c.clearRect(0, 0, w, h); const s = h / 8, x0 = (w - h) / 2;
     v.forEach((mm, i) => { c.fillStyle = mm < 0 ? css("--fill") : heat(mm); c.beginPath(); c.roundRect(x0 + (i % 8) * s + 3, (i >> 3) * s + 3, s - 6, s - 6, 8); c.fill(); });

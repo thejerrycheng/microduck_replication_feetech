@@ -78,6 +78,12 @@ class Brain:
     def save_calibration(self, data):
         self._post("calibration", json.dumps(data).encode())
 
+    def set_mode(self, to):
+        out = json.loads(self._post(f"mode/{to}"))
+        if "error" in out:
+            raise ValueError(out["error"])
+        return out["mode"]
+
     def bus(self, tx, n, timeout):
         url = f"http://127.0.0.1:{TUNNEL}/bus/{n}/{round(timeout * 1000)}"
         return urllib.request.urlopen(urllib.request.Request(url, data=tx), timeout=timeout + 4).read()
@@ -116,7 +122,7 @@ class Studio:
         self.ids, self.home, self.goal, self.sent = [], {}, {}, {}
         self.log, self.seq, self.now, self.lost = collections.deque(maxlen=KEEP), 0, {}, False
         self.brain, self.host, self.sensors, self.auto, self.linking = None, "microduck", {}, True, threading.Lock()
-        self.cal, self.calibrating = self._local(), False
+        self.cal, self.calibrating, self.volts = self._local(), False, None
         threading.Thread(target=self._ramp, daemon=True).start()
         threading.Thread(target=self._sample, daemon=True).start()
         threading.Thread(target=self._watch, daemon=True).start()
@@ -162,6 +168,16 @@ class Studio:
         brain, self.brain, self.sensors, self.auto = self.brain, None, {}, auto
         if isinstance(brain, Brain):
             brain.close()
+        return self.state()
+
+    def mode(self, q):
+        """Setup: the duck's runtime is paused and the studio has the servo bus, ToF and camera. Run: the runtime
+        has them back. Going to Run lets go of the studio's servo connection first."""
+        to = "run" if q.get("to") == "run" else "setup"
+        if to == "run" and self.port == "duck":
+            self.disconnect()
+        self.brain.set_mode(to)
+        self.sensors = self.brain.status()
         return self.state()
 
     def say(self, q):
@@ -340,7 +356,13 @@ class Studio:
         motors = {i: dict(m, span=self._span(i, m["pos"]),
                           deg=None if self._zero(i) is None else round(feetech.angle(i, m["pos"], self._zero(i)), 1))
                   for i, m in self.now.items() if i in self.ids}
-        return dict(connected=self.bus is not None, port=self.port, baud=self.baud, mock=self.mock,
+        seen = sorted(m["volt"] for m in motors.values()) or [v for v in [self.sensors.get("volts")] if v]
+        if seen:                                 # median servo voltage, smoothed: one reading is only good to 0.1 V
+            self.volts = seen[len(seen) // 2] if self.volts is None else self.volts + 0.05 * (seen[len(seen) // 2] - self.volts)
+        elif not self.brain and not self.bus:
+            self.volts = None
+        return dict(battery=None if self.volts is None else dict(volts=round(self.volts, 2), percent=feetech.battery(self.volts)),
+                    connected=self.bus is not None, port=self.port, baud=self.baud, mock=self.mock,
                     ports=["mock"] if self.mock else feetech.ports() + ["duck"] * bool(self.sensors.get("servos", {}).get("ok")),
                     bauds=feetech.BAUDS,
                     ids=self.ids, motors=motors, duck=DUCK, signals=SIGNALS, seq=self.seq,
@@ -359,6 +381,8 @@ class Studio:
         self.disconnect()
         self.port, self.baud = q.get("port"), int(q.get("baud") or feetech.BAUDS[0])
         if self.port == "duck":                  # through the duck's computer, not a USB adapter on this Mac
+            if self.sensors.get("mode") == "run":            # the duck's runtime has the bus: take it (Setup mode)
+                self.brain.set_mode("setup")
             self.bus = feetech.Bus(None, self.baud, Wire(self.brain))
         else:
             self.bus = feetech.MockBus() if self.mock else feetech.Bus(self.port, self.baud)
@@ -478,9 +502,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, b"{}")       # unknown route, or a POST from another site
         try:
             q = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
-            if name == "say" and STUDIO.brain is None:
+            if name in ("say", "mode") and STUDIO.brain is None:
                 raise ValueError("duck not connected")
-            if name not in ("connect", "disconnect", "say", "cal_level") and not name.startswith("brain_") and STUDIO.bus is None:
+            if name not in ("connect", "disconnect", "say", "cal_level", "mode") and not name.startswith("brain_") and STUDIO.bus is None:
                 raise ValueError("not connected")
             self.reply(200, json.dumps(fn(q)).encode())
         except Exception as e:
@@ -494,15 +518,43 @@ if __name__ == "__main__":
     ap.add_argument("--no-open", action="store_true")
     ap.add_argument("--lan", action="store_true", help="also serve the phone app (ios/): every interface + Bonjour; no login")
     a = ap.parse_args()
-    STUDIO = Studio(a.mock)
-    srv = ThreadingHTTPServer(("0.0.0.0" if a.lan else "127.0.0.1", a.port), Handler)
+    url = f"http://127.0.0.1:{a.port}"
+    addr = ("0.0.0.0" if a.lan else "127.0.0.1", a.port)
+    try:                                             # the port first: nothing touches the duck before we own it
+        srv = ThreadingHTTPServer(addr, Handler)
+    except OSError:                                  # a studio is already there (left in the background): take over
+        import os, signal
+        old = subprocess.run(["lsof", "-ti", f"tcp:{a.port}", "-sTCP:LISTEN"], capture_output=True, text=True).stdout.split()
+        ours = [int(p) for p in old if "studio.py" in subprocess.run(["ps", "-o", "command=", "-p", p],
+                                                                     capture_output=True, text=True).stdout]
+        if not ours:
+            raise SystemExit(f"port {a.port} is in use by another program")
+        print("Taking over from the studio that was already running.")
+        for pid in ours:
+            os.kill(pid, signal.SIGTERM)
+        for _ in range(50):
+            time.sleep(0.2)
+            try:
+                srv = ThreadingHTTPServer(addr, Handler)
+                break
+            except OSError:
+                pass
+        else:
+            raise SystemExit("the old studio did not stop")
     srv.daemon_threads = True
+    STUDIO = Studio(a.mock)
+
+    def bye(*_):                                     # stopped from outside: release the servos and the duck first
+        STUDIO.disconnect()
+        STUDIO.brain_disconnect()
+        raise SystemExit(0)
+    import signal
+    signal.signal(signal.SIGTERM, bye)
     if a.lan:
         import sys
         sys.path.insert(0, str(HERE.parent / "ios"))
         import lan
-        print(lan.announce("studio", a.port), f"http://{lan.address()}:{a.port}")
-    url = f"http://127.0.0.1:{a.port}"
+        print(lan.announce("studio", a.port, mock=int(a.mock)), f"http://{lan.address()}:{a.port}")   # the app prefers a real studio to a mock
     print(url)
     if not a.no_open:
         webbrowser.open(url)

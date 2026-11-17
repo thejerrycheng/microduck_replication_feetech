@@ -69,10 +69,21 @@ joint ID keeps ±45° about the pose where torque came on.
 | `duck_agent.py` | runs on the duck's computer; serves its sensors (and a mock of them) |
 | `duck_voice.py` | the duck's voice: Pollen's vocalisation synth, ported; renders the sound bank |
 | `tof/` | ST's VL53L5CX / L8CX driver (BSD-3, via Pollen) and `main.c`, built on the duck |
-| `sd_wifi.sh` | puts Wi-Fi credentials on a Radxa Zero 3W microSD |
+| `sd_flash.sh`, `sd_wifi.sh` | write an image to the microSD card; put Wi-Fi (and USB networking) on it |
+| `mode_install.sh` | on the duck, once: the Setup / Run permission, and `mediad` off |
+| `net_install.sh`, `duck_net.py` | on the duck, once: Wi-Fi retried forever, fallback hotspot, USB networking (not yet run on a duck) |
 
 Safety: an ID is refused if another servo already answers on it; the Test wiggle ramps at 44°/s, the slider commands the servo directly (full speed) within the joint range
 above, and Disconnect releases every servo.
+
+## Battery
+
+The top bar shows the charge left as a percentage, with the pack voltage in the tooltip; it turns orange under 40 %
+and red under 15 %, where a warning also pops up. The voltage is the servos' own supply reading (the median of the
+connected servos, or one servo read by the agent when only the duck is connected), smoothed. Percent comes from a
+typical lithium-ion discharge curve for 2 cells in series (`feetech.CELL`): 8.4 V = 100 %, 7.4 V = 42 %,
+7.0 V = 14 %, 6.0 V = 0 %. It is an estimate: voltage sags under load, the readings step by 0.1 V (about 8 %), and
+the curve is not this pack's own. On a wired supply it shows whatever that voltage maps to.
 
 ## Sensors
 
@@ -106,11 +117,45 @@ Set ID, the live plots and the rest work as with an adapter. The duck's user mus
 `sudo usermod -aG dialout radxa` on the duck, then reboot. Checked only against a fake servo on a pseudo-terminal
 (with and without the transmit echo a half-duplex adapter produces), not on the duck.
 
-On the real duck (Radxa Zero 3W, JoyandAI image v0.1, Zero Robot HAT): the camera, the servos and IMU through the
-duck, the microphone and the speaker have run (a quack raised the microphone from -57 to -6 dBFS). The ToF reader
-builds and runs but no sensor has answered yet, so ranging is untested. Board setup this needed, once, as root:
-`usermod -aG dialout radxa` (servo port), and I2C3 on pins 3/5 enabled by an overlay that sorts after
-`rk3568-i2s3-m0`, which otherwise switches I2C3 off (`cp rk3568-i2c3-m0.dtbo zz-i2c3-m0.dtbo; u-boot-update`).
+### Setting up a freshly flashed duck
+
+For the JoyandAI first-version image on a Radxa Zero 3W with the Zero Robot HAT (logins `radxa`/`radxa`,
+`rock`/`rock`). Everything the sensors need, in order; each step is run once and survives reboots.
+
+| Step | Command | Why |
+|---|---|---|
+| Wi-Fi (card in the Mac) | `sudo bash firmware/sd_wifi.sh` | writes the network to the card's `config` partition; the duck joins it on first boot |
+| SSH key | `ssh-copy-id rock@radxa-zero3.local`, and a `Host microduck` entry in `~/.ssh/config` | the studio logs in without a password |
+| Servo port, runtime sockets | `sudo usermod -aG robot,dialout rock` | `/dev/ttyS2` is `root:dialout`; the runtime's sockets are `root:robot` |
+| I2C3 on header pins 3/5 | `sudo cp /boot/dtbo/rk3568-i2c3-m0.dtbo.disabled /boot/dtbo/zz-i2c3-m0.dtbo && sudo u-boot-update` | the HAT's audio codec (0x18) and ToF socket (0x29) are on I2C3; the image's `rk3568-i2s3-m0` overlay switches it off, so the copy must sort after it |
+| Setup / Run switch, camera | `sudo bash /tmp/mode_install.sh` (copy `firmware/mode_install.sh` over first), then reboot | lets the studio pause the runtime; switches `mediad` off, which otherwise breaks the camera at every boot |
+
+Everything else is done by the studio when it connects: it copies the agent and the voice synth, builds the ToF
+reader (`tof/build.sh`), renders the voice bank, and programs the audio codec.
+
+**Setup / Run.** The duck's own runtime (`robotd`, `tofd`) holds the servo bus (exclusively) and the ToF ranger.
+The switch in the top bar pauses it (**Setup**: the studio has the servos, IMU and ToF) or starts it again
+(**Run**). Connecting the `duck` servo port switches to Setup by itself. The runtime starts at every boot, so a
+freshly booted duck is in Run. Pausing the runtime makes a standing duck go limp.
+
+**What broke, and the fix for each** (all found on the real duck):
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Speaker silent, microphone constant | no kernel driver for the TLV320AIC3104; only a "dummy" I2S card | `duck_agent.Sensors.codec` programs the codec over I2C (clock from BCLK through the PLL, DACs to line out, MIC3R to the right ADC); both streams 32-bit |
+| Codec and ToF absent from every bus | I2C3 disabled by the I2S overlay | the `zz-i2c3-m0` overlay above |
+| IMU absent | it is not on I2C: it is the `imu_to_servo` board, ID 200 on the servo bus | read register 124 (gyro + quaternion) through the bus |
+| Servos unreachable | port permission; then the runtime holding the port | `dialout` group; Setup mode |
+| ToF never produces a frame after the runtime has used it | a sensor that already has its firmware rejects a second upload for 60 s | `tof/main.c` ranges first and uploads only if no frame arrives |
+| Camera: green noise at 0.1 fps, or bright bands | `mediad` leaves the sensor in a mode the ISP mishandles; stopping it does not undo that | `mediad` disabled; the camera then boots in its default mode (measured: 11 frames/s to the studio, clean) |
+| Camera picture sideways | the sensor is mounted on its side | the page turns it a quarter turn clockwise |
+| Board drops off the network | under-powered: a Mac USB port or an empty pack cannot hold it up | 5 V / 2 A or more on the `OTG` port; a steady (not blinking) LED means it has not booted |
+| Studio connects, then loses the duck | the agent announced itself before it was listening; two studio copies killing each other's tunnel | announce after bind; a new `studio.py` takes over from an old one |
+
+Measured on this duck in Setup mode: 15 servos answering at 16 readings/s over Wi-Fi, IMU live, ToF 13 frames/s
+(VL53L5CX), camera 11 frames/s, a quack raising the microphone from -56 to -11 dBFS, pack at 8.0 V (83 %).
+Not yet done on the real duck: joint calibration, the USB-cable link (`radxa-ncm` is enabled but fails to start),
+and the three-way network setup in `net_install.sh`.
 
 ## Gains vs. responsiveness (measured)
 

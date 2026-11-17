@@ -3,6 +3,10 @@
     python3 duck_agent.py            # on the duck; listens on 127.0.0.1:8771, reached through an SSH tunnel
     python3 duck_agent.py --mock     # anywhere: simulated sensors
 
+The duck's own runtime (robotd, tofd) uses the servo bus and the ToF ranger while it runs, and only one program
+can. (Its camera service, mediad, is switched off by `mode_install.sh`: on this board it leaves the camera broken.) So the duck is in one of two modes (`Sensors.mode`): "run", the runtime has them; "setup",
+the runtime is paused and this agent does. Switching needs the one sudoers rule `mode_install.sh` adds.
+
 The studio copies this file to the duck and starts it over SSH (`Studio.brain_connect`); nothing is installed and
 nothing needs root. It listens on loopback only, so the camera and microphone are never open to the Wi-Fi.
 
@@ -39,6 +43,7 @@ CODEC_SETUP = ((0, 0), (102, 0xA2), (3, 0x91), (4, 32 << 2), (5, 0), (6, 0), (11
                (92, 0x80), (93, 0x99))
 HOME = os.path.expanduser("~/microduck")      # what the duck keeps: its voice bank and its calibration
 BANK, CALIBRATION = HOME + "/sounds", HOME + "/calibration.json"
+RUNTIME = ("robotd", "tofd")        # the duck's own services that hold the servo bus and the ToF ranger
 UART = "/dev/ttyS2"                 # the servo bus on a Radxa Zero 3W (UART2 on the 40-pin header)
 
 
@@ -140,6 +145,27 @@ class Sensors:
             self.uart = Uart()
         return self.uart.xfer(tx, n, timeout)
 
+    def mode(self):
+        """ "run" while the duck's runtime is up, "setup" when it is paused and the devices are ours."""
+        up = subprocess.run(["systemctl", "is-active", "--quiet", RUNTIME[0]]).returncode == 0
+        return "run" if up else "setup"
+
+    def set_mode(self, to):
+        """Hand the devices over. To "run": let go of the bus and the ToF, then start the runtime.
+        To "setup": stop the runtime (its servos go limp). Raises if the sudoers rule is not installed."""
+        if to == "run":
+            uart, self.uart = getattr(self, "uart", None), None
+            if uart:
+                os.close(uart.fd)
+            if self.eye and self.eye.proc:
+                self.eye.proc.kill()
+        r = subprocess.run(["sudo", "-n", "/usr/bin/systemctl", "start" if to == "run" else "stop", *RUNTIME],
+                           capture_output=True, text=True, timeout=40)
+        if r.returncode:
+            raise OSError("not allowed to switch: run mode_install.sh on the duck once" if "password" in r.stderr
+                          else r.stderr.strip() or "systemctl failed")
+        return self.mode()
+
     def codec(self):
         """Program the audio codec. True if it is there. Safe to repeat: no reset, the same values again."""
         try:
@@ -169,24 +195,28 @@ class Sensors:
         buses = [int(p.rsplit("-", 1)[1]) for p in glob.glob("/dev/i2c-*")]
         names = [open(p).read().strip() for p in glob.glob("/sys/bus/i2c/devices/*/name")]
         sensor = next((n for n in names if n.startswith(("imx", "ov", "gc"))), None)
-        bus = os.access(UART, os.R_OK | os.W_OK)
+        mode = self.mode()
+        bus = mode == "setup" and os.access(UART, os.R_OK | os.W_OK)
         imu = bus and self.imu() is not None
+        held = "the duck's runtime has it (Run mode)"
         ranging = self.eye is not None and self.eye.proc is not None
-        kind = self.kind if ranging else self.tof_kind()
+        kind = self.kind if ranging else self.tof_kind() if mode == "setup" else None
         cards = open("/proc/asound/cards").read() if os.path.exists("/proc/asound/cards") else ""
         ear = self.mic() if self.ear.proc else None
         return dict(
+            mode=mode,
             camera=dict(ok=bool(sensor), note=sensor or "no sensor on CSI"),
             tof=dict(ok=bool(kind) and os.path.exists(f"{HOME}/tof_{kind}"),
-                     note="no sensor at 0x29 on the HAT socket IO2/3" if not kind else
+                     note=held if mode == "run" else "no sensor at 0x29 on the HAT socket IO2/3" if not kind else
                      kind if os.path.exists(f"{HOME}/tof_{kind}") else f"{kind} found, reader not built"),
-            imu=dict(ok=bool(imu), note="" if imu else "ID 200 silent on the servo bus" if bus else "servo bus not readable"),
+            imu=dict(ok=bool(imu), note="" if imu else held if mode == "run" else
+                     "ID 200 silent on the servo bus" if bus else "servo bus not readable"),
             mic=dict(ok=self.sound and (ear is None or ear["live"]),
                      note="no signal" if ear and not ear["live"] else "" if self.sound else "no codec on I2C3"),
             speaker=dict(ok=self.sound, note="" if self.sound else "no codec on I2C3"),
-            servos=dict(ok=bus, note="" if bus else
+            servos=dict(ok=bus, note="" if bus else held if mode == "run" else
                         f"no permission for {UART}: sudo usermod -aG dialout $USER, then reboot"),
-            host=os.uname().nodename, load=os.getloadavg()[0],
+            volts=self.volts() if bus else None, host=os.uname().nodename, load=os.getloadavg()[0],
             temp=int(open("/sys/class/thermal/thermal_zone0/temp").read()) / 1000)
 
     def camera(self):
@@ -250,6 +280,18 @@ class Sensors:
         raw = (math.sqrt(max(0.0, 1 - x * x - y * y - z * z)), x, y, z)
         return pose(raw, self.mount(), [round(g * 0.0175, 2) for g in (gx, gy, gz)])
 
+    def volts(self):
+        """The servo supply (the battery) in volts, as the first joint servo that answers reports it. None if none do."""
+        for sid in (10, 20, 30, 11, 21, 31):
+            body = [sid, 4, 2, 62, 1]
+            try:
+                r = self.bus(bytes([0xFF, 0xFF, *body, ~sum(body) & 0xFF]), 7, 0.01)
+            except OSError:
+                return None
+            if len(r) == 7 and r[2] == sid and (sum(r[2:]) & 0xFF) == 0xFF:
+                return r[5] / 10
+        return None
+
     def mount(self):
         """The IMU's calibrated mounting rotation [w, x, y, z], or None. Read from the calibration file when it
         changes, so a new calibration takes effect at once."""
@@ -307,7 +349,8 @@ class Mock(Sensors):
 
     def status(self):
         ok = dict(ok=True, note="mock")
-        return dict(camera=ok, tof=ok, imu=ok, mic=ok, speaker=ok, servos=dict(ok=False, note="mock"), host="mock",
+        return dict(mode=getattr(self, "_mode", "setup"), camera=ok, tof=ok, imu=ok, mic=ok, speaker=ok,
+                    servos=dict(ok=False, note="mock"), volts=7.4, host="mock",
                     load=0.2, temp=41.0)
 
     def camera(self):
@@ -349,6 +392,10 @@ class Mock(Sensors):
     def say(self, tag="chirp"):
         return f"{tag}_a.wav"
 
+    def set_mode(self, to):
+        self._mode = to
+        return to
+
     def calibration(self):
         return getattr(self, "saved", None)
 
@@ -377,6 +424,11 @@ class Handler(BaseHTTPRequestHandler):
             out = json.dumps(DUCK.say(self.path[5:])).encode()
         elif self.path == "/calibration":
             DUCK.save_calibration(json.loads(body))
+        elif self.path.startswith("/mode/"):
+            try:
+                out = json.dumps(dict(mode=DUCK.set_mode(self.path[6:]))).encode()
+            except OSError as e:
+                out = json.dumps(dict(error=str(e))).encode()
         elif self.path.startswith("/bus/"):                  # /bus/<reply bytes>/<timeout ms>, body = the packet
             n, ms = self.path.split("/")[2:4]
             out = DUCK.bus(body, int(n), int(ms) / 1000)
