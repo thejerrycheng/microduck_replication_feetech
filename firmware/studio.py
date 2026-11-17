@@ -88,6 +88,9 @@ class Brain:
         url = f"http://127.0.0.1:{TUNNEL}/bus/{n}/{round(timeout * 1000)}"
         return urllib.request.urlopen(urllib.request.Request(url, data=tx), timeout=timeout + 4).read()
 
+    def close(self):
+        self.ssh.terminate()
+
 
 class Wire:
     """Stands in for a serial port: the servo bus on the duck's own computer, one HTTP round trip per packet.
@@ -110,10 +113,10 @@ class Wire:
         return self.brain.bus(tx, n, self.timeout)
 
     def close(self):
-        self.write(b"")
-
-    def close(self):
-        self.ssh.terminate()
+        try:
+            self.write(b"")                      # send a pending broadcast, if the link is still there
+        except Exception:
+            pass
 
 
 class Studio:
@@ -122,7 +125,7 @@ class Studio:
         self.ids, self.home, self.goal, self.sent = [], {}, {}, {}
         self.log, self.seq, self.now, self.lost = collections.deque(maxlen=KEEP), 0, {}, False
         self.brain, self.host, self.sensors, self.auto, self.linking = None, "microduck", {}, True, threading.Lock()
-        self.cal, self.calibrating, self.volts = self._local(), False, None
+        self.cal, self.calibrating, self.volts, self.want = self._local(), False, None, "setup"
         threading.Thread(target=self._ramp, daemon=True).start()
         threading.Thread(target=self._sample, daemon=True).start()
         threading.Thread(target=self._watch, daemon=True).start()
@@ -161,7 +164,21 @@ class Studio:
                 raise
             self.brain = brain
             self.cal = brain.calibration() or self.cal       # the duck's own file is the one that counts
+            self._online()
         return self.state()
+
+    def _online(self):
+        """Bring everything up without a click: take the devices from the duck's runtime (Setup) and connect the
+        servo bus through the duck. Skipped if Run was chosen by hand, or a USB adapter is already in use."""
+        try:
+            if self.want == "setup" and not self.mock:
+                if self.sensors.get("mode") == "run":
+                    self.brain.set_mode("setup")
+                    self.sensors = self.brain.status()
+                if self.bus is None and self.sensors.get("servos", {}).get("ok"):
+                    self.connect(dict(port="duck"))
+        except Exception as e:
+            print("bring-up:", e, flush=True)
 
     def brain_disconnect(self, _=None, auto=False):
         """`auto` False = the Duck button: stay off until it is pressed again."""
@@ -173,7 +190,7 @@ class Studio:
     def mode(self, q):
         """Setup: the duck's runtime is paused and the studio has the servo bus, ToF and camera. Run: the runtime
         has them back. Going to Run lets go of the studio's servo connection first."""
-        to = "run" if q.get("to") == "run" else "setup"
+        to = self.want = "run" if q.get("to") == "run" else "setup"
         if to == "run" and self.port == "duck":
             self.disconnect()
         self.brain.set_mode(to)

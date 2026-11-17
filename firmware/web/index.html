@@ -279,14 +279,34 @@ fetch("duck.bin").then(r => r.arrayBuffer()).then(buf => {
     const mesh = new THREE.Mesh(geos[p.mesh], mat), r = p.rot;
     mesh.matrixAutoUpdate = false; mesh.renderOrder = p.servo ? 0 : 1;
     mesh.matrix.set(r[0], r[1], r[2], p.pos[0], r[3], r[4], r[5], p.pos[1], r[6], r[7], r[8], p.pos[2], 0, 0, 0, 1);
-    body.add(mesh);
+    link(p.chain).add(mesh);
     if (p.servo) housings[p.servo] = mesh;
     if (p.sensor) (marks[p.sensor] = marks[p.sensor] || []).push(mesh);
   });
-  servos = meta.servos; servos.forEach(s => { s.p = new THREE.Vector3(...s.at); s.tag = mkTag(s); });
+  servos = meta.servos; servos.forEach(s => { s.p = new THREE.Vector3(...s.at); s.ax = new THREE.Vector3(...s.axis).normalize(); s.tag = mkTag(s); });
   (meta.sensors || []).forEach(mkSensor);
   render();
 });
+
+// The duck is baked with every joint at zero. Each run of joints from the trunk outwards (a "chain") gets one group;
+// everything those joints carry hangs in it, and posing the duck is setting that group's matrix: the product, trunk
+// first, of each joint's rotation about its baked axis.
+const links = {};
+function link(chain) {
+  const k = (chain || []).join();
+  if (!links[k]) { const g = links[k] = new THREE.Group(); g.matrixAutoUpdate = false; g.chain = chain || []; body.add(g); }
+  return links[k];
+}
+function pose() {                                        // the 3-D duck takes the real joints' angles, once calibrated
+  const live = S.cal && !S.cal.on, E = {}, T = new THREE.Matrix4();
+  servos.forEach(s => {
+    const m = S.motors[s.id], a = live && m && m.deg != null ? m.deg * Math.PI / 180 : 0;
+    E[s.id] = a && new THREE.Matrix4().makeTranslation(s.p.x, s.p.y, s.p.z).multiply(T.makeRotationAxis(s.ax, a))
+      .multiply(new THREE.Matrix4().makeTranslation(-s.p.x, -s.p.y, -s.p.z));
+  });
+  for (const k in links) { const m = links[k].matrix.identity(); links[k].chain.forEach(id => E[id] && m.multiply(E[id])); }
+  dirty = true;
+}
 
 // click a servo on the duck to select it (a drag is an orbit, not a click)
 const ray = new THREE.Raycaster(), hit = e => {
@@ -314,7 +334,7 @@ function layout() {
   const w = el.clientWidth, h = el.clientHeight, c = ctl.target.clone().project(cam), cx = (c.x + 1) * w / 2;
   const D = Math.min(w * .34, 400), mid = (h - 150) * .5, gap = Math.min(46, (h - 400) / 10), cols = [[], []];
   const mean = g => { const m = servos.filter(s => (s.id / 10 | 0) === g); return m.reduce((a, s) => a + s.x, 0) / m.length; };
-  servos.forEach(s => { const v = s.p.clone().applyMatrix4(body.matrixWorld).project(cam); s.x = (v.x + 1) * w / 2; s.y = (1 - v.y) * h / 2; });
+  servos.forEach(s => { const v = s.p.clone().applyMatrix4(link(s.chain).matrixWorld).project(cam); s.x = (v.x + 1) * w / 2; s.y = (1 - v.y) * h / 2; });
   // each leg keeps its own side of the screen; the head's five go above the right leg's, so both columns stay short
   const rightLegLeft = mean(1) < mean(2);
   servos.forEach(s => cols[((s.id / 10 | 0) === 2) === rightLegLeft ? 1 : 0].push(s));
@@ -411,7 +431,7 @@ function render() {
     m.emissiveIntensity = st === "sel" ? .55 : .25;
   });
 
-  dock();
+  dock(); pose();
   const m = S.motors[sel];
   $("card").classList.toggle("empty", sel == null);
   if (sel == null) return;
@@ -586,9 +606,9 @@ function mkSensor(s) {
   const o = new THREE.Vector3(...s.at), f = new THREE.Vector3(...(s.dir || [1, 0, 0])), u = new THREE.Vector3(...(s.up || [0, 0, 1])), r = f.clone().cross(u);
   if (!marks[s.id]) {                                    // no part of its own in the model (ToF, IMU): a small chip where it sits
     const m = new THREE.Mesh(new THREE.BoxGeometry(.011, .011, .0025), new THREE.MeshStandardMaterial({ roughness: .45, metalness: .1 }));
-    m.position.copy(o); if (s.dir) m.lookAt(o.clone().add(f)); body.add(m); marks[s.id] = [m];
+    m.position.copy(o); if (s.dir) m.lookAt(o.clone().add(f)); link(s.chain).add(m); marks[s.id] = [m];
   }
-  const g = proj[s.id] = new THREE.Group(); g.visible = open.has(s.id); body.add(g);
+  const g = proj[s.id] = new THREE.Group(); g.visible = open.has(s.id); link(s.chain).add(g);
   const at = (d, a, b) => o.clone().addScaledVector(f, d).addScaledVector(r, a * d).addScaledVector(u, b * d);      // a, b = tan of the angle right / up
   const edges = (d, ta, tb) => {                         // the four rays to the corners of the view at distance d, and its outline
     const c = [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([a, b]) => at(d, a * ta, b * tb)), pts = [];

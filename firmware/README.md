@@ -187,6 +187,13 @@ is measured from the real mechanism instead of from an assumed 2048.
 3. **Save**. Each joint's present servo position becomes its zero, the IMU's mounting rotation is taken from the
    same pose (a duck on its back has its nose pointing up), and the torque is released. **Cancel** changes nothing.
 
+**Live pose.** Once a calibration is saved, the 3-D duck takes the real joints' angles: every state update (8-16
+a second over Wi-Fi) each calibrated joint's angle is applied to the model, and the ID tags, sensor parts and
+overlays move with it. `bake_duck.py` stores, for every part, the chain of joints that carries it; the page poses
+a chain as the product, trunk first, of each joint's rotation about its baked zero-pose axis. While calibrating,
+the model stays at home, as the target to match. The beak (34) has no joint in the model and does not move.
+Joint directions are still kissqy's, unmeasured: a joint that turns the wrong way on screen has the wrong sign.
+
 The IMU can also be re-levelled alone: stand the duck upright on a level surface and press **Level** in the IMU
 window. Hold the duck still for either; a reading with more than 3°/s of rotation is refused.
 

@@ -132,10 +132,13 @@ class Uart:
             os.write(self.fd, tx)
             if not n:
                 return b""
-            end = time.time() + timeout + len(tx) * 1e-5
+            end = time.time() + timeout + (len(tx) + 2 * n) * 1e-5         # a byte takes 10 us at 1 Mbit
             buf = self._read(n, end)
             if tx and buf[:len(tx)] == tx[:len(buf)]:                       # our own bytes came back first
                 buf = (buf + self._read(len(tx), end + timeout))[len(tx):]
+            if len(buf) < n:                                                # a slow or partial answer: let the bus
+                while select.select([self.fd], [], [], 0.003)[0]:           # go quiet before anyone talks again,
+                    os.read(self.fd, 256)                                   # or the next packet collides with it
             return buf
 
 
@@ -270,11 +273,14 @@ class Sensors:
         Register 124 of bus ID 200 holds gyro x/y/z as int16 (17.5 mdps per count) and the quaternion's x/y/z as
         half-precision floats; w is what makes it a unit quaternion. Yaw has no absolute reference and drifts."""
         body = [200, 4, 2, 124, 12]
-        try:
-            r = self.bus(bytes([0xFF, 0xFF, *body, ~sum(body) & 0xFF]), 18, 0.02)
-        except OSError:
-            return None
-        if len(r) != 18 or r[:3] != b"\xff\xff\xc8" or (sum(r[2:]) & 0xFF) != 0xFF:
+        for _ in range(3):                                   # the bus is shared with the servos: a miss is retried
+            try:
+                r = self.bus(bytes([0xFF, 0xFF, *body, ~sum(body) & 0xFF]), 18, 0.02)
+            except OSError:
+                return None
+            if len(r) == 18 and r[:3] == b"\xff\xff\xc8" and (sum(r[2:]) & 0xFF) == 0xFF:
+                break
+        else:
             return None
         gx, gy, gz, x, y, z = struct.unpack("<3h3e", r[5:17])
         raw = (math.sqrt(max(0.0, 1 - x * x - y * y - z * z)), x, y, z)

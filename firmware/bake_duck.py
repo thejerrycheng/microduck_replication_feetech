@@ -30,6 +30,21 @@ geoms = [g for g in range(m.ngeom) if m.geom_type[g] == mujoco.mjtGeom.mjGEOM_ME
          and m.geom_contype[g] == 0 and m.geom_conaffinity[g] == 0]
 housings = [g for g in geoms if "xl330" in m.mesh(m.geom_dataid[g]).name]
 
+IDS = {name: sid for sid, name in DUCK.items()}
+
+
+def chain(body):
+    """The joints between the trunk and `body`, trunk first, as servo IDs: what moves this body. The baked pose is
+    every joint at zero, so turning each of these about its baked axis, in this order, poses the body."""
+    out = []
+    while body > 0:
+        for j in range(m.body_jntadr[body], m.body_jntadr[body] + m.body_jntnum[body]):
+            if m.joint(j).name in IDS:
+                out.append(IDS[m.joint(j).name])
+        body = m.body_parentid[body]
+    return out[::-1]
+
+
 # each servo = the housing nearest its joint; the mouth (no joint in the MJCF) takes the one left over
 servos, used = [], {}
 for sid, name in DUCK.items():
@@ -38,10 +53,10 @@ for sid, name in DUCK.items():
     j = m.joint(name).id
     g = min((g for g in housings if g not in used), key=lambda g: np.linalg.norm(d.geom_xpos[g] - d.xanchor[j]))
     used[g] = sid
-    servos.append(dict(id=sid, name=name, at=d.xanchor[j], axis=d.xaxis[j]))
+    servos.append(dict(id=sid, name=name, at=d.xanchor[j], axis=d.xaxis[j], chain=chain(m.jnt_bodyid[j])))
 (g,) = [g for g in housings if g not in used]
 used[g] = mouth = next(s for s, n in DUCK.items() if n == "mouth")
-servos.append(dict(id=mouth, name="mouth", at=d.geom_xpos[g], axis=np.array([0.0, 1.0, 0.0])))
+servos.append(dict(id=mouth, name="mouth", at=d.geom_xpos[g], axis=np.array([0.0, 1.0, 0.0]), chain=chain(m.geom_bodyid[g])))
 
 # parts that are a sensor: they light up in the studio the way the servo housings do
 PART = dict(lens="camera", m12_lens_holder="camera", speaker="speaker", elec_rpi_robot_hat_pcb="mic")
@@ -75,6 +90,7 @@ for g in geoms:
     rgba = m.mat_rgba[m.geom_matid[g]] if m.geom_matid[g] >= 0 else m.geom_rgba[g]
     parts.append(dict(mesh=list(meshes).index(i), rgba=[round(float(x), 3) for x in rgba], servo=used.get(g, 0),
                       sensor=PART.get(m.mesh(i).name, ""),
+                      chain=chain(m.geom_bodyid[g]),
                       body=m.body(m.geom_bodyid[g]).name,            # for a posed duck (the iOS app): the part's body
                       lpos=[round(float(x), 6) for x in m.geom_pos[g]], lquat=[round(float(x), 6) for x in m.geom_quat[g]],
                       pos=[round(float(x), 5) for x in d.geom_xpos[g] - [0, 0, z0]],
@@ -86,9 +102,11 @@ for g in geoms:
 part = lambda name: next(d.geom_xpos[g].copy() for g in geoms if m.mesh(m.geom_dataid[g]).name == name)
 site = lambda n: d.site_xpos[m.site(n).id]
 look, up = np.array([1.0, 0.0, 0.0]), np.array([0.0, 0.0, 1.0])   # the standing duck faces +x; both sit on its face
-sensors = [dict(id="camera", at=site("head_camera"), dir=look, up=up), dict(id="tof", at=site("tof"), dir=look, up=up),
-           dict(id="imu", at=site("imu")), dict(id="mic", at=part("elec_rpi_robot_hat_pcb")),
-           dict(id="speaker", at=part("speaker"))]
+head, trunk = chain(m.site_bodyid[m.site("head_camera").id]), chain(m.site_bodyid[m.site("imu").id])
+sensors = [dict(id="camera", at=site("head_camera"), dir=look, up=up, chain=head),
+           dict(id="tof", at=site("tof"), dir=look, up=up, chain=head),
+           dict(id="imu", at=site("imu"), chain=trunk), dict(id="mic", at=part("elec_rpi_robot_hat_pcb"), chain=head),
+           dict(id="speaker", at=part("speaker"), chain=head)]
 for s in sensors:
     s["at"] = s["at"] - [0, 0, z0]
     for k in ("at", "dir", "up"):
