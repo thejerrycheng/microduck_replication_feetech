@@ -1,0 +1,37 @@
+{
+ "policy": "/home/jerrycheng/microduck/checkpoints/velstand_21495/exported_model_21495/policy.pt",
+ "phases": [
+  {
+   "phase": "walk 0.3",
+   "z_median_m": 0.1215,
+   "z_min_m": 0.103,
+   "z_dip_first_0.5s_min_m": 0.103,
+   "tilt_median_deg": 5.1,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "stop",
+   "z_median_m": 0.1169,
+   "z_min_m": 0.0773,
+   "z_dip_first_0.5s_min_m": 0.0773,
+   "tilt_median_deg": 3.7,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "turn 1.0 rad/s",
+   "z_median_m": 0.1215,
+   "z_min_m": 0.0957,
+   "z_dip_first_0.5s_min_m": 0.0997,
+   "tilt_median_deg": 4.6,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "stop",
+   "z_median_m": 0.117,
+   "z_min_m": 0.0416,
+   "z_dip_first_0.5s_min_m": 0.0994,
+   "tilt_median_deg": 3.9,
+   "fallen_frac": 0.0
+  }
+ ]
+}

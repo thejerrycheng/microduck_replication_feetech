@@ -1,0 +1,37 @@
+{
+ "policy": "logs/rsl_rl/microduck_velstand_allcoll_hd1910_backlash/2026-11-17_18-13-49/exported_model_22494/policy.pt",
+ "phases": [
+  {
+   "phase": "walk 0.3",
+   "z_median_m": 0.1209,
+   "z_min_m": 0.1051,
+   "z_dip_first_0.5s_min_m": 0.1051,
+   "tilt_median_deg": 5.2,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "stop",
+   "z_median_m": 0.1152,
+   "z_min_m": 0.0773,
+   "z_dip_first_0.5s_min_m": 0.0793,
+   "tilt_median_deg": 2.8,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "turn 1.0 rad/s",
+   "z_median_m": 0.1211,
+   "z_min_m": 0.109,
+   "z_dip_first_0.5s_min_m": 0.1138,
+   "tilt_median_deg": 5.5,
+   "fallen_frac": 0.0
+  },
+  {
+   "phase": "stop",
+   "z_median_m": 0.1151,
+   "z_min_m": 0.1031,
+   "z_dip_first_0.5s_min_m": 0.1031,
+   "tilt_median_deg": 2.5,
+   "fallen_frac": 0.0
+  }
+ ]
+}

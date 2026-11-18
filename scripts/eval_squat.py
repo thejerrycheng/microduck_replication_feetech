@@ -38,7 +38,9 @@ def main() -> int:
     cfg.commands.base_velocity.resampling_time_range = (1.0e9, 1.0e9)
     cfg.commands.head_pose.ranges = ((0.0, 0.0),) * 4
     cfg.commands.body_pose.ranges = ((0.0, 0.0),) * 6
-    cfg.events.set_ground_state.params.update({"sitting_prob": 0.0, "standing_prob": 1.0, "standing_z_min": 0.115, "standing_z_max": 0.115})
+    # SitStand resets through set_ground_state; VelStand through set_fallen_state (play_mode already forces standing there).
+    if getattr(cfg.events, "set_ground_state", None) is not None:
+        cfg.events.set_ground_state.params.update({"sitting_prob": 0.0, "standing_prob": 1.0, "standing_z_min": 0.115, "standing_z_max": 0.115})
     env = gym.make(args.task, cfg=cfg).unwrapped
     robot = env.scene["robot"]
     pol = torch.jit.load(args.policy, map_location=env.device).eval()
