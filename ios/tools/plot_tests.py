@@ -34,7 +34,7 @@ ax.plot(levels, walk, "o-", color="#007aff", label="walk, measured")
 ax.plot(levels, [v * HOLD for v in WALK], "--", color="#007aff", alpha=.5, label=r"walk, command $\times$ 3 s")
 ax.plot(levels, run, "s-", color="#ff9500", label="run, measured")
 ax.plot(levels, [v * HOLD for v in RUN], "--", color="#ff9500", alpha=.5, label=r"run, command $\times$ 3 s")
-ax.set_xlabel("speed level"); ax.set_ylabel("distance in one 3 s push [m]"); ax.set_xticks(list(levels))
+ax.set_xlabel("speed level (the slider)"); ax.set_ylabel("distance ahead after one 3 s push [m]"); ax.set_xticks(list(levels))
 ax.grid(alpha=.25); ax.legend(frameon=False, fontsize=8)
 fig.tight_layout()
 (ROOT / "docs/figures").mkdir(exist_ok=True)
@@ -47,14 +47,20 @@ def stat(k, fmt="%.2f"):
 
 
 rows = [("discover_s", "launch to studio and engine found", "s"), ("telemetry_hz", "servo samples reaching the plots", "Hz"),
-        ("sit_s", "tap to seated", "s"), ("stand_s", "tap to standing", "s"), ("deploy_s", "policy picked to confirmed", "s")]
+        ("sit_s", "tap to seated", "s"), ("stand_s", "tap to standing", "s"),
+        ("fwd_x_m", "left stick forward 3 s: distance ahead", "m"), ("back_x_m", "left stick back 3 s: distance ahead", "m"),
+        ("half_x_m", "left stick half forward 3 s: distance ahead", "m"),
+        ("right_y_m", "left stick right 3 s: distance to the left", "m"), ("right_yaw_deg", "\\quad heading change meanwhile", "deg"),
+        ("left_y_m", "left stick left 3 s: distance to the left", "m"), ("left_yaw_deg", "\\quad heading change meanwhile", "deg"),
+        ("cw_yaw_deg", "right slider clockwise 1.5 s: heading change", "deg"), ("cw_drift_m", "\\quad distance moved meanwhile", "m"),
+        ("ccw_yaw_deg", "right slider anticlockwise 1.5 s: heading change", "deg")]
 out = [r"\newcommand{\iosPassed}{%d}\newcommand{\iosFailed}{%d}" % (passed, failed)]
 print(f"{passed} passed, {failed} failed")
 table = []
 for k, what, unit in rows:
     mean, lo, hi, n = stat(k)
     print(f"  {what:<38} {mean} {unit}  ({lo}-{hi}, n={n})")
-    table.append(rf"{what} & {mean} & {lo}--{hi} & {unit} & {n} \\")
+    table.append(rf"{what} & {mean} & {lo} to {hi} & {unit} & {n} \\")
 out.append(r"\newcommand{\iosTable}{" + "\n".join(table) + "}")
 out.append(r"\newcommand{\iosDrive}{" + "\n".join(
     rf"{i} & {WALK[i-1]:.2f} & {walk[i-1]:.2f} & {'sprint' if i == 5 else '%.2f' % RUN[i-1]} & {run[i-1]:.2f} \\" for i in levels) + "}")

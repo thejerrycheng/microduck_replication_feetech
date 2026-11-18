@@ -16,10 +16,11 @@ final class DuckScene {
     private var bodies: [String: SCNNode] = [:], standing: [String: (SIMD3<Float>, simd_quatf)] = [:]
     private var parts: [(node: SCNNode, rgba: [CGFloat], servo: Int, sensor: String)] = []
     private var chips: [SCNNode] = []
+    private var chains: [String: [Int]] = [:], pivots: [Int: (at: SIMD3<Float>, axis: SIMD3<Float>)] = [:]     // per body: the joints that carry it, trunk first
     private let jaw = SCNNode()                 // the lower beak hangs from this, at the beak servo's axis (the model has no jaw joint)
     private var jawAxis: SIMD3<Float> = [0, 1, 0]
     private(set) var jawOpen = 0.42             // radians at fully open, for the live engine's 0...1 "mouth"
-    private var look = Look(), trunk = "trunk_base", painted = false
+    private var look = Look(), trunk = "trunk_base", painted = false, lastJoints: [Int: Double] = [:]
     static let tile: Float = 0.2
 
     init() {
@@ -86,12 +87,17 @@ final class DuckScene {
             g.materials = [mat]
             node.simdPosition = Self.vec(lp); node.simdOrientation = Self.quat(lq)
             let servo = p["servo"] as? Int ?? 0, sensor = p["sensor"] as? String ?? ""
+            if let c = p["chain"] as? [Int], let name = p["body"] as? String { chains[name] = c }
             if servo > 0 { node.name = "servo:\(servo)" } else if !sensor.isEmpty { node.name = "sensor:\(sensor)" }
             if p["jaw"] as? Bool == true, jaw.parent != nil {      // a lower-beak mesh: carried by the jaw, not the head
                 node.simdPosition -= pivot
                 jaw.addChildNode(node)
             } else { body.addChildNode(node) }
             parts.append((node, rgba.map { CGFloat($0) }, servo, sensor))
+        }
+        for sv in meta["servos"] as? [[String: Any]] ?? [] {
+            guard let id = sv["id"] as? Int, let at = sv["at"] as? [Double], let ax = sv["axis"] as? [Double] else { continue }
+            pivots[id] = (Self.vec(at), simd_normalize(Self.vec(ax)))
         }
         // the two sensors with no part of their own in the model: a small chip where each sits
         let have = Set(parts.map(\.sensor))
@@ -154,6 +160,30 @@ final class DuckScene {
         SCNTransaction.begin(); SCNTransaction.animationDuration = animated ? 0.45 : 0
         for (name, node) in bodies { if let s = standing[name] { node.simdPosition = s.0; node.simdOrientation = s.1 } }
         robot.simdPosition = .zero; floor.simdPosition = .zero
+        SCNTransaction.commit()
+        lastJoints = [:]
+    }
+
+    /// The real joints' angles [deg] by servo ID (calibrated joints only; none = the home pose). Each body is moved by
+    /// the joints that carry it: the product, trunk first, of each joint's rotation about its baked axis.
+    func joints(_ deg: [Int: Double]) {
+        guard deg != lastJoints else { return }
+        lastJoints = deg
+        var turn: [Int: simd_float4x4] = [:]
+        for (id, a) in deg where a != 0 {
+            guard let pv = pivots[id] else { continue }
+            var to = matrix_identity_float4x4, back = matrix_identity_float4x4
+            to.columns.3 = SIMD4(pv.at, 1); back.columns.3 = SIMD4(-pv.at, 1)
+            turn[id] = to * simd_float4x4(simd_quatf(angle: Float(a * .pi / 180), axis: pv.axis)) * back
+        }
+        SCNTransaction.begin(); SCNTransaction.animationDuration = 0.12
+        for (name, node) in bodies {
+            guard let s = standing[name] else { continue }
+            var m = matrix_identity_float4x4
+            for id in chains[name] ?? [] { if let t = turn[id] { m = m * t } }
+            var home = simd_float4x4(s.1); home.columns.3 = SIMD4(s.0, 1)
+            node.simdTransform = m * home
+        }
         SCNTransaction.commit()
     }
 

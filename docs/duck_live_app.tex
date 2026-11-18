@@ -150,6 +150,7 @@ repacks each from \code{checkpoints/<run>/policy.onnx(+.data)} into one self-con
 return outputs identical to the originals on a random observation (max $|\Delta|=0$).
 
 \subsection{Operator logic}\label{sec:operator}
+(The phone app sends a proportional command instead of keys, \code{set\_stick}: fractions of the level's walk, sidestep and turn speeds; \code{docs/duck\_ios\_app.pdf}. The keys are unchanged.)
 The page sends the \emph{set} of movement keys currently held plus the modifier state whenever it changes (state,
 not events: a lost key-up cannot stick), and momentary presses for S, space, R, A, D and \textsf{Enter}. The engine
 resolves them every control tick into a state $s$ with its policy and twist (\tab{states}). Speed is one knob,

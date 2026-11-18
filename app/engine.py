@@ -76,6 +76,7 @@ LEVELS = [
 PERTURB_STIFFNESS = 120.0   # 1/s^2 (MuJoCo's default map.stiffness is 100)
 PERTURB_DAMPING = 8.0       # 1/s
 PERTURB_MAX_N = 12.0        # ~1.7 x the duck's weight
+STICK_DEAD = 0.12           # the phone's sticks: deflection (of 1) below which an axis reads zero
 DEFAULT_LEVEL = 3
 
 STOP_HOLD_S = 0.8           # "stopping" = the walk policy at zero twist; it is the stand once the trunk is slow or after this
@@ -328,6 +329,7 @@ class Duck:
         self.held: set[str] = set()
         self.meta = False
         self.alt = False
+        self.stick = None           # (x right, y forward, w clockwise) in -1..1 from the phone's sticks; None = the keys rule
         self.sit_pending = False
         self.notice = ""
         self.notice_t = 0.0
@@ -435,6 +437,16 @@ class Duck:
         """The movement keys currently held ({"up","down","left","right"}) and the modifier state."""
         self.held = set(k for k in held if k in ("up", "down", "left", "right"))
         self.meta, self.alt = bool(meta), bool(alt)
+        self.stick = None
+
+    def set_stick(self, x: float, y: float, w: float, run: bool = False):
+        """Proportional command (the phone app's two sticks): x = sidestep right, y = forward, w = turn clockwise, each
+        -1..1 of the current speed level's walk, sidestep and turn speeds. All three inside the dead zone = released.
+        `run` asks for the run / sprint policy; it only acts on a pure forward push (those policies cannot turn)."""
+        v = tuple(0.0 if abs(a) < STICK_DEAD else float(np.clip(a, -1.0, 1.0)) for a in (x, y, w))
+        self.held, self.alt = set(), False
+        self.stick = v if any(v) else None
+        self.meta = bool(run) and self.stick is not None
 
     def press(self, key: str):
         """Momentary keys: s (sit / stand up), space (jump), r (front flip), a / d (speed), enter (reset)."""
@@ -653,6 +665,10 @@ class Duck:
 
     # ---- operator logic ----------------------------------------------------------------------------------------------------
     def intent(self):
+        if self.stick is not None:
+            x, y, w = self.stick
+            turning = x != 0.0 or w != 0.0
+            return y > 0, y < 0, x < 0 or w < 0, x > 0 or w > 0, True, self.meta and y > 0 and not turning
         h = self.held
         fwd = "up" in h and "down" not in h
         back = "down" in h and "up" not in h
@@ -789,7 +805,12 @@ class Duck:
             self.policy_role = "walk"
             if st == "walk":
                 vx = lv["walk"] if fwd else (-min(-WALK_VX_RANGE[0], lv["walk"]) if back else 0.0)
-                if self.alt:
+                if self.stick is not None:               # proportional: fractions of this level's speeds (+vy and +yaw are to the left)
+                    x, y, w = self.stick
+                    vx = y * (lv["walk"] if y > 0 else min(-WALK_VX_RANGE[0], lv["walk"]))
+                    vy = -x * min(WALK_VY_MAX, 0.7 * lv["walk"])
+                    yaw = -w * lv["yaw"]
+                elif self.alt:
                     vy = (min(WALK_VY_MAX, 0.7 * lv["walk"]) if left else 0.0) - (min(WALK_VY_MAX, 0.7 * lv["walk"]) if right else 0.0)
                     yaw = 0.0
                 else:

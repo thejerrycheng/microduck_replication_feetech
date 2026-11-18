@@ -15,6 +15,7 @@ local page can drive the duck).
   GET  /animations/sounds/<f>.wav      the emotion sounds (static, like the page)
 WebSocket ws://127.0.0.1:<ws_port>/?token=...
   -> {"t":"keys","held":[...],"meta":bool,"alt":bool}   the movement keys currently held (state, not events)
+  -> {"t":"stick","x":r,"y":f,"w":cw,"run":bool}         proportional command, each -1..1 (the phone's two sticks; engine.Duck.set_stick)
   -> {"t":"press","key":"s"|"space"|"r"|"a"|"d"|"enter"}
   -> {"t":"perturb","body":i,"local":[x,y,z],"target":[x,y,z]}   ⌘-drag spring (body -1 ends it)
   -> {"t":"emote","name":"happy"}                       play an emotion clip (app/animations/manifest.json)
@@ -272,6 +273,8 @@ def ws_main():
                     continue
                 if m.get("t") == "keys":
                     SIM.post(SIM.duck.set_keys, set(m.get("held", [])), bool(m.get("meta")), bool(m.get("alt")))
+                elif m.get("t") == "stick":
+                    SIM.post(SIM.duck.set_stick, float(m.get("x", 0)), float(m.get("y", 0)), float(m.get("w", 0)), bool(m.get("run")))
                 elif m.get("t") == "press":
                     SIM.post(SIM.duck.press, str(m.get("key", "")))
                 elif m.get("t") == "perturb":
