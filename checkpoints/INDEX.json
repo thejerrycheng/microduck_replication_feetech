@@ -234,5 +234,22 @@
   "measured": "docs/gains/jump_ckpts/*_n96.json, docs/gains/NOTES.md",
   "onnx": "exports/jump_kp58_hd1910_iter2250.onnx",
   "role": "jump (the Space key) for P 5-8 servos -- provisional; jump_1500 stays the P 5 pick"
+ },
+ "roulade_head_kp58_7999": {
+  "run": "microduck_roulade_head_flat_hd1910_backlash/2026-11-18_06-33-23 (fine-tune of roulade_head_7000)",
+  "iteration": 7999,
+  "task": "Microduck-RouladeHead-Flat-HD1910",
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_7999.pt",
+   "policy.pt",
+   "policy.onnx",
+   "policy.onnx.data"
+  ],
+  "description": "roulade_head_7000 fine-tuned 1000 iterations with firmware P drawn per servo in [5, 8] (kp_scale 1.0-1.6 on the BAM fit), for robots whose servo P register is set anywhere from 5 to 8. 96-env blocks at FIXED gains, standing start, mean action: at P 8 the parent completes the roll AND stands in 51 % of episodes (standing at the end 73 %), this one 72 % (98 %), head-home error 5.7 -> 1.0 deg median; at P 5 it matches the parent (complete+standing 0.865 vs 0.844, standing at the end 0.958 vs 1.000, head error 2.4 vs 3.8 deg). The run's earlier checkpoints (7250/7500/7750) score 0.67/0.58/0.70 at P 8. P 8 is not at parity with P 5; a longer continuation from this checkpoint is the next run.",
+  "measured": "docs/gains/roulade_head_ckpts/*_n96.json, docs/gains/NOTES.md",
+  "onnx": "exports/roulade_head_kp58_hd1910_iter7999.onnx",
+  "role": "front flip (the R key) for P 5-8 servos -- provisional; roulade_head_7000 stays the P 5 pick"
  }
 }

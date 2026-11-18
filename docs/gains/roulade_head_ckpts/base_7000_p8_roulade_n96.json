@@ -1,0 +1,25 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/checkpoints/roulade_head_7000/model_7000.pt",
+ "num_envs": 96,
+ "seconds": 4.9,
+ "frontier_deg": {
+  "min": 280.9,
+  "p10": 308.3,
+  "median": 340.4,
+  "p90": 662.8,
+  "max": 971.6
+ },
+ "head_latched_frac": 1.0,
+ "completed_frac": 0.719,
+ "completed_and_standing_frac": 0.51,
+ "final_standing_frac": 0.729,
+ "final_head_err_rad": {
+  "median": 0.1,
+  "p90": 0.505,
+  "max": 0.975
+ },
+ "final_head_err_deg_median": 5.7,
+ "final_z_median_m": 0.1211,
+ "final_tilt_median_deg": 4.0,
+ "peak_abs_omega_y_median": 9.56
+}

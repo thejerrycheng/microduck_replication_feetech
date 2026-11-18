@@ -67,3 +67,29 @@ numbers (landing 0.958, durable 0.667 vs base 0.969/0.583) and is the pick; the 
 take-offs at P 5 and is not. Rise shrinks 5 mm across the fine-tune at both gains (the policy jumps a little
 lower to land). P 8 is still far from P 5 parity (0.67 vs 0.96 landing), so a longer continuation from 2250
 with the same P ∈ [5, 8] range is the next single-change run for this policy once the chain has finished.
+
+## roulade_head (base 7000 → ft run 2026-11-18_06-33-23, 1000 its) — PROVISIONAL PICK ft 7999
+
+Fine-tune with P drawn per servo in [5, 8] (kp_scale [1.0, 1.6]), entropy 0.0 / lr as the chain sets
+them. Every saved checkpoint graded at 96 envs, standing start, mean action, FIXED gains
+(`docs/gains/roulade_head_ckpts/*_n96.json`, `scripts/grade_gains_ckpts.sh roulade_head`):
+
+| ckpt | P | complete | complete+standing | standing at end | head err (deg, median) |
+|---|---|---|---|---|---|
+| base 7000 | 5 | 0.844 | 0.844 | 1.000 | 3.8 |
+| base 7000 | 8 | 0.719 | 0.510 | 0.729 | 5.7 |
+| ft 7250 | 5 | 0.917 | 0.833 | 0.906 | 2.7 |
+| ft 7250 | 8 | 0.677 | 0.667 | 0.990 | 2.6 |
+| ft 7500 | 5 | 0.896 | 0.854 | 0.958 | 4.3 |
+| ft 7500 | 8 | 0.583 | 0.583 | 1.000 | 1.6 |
+| ft 7750 | 5 | 0.917 | 0.865 | 0.948 | 3.5 |
+| ft 7750 | 8 | 0.698 | 0.698 | 1.000 | 0.9 |
+| **ft 7999** | 5 | 0.896 | 0.865 | 0.958 | 2.4 |
+| **ft 7999** | 8 | 0.740 | 0.719 | 0.979 | 1.0 |
+
+Verdict: ft 7999. At P 8 complete+standing 0.51 → 0.72 and standing at the end 0.73 → 0.98; at P 5 it
+matches the base (0.865 vs 0.844; standing at the end 0.958 vs 1.000 is 4 episodes of 96). The run was
+still improving at P 8 across its last three checkpoints (0.58, 0.70, 0.72), so a longer continuation
+from 7999 with the same KP range is the next single-change run. Exported as
+`checkpoints/roulade_head_kp58_7999`, `exports/roulade_head_kp58_hd1910_iter7999.onnx` (self-contained);
+`roulade_head_7000` stays the P 5 pick.
