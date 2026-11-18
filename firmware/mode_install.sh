@@ -16,10 +16,10 @@ set -euo pipefail
 user=${SUDO_USER:?run through sudo from the account the studio logs in as}
 f=/etc/sudoers.d/duck-studio
 cat > "$f.new" <<S
-$user ALL=(root) NOPASSWD: /usr/bin/systemctl stop robotd tofd, /usr/bin/systemctl start robotd tofd
+$user ALL=(root) NOPASSWD: /usr/bin/systemctl stop robotd tofd, /usr/bin/systemctl start robotd tofd, /usr/bin/systemctl poweroff, /usr/bin/systemctl reboot
 S
 chmod 440 "$f.new"
 visudo -cf "$f.new" >/dev/null
 mv "$f.new" "$f"
 systemctl disable --now mediad >/dev/null 2>&1 || true
-echo "Done: $user may now stop and start robotd and tofd; mediad is off. Reboot for the camera to come up clean."
+echo "Done: $user may now stop and start robotd and tofd, and power the duck off or reboot it; mediad is off. Reboot for the camera to come up clean."

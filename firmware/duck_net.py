@@ -1,79 +1,80 @@
-"""Keep the duck reachable: known Wi-Fi if there is one, its own hotspot if not. Runs on the duck as root.
+"""Keep the duck reachable: on a known Wi-Fi and, at the same time, hosting its own hotspot. Runs on the duck as root.
 
 Installed by `net_install.sh` as the `duck-net` service. Three ways in, none depending on the others:
 
-  Wi-Fi     NetworkManager joins any saved network by itself. This script only watches.
-  hotspot   If no saved network has been joined WAIT seconds after boot (or after Wi-Fi was lost), it brings up
-            the `duck-hotspot` profile: the duck's own network, the duck at 10.42.0.1. While nobody is using the
-            hotspot it looks every RETRY seconds for a saved network and goes back to it when one is in range.
-  USB       The `radxa-ncm` gadget and the `duck-usb` profile (duck at 10.55.0.1, addresses handed out to the Mac)
-            are set up once by the installer and need nothing from this script.
+  Wi-Fi     NetworkManager joins any saved network by itself on `wlan0`. This script does not touch it.
+  hotspot   Always on, on a second virtual interface `ap0` of the same radio (the chip lists "managed + AP" as a
+            valid combination). Network name `microduck`, the duck at 10.42.0.1. NetworkManager's "shared" mode
+            hands out addresses and forwards to `wlan0`, so a phone on the hotspot has the internet whenever the duck
+            is on a Wi-Fi that has it, and still reaches the duck when it is not.
+  USB       The `radxa-ncm` gadget and the `duck-usb` profile (duck at 10.55.0.1) are set up once by the installer.
 
-The duck has one radio: it is either on a network or hosting the hotspot, never both. In every case the duck
-answers to `radxa-zero3.local`.
+One radio serves both, so the hotspot follows the Wi-Fi's channel if the chip refuses two (tried in that order),
+and a phone on the hotspot may see a short pause when the duck changes Wi-Fi network. In every case the duck
+answers to `radxa-zero3.local`. What it is doing, readable by anyone on the duck:
 
-    journalctl -u duck-net -f        # what it is doing
+    cat /run/duck-net.status
 """
 import subprocess, time
 
-WAIT, RETRY, TICK = 40, 60, 10          # s offline before the hotspot; s between looks for a known network; loop period
-HOTSPOT, DEV = "duck-hotspot", "wlan0"
+TICK = 10
+HOTSPOT, STA, AP = "duck-hotspot", "wlan0", "ap0"
 
 
-def nm(*args):
-    return subprocess.run(["nmcli", "-t", *args], capture_output=True, text=True, timeout=60).stdout.strip()
+def run(*args):
+    r = subprocess.run(args, capture_output=True, text=True, timeout=60)
+    return r.returncode, (r.stdout + r.stderr).strip()
 
 
-def active():
-    """The profile wlan0 is running, or "" when it is not connected."""
-    for line in nm("-f", "DEVICE,STATE,CONNECTION", "dev").splitlines():
-        dev, state, con = (line.split(":", 2) + ["", ""])[:3]
-        if dev == DEV and state == "connected":
-            return con
-    return ""
+def state(dev):
+    """The profile `dev` is running, "" if it is not connected, None if there is no such interface."""
+    for line in run("nmcli", "-t", "-f", "DEVICE,STATE,CONNECTION", "dev")[1].splitlines():
+        d, s, con = (line.split(":", 2) + ["", ""])[:3]
+        if d == dev:
+            return con if s == "connected" else ""
+    return None
 
 
-def saved():
-    """Names of the saved client Wi-Fi networks: {profile name: SSID}."""
-    out = {}
-    for line in nm("-f", "NAME,TYPE", "con").splitlines():
-        name, _, kind = line.rpartition(":")
-        if kind == "802-11-wireless" and name != HOTSPOT:
-            if nm("-g", "802-11-wireless.mode", "con", "show", name) != "ap":
-                out[name] = nm("-g", "802-11-wireless.ssid", "con", "show", name)
-    return out
+def channel(dev):
+    """(band, channel) `dev` is on, e.g. ("a", 44), or None."""
+    for line in run("iw", "dev", dev, "info")[1].splitlines():
+        w = line.split()
+        if w[:1] == ["channel"]:
+            return ("a" if int(w[1]) > 14 else "bg"), int(w[1])
+    return None
 
 
-def visible():
-    return set(nm("-f", "SSID", "dev", "wifi", "list", "ifname", DEV, "--rescan", "yes").splitlines())
-
-
-def guests():
-    """Is anyone on the hotspot? Counted as neighbours on wlan0 the kernel has heard from recently."""
-    out = subprocess.run(["ip", "neigh", "show", "dev", DEV], capture_output=True, text=True).stdout
-    return sum(1 for l in out.splitlines() if l.split()[-1] in ("REACHABLE", "DELAY", "PROBE", "STALE"))
+def note(text, last=[""]):
+    if text != last[0]:
+        last[0] = text
+        print(text, flush=True)
+    open("/run/duck-net.status", "w").write(f"{time.strftime('%H:%M:%S')} {text}\n")
 
 
 def main():
-    offline, looked = None, 0.0
     while True:
-        now, con = time.monotonic(), active()
-        if con and con != HOTSPOT:                       # on a real network: nothing to do
-            offline = None
-        elif con == HOTSPOT:
-            if now - looked > RETRY and not guests():    # idle hotspot: is a known network back?
-                looked = now
-                near = visible()
-                back = next((name for name, ssid in saved().items() if ssid in near), None)
-                if back:
-                    print(f"{back} is in range: leaving the hotspot", flush=True)
-                    nm("con", "up", back)
-        else:
-            offline = offline or now
-            if now - offline > WAIT:
-                print("no known Wi-Fi: starting the hotspot", flush=True)
-                nm("con", "up", HOTSPOT)
-                offline, looked = None, now
+        try:
+            if state(AP) is None:                            # the second interface is gone after every boot
+                code, out = run("iw", "dev", STA, "interface", "add", AP, "type", "__ap")
+                if code:
+                    note(f"cannot create {AP}: {out}")
+                    time.sleep(TICK)
+                    continue
+                run("nmcli", "dev", "set", AP, "managed", "yes")
+                time.sleep(2)
+            if state(AP) != HOTSPOT:
+                code, out = run("nmcli", "con", "up", HOTSPOT, "ifname", AP)
+                if code and channel(STA):                    # refused on its own channel: share the Wi-Fi's
+                    band, ch = channel(STA)
+                    run("nmcli", "con", "mod", HOTSPOT, "802-11-wireless.band", band, "802-11-wireless.channel", str(ch))
+                    code, out = run("nmcli", "con", "up", HOTSPOT, "ifname", AP)
+                if code:
+                    note(f"hotspot did not start: {out}")
+                    time.sleep(TICK)
+                    continue
+            note(f"wifi: {state(STA) or 'not connected'} {channel(STA) or ''}; hotspot: up {channel(AP) or ''}")
+        except Exception as e:
+            note(f"error: {e}")
         time.sleep(TICK)
 
 

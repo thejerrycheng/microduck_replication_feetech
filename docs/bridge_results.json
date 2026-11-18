@@ -1,0 +1,114 @@
+{
+ "when": "2026-11-18 09:07",
+ "url": "http://radxa-zero3.local:8770",
+ "results": {
+  "bridge killed": [
+   {
+    "seconds": 5.0,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 4.9,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 4.8,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 5.5,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 5.7,
+    "missing": [],
+    "strays": []
+   }
+  ],
+  "camera reader killed": [
+   {
+    "seconds": 2.4,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.6,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.4,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 1.9,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.4,
+    "missing": [],
+    "strays": []
+   }
+  ],
+  "ToF reader killed": [
+   {
+    "seconds": 2.6,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.7,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.0,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.1,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.5,
+    "missing": [],
+    "strays": []
+   }
+  ],
+  "microphone reader killed": [
+   {
+    "seconds": 2.5,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.7,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.3,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.5,
+    "missing": [],
+    "strays": []
+   },
+   {
+    "seconds": 2.4,
+    "missing": [],
+    "strays": []
+   }
+  ]
+ }
+}

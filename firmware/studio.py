@@ -6,7 +6,7 @@
 Needs pyserial. Stdlib HTTP + JSON; every route is in `Studio`. The duck's own computer and its sensors (camera,
 ToF, IMU, microphone, speaker) are reached through `duck_agent.py`, which `Brain` copies over SSH and runs there.
 """
-import argparse, collections, json, socket, subprocess, threading, time, urllib.request, webbrowser
+import argparse, collections, hashlib, json, math, socket, subprocess, sys, threading, time, urllib.request, webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -34,56 +34,50 @@ TUNNEL = 8772       # local end of the SSH tunnel to the duck's agent
 SENSORS = ("camera", "tof", "imu", "mic")
 
 
-class Brain:
-    """The agent on the duck's computer: copied there, started, and talked to through one SSH connection. `host` is
-    anything `ssh` accepts without a password prompt (an alias in ~/.ssh/config). Closing the connection stops it."""
+PILOT = ("pilot_start", "pilot_stop", "pilot_drive", "pilot_press")
 
-    def __init__(self, host):
-        # Two SSH connections in all: one copies both files and checks the ToF readers, one runs the agent.
-        ssh = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8"]
-        subprocess.run(["pkill", "-f", f"{TUNNEL}:127.0.0.1:{duck_agent.PORT}"])       # a tunnel left by an earlier studio
-        both = b"".join((HERE / n).read_bytes() for n in ("duck_agent.py", "duck_voice.py"))
-        cut = len((HERE / "duck_agent.py").read_bytes())
-        have = subprocess.run(                       # both files in one go, and the answer to "are the ToF readers built?"
-            [*ssh, host, f"head -c {cut} > /tmp/duck_agent.py; cat > /tmp/duck_voice.py; "
-                         "test -x ~/microduck/tof_vl53l5cx -a -x ~/microduck/tof_vl53l8cx"],
-            input=both, timeout=30, capture_output=True)
-        if have.returncode == 255:
-            raise ValueError(f"cannot reach {host} over SSH")
-        if have.returncode:
-            src = subprocess.run(["tar", "czf", "-", "-C", str(HERE), "tof"], capture_output=True, check=True,
-                                 env={"COPYFILE_DISABLE": "1", "PATH": "/usr/bin:/bin"}).stdout
-            subprocess.run([*ssh, host, "rm -rf /tmp/tof && tar xzf - -C /tmp 2>/dev/null; sh /tmp/tof/build.sh"],
-                           input=src, timeout=180, capture_output=True)      # the ToF readers, built once (~15 s)
-        self.ssh = subprocess.Popen(
-            [*ssh, "-tt", "-o", "ExitOnForwardFailure=yes", "-L", f"{TUNNEL}:127.0.0.1:{duck_agent.PORT}", host,
-             "pkill -f '^python3 -u /tmp/duck_agent.py'; python3 -u /tmp/duck_agent.py"],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        late = threading.Timer(20, self.ssh.terminate)     # never wait on a start that hangs
-        late.start()
-        for line in iter(self.ssh.stdout.readline, b""):
-            if b"duck agent on" in line:
-                late.cancel()
-                return
-        late.cancel()
-        raise ValueError(f"the agent did not start on {host}")
+
+class Link:
+    """Talks to a duck agent listening on 127.0.0.1:`port`. The agent is the one program on the duck that holds the
+    camera, microphone, ToF and servo port, so every studio (the Mac's, and the duck's own for the phone) goes
+    through the same one instead of each starting its own and fighting over the devices."""
+    port = duck_agent.PORT
 
     def _get(self, name):
-        with urllib.request.urlopen(f"http://127.0.0.1:{TUNNEL}/{name}", timeout=4) as r:
+        with urllib.request.urlopen(f"http://127.0.0.1:{self.port}/{name}", timeout=4) as r:
             body = r.read()
             return body if r.headers["Content-Type"] == "application/octet-stream" else json.loads(body)
 
     def __getattr__(self, name):                 # status, camera, tof, mic, imu
+        if name.startswith("_"):
+            raise AttributeError(name)
         return lambda: self._get(name)
 
     def _post(self, name, data=b"{}"):
-        return urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{TUNNEL}/{name}", data=data), timeout=12).read()
+        return urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{self.port}/{name}", data=data), timeout=12).read()
 
     def say(self, tag="chirp"):
         return json.loads(self._post(f"say/{tag}"))
 
     def save_calibration(self, data):
         self._post("calibration", json.dumps(data).encode())
+
+    def set_cal(self, on):
+        self._post(f"cal/{int(bool(on))}")
+
+    def pilot(self, what, data=b"{}"):
+        """`start/dry`, `start/live`, `stop`, `drive` (JSON sticks), `press/<key>`, `pack`, `install` (the pack)."""
+        out = json.loads(urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{self.port}/pilot/{what}", data=data), timeout=60).read())
+        if "error" in out:
+            raise ValueError(out["error"])
+        return out
+
+    def anim(self, what, data=b"{}"):
+        """`play/<name>`, `stop`, or `install` with the pack as `data`. Raises with the duck's own reason."""
+        out = json.loads(urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{self.port}/anim/{what}", data=data), timeout=60).read())
+        if "error" in out:
+            raise ValueError(out["error"])
+        return out
 
     def set_mode(self, to):
         out = json.loads(self._post(f"mode/{to}"))
@@ -92,8 +86,81 @@ class Brain:
         return out["mode"]
 
     def bus(self, tx, n, timeout):
-        url = f"http://127.0.0.1:{TUNNEL}/bus/{n}/{round(timeout * 1000)}"
+        url = f"http://127.0.0.1:{self.port}/bus/{n}/{round(timeout * 1000)}"
         return urllib.request.urlopen(urllib.request.Request(url, data=tx), timeout=timeout + 4).read()
+
+    def close(self):
+        pass
+
+
+def listening(port):
+    try:
+        socket.create_connection(("127.0.0.1", port), 0.5).close()
+        return True
+    except OSError:
+        return False
+
+
+class Local(Link):
+    """`--duck`: this studio runs on the duck. It uses the duck's agent, the service `duck-agent`, which starts at
+    boot beside it; it never starts one itself and never opens a device."""
+
+    def __init__(self):
+        for _ in range(120):                     # at boot, or while the agent restarts, it is there within seconds
+            if listening(self.port):
+                return
+            time.sleep(0.25)
+        raise ValueError("the duck agent is not running: systemctl --user status duck-agent")
+
+
+class Brain(Link):
+    """The agent on the duck's computer, from the Mac, through one SSH tunnel. `host` is anything `ssh` accepts
+    without a password prompt (an alias in ~/.ssh/config). The agent is the duck's own service `duck-agent`; this
+    only makes sure the duck has this studio's version of it (installing or updating the service if not) and then
+    talks to it. Closing the studio leaves the agent running for the duck's own studio and the next connection."""
+    port = TUNNEL
+    DIR = "~/microduck/studio/firmware"          # where the duck keeps the agent (the same place duck_serve.sh uses)
+    FILES = ("duck_agent.py", "duck_voice.py", "duck_pilot.py", "policy_net.py")
+
+    def __init__(self, host):
+        # Two SSH connections in all: one copies both files and checks the ToF readers, one is the tunnel.
+        ssh = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8"]
+        subprocess.run(["pkill", "-f", f"{TUNNEL}:127.0.0.1:{duck_agent.PORT}"])       # a tunnel left by an earlier studio
+        import io, tarfile
+        buf = io.BytesIO()
+        with tarfile.open(fileobj=buf, mode="w:gz") as tar:        # what the duck's agent is made of
+            for n in self.FILES:
+                tar.add(HERE / n, arcname=n)
+        have = subprocess.run(                       # the files in one go, and the answer to "are the ToF readers built?"
+            [*ssh, host, f"mkdir -p {self.DIR}; rm -rf /tmp/duck_new; mkdir /tmp/duck_new; tar xzf - -C /tmp/duck_new 2>/dev/null; "
+                         "test -x ~/microduck/tof_vl53l5cx -a -x ~/microduck/tof_vl53l8cx"],
+            input=buf.getvalue(), timeout=30, capture_output=True)
+        if have.returncode == 255:
+            raise ValueError(f"cannot reach {host} over SSH")
+        if have.returncode:
+            src = subprocess.run(["tar", "czf", "-", "-C", str(HERE), "tof"], capture_output=True, check=True,
+                                 env={"COPYFILE_DISABLE": "1", "PATH": "/usr/bin:/bin"}).stdout
+            subprocess.run([*ssh, host, "rm -rf /tmp/tof && tar xzf - -C /tmp 2>/dev/null; sh /tmp/tof/build.sh"],
+                           input=src, timeout=180, capture_output=True)      # the ToF readers, built once (~15 s)
+        # The service is left alone if it already runs this very code (the phone may be using it); otherwise the new
+        # files go in and the service is installed or restarted. Then wait until it answers.
+        d = self.DIR
+        same = " && ".join(f"cmp -s /tmp/duck_new/{n} {d}/{n}" for n in self.FILES)
+        start = (f"{same} && systemctl --user -q is-active duck-agent "
+                 f"|| {{ cp /tmp/duck_new/* {d}/; python3 {d}/duck_agent.py --install; }}; "
+                 f"for i in $(seq 120); do curl -s -m 2 -o /dev/null http://127.0.0.1:{duck_agent.PORT}/calibration "
+                 "&& echo duck agent on && break; sleep 0.25; done; sleep 100000000")
+        self.ssh = subprocess.Popen(
+            [*ssh, "-o", "ExitOnForwardFailure=yes", "-L", f"{TUNNEL}:127.0.0.1:{duck_agent.PORT}", host, start],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        late = threading.Timer(45, self.ssh.terminate)     # never wait on a start that hangs
+        late.start()
+        for line in iter(self.ssh.stdout.readline, b""):
+            if b"duck agent on" in line:
+                late.cancel()
+                return
+        late.cancel()
+        raise ValueError(f"the agent did not start on {host}")
 
     def close(self):
         self.ssh.terminate()
@@ -133,7 +200,7 @@ class Studio:
         self.ids, self.home, self.goal, self.sent = [], {}, {}, {}
         self.log, self.seq, self.now, self.lost = collections.deque(maxlen=KEEP), 0, {}, False
         self.brain, self.host, self.sensors, self.auto, self.linking = None, "microduck", {}, True, threading.Lock()
-        self.cal, self.calibrating, self.volts, self.want = self._local(), False, None, "setup"
+        self.cal, self._cal, self.volts, self.want, self.asked = self._local(), False, None, "setup", 0.0
         threading.Thread(target=self._ramp, daemon=True).start()
         threading.Thread(target=self._sample, daemon=True).start()
         threading.Thread(target=self._watch, daemon=True).start()
@@ -142,13 +209,23 @@ class Studio:
     def _watch(self):
         """Once a second: which sensors the duck reports; a dead connection drops the brain. With no brain, and
         unless Duck was switched off by hand, look for the duck on the network every few seconds and connect."""
-        addr, tick = None, 0
+        addr, tick, was = None, 0, None
         while True:
             time.sleep(1)
             tick += 1
             try:
                 if self.brain:
                     self.sensors = self.brain.status()
+                    now = self.sensors.get("mode")
+                    if now == "run" and self.bus and self.port == "duck":
+                        self.disconnect()        # the runtime was started from elsewhere: it has the servo bus now
+                    if was == "run" and now == "setup" and self.bus is None and self.sensors.get("servos", {}).get("ok"):
+                        self.connect(dict(port="duck"))      # back in Setup, from here or elsewhere: the servos return
+                    was = now
+                    if tick % 3 == 0 and not self.calibrating:       # a calibration saved from another studio
+                        self.cal = self.brain.calibration() or self.cal
+                    if tick % 10 == 0 and isinstance(self.brain, Link) and not getattr(self, "anims", None):
+                        self.anims = self.brain.anims()["clips"]      # a pack installed since (by a Mac studio)
                 elif self.auto and (self.mock or self.local or tick % 3 == 1) and not self.linking.locked():
                     if not self.mock and not self.local:
                         if addr is None:                 # the alias's real host name, from ~/.ssh/config
@@ -164,25 +241,72 @@ class Studio:
         with self.linking:                       # one at a time: two starts would kill each other's agent
             self.brain_disconnect(auto=True)
             self.host = q.get("host") or self.host
-            brain = duck_agent.Mock() if self.mock else duck_agent.Sensors() if self.local else Brain(self.host)
+            brain = duck_agent.Mock() if self.mock else Local() if self.local else Brain(self.host)
             try:
                 self.sensors = brain.status()
             except Exception:
-                brain.close() if isinstance(brain, Brain) else None
+                brain.close() if isinstance(brain, Link) else None
                 raise
             self.brain = brain
             self.cal = brain.calibration() or self.cal       # the duck's own file is the one that counts
+            threading.Thread(target=self._anims, daemon=True).start()
             self._online()
         return self.state()
 
-    def _online(self):
-        """Bring everything up without a click: take the devices from the duck's runtime (Setup) and connect the
-        servo bus through the duck. Skipped if Run was chosen by hand, or a USB adapter is already in use."""
+    def _anims(self):
+        """What the duck can play. From a Mac, first make sure the duck holds this repo's clips: the pack is built
+        here (anim_pack.py, needs numpy) and sent only if the duck's differs. The duck keeps it for good."""
         try:
+            if isinstance(self.brain, Brain):
+                import anim_pack
+                data = anim_pack.pack()[0]
+                if self.brain.anims()["pack"] != hashlib.sha256(data).hexdigest():
+                    self.brain.anim("install", data)
+            self.anims = self.brain.anims()["clips"] if isinstance(self.brain, Link) else []
+            pack = HERE / "policies.npz"                 # the policies too (policy_pack.py writes this file)
+            if isinstance(self.brain, Brain) and pack.exists():
+                data = pack.read_bytes()
+                if self.brain.pilot("pack")["pack"] != hashlib.sha256(data).hexdigest():
+                    self.brain.pilot("install", data)
+        except Exception as e:
+            print("animations:", e, flush=True)
+
+    def anim_play(self, q):
+        """Play one of the duck's emotion clips on the real head, beak and speaker. The duck plays it by itself."""
+        self.brain.anim("play/" + q["name"])
+        self.sensors = self.brain.status()
+        return dict(anim=self.sensors.get("anim"))
+
+    # ---- driving: the policies run on the duck (duck_agent.Drive); these only pass the driver's inputs on ----
+    def pilot_start(self, q):
+        """q["live"]: drive the servos. Without it a dry run: the duck reads and computes, nothing moves."""
+        if q.get("live"):
+            self.goal.clear(); self.sent.clear()         # the studio's own holds are over: the policy has the joints
+        return self.brain.pilot("start/live" if q.get("live") else "start/dry")
+
+    def pilot_stop(self, _=None):
+        return self.brain.pilot("stop")
+
+    def pilot_drive(self, q):
+        self.brain.pilot("drive", json.dumps({k: q.get(k, 0) for k in ("x", "y", "w", "run")}).encode())
+        return {}
+
+    def pilot_press(self, q):
+        return self.brain.pilot("press/" + q["key"])
+
+    def anim_stop(self, _=None):
+        """Stop the clip and let the head go limp."""
+        self.brain.anim("stop")
+        self.sensors = self.brain.status()
+        return dict(anim=None)
+
+    def _online(self):
+        """Bring everything up without a click: connect the servo bus through the duck. Skipped if the duck is in
+        Run (here or from elsewhere), or a USB adapter is already in use."""
+        try:
+            # A duck found in Run was put there by someone (after a boot the bridge itself takes the devices, see
+            # duck_agent.Sensors.__init__), perhaps the phone driving it: left alone. Connect or Setup takes it back.
             if self.want == "setup" and not self.mock and not self.local:      # on the duck: never take over unasked
-                if self.sensors.get("mode") == "run":
-                    self.brain.set_mode("setup")
-                    self.sensors = self.brain.status()
                 if self.bus is None and self.sensors.get("servos", {}).get("ok"):
                     self.connect(dict(port="duck"))
         except Exception as e:
@@ -191,7 +315,7 @@ class Studio:
     def brain_disconnect(self, _=None, auto=False):
         """`auto` False = the Duck button: stay off until it is pressed again."""
         brain, self.brain, self.sensors, self.auto = self.brain, None, {}, auto
-        if isinstance(brain, Brain):
+        if isinstance(brain, Link):
             brain.close()
         return self.state()
 
@@ -203,6 +327,8 @@ class Studio:
             self.disconnect()
         self.brain.set_mode(to)
         self.sensors = self.brain.status()
+        if to == "setup" and self.bus is None and self.sensors.get("servos", {}).get("ok"):
+            self.connect(dict(port="duck"))      # Setup gives the servos back: take them, no second click
         return self.state()
 
     def say(self, q):
@@ -251,6 +377,19 @@ class Studio:
             (HERE / "calibration.json").write_text(json.dumps(cal, indent=1))
         self.cal = cal
 
+    @property
+    def calibrating(self):
+        """A calibration is under way. With a duck connected this is the duck's word (its agent keeps it), so a
+        calibration begun in one studio, the phone's say, shows in every other one too."""
+        return self.sensors.get("calibrating", self._cal) if self.brain else self._cal
+
+    @calibrating.setter
+    def calibrating(self, on):
+        self._cal = on
+        if self.brain:
+            self.brain.set_cal(on)
+            self.sensors = dict(self.sensors, calibrating=on)      # at once, not at the next status reading
+
     def _mount(self, pose):
         """The IMU's mounting rotation, from one still reading taken while the duck's body orientation is `pose`
         ([w, x, y, z]): mount = raw^-1 x pose, so that raw x mount gives `pose` again. None with no IMU."""
@@ -292,9 +431,8 @@ class Studio:
             raise ValueError(f"not answering: {missing}")
         joints = [dict(name=DUCK[i], id=i, zero_raw=now[i]["pos"], direction=self._dir(i), calibrated=True,
                        min_rad=feetech.RANGE[DUCK[i]][0], max_rad=feetech.RANGE[DUCK[i]][1]) for i in DUCK]
-        imu = self._mount(BACK)
-        self._write(joints=joints, pose="home: duck flat on its back, every joint at the model's zero pose",
-                    **(dict(imu=imu) if imu else {}))
+        # The IMU is not touched here: one pose says which way is down but not which way is front (`imu_cal`).
+        self._write(joints=joints, pose="home: duck flat on its back, every joint at the model's zero pose")
         return self.cal_cancel()
 
     def cal_cancel(self, _=None):
@@ -303,10 +441,80 @@ class Studio:
         return self._fresh()
 
     def cal_level(self, _=None):
-        """IMU only: the duck is standing upright on a level surface. Its present reading becomes 'level'."""
+        """IMU only: the duck is upright with its trunk level. Its present reading becomes 'level'.
+
+        One level reading says which way is down and nothing about which way is front: the IMU's own heading is
+        wherever it was when it was switched on. So the front is then squared to the IMU board: of the directions
+        in the level plane, the one along a chip axis nearest to where the reading put it (the board is mounted
+        square to the trunk). That leaves four possible fronts, a quarter turn apart: `imu_turn` picks among them."""
         imu = self._mount((1.0, 0.0, 0.0, 0.0))
         if imu is None:
             raise ValueError("no IMU reading")
+        w, x, y, z = imu["mount"]
+        front = (1 - 2 * (y * y + z * z), 2 * (x * y + w * z), 2 * (x * z - w * y))      # body front and left, in chip axes
+        left = (2 * (x * y - w * z), 1 - 2 * (x * x + z * z), 2 * (y * z + w * x))
+        best = max(((abs(f * math.cos(a) + l * math.sin(a)), -abs(a), a) for f, l in zip(front, left)
+                    for a in (math.atan2(l, f), math.atan2(-l, -f))), default=(0, 0, 0.0))[2]
+        imu["mount"] = [round(v, 6) for v in duck_agent.qmul(imu["mount"], (math.cos(best / 2), 0.0, 0.0, math.sin(best / 2)))]
+        self._write(imu=imu)
+        return self.state()
+
+    def imu_cal(self, q):
+        """The IMU's orientation in the trunk, from gravity in two poses. Gravity is the one direction the IMU knows
+        for certain (its heading is arbitrary), so each pose pins one trunk axis in the chip's own axes:
+
+          step 1  the duck upright, trunk level        ->  "up" as the chip sees it is the trunk's z (up)
+          step 2  the duck on its back, beak straight up  ->  "up" as the chip sees it is the trunk's x (front)
+
+        Left is then z cross x. The second reading is squared against the first, so a few degrees off in step 2
+        only turns the front slightly; the poses must be 60 to 120 deg apart or the result is refused. Step 1 alone
+        changes nothing. Each reading needs the duck still."""
+        imu = self.brain.imu() if self.brain else None
+        if not imu:
+            raise ValueError("no IMU reading")
+        if max(map(abs, imu["gyro"])) > STILL:
+            raise ValueError("hold the duck still")
+        w, x, y, z = imu["raw"]
+        up = (2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y))      # the world's up, in the chip's axes
+        if int(q.get("step", 1)) == 1:
+            self.imu_up = up
+            return self.state()
+        if getattr(self, "imu_up", None) is None:
+            raise ValueError("step 1 first: the duck upright, trunk level")
+        zb, dot = self.imu_up, sum(a * b for a, b in zip(self.imu_up, up))
+        if abs(dot) > 0.5:
+            raise ValueError(f"the two poses are only {math.degrees(math.acos(max(-1, min(1, dot)))):.0f} deg apart: step 2 is on its back, beak straight up")
+        xb = [a - dot * b for a, b in zip(up, zb)]
+        n = math.sqrt(sum(v * v for v in xb))
+        xb = [v / n for v in xb]
+        yb = (zb[1] * xb[2] - zb[2] * xb[1], zb[2] * xb[0] - zb[0] * xb[2], zb[0] * xb[1] - zb[1] * xb[0])
+        m = [[xb[i], yb[i], zb[i]] for i in range(3)]                  # columns: the trunk's front, left, up in chip axes
+        t = m[0][0] + m[1][1] + m[2][2]
+        if t > 0:
+            k = math.sqrt(t + 1) * 2
+            quat = (k / 4, (m[2][1] - m[1][2]) / k, (m[0][2] - m[2][0]) / k, (m[1][0] - m[0][1]) / k)
+        else:
+            i = max(range(3), key=lambda a: m[a][a])
+            j, l = (i + 1) % 3, (i + 2) % 3
+            k = math.sqrt(1 + m[i][i] - m[j][j] - m[l][l]) * 2
+            v = [0.0, 0.0, 0.0]
+            v[i], v[j], v[l] = k / 4, (m[j][i] + m[i][j]) / k, (m[l][i] + m[i][l]) / k
+            quat = ((m[l][j] - m[j][l]) / k, *v)
+        self.imu_up = None
+        self._write(imu=dict(mount=[round(v, 6) for v in quat], calibrated=True, how="two poses",
+                             apart_deg=round(math.degrees(math.acos(max(-1, min(1, dot)))), 1)))
+        return self.state()
+
+    def imu_turn(self, q):
+        """Turn the IMU's body frame about one of its own axes: q["axis"] "x" (front), "y" (left) or "z" (up), by
+        q["deg"] (180 = flip the other two axes; 90 about z = the front a quarter turn to the left). For a front
+        that points the wrong way after Level, or an IMU that reads upside down."""
+        imu = dict(self.cal.get("imu") or {})
+        if not imu.get("mount"):
+            raise ValueError("level the IMU first")
+        h = math.radians(float(q.get("deg", 180))) / 2
+        axis = dict(x=(1, 0, 0), y=(0, 1, 0), z=(0, 0, 1))[q["axis"]]
+        imu["mount"] = [round(v, 6) for v in duck_agent.qmul(imu["mount"], (math.cos(h), *(math.sin(h) * c for c in axis)))]
         self._write(imu=imu)
         return self.state()
 
@@ -341,7 +549,9 @@ class Studio:
                         self.connect(dict(port=self.port, baud=self.baud))
             except Exception:                                  # the adapter was pulled
                 self._lose()
-            time.sleep(max(0.002, 1 / HZ - (time.time() - t0)))
+            # nobody looking (no page or phone has asked for 5 s): once a second is enough, and the duck's small
+            # computer runs cooler. The first request finds a reading at most a second old; the rate is back at once.
+            time.sleep(max(0.002, (1 / HZ if time.time() - self.asked < 5 else 1.0) - (time.time() - t0)))
 
     def _lose(self):
         try:
@@ -349,6 +559,8 @@ class Studio:
         except Exception:
             pass
         self.bus, self.ids, self.goal, self.sent, self.home, self.now, self.lost = None, [], {}, {}, {}, {}, True
+        if self.port == "duck":                  # the duck went, not an adapter: `_online` reconnects when it is back.
+            self.port = None                     # Kept, the page showed a port that no longer exists and Connect sent ""
 
     # ---- motion: goals are approached at RATE, never jumped to --------------------------------------------------
     def _ramp(self):
@@ -396,6 +608,7 @@ class Studio:
     def state(self, q=None):
         """Everything the page shows. `since` = last sample number it has; newer ones ride along."""
         since = int((q or {}).get("since", self.seq))
+        self.asked = time.time()
         motors = {i: dict(m, span=self._span(i, m["pos"]),
                           deg=None if self._zero(i) is None else round(feetech.angle(i, m["pos"], self._zero(i), self._dir(i)), 1),
                           dir=self._dir(i))
@@ -411,8 +624,10 @@ class Studio:
                     bauds=feetech.BAUDS,
                     ids=self.ids, motors=motors, duck=DUCK, signals=SIGNALS, seq=self.seq,
                     cal=dict(on=self.calibrating, saved=self.cal.get("updated") if self.cal.get("joints") else None,
-                             imu=bool(self.cal.get("imu")),
+                             imu=bool(self.cal.get("imu")), imu_step=1 if getattr(self, "imu_up", None) else 0,
+                             imu_how=(self.cal.get("imu") or {}).get("how", "level only" if self.cal.get("imu") else None),
                              edge=[i for i, m in motors.items() if self.calibrating and not EDGE < m["pos"] < 4095 - EDGE]),
+                    anims=getattr(self, "anims", []) if self.brain else [],
                     brain=dict(on=self.brain is not None, linking=self.linking.locked(), host=self.host, sensors=self.sensors,
                                size=(duck_agent.W, duck_agent.H)),
                     samples=[r for r in list(self.log) if r[0] > since][-600:])
@@ -424,7 +639,12 @@ class Studio:
 
     def connect(self, q):
         self.disconnect()
-        self.port, self.baud = q.get("port"), int(q.get("baud") or feetech.BAUDS[0])
+        port = q.get("port")
+        if port == "duck" and not self.brain:
+            raise ValueError("the duck is not connected: choose the USB adapter")
+        if not port or not (self.mock or port == "duck" or port in feetech.ports()):
+            raise ValueError(f"no such port: {port or 'none chosen'}")
+        self.port, self.baud = port, int(q.get("baud") or feetech.BAUDS[0])
         if self.port == "duck":                  # through the duck's computer, not a USB adapter on this Mac
             if self.sensors.get("mode") == "run":            # the duck's runtime has the bus: take it (Setup mode)
                 self.brain.set_mode("setup")
@@ -441,7 +661,7 @@ class Studio:
                 pass
             self.bus.close()
         self.bus, self.ids, self.goal, self.sent, self.home, self.now, self.lost = None, [], {}, {}, {}, {}, False
-        self.calibrating = False
+        self._cal = False                        # this studio's own; one going through the duck stays with the duck
         return self.state()
 
     def scan(self, _):
@@ -482,16 +702,22 @@ class Studio:
     def center(self, q):
         """Zero the servo where it stands: the present pose becomes 2048. This renumbers the servo's positions, so a
         saved calibration is renumbered with it: the joint's zero moves by the same amount and still means the same
-        physical pose. (Without that, a joint zeroed after Save sat "outside its range" and could not be moved.)"""
+        physical pose. (Without that, a joint zeroed after Save sat "outside its range" and could not be moved.)
+        The exception is a servo that stands outside its joint's range to begin with: the saved zero cannot be right
+        for it (a horn refitted, a servo swapped or tested off the duck), so the present pose becomes the joint's
+        zero, which is what `_reach` asks for: "pose it at zero, then Zero"."""
         sid = int(q["id"])
         self._hold(sid, False)
         self.sent.pop(sid, None)
         self.home.pop(sid, None)
         before = self.bus.feedback(sid)
+        zero = self._zero(sid)
+        lo, hi = feetech.limits(sid, zero, self._dir(sid)) if before and zero is not None and sid in DUCK else (0, 0)
         after = self.bus.center(sid)
-        if before and self._zero(sid) is not None:
-            shift = after - before["pos"]
-            self._write(joints=[dict(j, zero_raw=j["zero_raw"] + shift) if j["id"] == sid else j for j in self.cal["joints"]])
+        if before and zero is not None:
+            inside = lo - SLACK <= before["pos"] <= hi + SLACK
+            new = zero + after - before["pos"] if inside else after
+            self._write(joints=[dict(j, zero_raw=new) if j["id"] == sid else j for j in self.cal["joints"]])
         return self._fresh()
 
     def gains(self, q):
@@ -552,9 +778,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, b"{}")       # unknown route, or a POST from another site
         try:
             q = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
-            if name in ("say", "mode") and STUDIO.brain is None:
+            if name in ("say", "mode", "anim_play", "anim_stop") + PILOT and STUDIO.brain is None:
                 raise ValueError("duck not connected")
-            if name not in ("connect", "disconnect", "say", "cal_level", "mode") and not name.startswith("brain_") and STUDIO.bus is None:
+            if name not in ("connect", "disconnect", "say", "cal_level", "imu_cal", "imu_turn", "mode", "anim_play", "anim_stop") + PILOT and not name.startswith("brain_") and STUDIO.bus is None:
                 raise ValueError("not connected")
             self.reply(200, json.dumps(fn(q)).encode())
         except Exception as e:

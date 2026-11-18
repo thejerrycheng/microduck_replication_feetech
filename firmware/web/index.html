@@ -54,6 +54,9 @@
   #found { position: fixed; top: 76px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; padding: 6px; border-radius: 999px;
     max-width: calc(100% - 36px); overflow-x: auto; scrollbar-width: none;
     transition: opacity .35s, filter .35s, transform .6s cubic-bezier(.3, 1.5, .5, 1); }
+  #runnote { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px;
+    padding: 8px 8px 8px 18px; border-radius: 999px; white-space: nowrap; color: var(--dim); font-size: 14px; }
+  #runnote b { color: var(--ink); } #runnote[hidden] { display: none; }
   #found.empty { opacity: 0; filter: blur(10px); transform: translateX(-50%) translateY(-16px) scale(.6); pointer-events: none; }
   #found a { display: flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; cursor: pointer; user-select: none;
     animation: pop .6s cubic-bezier(.3, 1.5, .5, 1) backwards; animation-delay: calc(var(--i) * 30ms + 120ms);
@@ -126,9 +129,20 @@
   .sn.bad i { color: var(--red); }
   .sn .view { position: absolute; left: 11px; top: 46px; width: 192px; }
   .sn canvas { width: 192px; display: block; border-radius: 12px; background: var(--fill); }
-  #level { width: 100%; margin-top: 6px; }
+  #imub { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 6px; } #imub button { padding: 8px 0; font-size: 13px; }
+  #imuw { grid-column: 1 / -1; margin: 2px 2px 0; font-size: 11px; line-height: 1.3; color: var(--orange); }
+  .sn.warn .ic { color: var(--orange); } .sn.warn i { color: var(--orange); }
+  #imu1, #imu2 { grid-column: span 2; } #imu2:disabled { opacity: .35; } #imu1.done { box-shadow: inset 0 0 0 1.5px var(--green); }
   .sn .view:not(:has(canvas)) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .sn .view button { padding: 8px 0; font-size: 13px; }
+  .sn .view button[data-a] { position: relative; overflow: hidden; padding: 5px 0 4px; font-size: 17px; line-height: 1.15; }
+  .sn .view button[data-a] small { display: block; font-size: 10px; color: var(--dim); }
+  .sn .view button[data-a] u { position: absolute; top: 5px; right: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); }
+  .sn .view button[data-a]::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: calc(var(--p, 0) * 100%); background: var(--blue); }
+  .sn .view button.play { box-shadow: inset 0 0 0 1.5px var(--blue); }
+  #astop { grid-column: 1 / -1; }
+  #plvl { display: grid; place-items: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sn .view button[data-d] { font-size: 16px; touch-action: none; }
   /* calibration: a strip that drops in under the found row while the duck is being posed at home */
   #cal { position: fixed; top: 130px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px;
     padding: 8px 8px 8px 18px; border-radius: 999px; white-space: nowrap;
@@ -142,6 +156,9 @@
   #batt rect:first-child, #batt path { fill: none; stroke: var(--dim); stroke-width: 1.5; stroke-linecap: round; }
   #bfill { fill: currentColor; transition: width .6s var(--spring); }
   #batt.mid { color: var(--orange); } #batt.low { color: var(--red); } #batt.low b { color: var(--red); }
+  #temp { display: flex; align-items: center; gap: 5px; padding: 0 10px 0 6px; font-variant-numeric: tabular-nums; color: var(--dim); }
+  #temp svg { width: 9px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; } #temp circle { fill: currentColor; }
+  #temp b { color: var(--ink); font-weight: 600; } #temp.mid { color: var(--orange); } #temp.low, #temp.low b { color: var(--red); }
   #tip { position: fixed; padding: 5px 10px; border-radius: 999px; color: var(--dim); pointer-events: none; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   #tip div { display: flex; gap: 8px; align-items: center; } #tip span:last-child { margin-left: auto; padding-left: 12px; font-weight: 600; }
   #tip small { color: var(--dim); }
@@ -168,7 +185,8 @@
   <span class="sep"></span>
   <span id="bdot"></span>
   <button id="blink" title="The duck's own computer and its sensors, over SSH">Duck</button>
-  <div id="mode" class="seg" hidden title="Setup: the studio has the servos and sensors, the duck's own runtime is paused. Run: the runtime drives the duck."><button data-m="setup">Setup</button><button data-m="run">Run</button></div>
+  <div id="mode" class="seg" hidden title="Setup: the joints are yours to move, calibrate and test. Control: the duck's own policies drive it; steer from the Drive panel. Going back to Setup sits the duck down first."><button data-m="setup">Setup</button><button data-m="run">Control</button></div>
+  <span id="temp" hidden><svg viewBox="0 0 9 16"><path d="M4.5 1.5v8.5"/><path d="M2.6 9.2V3.2a1.9 1.9 0 0 1 3.8 0v6a3.1 3.1 0 1 1-3.8 0z"/><circle cx="4.5" cy="11.7" r="1.5"/></svg><b></b></span>
   <span id="batt" hidden><svg viewBox="0 0 30 14"><rect x=".75" y=".75" width="25" height="12.5" rx="3.5"/><path d="M28 4.5v5"/><rect id="bfill" x="2.5" y="2.5" height="9" rx="2"/></svg><b></b></span>
 </header>
 <aside id="dock"></aside>
@@ -178,6 +196,7 @@
   <button id="csave" class="pri">Save</button><button id="ccancel">Cancel</button>
 </div>
 <nav id="found" class="glass empty"></nav>
+<div id="runnote" class="glass" hidden><b>Vendor runtime</b> the image's own runtime has the servos (started from the phone), so none show here. <button class="pri" onclick="document.querySelector('#mode [data-m=setup]').click()">Back to Setup</button></div>
 
 <section id="card" class="glass empty">
   <div id="plots">
@@ -236,7 +255,8 @@ async function api(name, body) {
   }
   return j;
 }
-let toastT, lowT = 0, edgeT = "";
+let toastT, lowT = 0, hotT = 0, edgeT = "";
+const HOT = [75, 85];            // °C: the two points where the board itself starts slowing its processor
 function toast(msg, bad) {
   const t = $("toast"); t.textContent = msg; t.className = "glass show" + (bad ? " bad" : "");
   clearTimeout(toastT); toastT = setTimeout(() => t.className = "glass", 2600);
@@ -379,13 +399,16 @@ function render() {
     if (node.dataset.k === list.join()) return;
     node.dataset.k = list.join();
     node.innerHTML = list.map(v => `<option value="${v}">${label(v)}</option>`).join("") || "<option value=''>No adapter</option>";
-    if (cur) node.value = cur;
+    if (cur && list.includes(cur)) node.value = cur;       // a port that has gone would leave the menu blank
   };
   fill($("port"), S.ports, S.port || (S.ports.includes("duck") ? "duck" : ""), p => p.replace("/dev/cu.", ""));      // the duck's own bus first
   fill($("baud"), S.bauds, S.baud, b => b >= 1e6 ? b / 1e6 + "M" : b / 1e3 + "k");
   $("link").disabled = scanning || (!on && !S.ports.length);
   $("fix").hidden = !(on && S.ids.length && S.baud !== S.bauds[0]);
-  const md = S.brain && S.brain.on && S.brain.sensors.mode;       // who has the duck's devices
+  // Setup: the joints are yours to move, calibrate and test. Run: the duck's own policies drive it (the Drive panel).
+  // Both keep the servos on screen: the same bridge serves them either way. (`vendor`: the image's own runtime was
+  // started from elsewhere, the phone say; it takes the servos away until Setup is pressed.)
+  const sm = S.brain && S.brain.on && S.brain.sensors.mode, vendor = sm === "run", md = sm && (vendor || piloting()?.live ? "run" : "setup");
   $("mode").hidden = !md;
   if (md) { [...$("mode").children].forEach(b => b.classList.toggle("on", b.dataset.m === md)); slide($("mode"), $("mode").querySelector(".on")); }
   const bt = S.battery;                                  // the pack, from the servos' own voltage reading
@@ -396,11 +419,23 @@ function render() {
     $("batt").title = `${bt.volts.toFixed(1)} V  (2 cells; an estimate from voltage)`;
     if (bt.percent < 15 && !lowT) { lowT = 1; toast(`Battery ${bt.percent}%: charge it`, true); } else if (bt.percent >= 20) lowT = 0;
   }
+  const tc = S.brain && S.brain.on ? S.brain.sensors.temp : null;        // the duck's processor, from its own sensor
+  $("temp").hidden = tc == null;
+  if (tc != null) {
+    $("temp").className = tc >= HOT[1] ? "low" : tc >= HOT[0] ? "mid" : "";
+    $("temp").lastChild.textContent = Math.round(tc) + "°C";
+    $("temp").title = `Board processor ${tc.toFixed(1)} °C, load ${(S.brain.sensors.load ?? 0).toFixed(1)}  (orange from ${HOT[0]} °C, red from ${HOT[1]} °C)`;
+    if (tc >= HOT[1] && !hotT) { hotT = 1; toast(`Board at ${Math.round(tc)} °C: it will slow down, give it air`, true); } else if (tc < HOT[0]) hotT = 0;
+  }
   const C = S.cal || {}, all = Object.keys(S.duck).every(id => live(+id));
   $("calib").hidden = !on; $("calib").disabled = !all || C.on;
   $("calib").innerHTML = (C.saved ? "<u></u>" : "") + "Calibrate";
-  $("calib").title = C.saved ? "Calibrated " + C.saved.slice(0, 16).replace("T", " ") + ". Press to calibrate again."
-    : all ? "Calibrate: lay the duck on its back, pose every joint at home, save" : "Needs all 15 servos";
+  const gone = Object.keys(S.duck).filter(id => !live(+id)), run = S.brain && S.brain.on && S.brain.sensors.mode === "run";
+  $("runnote").hidden = !run;
+  $("calib").title = run ? "The vendor runtime has the servos. Press Setup to calibrate."
+    : !all ? "Calibrate needs all 15 servos. Not answering: " + gone.join(", ")
+    : C.saved ? "Calibrated " + C.saved.slice(0, 16).replace("T", " ") + ". Press to calibrate again."
+    : "Calibrate: lay the duck on its back, pose every joint at home, save";
   $("cal").classList.toggle("empty", !C.on);
   $("chold").className = "sw" + (C.on && S.ids.length && S.ids.every(id => S.motors[id] && S.motors[id].torque) ? " on" : "");
   $("test").hidden = !!C.on; $("flip").hidden = !(S.motors[sel] && S.motors[sel].deg != null) || !!C.on;
@@ -560,28 +595,97 @@ $("csv").onclick = () => {
 const SENS = {       // name, window height, icon
   camera: ["Camera", 256, '<rect x="3" y="7" width="13" height="10" rx="2.5"/><path d="M16 10.5l5-2.5v8l-5-2.5z"/>'],
   tof: ["ToF", 150, '<circle cx="5" cy="12" r="1.6"/><path d="M9.5 7.5a6.5 6.5 0 010 9M13 5a10 10 0 010 14M16.5 2.8a13.5 13.5 0 010 18.4"/>'],
-  imu: ["IMU", 106, '<path d="M12 12V3m0 9l8 4.5M12 12l-8 4.5"/><circle cx="12" cy="12" r="1.6"/>'],
+  imu: ["IMU", 334, '<path d="M12 12V3m0 9l8 4.5M12 12l-8 4.5"/><circle cx="12" cy="12" r="1.6"/>'],
   mic: ["Mic", 56, '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'],
+  drive: ["Drive", 222, '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3.5v6.3M4.2 15.5l5.8-2.4M19.8 15.5L14 13.1"/>'],
+  anim: ["Animations", 446, '<path d="M9 5.5v13l10-6.5z"/>'],
   speaker: ["Speaker", 82, '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4.2 4.2 0 010 6M18 6.5a7.6 7.6 0 010 11"/>'],
 };
 const VOICE = [["chirp", "Quack"], ["greet", "Greet"], ["coo", "Coo"], ["peck", "Peck"], ["inquire", "Ask"], ["alarm", "Alarm"]];      // the duck's own sounds
+// drive: the duck's own policies (walk, run, sit, jump, flip), run by the duck. Dry run = it reads and computes, no servo moves.
+const DRIVE = `<button id="pdry" title="The duck reads its sensors and runs the policy, but moves nothing">Dry run</button><button id="plive" class="pri" title="The policies drive the legs and head">Start</button><button id="pstop" title="Stop: every joint goes limp">Stop</button>
+  <button data-d="l" title="Turn left (←)">↺</button><button data-d="f" title="Forward (↑)">▲</button><button data-d="r" title="Turn right (→)">↻</button>
+  <button id="prun" title="Run while going forward (Shift)">Run</button><button data-d="b" title="Back (↓)">▼</button><button data-p="sit" title="Sit down / stand up (S)">Sit</button>
+  <button data-p="jump" title="Jump, from a stand (Space)">Jump</button><button data-p="flip" title="Front flip, from a stand (R)">Flip</button><span></span>
+  <button data-p="slower" title="Slower (A)">−</button><span id="plvl" title="Speed level 1 to 5">3</span><button data-p="faster" title="Faster (D)">+</button>`;
 const FOV = { camera: 62, tof: 45 }, rad = Math.PI / 180;        // horizontal field of view, degrees (IMX219; VL53L5CX)
 Object.entries(SENS).forEach(([k, v], i) => {
   const n = document.createElement("div"), cw = k === "camera" ? 240 : 384;      // the camera's window is upright: see feed()
   n.className = "sn glass"; n.style.setProperty("--h", v[1] + 58 + "px"); n.style.setProperty("--i", i);
   n.innerHTML = `<button class="ic" title="${v[0]}"><svg viewBox="0 0 24 24">${v[2]}</svg></button><b>${v[0]}</b><i></i><div class="view">` +
-    (k === "speaker" ? VOICE.map(([t, n]) => `<button data-t="${t}">${n}</button>`).join("")
-      : `<canvas width="${cw}" height="${cw * (k === "imu" ? 64 : v[1]) / 192}"></canvas>` +
-        (k === "imu" ? '<button id="level" title="The duck is standing upright on a level surface: make this reading level">Level</button>' : "")) + "</div>";
+    (k === "anim" ? "" : k === "drive" ? DRIVE : k === "speaker" ? VOICE.map(([t, n]) => `<button data-t="${t}">${n}</button>`).join("")
+      : `<canvas width="${cw}" height="${cw * (k === "imu" ? 220 : v[1]) / 192}"></canvas>` +
+        (k === "imu" ? '<div id="imub"><button id="imu1" title="Step 1: the duck upright with its trunk level, held still. Tells the IMU which way is up.">1 Upright</button><button id="imu2" title="Step 2: the duck on its back, beak pointing straight up, held still. Tells the IMU which way is front.">2 Beak up</button><button data-ax="z" data-deg="90" title="Turn the front a quarter turn to the left">↺</button><button data-ax="x" title="Flip about the front axis: left and up reverse">X</button><button data-ax="y" title="Flip about the left axis: front and up reverse">Y</button><button data-ax="z" title="Flip about the up axis: the duck faces the other way">Z</button><p id="imuw" hidden></p></div>' : "")) + "</div>";
   n.firstChild.onclick = () => toggle(k);
   $("dock").appendChild(n); v.node = n; v.cv = n.querySelector("canvas"); v.note = n.querySelector("i");
 });
+const held = new Set(); let runOn = false, sentMove = false, armT = 0, imuNag = 0;
+const piloting = () => { const p = S.brain && S.brain.on && S.brain.sensors.pilot; return p && !p.ended ? p : null; };
+function steer() {                                       // what is held -> the sticks, ten times a second while anything is
+  const y = (held.has("f") ? 1 : 0) - (held.has("b") ? 1 : 0), w = (held.has("r") ? 1 : 0) - (held.has("l") ? 1 : 0);
+  fetch("/api/pilot_drive", { method: "POST", body: JSON.stringify({ x: 0, y, w, run: runOn || held.has("shift") }) }).catch(() => {});
+}
+setInterval(() => { if (piloting() && (held.size || sentMove)) { steer(); sentMove = held.size > 0; } }, 100);
+{ const v = SENS.drive.node.querySelector(".view");
+  const hold = (e, on) => { const d = e.target.dataset && e.target.dataset.d; if (d) { on ? held.add(d) : held.delete(d); e.target.classList.toggle("play", on); } };
+  v.onpointerdown = e => hold(e, true); v.onpointerup = v.onpointerleave = v.onpointercancel = e => hold(e, false);
+  v.onclick = e => { const b = e.target.closest("button"); if (!b) return;
+    if (b.id === "pdry") api("pilot_start", {}).catch(() => {});
+    else if (b.id === "pstop") { held.clear(); api("pilot_stop", {}).catch(() => {}); }
+    else if (b.id === "prun") { runOn = !runOn; b.classList.toggle("play", runOn); }
+    else if (b.id === "plive") {                         // two presses: the legs are about to move
+      if (Date.now() - armT < 4000) { armT = 0; b.textContent = "Start"; api("pilot_start", { live: true }).then(() => toast("The policies have the duck")).catch(() => {}); }
+      else { armT = Date.now(); b.textContent = "Sure?";
+        toast((S.cal || {}).imu_how === "two poses" ? "Legs will move. Press Start again within 4 s." : "The IMU is not calibrated from two poses: the duck may not balance. Press Start again to go anyway.", (S.cal || {}).imu_how !== "two poses"); setTimeout(() => { if (armT) { armT = 0; b.textContent = "Start"; } }, 4000); } }
+    else if (b.dataset.p) api("pilot_press", { key: b.dataset.p }).catch(() => {}); };
+  const KEY = { ArrowUp: "f", ArrowDown: "b", ArrowLeft: "l", ArrowRight: "r", Shift: "shift" }, TAP = { s: "sit", " ": "jump", r: "flip", a: "slower", d: "faster" };
+  addEventListener("keydown", e => { if (!open.has("drive") || !piloting() || /INPUT|SELECT/.test(e.target.tagName)) return;
+    if (KEY[e.key]) { held.add(KEY[e.key]); e.preventDefault(); } else if (TAP[e.key.toLowerCase()] && !e.repeat) { api("pilot_press", { key: TAP[e.key.toLowerCase()] }).catch(() => {}); e.preventDefault(); } });
+  addEventListener("keyup", e => { if (KEY[e.key]) held.delete(KEY[e.key]); });
+  addEventListener("blur", () => held.clear());
+}
+function drive() {
+  const p = piloting(), n = SENS.drive.node;
+  $("pdry").disabled = $("plive").disabled = !!p; $("pstop").disabled = !p; $("pstop").className = p && p.live ? "pri" : "";
+  n.querySelectorAll("[data-d],[data-p],#prun").forEach(b => b.disabled = !p);
+  if (p) $("plvl").textContent = p.level ?? 3;
+  const last = S.brain.sensors.pilot;
+  if (!n.classList.contains("bad")) SENS.drive.note.textContent = p ? `${p.live ? "" : "dry · "}${p.state || ""} · ${(p.hz || 0).toFixed(0)} Hz` : last && last.error ? last.error : "";
+}
+// animations: the duck's own emotion clips, played by the duck on its real head, beak and speaker. The legs are not moved.
+SENS.anim.node.querySelector(".view").onclick = e => { const b = e.target.closest("button"); if (!b) return;
+  (b.dataset.a ? api("anim_play", { name: b.dataset.a }) : api("anim_stop", {})).catch(() => {}); };
+function anims() {
+  const v = SENS.anim.node.querySelector(".view"), A = S.anims || [], now = S.brain.sensors.anim, key = A.map(a => a.name).join();
+  if (v.dataset.k !== key) { v.dataset.k = key;
+    v.innerHTML = A.map(a => `<button data-a="${a.name}" title="${a.label}${a.needs.length ? ": head, beak and sound only here (the " + a.needs.join(", ") + " part needs a policy on the duck)" : ""}">${a.emoji || "•"}<small>${a.label}</small>${a.needs.length ? "<u></u>" : ""}</button>`).join("")
+      + '<button id="astop" title="Stop and let the head go limp">Relax head</button>'; }
+  v.querySelectorAll("button[data-a]").forEach(b => { const on = now && now.name === b.dataset.a;
+    b.classList.toggle("play", !!on); b.style.setProperty("--p", on ? now.t / now.T : 0); });
+  if (!SENS.anim.node.classList.contains("bad")) SENS.anim.note.textContent = now ? `${now.t.toFixed(1)} / ${now.T} s` : A.length ? A.length + " clips" : "none on the duck";
+}
 SENS.speaker.node.querySelector(".view").onclick = e => e.target.dataset.t && api("say", { tag: e.target.dataset.t }).catch(() => {});
-$("mode").onclick = e => { const to = e.target.dataset.m; if (!to || to === S.brain.sensors.mode) return;
-  $("mode").style.opacity = .5;
-  api("mode", { to }).then(() => toast(to === "run" ? "Run: the duck's runtime has the servos" : "Setup: the studio has the servos"))
-    .catch(() => {}).finally(() => $("mode").style.opacity = ""); };
-$("level").onclick = () => api("cal_level", {}).then(() => toast("IMU levelled")).catch(() => {});
+let runArm = 0;
+$("mode").onclick = async e => { const to = e.target.dataset.m, p = piloting(), vendor = S.brain.sensors.mode === "run"; if (!to) return;
+  const busy = on => $("mode").style.opacity = on ? .5 : "";
+  try {
+    if (to === "run" && !vendor && !(p && p.live)) {                // Setup -> Run: the policies take the joints where they are
+      const btn = $("mode").querySelector("[data-m=run]"), disarm = () => { runArm = 0; btn.textContent = "Control"; btn.style.color = ""; };
+      if (!runArm) {                                               // first press: the button itself asks, for 10 s
+        runArm = setTimeout(disarm, 10000); btn.textContent = "Press again"; btn.style.color = "var(--orange)";
+        return toast((S.cal || {}).imu_how === "two poses" ? "The legs will move. Press it again to start." : "The IMU is not calibrated from two poses: the duck may not balance. Press again to go anyway.", (S.cal || {}).imu_how !== "two poses"); }
+      clearTimeout(runArm); disarm(); busy(true); if (p) await api("pilot_stop", {});
+      await api("pilot_start", { live: true }); if (!open.has("drive")) toggle("drive"); toast("Control: the policies have the duck");
+    } else if (to === "setup" && vendor) { busy(true); await api("mode", { to: "setup" }); toast("Setup: the joints are yours");
+    } else if (to === "setup" && p && p.live) {                      // Run -> Setup: sit down first, then let go
+      busy(true); held.clear();
+      if (!["seated", "sit_down"].includes(p.state) && (p.tilt ?? 0) < 45) { await api("pilot_press", { key: "sit" }); await new Promise(r => setTimeout(r, 1800)); }
+      await api("pilot_stop", {}); toast("Setup: the joints are yours");
+    }
+  } catch (e) {} busy(false); };
+$("imu1").onclick = () => api("imu_cal", { step: 1 }).then(() => toast("Upright taken. Now lay it on its back, beak straight up, and press 2")).catch(() => {});
+$("imu2").onclick = () => api("imu_cal", { step: 2 }).then(s => toast("IMU calibrated from two poses, " + s.cal.imu_how)).catch(() => {});
+$("imub").onclick = e => { const d = e.target.dataset; if (d && d.ax) api("imu_turn", { axis: d.ax, deg: +(d.deg || 180) }).then(() => toast(d.deg ? "Front turned a quarter left" : "Flipped about " + d.ax.toUpperCase())).catch(() => {}); };
 $("blink").onclick = async () => {
   $("blink").disabled = true;
   try { const on = S.brain && S.brain.on; await api(on ? "brain_disconnect" : "brain_connect", {}); toast(on ? "Duck disconnected" : "Duck connected"); }
@@ -593,7 +697,7 @@ function dock() {
   $("bdot").className = B.on ? "on" : B.linking ? "busy" : "";        // orange and pulsing while the link comes up
   $("blink").title = B.on ? "Connected to the duck. Press to disconnect." : B.linking ? "Connecting to the duck…" : "The duck is not on the network yet. The studio connects by itself when it is.";
   for (const k in SENS) {
-    const st = B.on ? (B.sensors[k] && B.sensors[k].ok ? "ok" : "bad") : "", on = open.has(k);
+    const st = !B.on ? "" : k === "drive" ? (B.sensors.pilot && !B.sensors.pilot.ended ? "ok" : "") : k === "anim" ? ((S.anims || []).length ? "ok" : "") : B.sensors[k] && B.sensors[k].ok ? "ok" : "bad", on = open.has(k);
     SENS[k].node.className = "sn glass " + st + (on ? " on" : "");
     if (st === "bad") SENS[k].note.textContent = B.sensors[k] ? B.sensors[k].note : "";
     else if (!B.on) {                                    // no duck: nothing to show, in the window or on the model
@@ -608,6 +712,16 @@ function dock() {
     });
     if (k === "imu" && (!on || !B.on)) body.quaternion.set(0, 0, 0, 1);
   }
+  if (B.on) { anims(); drive(); }
+  // the IMU needs both poses: half done, or done the old one-pose way, is said plainly and keeps being said
+  const C2 = S.cal || {}, half = !!C2.imu_step, old = B.on && C2.imu && C2.imu_how !== "two poses";
+  $("imu2").disabled = !half; $("imu1").classList.toggle("done", half); $("imu2").classList.toggle("pri", half);
+  $("imuw").hidden = !(half || old);
+  $("imuw").textContent = half ? "Half done: nothing is saved until step 2 (on its back, beak straight up)." : "Calibrated from one pose only: the front may point the wrong way. Do steps 1 and 2.";
+  if (!SENS.imu.node.classList.contains("bad") && (half || old)) SENS.imu.note.textContent = half ? "step 2 pending" : "needs 2 steps";
+  SENS.imu.node.classList.toggle("warn", half || old);
+  if (half && Date.now() - imuNag > 20000) { imuNag = Date.now(); toast("IMU calibration is half done: lay the duck on its back, beak up, and press 2 Beak up", true); }
+  if (!half) imuNag = Date.now() - 12000;
 }
 function mkSensor(s) {
   const o = new THREE.Vector3(...s.at), f = new THREE.Vector3(...(s.dir || [1, 0, 0])), u = new THREE.Vector3(...(s.up || [0, 0, 1])), r = f.clone().cross(u);
@@ -664,11 +778,47 @@ function feed(k, v) {
     v.forEach((mm, i) => { c.fillStyle = mm < 0 ? css("--fill") : heat(mm); c.beginPath(); c.roundRect(x0 + (i % 8) * s + 3, (i >> 3) * s + 3, s - 6, s - 6, 8); c.fill(); });
     SENS.tof.place && SENS.tof.place(v); const seen = v.filter(mm => mm >= 0); note(seen.length ? (Math.min(...seen) / 1000).toFixed(2) + " m" : "nothing in range");
   } else if (k === "imu") {
-    c.clearRect(0, 0, w, h); c.save(); c.translate(w / 2, h / 2); c.rotate(-v.roll * rad); c.translate(0, v.pitch * 3);
-    c.fillStyle = css("--blue"); c.globalAlpha = .28; c.fillRect(-w, -h * 2, w * 2, h * 2); c.globalAlpha = 1;
-    c.strokeStyle = css("--blue"); c.lineWidth = 4; c.beginPath(); c.moveTo(-w, 0); c.lineTo(w, 0); c.stroke(); c.restore();
-    c.strokeStyle = css("--ink"); c.lineWidth = 5; c.lineCap = "round"; c.beginPath(); c.moveTo(w / 2 - 46, h / 2); c.lineTo(w / 2 - 14, h / 2); c.moveTo(w / 2 + 14, h / 2); c.lineTo(w / 2 + 46, h / 2); c.stroke();
-    SENS.imu.tilt && SENS.imu.tilt(v); note(`${v.roll.toFixed(0)}° ${v.pitch.toFixed(0)}°` + (v.yaw == null ? "" : ` ${v.yaw.toFixed(0)}°`));
+    // 6 readings: the attitude (roll, pitch, yaw) and the turn rate about the same three body axes. Top: the duck's
+    // body as a block seen from behind and above, turning as the duck turns, with its front / left / up axes.
+    // Below: one row per axis: the angle as a bar from zero with its number, and the rate in deg/s.
+    c.clearRect(0, 0, w, h); const AX = [["roll", "front", css("--red")], ["pitch", "left", css("--green")], ["yaw", "up", css("--blue")]];
+    const q = v.quat || [1, 0, 0, 0], [qw, qx, qy, qz] = q, ink = css("--ink"), dim = css("--dim");
+    const rot = ([x, y, z]) => [x * (1 - 2 * (qy * qy + qz * qz)) + y * 2 * (qx * qy - qw * qz) + z * 2 * (qx * qz + qw * qy),
+      x * 2 * (qx * qy + qw * qz) + y * (1 - 2 * (qx * qx + qz * qz)) + z * 2 * (qy * qz - qw * qx),
+      x * 2 * (qx * qz - qw * qy) + y * 2 * (qy * qz + qw * qx) + z * (1 - 2 * (qx * qx + qy * qy))];
+    const az = 25 * rad, el = 28 * rad, R = 74, cx = w / 2, cy = 118;                  // the viewer: behind, a little right, above
+    const see = ([x, y, z]) => { const f = x * Math.cos(az) + y * Math.sin(az), s = -x * Math.sin(az) + y * Math.cos(az);
+      return [cx - s * R, cy - (z * Math.cos(el) + f * Math.sin(el)) * R, f * Math.cos(el) - z * Math.sin(el)]; };
+    c.lineCap = c.lineJoin = "round";
+    c.strokeStyle = dim; c.globalAlpha = .45; c.lineWidth = 2; c.beginPath();          // the level ground, and straight up
+    for (let i = 0; i <= 48; i++) { const p = see([Math.cos(i / 24 * Math.PI) * 1.25, Math.sin(i / 24 * Math.PI) * 1.25, 0]); c.lineTo(p[0], p[1]); }
+    c.stroke(); c.setLineDash([5, 7]); c.beginPath(); c.moveTo(...see([0, 0, 0]).slice(0, 2)); c.lineTo(...see([0, 0, 1.25]).slice(0, 2)); c.stroke(); c.setLineDash([]); c.globalAlpha = 1;
+    const B = [.62, .4, .22], P = [], F = [[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]];      // the body block
+    for (let i = 0; i < 8; i++) P.push(see(rot([i & 4 ? B[0] : -B[0], i & 2 ? B[1] : -B[1], i & 1 ? B[2] : -B[2]])));
+    const draw = [...F.map(f => ({ d: f.reduce((a, i) => a + P[i][2], 0) / 4, f })),
+      ...AX.map((a, i) => { const t = see(rot([0, 0, 0].map((_, j) => j === i ? 1.15 : 0))); return { d: t[2] / 2 + .01, t, a }; })].sort((a, b) => b.d - a.d);
+    draw.forEach(o => {                                                                // far to near
+      if (o.f) { c.beginPath(); o.f.forEach(i => c.lineTo(P[i][0], P[i][1])); c.closePath();
+        c.fillStyle = o.f === F[1] ? css("--red") : ink; c.globalAlpha = o.f === F[1] ? .5 : .1; c.fill();       // the front face is tinted
+        c.globalAlpha = .55; c.strokeStyle = ink; c.lineWidth = 2; c.stroke(); c.globalAlpha = 1; return; }
+      const o0 = see([0, 0, 0]); c.strokeStyle = c.fillStyle = o.a[2]; c.lineWidth = 5; c.beginPath(); c.moveTo(o0[0], o0[1]); c.lineTo(o.t[0], o.t[1]); c.stroke();
+      c.beginPath(); c.arc(o.t[0], o.t[1], 7, 0, 7); c.fill();
+      c.fillStyle = ink; c.font = "600 19px system-ui"; c.textAlign = o.t[0] < o0[0] ? "right" : "left"; c.textBaseline = "middle";
+      c.fillText(o.a[1], o.t[0] + (o.t[0] < o0[0] ? -13 : 13), o.t[1]);
+    });
+    const rate = v.rate || v.gyro || [0, 0, 0], ang = [v.roll, v.pitch, v.yaw ?? 0], y0 = 262, dy = 62, x0 = 112, x1 = w - 104, xm = (x0 + x1) / 2;
+    AX.forEach(([name, , col], i) => {
+      const y = y0 + i * dy, full = i === 1 ? 90 : 180, a = Math.max(-full, Math.min(full, ang[i])), r = Math.max(-300, Math.min(300, rate[i]));
+      c.fillStyle = col; c.beginPath(); c.arc(16, y, 7, 0, 7); c.fill();
+      c.fillStyle = ink; c.font = "600 21px system-ui"; c.textAlign = "left"; c.textBaseline = "middle"; c.fillText(name, 32, y);
+      c.fillStyle = css("--fill"); c.beginPath(); c.roundRect(x0, y - 9, x1 - x0, 18, 9); c.fill();      // the angle, from zero in the middle
+      c.fillStyle = col; c.beginPath(); c.roundRect(Math.min(xm, xm + a / full * (x1 - x0) / 2), y - 9, Math.max(3, Math.abs(a) / full * (x1 - x0) / 2), 18, 4); c.fill();
+      c.fillStyle = dim; c.fillRect(xm - 1, y - 14, 2, 28);
+      c.fillStyle = ink; c.font = "600 22px system-ui"; c.textAlign = "right"; c.fillText((Math.round(ang[i]) || 0) + "°", w - 8, y - 9);
+      c.fillStyle = dim; c.font = "17px system-ui"; c.fillText((Math.round(r) > 0 ? "+" : "") + (Math.round(rate[i]) || 0) + "°/s", w - 8, y + 14);
+      c.fillStyle = col; c.globalAlpha = .55; c.fillRect(Math.min(xm, xm + r / 300 * (x1 - x0) / 2), y + 14, Math.abs(r) / 300 * (x1 - x0) / 2, 4); c.globalAlpha = 1;      // the rate, a thin line under it
+    });
+    SENS.imu.tilt && SENS.imu.tilt(v); note(v.calibrated === false ? "not levelled" : "");
   } else if (k === "mic") {
     c.clearRect(0, 0, w, h); c.strokeStyle = css("--blue"); c.lineWidth = 4; c.lineJoin = c.lineCap = "round"; c.beginPath();
     v.wave.forEach((a, i) => c.lineTo(10 + i * (w - 20) / 63, h / 2 - Math.max(-1, Math.min(1, a * 3)) * (h / 2 - 8))); c.stroke();
@@ -679,7 +829,7 @@ function feed(k, v) {
 const busy = {};
 setInterval(() => {                                      // readings, for the sensors that are on
   if (!S.brain || !S.brain.on) return;
-  for (const k of open) if (k !== "speaker" && !busy[k]) {
+  for (const k of open) if (k !== "speaker" && k !== "anim" && k !== "drive" && !busy[k]) {
     busy[k] = 1;
     fetch("/sense/" + k).then(r => k === "camera" ? r.arrayBuffer() : r.json()).then(v => feed(k, v)).catch(() => {}).finally(() => busy[k] = 0);
   }

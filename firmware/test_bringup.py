@@ -88,7 +88,7 @@ def studio_restart():
 CASES = {
     "studio restarted": studio_restart,
     "SSH link cut": lambda: subprocess.run(["pkill", "-f", "8772:127.0.0.1"]),
-    "agent killed on the duck": lambda: ssh("pkill -f '^python3 -u /tmp/duck_agent.py'"),
+    "agent killed on the duck": lambda: ssh("pkill -f 'firmware/duck_agent\\.py$'"),
     "Run, then Setup": lambda: (post("mode", dict(to="run")), time.sleep(3), post("mode", dict(to="setup")),
                                 post("connect", dict(port="duck"))),
     "servo port reconnected": lambda: (post("disconnect"), post("connect", dict(port="duck"))),

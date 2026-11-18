@@ -1,0 +1,62 @@
+{
+ "when": "2026-11-18 10:39",
+ "pack_bytes": 2580120,
+ "ticks": 1600,
+ "roles": {
+  "jump": {
+   "ticks": 24,
+   "worst_rad": 0.00032329559326171875,
+   "rms_rad": 7.910768908914179e-05,
+   "largest_action_rad": 3.4345524311065674
+  },
+  "recovery": {
+   "ticks": 0
+  },
+  "roulade": {
+   "ticks": 90,
+   "worst_rad": 0.0003349184989929199,
+   "rms_rad": 9.135617438005283e-05,
+   "largest_action_rad": 1.9088505506515503
+  },
+  "run": {
+   "ticks": 150,
+   "worst_rad": 0.00029152631759643555,
+   "rms_rad": 8.286002412205562e-05,
+   "largest_action_rad": 1.0416302680969238
+  },
+  "sitstand": {
+   "ticks": 116,
+   "worst_rad": 0.0005174875259399414,
+   "rms_rad": 8.032786718104035e-05,
+   "largest_action_rad": 1.8509668111801147
+  },
+  "sprint": {
+   "ticks": 125,
+   "worst_rad": 0.0004920214414596558,
+   "rms_rad": 0.0001416127197444439,
+   "largest_action_rad": 1.8308449983596802
+  },
+  "walk": {
+   "ticks": 1095,
+   "worst_rad": 0.0057163238525390625,
+   "rms_rad": 0.0008381074294447899,
+   "largest_action_rad": 14.211816787719727
+  }
+ },
+ "onnx": {
+  "falls": 0,
+  "end": [
+   5.053,
+   4.948
+  ]
+ },
+ "pack": {
+  "falls": 0,
+  "end": [
+   5.66,
+   3.401
+  ]
+ },
+ "end_apart_m": 1.662,
+ "mac_ms_per_call": 0.029
+}

@@ -9,7 +9,9 @@ Find, rename, test and live-monitor the Microduck's 15 Feetech HD1910 servos fro
 
 **Hot-plug:** twice a second the studio drops servos that have been silent for 1.2 s and pings the factory and
 joint IDs for new ones, so swapping servos needs no Scan. A lone new servo opens by itself; a pulled adapter
-reconnects when it returns.
+reconnects when it returns. If the duck's computer goes away while the bus runs through it, the port menu falls
+back to the USB adapter; Connect refuses a port that is no longer there. A servo answers only with servo power
+on: the USB adapter powers itself, not the bus.
 
 **Set an ID:** plug in one new servo → Connect → tap it in the found row (orange dot = new) → tap the joint it belongs to → Set.
 
@@ -33,7 +35,7 @@ Velocity uses kissqy's HD1910 scale (1 count = 50 ticks/s), not yet checked agai
 gains: P 5, D 20, beak P 10 (kissqy console note v1.0.131; P 5 is also what the policies were trained against).
 The official Pollen duck runs P 200, I 0, D 0 on Dynamixel XL330s, a different servo and scale.
 
-**Zero:** makes the present pose read 2048 (Feetech offset calibration, instruction 0x0B).
+**Zero:** makes the present pose read 2048 (Feetech offset calibration, instruction 0x0B). A saved calibration follows the servo: its zero shifts by the same amount, so it still means the same pose. A servo standing outside its joint range is the exception: its saved zero cannot be right, so the present pose becomes the joint zero.
 
 **Joint range:** the slider and Test never leave the joint's travel in the model (`app/assets/microduck/robot_groundcontact.xml`,
 read at start-up; the mouth, absent from the model, uses kissqy's −5° … 30°). Travel is taken about 2048, so pose the
@@ -84,6 +86,112 @@ connected servos, or one servo read by the agent when only the duck is connected
 typical lithium-ion discharge curve for 2 cells in series (`feetech.CELL`): 8.4 V = 100 %, 7.4 V = 42 %,
 7.0 V = 14 %, 6.0 V = 0 %. It is an estimate: voltage sags under load, the readings step by 0.1 V (about 8 %), and
 the curve is not this pack's own. On a wired supply it shows whatever that voltage maps to.
+
+## Board temperature
+
+Beside the battery the top bar shows the temperature of the duck's processor (the RK3566's own sensor, read by the
+agent each time it reports status), with the load average in the tooltip. It turns orange from 75 °C and red from
+85 °C, where a warning also pops up: those are the board's own two throttling points (`soc-thermal` passive trips;
+it switches itself off at 115 °C). `HOT` in `web/index.html`. It shows only while the duck's computer is connected.
+
+## One hardware bridge
+
+`duck_agent.py` is the only program on the duck that opens a device: camera, microphone, speaker, ToF ranger and
+the servo bus (servos and IMU). It runs as the systemd user service `duck-agent`, enabled at boot and restarted
+2 s after it dies. Every client asks it over HTTP on the duck's loopback: the Mac's studio through an SSH tunnel,
+and the duck's own studio (`duck-studio`, for the phone). Neither starts an agent or opens a device. A Mac studio
+that connects only checks that the duck has its version of the agent and installs or updates the service if not.
+
+Each device is opened when first asked for and opened again after it fails: a reader that exits is started again
+at the next request, one that stays silent for 30 s is ended and started again, the ToF reader resets its sensor
+after 3 s without a frame, and the serial port is reopened after an error. The agent starts with any device
+absent. At the first start after a boot it stops the vendor runtime (`robotd`, `tofd`, enabled in the image), so
+the duck comes up in Setup with the bridge owning everything; Run hands the servo bus and the ToF to that runtime
+until Setup is chosen again.
+
+This follows Pollen's runtime (pollen-robotics/microduck, `docs/design/architecture.md`): systemd-supervised
+daemons, one owner per device, clients on a socket, daemons that keep running and retry when hardware is missing.
+Pollen splits it into `robotd` (servos and IMU), `tofd` and `mediad`; here it is one process.
+
+Measured with `test_bridge.py` on 2026-11-18, through the duck's own server with no Mac studio running; time from
+the interruption until camera, ToF and microphone all deliver changing data again (`docs/bridge_results.json`,
+`docs/figures/bridge_recovery.pdf`):
+
+| interruption | n | recovered | mean (s) | range (s) |
+|---|---|---|---|---|
+| bridge killed | 5 | 5 | 5.2 | 4.8 to 5.7 |
+| camera reader killed | 5 | 5 | 2.3 | 1.9 to 2.6 |
+| ToF reader killed | 5 | 5 | 2.4 | 2.0 to 2.7 |
+| microphone reader killed | 5 | 5 | 2.5 | 2.3 to 2.7 |
+
+After all 20 recoveries no process other than the bridge and its own readers held a device. Not yet measured:
+start at boot (the login could not reboot the duck; `mode_install.sh` now grants that), a cable physically
+unplugged and replugged, and the servos and IMU (servo power was off).
+
+## Driving: the policies on the duck
+
+The seven policies Duck Live drives with (walk and stand, run, sprint, sit and stand, jump, front flip, get up) run on
+the duck itself, from the **Drive** panel in the left dock or the keyboard while it is open (arrows, Shift = run,
+S sit, Space jump, R flip, A / D speed).
+
+| piece | file | what it is |
+|---|---|---|
+| pack | `policy_pack.py` -> `policies.npz`, kept on the duck in `/data` | the seven actors as 16-bit weights, 2.58 MB (the ONNX exports: 5.6 MB) |
+| network | `policy_net.py` | the actor in numpy: no ONNX runtime on the duck |
+| pilot | `duck_pilot.py` | which policy, what command: Duck Live's operator logic with only an IMU and joints |
+| runner | `duck_agent.Drive` | 50 Hz on the bridge: read IMU and 14 joints, pilot, write 14 targets |
+
+**Dry run** reads and computes and writes nothing. **Start** (pressed twice) drives the servos: torque on where each
+joint is, one second of blending to the policy's target. **Stop** lets every joint go limp. Sticks not refreshed for
+0.5 s count as released; ten ticks in a row without a full reading stop a live run.
+
+Measured (`docs/policy_pack_results.json`, `docs/pilot_results.json`, `docs/figures/pilot_sim.pdf`), 2026-11-18:
+
+- Pack against ONNX over a 32 s simulated scenario (1600 ticks): worst action difference 0.3 to 0.5 mrad for run,
+  sprint, sit-stand, jump and flip, 5.7 mrad for walk (RMS 0.84 mrad). Closed loop with the pack: 0 falls, as ONNX;
+  the duck ends 1.66 m from where ONNX took it, because a jump and a flip amplify any difference.
+- Pilot in the simulator, 10 trials with random start and servo delay (walk, turn, run, sprint, sit, stand, back,
+  sidestep, jump, flip): 8 without a fall; 2 falls, both stopping from a sprint (Duck Live's own benchmark: 4 falls in
+  8 trials), each recovered by the walk policy. Walk 0.42 m/s for 0.40 asked, run 0.62 for 0.70, sprint 1.33; jump
+  rise 24 to 28 mm; 10 of 10 flips end upright.
+- On the duck, dry run: 49.5 Hz, 10.3 ms of each 20 ms tick used, about 7 % of ticks late, no missed reading.
+
+Not yet done on the real duck: a live run. Open before it: the jump is timed by the clock (launch flag until 0.36 s,
+the simulator's touchdown) because the duck has no foot contacts; the IMU's axes against the model's trunk frame and
+the servo gains (the policies were trained at P 5) are not verified; the stand-up policy was not reached in the tests.
+
+## Animations
+
+The 27 emotion clips of Duck Live (`app/animations`: Pollen's 14 and the 13 originals) play on the real duck from the
+**Animations** panel in the left dock. The duck plays them by itself: the bridge (`duck_agent.Player`) runs the clip on
+a 50 Hz thread, writing the head's four joints and the beak (servos 30-34) and playing the sound, so it is the same
+from the Mac, from the phone's server, or with nobody connected. The legs are never written: they stay limp or held.
+Seven clips also walk, jump, flip or sit in the simulator (orange dot); here they play their head, beak and sound
+only, until the policies run on the duck. **Relax head** stops a clip and lets the head go limp. A clip needs
+Setup mode and a calibrated duck.
+
+The clips live on the duck, on its always-writable partition (`/data/animations`), so they survive power cuts and
+the read-only lock. `anim_pack.py` builds the pack and a Mac studio sends it when it connects, only if the duck's
+differs (compared by SHA-256):
+
+| | in the repo | on the duck |
+|---|---|---|
+| motion, 27 clips, 98.3 s | 257 kB (keyframe JSON, 50 ms steps) | 31 kB (head and beak only, redundant keyframes dropped) |
+| sound | 8.23 MB (16-bit 48 kHz WAV) | 2.11 MB (8-bit mu-law, 24 kHz) |
+| sent over the link | | 0.74 MB (zip) |
+
+Measured on the real duck with `test_anim.py` on 2026-11-18 (`docs/anim_results.json`,
+`docs/figures/anim_tracking.pdf`), servos 30-34 read 18 times a second while the clip plays:
+
+| clip | length (s) | largest commanded swing (deg) | tracking error, RMS (deg) | request to motion (s) | off rest at the end (deg) |
+|---|---|---|---|---|---|
+| yes | 1.4 | 40.1 | 1.59 | 0.12 | 0.65 |
+| hello | 2.6 | 34.4 | 0.83 | 0.14 | 0.14 |
+| curious | 2.9 | 45.8 | 2.22 | 0.12 | 0.75 |
+
+The worst single samples (6 to 23 deg) fall on the fastest moves, where a 50 ms sampling gap is itself a large
+angle. Only these three clips were measured; the other 24 were not played by the test. Not checked: whether the
+beak opens the right way on this duck, and head yaw (none of the three clips turns the head).
 
 ## Sensors
 
