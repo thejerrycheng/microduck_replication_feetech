@@ -1,0 +1,21 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/checkpoints/jump_1500/model_1500.pt",
+ "num_envs": 96,
+ "valid_takeoff_rate": 0.865,
+ "rise_mm": {
+  "min": 21.9,
+  "median": 29.9,
+  "p90": 34.3,
+  "max": 36.4
+ },
+ "airtime_ms_median": 100.0,
+ "stable_landing_rate": 0.969,
+ "durable_rate": 0.583,
+ "failed_rate": 0.0,
+ "body_contact_rate": 0.01,
+ "terminated_early_rate": 0.292,
+ "peak_foot_force_N": {
+  "median": 30.4,
+  "max": 66.1
+ }
+}

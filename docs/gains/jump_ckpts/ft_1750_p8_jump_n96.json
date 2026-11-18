@@ -1,0 +1,21 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_jump_flat_hd1910_backlash/2026-11-17_22-34-52/model_1750.pt",
+ "num_envs": 96,
+ "valid_takeoff_rate": 0.552,
+ "rise_mm": {
+  "min": 0.0,
+  "median": 28.0,
+  "p90": 32.8,
+  "max": 37.2
+ },
+ "airtime_ms_median": 80.0,
+ "stable_landing_rate": 0.594,
+ "durable_rate": 0.229,
+ "failed_rate": 0.0,
+ "body_contact_rate": 0.031,
+ "terminated_early_rate": 0.656,
+ "peak_foot_force_N": {
+  "median": 38.8,
+  "max": 74.9
+ }
+}

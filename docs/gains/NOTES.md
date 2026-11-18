@@ -46,3 +46,24 @@ fine-tune fixed; the extra 1000 iterations traded walking falls (2–4 % → 8 %
 (5–7 % → 1 %). Neither checkpoint dominates. Options: (a) ship base as `_kp58` (it is robust to P 8 already),
 (b) a second arm at reduced learning rate to keep the gait while taking the get-up gain. Decide after the
 other six policies report.
+
+## jump (base 1500 → ft run 2026-11-17_22-34-52, 1000 its) — PROVISIONAL PICK ft 2250
+
+96 envs per cell (`jump_ckpts/`); landing = stable landing rate, durable = still standing later, early = terminated early:
+
+| ckpt | P | take-off | rise med mm | landing | durable | early |
+|---|---|---|---|---|---|---|
+| base 1500 | 5 | 0.865 | 29.9 | 0.969 | 0.583 | 0.292 |
+| ft 2000   | 5 | 0.812 | 27.0 | 0.938 | 0.573 | 0.281 |
+| ft 2250   | 5 | 0.854 | 24.8 | 0.958 | 0.667 | 0.250 |
+| ft 2499   | 5 | 0.729 | 24.6 | 0.885 | 0.531 | 0.312 |
+| base 1500 | 8 | 0.500 | 27.8 | 0.188 | 0.073 | 0.896 |
+| ft 2000   | 8 | 0.656 | 27.9 | 0.688 | 0.344 | 0.542 |
+| ft 2250   | 8 | 0.635 | 26.2 | 0.667 | 0.344 | 0.521 |
+| ft 2499   | 8 | 0.635 | 24.2 | 0.656 | 0.323 | 0.604 |
+
+At P 8 the base lands 19 % of its jumps; every fine-tune checkpoint lands 59–69 %. ft 2250 keeps the P 5
+numbers (landing 0.958, durable 0.667 vs base 0.969/0.583) and is the pick; the last checkpoint (2499) lost
+take-offs at P 5 and is not. Rise shrinks 5 mm across the fine-tune at both gains (the policy jumps a little
+lower to land). P 8 is still far from P 5 parity (0.67 vs 0.96 landing), so a longer continuation from 2250
+with the same P ∈ [5, 8] range is the next single-change run for this policy once the chain has finished.
