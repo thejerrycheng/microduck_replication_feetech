@@ -1,0 +1,649 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/logs/rsl_rl/microduck_velstand_allcoll_hd1910_backlash/partial_23250/model_23250.pt",
+ "num_envs": 96,
+ "push_m_s": 1.0,
+ "families": {
+  "prone": {
+   "standing_at_3s": 0.979,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.031,
+   "time_to_stand_s": {
+    "median": 0.32,
+    "p90": 0.4
+   },
+   "peak_omega_median": 6.96,
+   "tilt_end_median_deg": 2.1,
+   "trunk_end_median_m": 0.1163,
+   "end_tilt_20_60_frac": 0.0,
+   "end_down_frac": 0.0,
+   "end_low_trunk_upright_frac": 0.0,
+   "refalls_per_duck_mean": 0.03,
+   "refall_delay_s": {
+    "median": 1.18,
+    "p10": 0.7,
+    "p90": 2.28
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.205,
+    "stayers": 0.17
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     17.6,
+     9.3,
+     7.1,
+     8.8,
+     8.1,
+     8.4,
+     9.5,
+     8.3
+    ],
+    "stayers": [
+     17.6,
+     3.1,
+     2.6,
+     3.1,
+     2.8,
+     2.6,
+     2.3,
+     2.6
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.2,
+     0.19,
+     0.15,
+     0.1,
+     0.29,
+     0.26,
+     0.25,
+     0.24
+    ],
+    "stayers": [
+     0.17,
+     0.04,
+     0.02,
+     0.02,
+     0.02,
+     0.01,
+     0.01,
+     0.0
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.302,
+    "stayers": 0.3
+   },
+   "occupancy_after_2s": {
+    "standing": 0.997,
+    "low_upright": 0.0,
+    "mid_tilt": 0.002,
+    "down": 0.001
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  },
+  "supine": {
+   "standing_at_3s": 0.979,
+   "standing_at_end": 0.99,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.115,
+   "time_to_stand_s": {
+    "median": 0.42,
+    "p90": 0.46
+   },
+   "peak_omega_median": 12.03,
+   "tilt_end_median_deg": 2.6,
+   "trunk_end_median_m": 0.1163,
+   "end_tilt_20_60_frac": 0.01,
+   "end_down_frac": 0.0,
+   "end_low_trunk_upright_frac": 0.0,
+   "mid_tilt_trunk_median_m": 0.098,
+   "mid_tilt_tilt_median_deg": 50.0,
+   "mid_tilt_speed_median_m_s": 0.404,
+   "mid_tilt_pitch_sign_fwd_frac": 1.0,
+   "refalls_per_duck_mean": 0.12,
+   "refall_delay_s": {
+    "median": 1.34,
+    "p10": 0.8,
+    "p90": 4.7
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.443,
+    "stayers": 0.47
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     17.9,
+     1.9,
+     7.7,
+     11.2,
+     13.3,
+     27.8,
+     10.7,
+     4.9
+    ],
+    "stayers": [
+     17.4,
+     2.7,
+     3.5,
+     3.3,
+     2.8,
+     2.4,
+     2.3,
+     2.1
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.44,
+     0.03,
+     0.04,
+     0.13,
+     0.32,
+     0.34,
+     0.13,
+     0.11
+    ],
+    "stayers": [
+     0.47,
+     0.04,
+     0.03,
+     0.02,
+     0.01,
+     0.01,
+     0.0,
+     0.0
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.281,
+    "stayers": 0.275
+   },
+   "occupancy_after_2s": {
+    "standing": 0.992,
+    "low_upright": 0.0,
+    "mid_tilt": 0.007,
+    "down": 0.001
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  },
+  "side": {
+   "standing_at_3s": 1.0,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.083,
+   "time_to_stand_s": {
+    "median": 0.42,
+    "p90": 0.46
+   },
+   "peak_omega_median": 11.76,
+   "tilt_end_median_deg": 2.2,
+   "trunk_end_median_m": 0.1164,
+   "end_tilt_20_60_frac": 0.0,
+   "end_down_frac": 0.0,
+   "end_low_trunk_upright_frac": 0.0,
+   "refalls_per_duck_mean": 0.14,
+   "refall_delay_s": {
+    "median": 1.36,
+    "p10": 0.77,
+    "p90": 3.37
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.467,
+    "stayers": 0.489
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     17.5,
+     3.1,
+     6.8,
+     7.8,
+     15.4,
+     20.5,
+     7.8,
+     5.4
+    ],
+    "stayers": [
+     17.5,
+     2.6,
+     2.5,
+     2.6,
+     2.3,
+     2.3,
+     2.2,
+     2.1
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.47,
+     0.04,
+     0.04,
+     0.05,
+     0.24,
+     0.25,
+     0.28,
+     0.12
+    ],
+    "stayers": [
+     0.49,
+     0.04,
+     0.02,
+     0.01,
+     0.01,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.288,
+    "stayers": 0.273
+   },
+   "occupancy_after_2s": {
+    "standing": 0.986,
+    "low_upright": 0.0,
+    "mid_tilt": 0.012,
+    "down": 0.003
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  },
+  "random": {
+   "standing_at_3s": 0.99,
+   "standing_at_end": 0.979,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.083,
+   "time_to_stand_s": {
+    "median": 0.48,
+    "p90": 0.88
+   },
+   "peak_omega_median": 9.79,
+   "tilt_end_median_deg": 2.0,
+   "trunk_end_median_m": 0.1162,
+   "end_tilt_20_60_frac": 0.01,
+   "end_down_frac": 0.01,
+   "end_low_trunk_upright_frac": 0.0,
+   "mid_tilt_trunk_median_m": 0.1146,
+   "mid_tilt_tilt_median_deg": 26.0,
+   "mid_tilt_speed_median_m_s": 0.657,
+   "mid_tilt_pitch_sign_fwd_frac": 1.0,
+   "refalls_per_duck_mean": 0.08,
+   "refall_delay_s": {
+    "median": 1.32,
+    "p10": 0.19,
+    "p90": 4.0
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.299,
+    "stayers": 0.22
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     16.4,
+     9.7,
+     6.9,
+     3.8,
+     2.7,
+     3.4,
+     6.9,
+     5.8
+    ],
+    "stayers": [
+     17.5,
+     3.8,
+     3.2,
+     3.0,
+     3.0,
+     2.7,
+     2.6,
+     2.1
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.3,
+     0.21,
+     0.06,
+     0.07,
+     0.03,
+     0.02,
+     0.03,
+     0.08
+    ],
+    "stayers": [
+     0.22,
+     0.06,
+     0.04,
+     0.03,
+     0.02,
+     0.01,
+     0.01,
+     0.0
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.082,
+    "stayers": 0.286
+   },
+   "occupancy_after_2s": {
+    "standing": 0.994,
+    "low_upright": 0.0,
+    "mid_tilt": 0.006,
+    "down": 0.0
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  },
+  "bank": {
+   "standing_at_3s": 0.979,
+   "standing_at_end": 1.0,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.073,
+   "time_to_stand_s": {
+    "median": 0.6,
+    "p90": 0.76
+   },
+   "peak_omega_median": 12.28,
+   "tilt_end_median_deg": 2.1,
+   "trunk_end_median_m": 0.1164,
+   "end_tilt_20_60_frac": 0.0,
+   "end_down_frac": 0.0,
+   "end_low_trunk_upright_frac": 0.0,
+   "refalls_per_duck_mean": 0.09,
+   "refall_delay_s": {
+    "median": 1.9,
+    "p10": 0.91,
+    "p90": 3.52
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.365,
+    "stayers": 0.388
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     18.4,
+     5.5,
+     7.0,
+     12.7,
+     7.8,
+     7.2,
+     4.9,
+     8.3
+    ],
+    "stayers": [
+     17.7,
+     3.7,
+     3.0,
+     2.6,
+     2.2,
+     2.2,
+     2.1,
+     2.0
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.37,
+     0.05,
+     0.05,
+     0.22,
+     0.32,
+     0.18,
+     0.13,
+     0.03
+    ],
+    "stayers": [
+     0.39,
+     0.05,
+     0.03,
+     0.02,
+     0.01,
+     0.01,
+     0.0,
+     0.0
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.271,
+    "stayers": 0.28
+   },
+   "occupancy_after_2s": {
+    "standing": 0.984,
+    "low_upright": 0.0,
+    "mid_tilt": 0.013,
+    "down": 0.004
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  },
+  "sitting": {
+   "standing_at_3s": 0.958,
+   "standing_at_end": 0.99,
+   "ever_stood": 1.0,
+   "fell_after_standing": 0.25,
+   "time_to_stand_s": {
+    "median": 0.02,
+    "p90": 0.04
+   },
+   "peak_omega_median": 4.39,
+   "tilt_end_median_deg": 2.3,
+   "trunk_end_median_m": 0.1164,
+   "end_tilt_20_60_frac": 0.01,
+   "end_down_frac": 0.0,
+   "end_low_trunk_upright_frac": 0.0,
+   "mid_tilt_trunk_median_m": 0.0842,
+   "mid_tilt_tilt_median_deg": 52.3,
+   "mid_tilt_speed_median_m_s": 0.564,
+   "mid_tilt_pitch_sign_fwd_frac": 1.0,
+   "refalls_per_duck_mean": 0.32,
+   "refall_delay_s": {
+    "median": 0.64,
+    "p10": 0.32,
+    "p90": 2.38
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.172,
+    "stayers": 0.095
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     8.4,
+     12.7,
+     22.8,
+     12.1,
+     6.0,
+     4.7,
+     4.9,
+     5.0
+    ],
+    "stayers": [
+     6.8,
+     4.3,
+     3.6,
+     3.3,
+     2.6,
+     2.2,
+     2.1,
+     1.8
+    ]
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.17,
+     0.25,
+     0.31,
+     0.23,
+     0.1,
+     0.06,
+     0.03,
+     0.05
+    ],
+    "stayers": [
+     0.1,
+     0.09,
+     0.04,
+     0.04,
+     0.02,
+     0.01,
+     0.0,
+     0.0
+    ]
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": 0.05,
+    "stayers": 0.02
+   },
+   "occupancy_after_2s": {
+    "standing": 0.979,
+    "low_upright": 0.0,
+    "mid_tilt": 0.018,
+    "down": 0.003
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  },
+  "standing_pushed": {
+   "standing_at_3s": 0.917,
+   "standing_at_end": 0.865,
+   "ever_stood": 1.0,
+   "fell_after_standing": 1.0,
+   "time_to_stand_s": {
+    "median": 0.0,
+    "p90": 0.0
+   },
+   "peak_omega_median": 16.5,
+   "tilt_end_median_deg": 4.3,
+   "trunk_end_median_m": 0.1163,
+   "end_tilt_20_60_frac": 0.052,
+   "end_down_frac": 0.083,
+   "end_low_trunk_upright_frac": 0.0,
+   "mid_tilt_trunk_median_m": 0.1117,
+   "mid_tilt_tilt_median_deg": 23.8,
+   "mid_tilt_speed_median_m_s": 0.409,
+   "mid_tilt_pitch_sign_fwd_frac": 1.0,
+   "refalls_per_duck_mean": 3.9,
+   "refall_delay_s": {
+    "median": 0.72,
+    "p10": 0.63,
+    "p90": 0.85
+   },
+   "speed_at_first_stand_m_s": {
+    "refallers": 0.004,
+    "stayers": null
+   },
+   "tilt_after_stand_deg": {
+    "t": [
+     0.0,
+     0.25,
+     0.5,
+     0.75,
+     1.0,
+     1.25,
+     1.5,
+     1.75
+    ],
+    "refallers": [
+     0.1,
+     3.3,
+     5.8,
+     60.9,
+     62.2,
+     8.4,
+     4.5,
+     2.8
+    ],
+    "stayers": null
+   },
+   "speed_after_stand_m_s": {
+    "refallers": [
+     0.0,
+     0.03,
+     0.81,
+     0.47,
+     0.29,
+     0.15,
+     0.07,
+     0.03
+    ],
+    "stayers": null
+   },
+   "fwd_pitch_at_first_stand": {
+    "refallers": -0.002,
+    "stayers": null
+   },
+   "occupancy_after_2s": {
+    "standing": 0.523,
+    "low_upright": 0.0,
+    "mid_tilt": 0.242,
+    "down": 0.235
+   },
+   "stuck_mid_tilt_last2s_frac": 0.0,
+   "cmd_vx_median": 0.0
+  }
+ }
+}

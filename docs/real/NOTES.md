@@ -71,3 +71,22 @@ On a free 24 GB card set `MIN_GPU_FREE_MB=7500` (default) and the default 4096 e
 2048 envs / 3000 iterations (started 2026-11-19 07:52 and 08:55) exist only because the GPU was shared.
 Pass target (`scripts/sr_real.py`): get-up standing at end >= 0.90 in every family and under 1 m/s shoves, walking
 falls <= 0.10 at 0.15/0.3/0.4 m/s, under NOMINAL and STRESS.
+
+## 2026-11-19: partial local velstand fine-tune (stopped at 23250, ~1755 of 3000 its, 2048 envs)
+
+Graded at 96 envs (`docs/real/velstand_ckpts/`). Neither checkpoint passes the 90 % target.
+
+| ckpt | cond | falls 0.15 / 0.3 / 0.4 | vx at 0.4 | get-up stands | re-falls | pushed stand |
+|---|---|---|---|---|---|---|
+| base 21495 | nominal | 0.02 / 0.02 / 0.06 | 0.33 | 0.95 | 0.24 | 0.91 |
+| ft 23250   | nominal | 0.10 / 0.10 / 0.20 | 0.33 | 0.98 | 0.25 | 0.87 |
+| base 21495 | stress  | 0.66 / 0.94 / 1.00 | 0.01 | 0.71 | 0.76 | 0.46 |
+| ft 23250   | stress  | 0.54 / 0.94 / 1.00 | -0.01 | 0.89 | 0.62 | 0.57 |
+
+Standing and get-up under stress improve; walking under stress does not move and nominal walking gets worse.
+Stress stacks every worst case at once (P8 + 6.4 V + foot mu 0.3 + 25 Hz); each factor alone costs < 10 % falls.
+On the 4090: start velstand from `checkpoints/velstand_21495` (the default) for the full 3000 its at 4096 envs;
+`checkpoints/velstand_real_23250` is kept for comparison only.
+
+`scripts/play.py` now coerces hydra list overrides before the env is built. Without that every fine-tuned
+checkpoint without a pre-made `exported_model_<ck>/` crashes on export with `unhashable type: 'list'`.
