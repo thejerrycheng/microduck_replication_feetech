@@ -252,3 +252,27 @@ class PickPPORunnerCfg(MicroDuckPPORunnerCfg):
 
     experiment_name = _names("microduck_pick_allcoll")
     max_iterations = 3000
+
+
+@configclass
+class VelStandLowMuPPORunnerCfg(VelStandPPORunnerCfg):
+    """VelStand fine-tune on the slippery floor (same distillation, entropy 0.001 / lr 5e-4)."""
+
+    experiment_name = _names("microduck_velstand_lowmu_allcoll")
+    max_iterations = 2000
+
+
+@configclass
+class RunV3LowMuPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
+    """Run v3 fine-tune on the slippery floor. Entropy 0.001 / lr 5e-4, not the run recipe's 0.01 / 1e-3: fine-tuning
+    run_v3 5999 for 1000 iterations at 0.01 / 1e-3 (the P 5-8 gains run, 2026-11-18) collapsed the deterministic gait
+    from 0.45/0.64 m/s to 0.15/0.12 m/s at commands 0.5/0.9 while the stochastic return only drifted 130 -> 123; the
+    sprint fine-tune at the same settings lost 0.3 m/s. The two fine-tunes at 0.001 (jump, front flip) improved."""
+
+    experiment_name = _names("microduck_run_v3_lowmu_allcoll")
+    max_iterations = 2000
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.algorithm.entropy_coef = 0.001
+        self.algorithm.learning_rate = 5.0e-4

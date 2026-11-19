@@ -1,0 +1,236 @@
+{
+ "task": "Microduck-VelStand-Flat-HD1910-AllColl-LowMu",
+ "num_envs": 96,
+ "mus": [
+  0.2,
+  0.4,
+  0.6,
+  0.8,
+  1.0,
+  1.2
+ ],
+ "overrides": [
+  "presets=backlash"
+ ],
+ "solver_geoms": [
+  {
+   "geom": 0,
+   "shape": 0,
+   "key": "/World/ground/terrain/GroundPlane/CollisionPlane",
+   "sole": false,
+   "ground": true,
+   "priority": 0,
+   "geom_friction_w0_w1_wlast": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "geom": 4,
+   "shape": 52,
+   "key": "/World/envs/env_0/Robot/Geometry/trunk_base/bearing_roll/hip_l_2/upper_leg_right/leg_2/ankle_right/right_foot_collision/sole_right",
+   "sole": true,
+   "ground": false,
+   "priority": 1,
+   "geom_friction_w0_w1_wlast": [
+    0.20000000298023224,
+    0.20000000298023224,
+    1.2000000476837158
+   ]
+  },
+  {
+   "geom": 10,
+   "shape": 2,
+   "key": "/World/envs/env_0/Robot/Geometry/trunk_base/yaw2roll/hip_l/upper_leg_left/leg/ankle_left/left_foot_collision/sole_left",
+   "sole": true,
+   "ground": false,
+   "priority": 1,
+   "geom_friction_w0_w1_wlast": [
+    0.20000000298023224,
+    0.20000000298023224,
+    1.2000000476837158
+   ]
+  }
+ ],
+ "resolved_contacts": [
+  {
+   "mu_set": 0.2,
+   "n_contacts": 36,
+   "contact_friction_median": 0.20000000298023224,
+   "contact_friction_min": 0.20000000298023224,
+   "contact_friction_max": 0.20000000298023224
+  },
+  {
+   "mu_set": 0.4,
+   "n_contacts": 36,
+   "contact_friction_median": 0.4000000059604645,
+   "contact_friction_min": 0.4000000059604645,
+   "contact_friction_max": 0.4000000059604645
+  },
+  {
+   "mu_set": 0.6,
+   "n_contacts": 34,
+   "contact_friction_median": 0.6000000238418579,
+   "contact_friction_min": 0.6000000238418579,
+   "contact_friction_max": 0.6000000238418579
+  },
+  {
+   "mu_set": 0.8,
+   "n_contacts": 32,
+   "contact_friction_median": 0.800000011920929,
+   "contact_friction_min": 0.800000011920929,
+   "contact_friction_max": 0.800000011920929
+  },
+  {
+   "mu_set": 1.0,
+   "n_contacts": 35,
+   "contact_friction_median": 1.0,
+   "contact_friction_min": 1.0,
+   "contact_friction_max": 1.0
+  },
+  {
+   "mu_set": 1.2,
+   "n_contacts": 43,
+   "contact_friction_median": 1.2000000476837158,
+   "contact_friction_min": 1.2000000476837158,
+   "contact_friction_max": 1.2000000476837158
+  }
+ ],
+ "normal_load_N_median": 7.783105850219727,
+ "ramp": [
+  {
+   "mu_set": 0.2,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.14800000190734863,
+   "mu_s_p10": 0.12399999797344208,
+   "mu_s_p90": 0.17399999499320984,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.1670876443386078
+  },
+  {
+   "mu_set": 0.4,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.20999999344348907,
+   "mu_s_p10": 0.1979999840259552,
+   "mu_s_p90": 0.22599999606609344,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.24767372012138367
+  },
+  {
+   "mu_set": 0.6,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.20800000429153442,
+   "mu_s_p10": 0.20399999618530273,
+   "mu_s_p90": 0.22599998116493225,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2569829225540161
+  },
+  {
+   "mu_set": 0.8,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.21199999749660492,
+   "mu_s_p10": 0.20800000429153442,
+   "mu_s_p90": 0.2199999988079071,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.26967087388038635
+  },
+  {
+   "mu_set": 1.0,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.2199999988079071,
+   "mu_s_p10": 0.21599999070167542,
+   "mu_s_p90": 0.2240000069141388,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.27823781967163086
+  },
+  {
+   "mu_set": 1.2,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.21599999070167542,
+   "mu_s_p10": 0.21199999749660492,
+   "mu_s_p90": 0.24799999594688416,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2597876191139221
+  }
+ ],
+ "rollout": {
+  "policy": "checkpoints/velstand_21495/policy.pt",
+  "vx": 0.3,
+  "roll_s": 8.0,
+  "per_mu": [
+   {
+    "mu_set": 0.2,
+    "fallen_frac": 0.1875,
+    "vx_achieved_mean": 0.25175073742866516,
+    "contact_foot_speed_p50": 0.06672529131174088,
+    "p90": 0.23296426236629486,
+    "p99": 0.5754576921463013,
+    "frac_over_0.05": 0.6427109392767796,
+    "frac_over_0.10": 0.3118035023879918,
+    "frac_over_0.20": 0.12235615192176484
+   },
+   {
+    "mu_set": 0.4,
+    "fallen_frac": 0.125,
+    "vx_achieved_mean": 0.283486008644104,
+    "contact_foot_speed_p50": 0.04768854379653931,
+    "p90": 0.12020956724882126,
+    "p99": 0.3251717686653137,
+    "frac_over_0.05": 0.4729241877256318,
+    "frac_over_0.10": 0.14741275571600482,
+    "frac_over_0.20": 0.03449659045326915
+   },
+   {
+    "mu_set": 0.6,
+    "fallen_frac": 0.0625,
+    "vx_achieved_mean": 0.2835407853126526,
+    "contact_foot_speed_p50": 0.05034241825342178,
+    "p90": 0.12134096026420593,
+    "p99": 0.3376302421092987,
+    "frac_over_0.05": 0.5049387593836429,
+    "frac_over_0.10": 0.14697747925721058,
+    "frac_over_0.20": 0.03871987356775978
+   },
+   {
+    "mu_set": 0.8,
+    "fallen_frac": 0.0,
+    "vx_achieved_mean": 0.2897576689720154,
+    "contact_foot_speed_p50": 0.048757489770650864,
+    "p90": 0.11315024644136429,
+    "p99": 0.30840304493904114,
+    "frac_over_0.05": 0.48846802925182825,
+    "frac_over_0.10": 0.13032064504031501,
+    "frac_over_0.20": 0.031126945434089632
+   },
+   {
+    "mu_set": 1.0,
+    "fallen_frac": 0.0625,
+    "vx_achieved_mean": 0.2716592252254486,
+    "contact_foot_speed_p50": 0.04919688031077385,
+    "p90": 0.11826436966657639,
+    "p99": 0.32010406255722046,
+    "frac_over_0.05": 0.49172489885987497,
+    "frac_over_0.10": 0.14361897756528136,
+    "frac_over_0.20": 0.036410445016550205
+   },
+   {
+    "mu_set": 1.2,
+    "fallen_frac": 0.0,
+    "vx_achieved_mean": 0.26786065101623535,
+    "contact_foot_speed_p50": 0.0529341958463192,
+    "p90": 0.12404971569776535,
+    "p99": 0.337052583694458,
+    "frac_over_0.05": 0.5339859623199114,
+    "frac_over_0.10": 0.16143332101957886,
+    "frac_over_0.20": 0.03601773180642778
+   }
+  ]
+ }
+}

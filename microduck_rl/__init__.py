@@ -104,6 +104,19 @@ _register(
     "Microduck-Pick-Flat-HD1910-AllColl", "pick_env_cfg:MicroDuckHD1910PickAllCollEnvCfg", "PickPPORunnerCfg"
 )
 
+_register(
+    "Microduck-VelStand-Flat-HD1910-AllColl-LowMu",
+    "velstand_env_cfg:MicroDuckHD1910VelStandLowMuAllCollEnvCfg",
+    "VelStandLowMuPPORunnerCfg",
+    "VelStandLowMuPPORunnerCfg",
+)
+_register(
+    "Microduck-RunV3-Flat-HD1910-AllColl-LowMu",
+    "velocity_env_cfg:MicroDuckHD1910RunV3LowMuAllCollEnvCfg",
+    "RunV3LowMuPPORunnerCfg",
+    "RunV3LowMuPPORunnerCfg",
+)
+
 TASK_IDS = [
     "Microduck-Velocity-Flat-HD1910",
     "Microduck-Velocity-Rough-HD1910",
@@ -129,4 +142,6 @@ TASK_IDS = [
     "Microduck-RunStandV3-Flat-HD1910-AllColl",
     "Microduck-RunStandV4-Flat-HD1910-AllColl",
     "Microduck-Pick-Flat-HD1910-AllColl",
+    "Microduck-VelStand-Flat-HD1910-AllColl-LowMu",
+    "Microduck-RunV3-Flat-HD1910-AllColl-LowMu",
 ]

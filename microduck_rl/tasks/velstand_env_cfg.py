@@ -25,7 +25,7 @@ from isaaclab.utils.configclass import configclass
 from isaaclab_tasks.contrib.microduck.flat_env_cfg import _schedule
 
 from microduck_rl import mdp
-from microduck_rl.tasks.velocity_env_cfg import MicroDuckHD1910VelocityFlatAllCollV4EnvCfg
+from microduck_rl.tasks.velocity_env_cfg import MicroDuckHD1910VelocityFlatAllCollV4EnvCfg, apply_slippery_floor
 
 VELSTAND_START = 19497
 """Iteration count carried in by the warm start (walk v4's final checkpoint); the ramps below are relative to it.
@@ -90,3 +90,13 @@ class MicroDuckHD1910VelStandAllCollEnvCfg(MicroDuckHD1910VelocityFlatAllCollV4E
         self.events.set_fallen_state.params.update(
             {"standing_prob": 1.0, "sitting_prob": 0.0, "prone_prob": 0.0, "supine_prob": 0.0, "random_prob": 0.0, "bank_prob": 0.0}
         )
+
+
+@configclass
+class MicroDuckHD1910VelStandLowMuAllCollEnvCfg(MicroDuckHD1910VelStandAllCollEnvCfg):
+    """VelStand on a slippery floor: sole friction 0.25-1.2 (effective, per reset) and the thresholded slip cost.
+    Fine-tune target from velstand 21495 with the servo P range of the real robots (kp_scale 1.0-1.6)."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        apply_slippery_floor(self)

@@ -20,3 +20,4 @@ from .roulade import *  # noqa: F401, F403
 from .jump import *  # noqa: F401, F403
 from .standup import *  # noqa: F401, F403
 from .pick import *  # noqa: F401, F403
+from .slip import *  # noqa: F401, F403

@@ -10,6 +10,7 @@ import math
 
 from isaaclab.managers import ObservationTermCfg as ObsTerm
 from isaaclab.managers import CurriculumTermCfg as CurrTerm
+from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils.configclass import configclass
@@ -32,7 +33,7 @@ from microduck_rl.assets import (
     MICRODUCK_HD1910_BACKLASH_CFG,
     MICRODUCK_HD1910_CFG,
 )
-from microduck_rl.dr import apply_replica_dr
+from microduck_rl.dr import FOOT_FRICTION_RANGE_WIDE, apply_replica_dr, apply_wide_foot_friction
 from microduck_rl.realism import apply_servo_realism
 from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
 
@@ -316,3 +317,46 @@ class MicroDuckHD1910SprintMaxAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCf
         self.curriculum.joint_speed_saturation = CurrTerm(
             func=mdp.joint_speed_saturation_frac, params={"asset_cfg": SceneEntityCfg("robot", joint_names=[r"^(?!passive_).*"]), "limit_rad_s": 10.0}
         )
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Slippery floor: soles own the contact friction, drawn wide and per reset, slip charged only past a threshold.
+# ---------------------------------------------------------------------------------------------------------------------
+
+SLIP_THRESHOLD_M_S = 0.20
+"""Contact-foot planar speed above which slip is charged. Measured on the deployed walker at vx 0.3 with the floor
+at 1.0 (no slip possible): ankle-link speed in contact p50 0.045, p90 0.12, p99 0.30 m/s -- the ankle link rolls
+through every step, so a threshold inside that band taxes walking, not sliding."""
+
+SLIP_WEIGHT = -20.0
+"""Squared excess over the threshold, m^2/s^2: a foot sliding at 0.4 m/s costs 0.8 per step-unit against the
+2-4 the tracking terms pay at their peak (reward weights are multiplied by dt alike)."""
+
+
+def apply_slippery_floor(cfg, friction_range=FOOT_FRICTION_RANGE_WIDE) -> None:
+    """Soles own the contact friction (startup event), wide per-reset sole friction, and the thresholded slip cost in
+    place of the always-on one. Measured before this change (``docs/friction/mu_eff_velstand_asis.json``): the floor is authored
+    at 1.0 and the solver takes the MAX of sole and floor, so the official 0.5-1.3 sole draw gave an effective
+    contact friction of 1.0-1.3 and the walker never trained on a slippery floor."""
+    cfg.events.sole_contact_priority = EventTerm(func=mdp.set_sole_contact_priority, mode="startup", params={"priority": 1})
+    apply_wide_foot_friction(cfg, friction_range, per_reset=True)
+    cfg.rewards.foot_slip.weight = 0.0
+    cfg.rewards.foot_slip_excess = RewTerm(
+        func=mdp.foot_slip_over_threshold,
+        weight=SLIP_WEIGHT,
+        params={
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=["ankle_left", "ankle_right"], preserve_order=True),
+            "asset_cfg": SceneEntityCfg("robot", body_names=["ankle_left", "ankle_right"], preserve_order=True),
+            "threshold_m_s": SLIP_THRESHOLD_M_S,
+        },
+    )
+
+
+@configclass
+class MicroDuckHD1910RunV3LowMuAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCfg):
+    """Run v3 on a slippery floor: sole friction 0.25-1.2 (effective, per reset) and the thresholded slip cost.
+    Fine-tune target from run_v3 5999 with the servo P range of the real robots (kp_scale 1.0-1.6)."""
+
+    def __post_init__(self):
+        super().__post_init__()
+        apply_slippery_floor(self)

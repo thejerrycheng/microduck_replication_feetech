@@ -116,3 +116,22 @@ shuffle that never falls, with the stochastic return only drifting 130 -> 123 an
 run recipe's entropy 0.01 / lr 1e-3, inherited from `agent.yaml`, is a training setting, not a fine-tuning one (the
 jump and front-flip fine-tunes ran at 0.001 and improved; the sprint fine-tune at 0.01 lost 0.3 m/s). Any further
 run/sprint fine-tune uses entropy 0.001 / lr 5e-4 (`RunV3LowMuPPORunnerCfg`).
+
+## sprint_max (base 7998 → ft run 2026-11-18_15-14-32, 1000 its at entropy 0.01 / lr 1e-3) — HOLD base
+
+96 envs, vx 1.2, FIXED gains (`docs/gains/sprint_max_ckpts/*_n96.json`):
+
+| ckpt | P | vx mean | p10 | falls |
+|---|---|---|---|---|
+| base 7998 | 5 | 1.133 | 0.720 | 0.000 |
+| base 7998 | 8 | 0.898 | 0.521 | 0.060 |
+| ft 8000 | 5 / 8 | 1.126 / 0.918 | 0.629 / 0.547 | 0.000 / 0.020 |
+| ft 8250 | 5 / 8 | 0.818 / 0.603 | 0.478 / 0.485 | 0.000 / 0.040 |
+| ft 8500 | 5 / 8 | 0.742 / 0.629 | 0.500 / 0.505 | 0.020 / 0.060 |
+| ft 8750 | 5 / 8 | 0.855 / 0.658 | 0.540 / 0.518 | 0.040 / 0.120 |
+| ft 8997 | 5 / 8 | 0.981 / 0.865 | 0.591 / 0.518 | 0.020 / 0.000 |
+
+Verdict: HOLD `sprint_max_7998`. The fine-tune lost 0.15 m/s at P 5 and bought nothing at P 8 (0.90 → 0.87; the fall
+difference is 6 vs 0 episodes of 96). Same entropy-0.01 degradation as run_v3, milder because the sprint's reward is
+dominated by speed. At P 8 the sprint is slower by 0.23 m/s with the base policy -- that is the servo, not the policy,
+until a fine-tune at entropy 0.001 says otherwise.

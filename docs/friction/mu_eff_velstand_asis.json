@@ -1,0 +1,163 @@
+{
+ "task": "Microduck-VelStand-Flat-HD1910-AllColl",
+ "num_envs": 96,
+ "mus": [
+  0.2,
+  0.4,
+  0.6,
+  0.8,
+  1.0,
+  1.2
+ ],
+ "overrides": [
+  "presets=backlash"
+ ],
+ "solver_geoms": [
+  {
+   "geom": 0,
+   "shape": 0,
+   "key": "/World/ground/terrain/GroundPlane/CollisionPlane",
+   "sole": false,
+   "ground": true,
+   "priority": 0,
+   "geom_friction_w0_w1_wlast": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "geom": 4,
+   "shape": 52,
+   "key": "/World/envs/env_0/Robot/Geometry/trunk_base/bearing_roll/hip_l_2/upper_leg_right/leg_2/ankle_right/right_foot_collision/sole_right",
+   "sole": true,
+   "ground": false,
+   "priority": 0,
+   "geom_friction_w0_w1_wlast": [
+    0.20000000298023224,
+    0.20000000298023224,
+    1.2000000476837158
+   ]
+  },
+  {
+   "geom": 10,
+   "shape": 2,
+   "key": "/World/envs/env_0/Robot/Geometry/trunk_base/yaw2roll/hip_l/upper_leg_left/leg/ankle_left/left_foot_collision/sole_left",
+   "sole": true,
+   "ground": false,
+   "priority": 0,
+   "geom_friction_w0_w1_wlast": [
+    0.20000000298023224,
+    0.20000000298023224,
+    1.2000000476837158
+   ]
+  }
+ ],
+ "resolved_contacts": [
+  {
+   "mu_set": 0.2,
+   "n_contacts": 34,
+   "contact_friction_median": 1.0,
+   "contact_friction_min": 1.0,
+   "contact_friction_max": 1.0
+  },
+  {
+   "mu_set": 0.4,
+   "n_contacts": 34,
+   "contact_friction_median": 1.0,
+   "contact_friction_min": 1.0,
+   "contact_friction_max": 1.0
+  },
+  {
+   "mu_set": 0.6,
+   "n_contacts": 48,
+   "contact_friction_median": 1.0,
+   "contact_friction_min": 1.0,
+   "contact_friction_max": 1.0
+  },
+  {
+   "mu_set": 0.8,
+   "n_contacts": 40,
+   "contact_friction_median": 1.0,
+   "contact_friction_min": 1.0,
+   "contact_friction_max": 1.0
+  },
+  {
+   "mu_set": 1.0,
+   "n_contacts": 35,
+   "contact_friction_median": 1.0,
+   "contact_friction_min": 1.0,
+   "contact_friction_max": 1.0
+  },
+  {
+   "mu_set": 1.2,
+   "n_contacts": 43,
+   "contact_friction_median": 1.2000000476837158,
+   "contact_friction_min": 1.2000000476837158,
+   "contact_friction_max": 1.2000000476837158
+  }
+ ],
+ "normal_load_N_median": 7.763082027435303,
+ "ramp": [
+  {
+   "mu_set": 0.2,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.2160000056028366,
+   "mu_s_p10": 0.21199999749660492,
+   "mu_s_p90": 0.2240000069141388,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.26444268226623535
+  },
+  {
+   "mu_set": 0.4,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.2199999839067459,
+   "mu_s_p10": 0.21599999070167542,
+   "mu_s_p90": 0.2240000069141388,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2731085419654846
+  },
+  {
+   "mu_set": 0.6,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.2199999988079071,
+   "mu_s_p10": 0.2120000123977661,
+   "mu_s_p90": 0.25,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2811741828918457
+  },
+  {
+   "mu_set": 0.8,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.2199999988079071,
+   "mu_s_p10": 0.21399998664855957,
+   "mu_s_p90": 0.25199997425079346,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2822735905647278
+  },
+  {
+   "mu_set": 1.0,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.2199999988079071,
+   "mu_s_p10": 0.21599999070167542,
+   "mu_s_p90": 0.22999998927116394,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2642401456832886
+  },
+  {
+   "mu_set": 1.2,
+   "n": 16,
+   "slid_frac": 1.0,
+   "mu_s_median": 0.21599999070167542,
+   "mu_s_p10": 0.20800000429153442,
+   "mu_s_p90": 0.22200000286102295,
+   "upright_at_onset_frac": 1.0,
+   "max_tangential_ratio_median": 0.2777087688446045
+  }
+ ]
+}
