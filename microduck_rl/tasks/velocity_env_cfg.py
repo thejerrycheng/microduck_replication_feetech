@@ -339,11 +339,14 @@ SLIP_WEIGHT = -20.0
 
 
 def apply_slippery_floor(cfg) -> None:
-    """The thresholded slip cost in place of the always-on one, for the locomotion tasks. The sole friction itself
+    """Slip minimised while walking: the always-on slip cost at -1.0 plus the thresholded cost, for the locomotion tasks. The sole friction itself
     (priority over the floor, 0.25-1.2 per sole per reset) is applied to EVERY task by ``apply_replica_dr``; measured
     before (``docs/friction/mu_eff_velstand_asis.json``) the floor at 1.0 and the solver's max rule meant no policy
     ever trained on a contact below 1.0."""
-    cfg.rewards.foot_slip.weight = 0.0
+    # user 2026-11-19: "when walking it should minimize the slip" -- the always-on cost stays (10x the official weight;
+    # measured at 0.05 m/s median ankle speed in contact it taxes walking by ~0.005 per step-unit against 2-4 of
+    # tracking) and the thresholded cost adds the real bite once a foot slides past 0.2 m/s
+    cfg.rewards.foot_slip.weight = -1.0
     cfg.rewards.foot_slip_excess = RewTerm(
         func=mdp.foot_slip_over_threshold,
         weight=SLIP_WEIGHT,

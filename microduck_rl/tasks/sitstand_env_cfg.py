@@ -57,7 +57,7 @@ from microduck_rl.assets import (
 )
 from microduck_rl.realism import apply_servo_realism, coerce_override_ranges
 from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
-from microduck_rl.dr import FOOT_FRICTION_RANGE_WIDE, HEAD_COM_STAGES_M, MASS_SCALE_RANGE, TRUNK_MASS_SCALE_RANGE, TRUNK_COM_STAGES_M
+from microduck_rl.dr import FOOT_FRICTION_PATCH_INTERVAL_S, FOOT_FRICTION_RANGE_WIDE, HEAD_COM_STAGES_M, MASS_SCALE_RANGE, TRUNK_MASS_SCALE_RANGE, TRUNK_COM_STAGES_M
 
 # ── Keyframes (upstream, stability-verified 2026-07-27; verify TILT in sim before changing) ──
 SITTING_TARGET_OVERRIDES: dict[str, float] = {
@@ -259,6 +259,18 @@ class EventsCfg:
     foot_friction = EventTerm(
         func=mdp.randomize_rigid_body_material,
         mode="reset",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=MICRODUCK_FOOT_BODY_NAMES),
+            "static_friction_range": FOOT_FRICTION_RANGE_WIDE,
+            "dynamic_friction_range": FOOT_FRICTION_RANGE_WIDE,
+            "restitution_range": (0.0, 0.0),
+            "num_buckets": 64,
+        },
+    )
+    foot_friction_patch = EventTerm(
+        func=mdp.randomize_rigid_body_material,
+        mode="interval",
+        interval_range_s=FOOT_FRICTION_PATCH_INTERVAL_S,
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=MICRODUCK_FOOT_BODY_NAMES),
             "static_friction_range": FOOT_FRICTION_RANGE_WIDE,

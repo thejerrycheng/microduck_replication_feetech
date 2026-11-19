@@ -84,15 +84,27 @@ def apply_replica_dr(cfg, first_stage_iteration: int = 500, stage_spacing: int =
     )
 
 
-FOOT_FRICTION_RANGE_WIDE: tuple[float, float] = (0.25, 1.20)
+FOOT_FRICTION_RANGE_WIDE: tuple[float, float] = (0.15, 1.20)
 """Sole friction for slippery-floor training. Only meaningful with sole priority over the floor
 (:func:`microduck_rl.mdp.set_sole_contact_priority`): without it the contact takes the floor's 1.0 whenever the
 sole draws below 1.0, measured in ``docs/friction/mu_eff_velstand_asis.json``."""
 
 
-def apply_wide_foot_friction(cfg, friction_range: tuple[float, float] = FOOT_FRICTION_RANGE_WIDE, per_reset: bool = True) -> None:
-    """Draw the sole friction from ``friction_range`` for every sole shape, re-drawn at every reset when ``per_reset``."""
+FOOT_FRICTION_PATCH_INTERVAL_S: tuple[float, float] = (2.0, 6.0)
+"""Seconds between mid-episode redraws of a sole's friction (a slippery patch, a wet spot, dust on the sole)."""
+
+
+def apply_wide_foot_friction(cfg, friction_range: tuple[float, float] = FOOT_FRICTION_RANGE_WIDE, per_reset: bool = True, patches: bool = True) -> None:
+    """Draw the sole friction from ``friction_range`` for every sole shape (left and right independently), re-drawn at
+    every reset when ``per_reset`` and again every 2-6 s inside the episode when ``patches``."""
     cfg.events.foot_friction.params["static_friction_range"] = friction_range
     cfg.events.foot_friction.params["dynamic_friction_range"] = friction_range
     if per_reset:
         cfg.events.foot_friction.mode = "reset"
+    if patches:
+        cfg.events.foot_friction_patch = EventTerm(
+            func=cfg.events.foot_friction.func,
+            mode="interval",
+            interval_range_s=FOOT_FRICTION_PATCH_INTERVAL_S,
+            params=dict(cfg.events.foot_friction.params),
+        )
