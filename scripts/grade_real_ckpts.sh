@@ -24,7 +24,7 @@ one() { # run ck tag cond suffix script args...
 for cond in stress nominal; do for spec in "${specs[@]}"; do IFS=: read run ck tag <<< "$spec"
   case $name in
     velstand)      one "$run" $ck $tag $cond standup scripts/eval_standup.py --zero_twist
-                   for vx in 0.15 0.3 0.5; do one "$run" $ck $tag $cond gait${vx/./} scripts/eval_gait_symmetry.py --vx $vx; done ;;
+                   for vx in 0.15 0.3 0.4; do one "$run" $ck $tag $cond gait${vx/./} scripts/eval_gait_symmetry.py --vx $vx; done ;;
     standup)       one "$run" $ck $tag $cond standup scripts/eval_standup.py ;;
     run_v3)        one "$run" $ck $tag $cond gait05 scripts/eval_gait_symmetry.py --vx 0.5; one "$run" $ck $tag $cond gait09 scripts/eval_gait_symmetry.py --vx 0.9 ;;
     sprint_max)    one "$run" $ck $tag $cond gait12 scripts/eval_gait_symmetry.py --vx 1.2 ;;

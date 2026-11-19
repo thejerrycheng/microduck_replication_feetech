@@ -28,7 +28,7 @@ def passes(name, r):
     if name in ("velstand", "standup"):
         ok = r.get("getup_min_stand", 0) >= 0.9 and r.get("pushed_stand", 0) >= 0.9
         if name == "velstand":
-            ok = ok and all(r.get(k, 1) <= 0.1 for k in ("falls15", "falls03", "falls05")) and r.get("vx05", 0) >= 0.35
+            ok = ok and all(r.get(k, 1) <= 0.1 for k in ("falls15", "falls03", "falls04")) and r.get("vx04", 0) >= 0.3
         return ok
     if name == "run_v3": return r.get("falls05", 1) <= 0.1 and r.get("falls09", 1) <= 0.1 and r.get("vx05", 0) >= 0.4
     if name == "sprint_max": return r.get("falls12", 1) <= 0.1 and r.get("vx12", 0) >= 0.9

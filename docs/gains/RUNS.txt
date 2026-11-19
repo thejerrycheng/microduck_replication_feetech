@@ -1,3 +1,5 @@
 velstand /home/jerrycheng/microduck/logs/rsl_rl/microduck_velstand_allcoll_hd1910_backlash/2026-11-17_18-13-49 22494
 jump /home/jerrycheng/microduck/logs/rsl_rl/microduck_jump_flat_hd1910_backlash/2026-11-17_22-34-52 2499
 roulade_head /home/jerrycheng/microduck/logs/rsl_rl/microduck_roulade_head_flat_hd1910_backlash/2026-11-18_06-33-23 7999
+sprint_max /home/jerrycheng/microduck/logs/rsl_rl/microduck_sprint_max_allcoll_hd1910_backlash/2026-11-18_15-14-32 8997
+run_v3 /home/jerrycheng/microduck/logs/rsl_rl/microduck_run_flat_allcoll_mirror_hd1910_backlash/2026-11-18_19-14-05 6998

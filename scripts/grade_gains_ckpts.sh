@@ -4,7 +4,7 @@
 set -u
 name=$1; cd /home/jerrycheng/microduck
 declare -A TASK=( [run_v3]=Microduck-RunV3-Flat-HD1910-AllColl [sprint_max]=Microduck-SprintMax-Flat-HD1910-AllColl [sitstand_fast]=Microduck-SitStandFast-Flat-HD1910 [standup]=Microduck-StandUp-Flat-HD1910 [roulade_head]=Microduck-RouladeHead-Flat-HD1910 [jump]=Microduck-Jump-Flat-HD1910 )
-declare -A DIR=( [run_v3]=run_v3_allcoll_5999 [sprint_max]=sprint_max_allcoll_7998 [sitstand_fast]=sitstand_fast_5499 [standup]=standup_9999 [roulade_head]=roulade_head_7000 [jump]=jump_1500 )
+declare -A DIR=( [run_v3]=run_v3_5999 [sprint_max]=sprint_max_7998 [sitstand_fast]=sitstand_fast_5499 [standup]=standup_9999 [roulade_head]=roulade_head_7000 [jump]=jump_1500 )
 declare -A CK=( [run_v3]=5999 [sprint_max]=7998 [sitstand_fast]=5499 [standup]=9999 [roulade_head]=7000 [jump]=1500 )
 T=${TASK[$name]}; B=$(readlink -f checkpoints/${DIR[$name]}); R=$(awk -v n="$name" '$1==n{print $2}' docs/gains/RUNS.txt | tail -1)
 [ -n "$R" ] || { echo "no run for $name in RUNS.txt"; exit 1; }
