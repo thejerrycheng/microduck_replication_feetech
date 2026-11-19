@@ -1,0 +1,21 @@
+{
+ "checkpoint": "/home/jerrycheng/microduck/checkpoints/jump_kp58_2250/model_2250.pt",
+ "num_envs": 96,
+ "valid_takeoff_rate": 0.74,
+ "rise_mm": {
+  "min": 0.0,
+  "median": 22.7,
+  "p90": 27.8,
+  "max": 31.7
+ },
+ "airtime_ms_median": 100.0,
+ "stable_landing_rate": 0.552,
+ "durable_rate": 0.417,
+ "failed_rate": 0.0,
+ "body_contact_rate": 0.062,
+ "terminated_early_rate": 0.531,
+ "peak_foot_force_N": {
+  "median": 35.5,
+  "max": 68.7
+ }
+}

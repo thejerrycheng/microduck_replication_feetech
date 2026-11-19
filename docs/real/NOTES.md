@@ -29,3 +29,29 @@ Smoke, current walker `velstand_21495`, vx 0.3, 32 envs under the full STRESS co
 Chain `scripts/train_real.sh` (unit `microduck-real`): velstand, standup, run_v3, sitstand_fast, jump, roulade_head,
 sprint_max, 2000 iterations each from the current picks, entropy 0.001; graded at 96 envs under NOMINAL (P 5,
 7.6-7.8 V, friction 1.0, 50 Hz) and STRESS before and after, `docs/real/<name>_{base,ft}_{nominal,stress}_*.json`.
+
+## Baselines: the current picks under the new env (96 envs, 2026-11-19 01:30-01:50)
+
+NOMINAL = P 5, 7.6-7.8 V, sole friction 1.0, 50 Hz; STRESS = P 8, 6.4 V, sole friction 0.3, 25 Hz. Everything else
+(delays 15-40 ms, trunk mass x0.9-1.6, speed quantisation, servo friction x0.8-1.5) is randomised in both.
+`docs/real/<policy>_base_{nominal,stress}_*.json`.
+
+| policy (pick) | metric | nominal | stress |
+|---|---|---|---|
+| velstand_21495, walk 0.3 m/s | vx achieved / fallen | 0.262 / 0.04 | 0.049 / 0.98 |
+| velstand_21495, get-up (prone, supine, side, random, bank, sitting) | standing at end | 0.97-1.00 | 0.65-0.82 |
+| velstand_21495, get-up | re-fell after standing | 0.07-0.21 | 0.69-0.82 |
+| velstand_21495, pushed stand (1 m/s every 1.5 s) | standing at end | 0.94 | 0.52 |
+| standup_9999, get-up (six families) | standing at end / re-fell | 1.00 / 0.00-0.03 | 0.75-0.91 / 0.48-0.69 |
+| standup_9999, pushed stand | standing at end | 0.92 | 0.48 |
+| run_v3_5999, 0.5 / 0.9 m/s | vx achieved | 0.43 / 0.64 (no falls) | 0.10 / 0.08 (falls 0.44 / 0.12) |
+| sprint_max_7998, 1.2 m/s | vx achieved / fallen | 1.03 / 0.02 | 0.35 / 0.02 |
+| sitstand_fast_5499 | standing / seated-upright at the end | 0.58 / 0.40 (head up 0.98) | 0.14 / 0.50 (head up 0.64, trunk 0.063 m) |
+| jump_kp58_2250 | valid take-off / stable landing / durable | 0.74 / 0.55 / 0.42 | 0.00 / 0.00 / 0.00 |
+| roulade_head_kp58_7999 | complete+standing / standing at end | 0.75 / 0.80 | 0.26 / 0.33 (tilt 60 deg) |
+
+Reading: under stress every policy still starts the motion (get-ups succeed, the roll completes half the time) and
+then cannot hold the result: re-falls 0.5-0.8, pushed stands halve, the sit-stand parks the trunk at 0.063 m, the
+jump never leaves the ground. That is the "lying still / falling again" behaviour the duck showed. The nominal
+numbers are themselves below the old fixed-condition grades (jump landing 0.55 vs 0.96 at P 5) because the delay,
+trunk-mass and speed-quantisation ranges now apply at nominal too.
