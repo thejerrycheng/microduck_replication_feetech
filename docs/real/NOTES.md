@@ -55,3 +55,19 @@ then cannot hold the result: re-falls 0.5-0.8, pushed stands halve, the sit-stan
 jump never leaves the ground. That is the "lying still / falling again" behaviour the duck showed. The nominal
 numbers are themselves below the old fixed-condition grades (jump landing 0.55 vs 0.96 at P 5) because the delay,
 trunk-mass and speed-quantisation ranges now apply at nominal too.
+
+## Running the real-duck fine-tunes on another machine (e.g. a single 4090)
+
+```
+git clone git@github.com:thejerrycheng/microduck_replication_feetech.git && cd microduck_replication_feetech
+# set up external/IsaacLab as in README.md, then:
+POLICIES="velstand standup" scripts/train_real.sh          # 4096 envs by default; NUM_ENVS, REAL_ITERS, MIN_GPU_FREE_MB override
+scripts/grade_real_ckpts.sh velstand                         # base + every checkpoint, nominal and stress, 96 envs
+python3 scripts/sr_real.py velstand                          # PASS/fail against the 90 % target
+```
+
+The warm-start checkpoints (`checkpoints/<pick>/model_N.pt`) and their `exported_model_N/` policies are in the repo.
+On a free 24 GB card set `MIN_GPU_FREE_MB=7500` (default) and the default 4096 envs; the runs on this machine at
+2048 envs / 3000 iterations (started 2026-11-19 07:52 and 08:55) exist only because the GPU was shared.
+Pass target (`scripts/sr_real.py`): get-up standing at end >= 0.90 in every family and under 1 m/s shoves, walking
+falls <= 0.10 at 0.15/0.3/0.4 m/s, under NOMINAL and STRESS.

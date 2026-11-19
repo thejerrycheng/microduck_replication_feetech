@@ -1,0 +1,50 @@
+{
+  "checkpoint_policy": "/home/jerrycheng/microduck/checkpoints/run_v3_5999/exported_model_5999/policy.pt",
+  "vx_cmd": 0.5,
+  "vx_achieved_mean": 0.5800455808639526,
+  "vx_achieved_p10": 0.5471400618553162,
+  "fallen_frac": 0.0,
+  "air_time_s": {
+    "left": 0.11170604825019836,
+    "right": 0.11658976972103119
+  },
+  "contact_time_s": {
+    "left": 0.11598990112543106,
+    "right": 0.1155887097120285
+  },
+  "steps_per_episode": {
+    "left": 25.31999969482422,
+    "right": 26.34000015258789
+  },
+  "stride_length": {
+    "left": {
+      "mean_m": 0.22589510679244995,
+      "std_m": 0.08875882625579834,
+      "cv": 0.39292052388191223
+    },
+    "right": {
+      "mean_m": 0.21962380409240723,
+      "std_m": 0.09595809131860733,
+      "cv": 0.43692025542259216
+    }
+  },
+  "joint_amplitude_rad": {
+    "left": {
+      "hip_pitch": 1.487,
+      "knee": 1.585,
+      "ankle": 1.27
+    },
+    "right": {
+      "hip_pitch": 1.518,
+      "knee": 1.58,
+      "ankle": 1.221
+    }
+  },
+  "ratios_left_over_right": {
+    "air_time": 0.9581119211186514,
+    "contact_time": 1.0034708529440468,
+    "steps": 0.9612756092689901,
+    "knee_amplitude": 1.002745103126725,
+    "stride_length": 1.0285547494542262
+  }
+}
