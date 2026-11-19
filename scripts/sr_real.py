@@ -16,7 +16,7 @@ for f in sorted(glob.glob(f"{d}/*.json")):
         r["getup_max_refall"] = max(v["fell_after_standing"] for k, v in fam.items() if k != "standing_pushed")
         r["pushed_stand"] = fam.get("standing_pushed", {}).get("standing_at_end")
     elif "vx_achieved_mean" in s:
-        r[f"vx{suffix[-2:]}"] = s["vx_achieved_mean"]; r[f"falls{suffix[-2:]}"] = s["fallen_frac"]
+        sp = suffix.replace("gait", ""); r[f"vx{sp}"] = s["vx_achieved_mean"]; r[f"falls{sp}"] = s["fallen_frac"]
     elif "completed_and_standing_frac" in s:
         r["flip_ok"] = s["completed_and_standing_frac"]; r["flip_stand"] = s["final_standing_frac"]
     elif "stable_landing_rate" in s:
@@ -27,7 +27,8 @@ for f in sorted(glob.glob(f"{d}/*.json")):
 def passes(name, r):
     if name in ("velstand", "standup"):
         ok = r.get("getup_min_stand", 0) >= 0.9 and r.get("pushed_stand", 0) >= 0.9
-        if name == "velstand": ok = ok and r.get("falls03", 1) <= 0.1
+        if name == "velstand":
+            ok = ok and all(r.get(k, 1) <= 0.1 for k in ("falls15", "falls03", "falls05")) and r.get("vx05", 0) >= 0.35
         return ok
     if name == "run_v3": return r.get("falls05", 1) <= 0.1 and r.get("falls09", 1) <= 0.1 and r.get("vx05", 0) >= 0.4
     if name == "sprint_max": return r.get("falls12", 1) <= 0.1 and r.get("vx12", 0) >= 0.9
