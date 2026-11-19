@@ -69,8 +69,11 @@ class dropout_obs(ManagerTermBase):
         if hasattr(self._func, "reset"):
             self._func.reset(env_ids)
 
-    def __call__(self, env: ManagerBasedRLEnv, func, params: dict, dropout_prob: float) -> torch.Tensor:
+    def __call__(self, env: ManagerBasedRLEnv, func, params: dict, dropout_prob: float, quantization: float = 0.0) -> torch.Tensor:
         reading = self._func(env, **params)
+        if quantization > 0.0:
+            # the servo reports speed in whole counts (HD1910: 1 count = 50 ticks/s = 0.077 rad/s, measured 2026-11-18)
+            reading = torch.round(reading / quantization) * quantization
         if self._last is None or dropout_prob <= 0.0:
             self._last = reading.clone()
             self._pending_reset.fill_(False)
@@ -84,7 +87,17 @@ class dropout_obs(ManagerTermBase):
 
 
 class DropoutJointPositionAction(BiasedJointPositionAction):
-    """Encoder-bias-compensating joint position action whose bus write fails with probability ``dropout_prob``."""
+    """Encoder-bias-compensating joint position action whose bus write fails with probability ``dropout_prob``, run
+    at a per-environment CONTROL PERIOD drawn from ``control_period_range_ms`` at every reset.
+
+    The simulator steps the policy every 20 ms. The real loop ran at 20.2-20.6 ms cool, 21.7 ms hot and 30-38 ms once
+    the board throttled (measured 2026-11-18), and the stand-up never succeeded at 26.5 Hz. A slower loop is emulated
+    by TICKS: a per-environment phase accumulates 20 ms per step and the policy's output is taken only on steps where
+    it reaches the environment's period (the carry keeps the mean period exact, e.g. 30 ms = ticks at 40, 60, 100...);
+    on the other steps the previous raw action is kept, written back into the action manager's buffer so the
+    policy's own ``last_action`` observation and the action-rate cost see the held action, exactly as the real
+    policy, which simply is not called between its ticks, does.
+    """
 
     cfg: DropoutJointPositionActionCfg
 
@@ -92,10 +105,37 @@ class DropoutJointPositionAction(BiasedJointPositionAction):
         super().__init__(cfg, env)
         self._last_target = torch.zeros(self.num_envs, self.action_dim, device=self.device)
         self._has_target = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._period_ms = torch.full((self.num_envs,), float(env.step_dt * 1000.0), device=self.device)
+        self._phase_ms = torch.zeros(self.num_envs, device=self.device)
+        self._held_raw = torch.zeros(self.num_envs, self.action_dim, device=self.device)
+        self._has_held = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._step_ms = float(env.step_dt * 1000.0)
 
     def reset(self, env_ids: Sequence[int] | None = None) -> None:
         super().reset(env_ids)
-        self._has_target[slice(None) if env_ids is None else env_ids] = False
+        ids = slice(None) if env_ids is None else env_ids
+        self._has_target[ids] = False
+        self._has_held[ids] = False
+        self._phase_ms[ids] = 0.0
+        if self.cfg.control_period_range_ms is not None:
+            lo, hi = self.cfg.control_period_range_ms
+            n = len(range(self.num_envs)[ids]) if (env_ids is None or isinstance(env_ids, slice)) else len(env_ids)
+            self._period_ms[ids] = torch.empty(n, device=self.device).uniform_(float(lo), float(hi))
+
+    def process_actions(self, actions: torch.Tensor):
+        if self.cfg.control_period_range_ms is not None:
+            self._phase_ms += self._step_ms
+            tick = (self._phase_ms >= self._period_ms - 1e-3) | ~self._has_held
+            self._phase_ms = torch.where(tick, (self._phase_ms - self._period_ms).clamp_min(0.0), self._phase_ms)
+            held = ~tick
+            if held.any():
+                actions = torch.where(held.unsqueeze(-1), self._held_raw, actions)
+                manager = self._env.action_manager
+                if manager.total_action_dim == self.action_dim:
+                    manager._action[held] = actions[held]
+            self._held_raw = actions.clone()
+            self._has_held[:] = True
+        super().process_actions(actions)
 
     def apply_actions(self):
         target = self.processed_actions - self.encoder_bias
@@ -114,6 +154,9 @@ class DropoutJointPositionActionCfg(BiasedJointPositionActionCfg):
     class_type: type[DropoutJointPositionAction] = DropoutJointPositionAction
     dropout_prob: float = 0.0
     """Probability per environment and control step that the servos keep their previous target."""
+
+    control_period_range_ms: tuple[float, float] | None = None
+    """Per-environment control period [ms], drawn at reset; None runs the policy every simulator step (20 ms)."""
 
 
 def randomize_bam_per_joint(

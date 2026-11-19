@@ -80,9 +80,9 @@ FEETECH_MAX_PWM = 0.97
 HD1910_KP_FW = 5.0
 """Firmware P gain used by every HD1910 replica training setup (LuwuDynamics, Ley-WL, kissqy)."""
 
-HD1910_VIN_RANGE = (7.4, 8.0)
+HD1910_VIN_RANGE = (6.4, 8.2)  # measured 2026-11-18: 7.6-7.8 V at rest, 6.5-7.2 V with the legs pushing (was 7.4-8.0)
 HD1910_VIN_DROP_GAIN_RANGE = (0.0, 0.2)
-HD1910_VIN_MIN = 7.0
+HD1910_VIN_MIN = 6.2  # the sag floor sits under the lowest reading, 6.5 V (was 7.0)
 """Supply ranges from kissqy's training configs (2S Li-ion pack; ``vin_min`` 7.0 V, Ley-WL uses 4.0 V)."""
 
 HD1910_MOTOR_CFG = BamMotorCfg(
@@ -116,7 +116,7 @@ HD1910_SERVO_CFG = BamActuatorCfg(
     vin_drop_gain_range=HD1910_VIN_DROP_GAIN_RANGE,
     vin_min=HD1910_VIN_MIN,
     min_delay=3,
-    max_delay=6,
+    max_delay=8,  # 15-40 ms: compute+bus measured 10-14 ms plus one late tick (was 6)
     armature=HD1910_BAM_FIT["armature"],
 )
 """All 14 HD1910 servos: Feetech firmware P control, battery sag, 3--6 physics-step command delay."""
@@ -139,7 +139,7 @@ def with_hd1910_servos(cfg: ArticulationCfg) -> ArticulationCfg:
         vin_drop_gain_range=HD1910_VIN_DROP_GAIN_RANGE,
         vin_min=HD1910_VIN_MIN,
         min_delay=3,
-        max_delay=6,
+        max_delay=8,  # 15-40 ms: compute+bus measured 10-14 ms plus one late tick (was 6)
         armature=HD1910_BAM_FIT["armature"],
     )
     return cfg

@@ -18,12 +18,19 @@ task uses (widening every 500 iterations), only ending wider.
 
 from __future__ import annotations
 
+from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import SceneEntityCfg
 
-from isaaclab_tasks.contrib.microduck.flat_env_cfg import _schedule
+from isaaclab_tasks.contrib.microduck.flat_env_cfg import _TRUNK_BODY_CFG, _schedule
+
+from microduck_rl import mdp
 
 MASS_SCALE_RANGE: tuple[float, float] = (0.90, 1.25)
-"""Per-body mass multiplier, every body, sampled once per environment at start-up (official: trunk 0.95--1.05)."""
+"""Per-body mass multiplier, every body but the trunk, sampled once per environment at start-up (official: trunk 0.95--1.05)."""
+
+TRUNK_MASS_SCALE_RANGE: tuple[float, float] = (0.90, 1.60)
+"""Trunk mass multiplier (179--318 g for the 199 g trunk): the real battery, board, HAT and wiring are heavier than the
+modelled ones and have not been weighed (2026-11-18). Narrow it once the duck is on a scale."""
 
 TRUNK_COM_STAGES_M: tuple[float, ...] = (0.005, 0.010, 0.015, 0.025)
 """Trunk CoM offset half-ranges reached at 500, 1000, 1500 and 2000 iterations (official ends at 0.015)."""
@@ -32,7 +39,8 @@ HEAD_COM_STAGES_M: tuple[float, ...] = (0.005, 0.010, 0.015)
 """Head-assembly CoM offset half-ranges reached at 500, 1000 and 1500 iterations (official ends at 0.010)."""
 
 FOOT_FRICTION_RANGE: tuple[float, float] = (0.5, 1.3)
-"""Sole friction multiplier (official 0.7--1.3); printed TPU soles on a replica vary more at the low end."""
+"""Superseded by :data:`FOOT_FRICTION_RANGE_WIDE` (2026-11-19); kept for the record of what the first policies drew
+(which, with the floor at 1.0 and no sole priority, never produced a contact below 1.0)."""
 
 
 def _com_dict(half_range: float) -> dict[str, tuple[float, float]]:
@@ -48,10 +56,18 @@ def apply_replica_dr(cfg, first_stage_iteration: int = 500, stage_spacing: int =
         first_stage_iteration: Iteration at which the first CoM stage starts (flat: 500, rough: 1000).
         stage_spacing: Iterations between CoM stages.
     """
-    cfg.events.mass_inertia.params["asset_cfg"] = SceneEntityCfg("robot", body_names=[".*"])
+    trunk = _TRUNK_BODY_CFG.body_names if isinstance(_TRUNK_BODY_CFG.body_names, list) else [_TRUNK_BODY_CFG.body_names]
+    cfg.events.mass_inertia.params["asset_cfg"] = SceneEntityCfg("robot", body_names=[rf"^(?!{'|'.join(trunk)}$).*"])
     cfg.events.mass_inertia.params["mass_distribution_params"] = MASS_SCALE_RANGE
-    cfg.events.foot_friction.params["static_friction_range"] = FOOT_FRICTION_RANGE
-    cfg.events.foot_friction.params["dynamic_friction_range"] = FOOT_FRICTION_RANGE
+    cfg.events.battery_mass = EventTerm(
+        func=mdp.randomize_rigid_body_mass,
+        mode="startup",
+        params={"asset_cfg": SceneEntityCfg("robot", body_names=trunk), "mass_distribution_params": TRUNK_MASS_SCALE_RANGE, "operation": "scale", "recompute_inertia": True},
+    )
+    # the soles own the contact friction (the floor is authored at 1.0 and the solver takes the max otherwise) and
+    # draw it wide, per sole, at every reset: docs/friction/NOTES.md
+    cfg.events.sole_contact_priority = EventTerm(func=mdp.set_sole_contact_priority, mode="startup", params={"priority": 1})
+    apply_wide_foot_friction(cfg, FOOT_FRICTION_RANGE_WIDE, per_reset=True)
     cfg.curriculum.com_range = _schedule(
         "events.randomize_com.params.com_range",
         *[

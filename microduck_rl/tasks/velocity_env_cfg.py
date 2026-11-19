@@ -33,8 +33,8 @@ from microduck_rl.assets import (
     MICRODUCK_HD1910_BACKLASH_CFG,
     MICRODUCK_HD1910_CFG,
 )
-from microduck_rl.dr import FOOT_FRICTION_RANGE_WIDE, apply_replica_dr, apply_wide_foot_friction
-from microduck_rl.realism import apply_servo_realism
+from microduck_rl.dr import apply_replica_dr
+from microduck_rl.realism import apply_servo_realism, coerce_override_ranges
 from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
 
 _ROBOT_PRESET = dict(
@@ -73,6 +73,7 @@ class MicroDuckHD1910VelocityFlatEnvCfg(MicroDuckVelocityFlatEnvCfg):
 
     def play_mode(self):
         super().play_mode()
+        coerce_override_ranges(self)
         self.sim.visualizer_cfgs = play_visualizer_cfg()
 
 
@@ -90,6 +91,7 @@ class MicroDuckHD1910VelocityRoughEnvCfg(MicroDuckVelocityRoughEnvCfg):
 
     def play_mode(self):
         super().play_mode()
+        coerce_override_ranges(self)
         self.sim.visualizer_cfgs = play_visualizer_cfg()
 
 
@@ -198,6 +200,7 @@ class MicroDuckHD1910RunV3FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatAllCollEnvCf
 
     def __post_init__(self):
         super().__post_init__()
+        apply_slippery_floor(self)  # slip charged only above 0.2 m/s (the sprint inherits it)
         self.commands.base_velocity.ranges.lin_vel_x = (0.20, 0.70)
         self.curriculum.speed_range = _schedule(
             "commands.base_velocity.ranges.lin_vel_x", (3000 + 500, (0.2, 0.9)), (3000 + 1000, (0.2, 1.2))
@@ -215,6 +218,7 @@ class MicroDuckHD1910RunV3FlatAllCollEnvCfg(MicroDuckHD1910RunV2FlatAllCollEnvCf
     def play_mode(self):
         """The base play mode removes the push event; drop the schedule that addresses it or play crashes."""
         super().play_mode()
+        coerce_override_ranges(self)
         self.curriculum.push_magnitude = None
 
 
@@ -249,6 +253,7 @@ class MicroDuckHD1910VelocityFlatAllCollV3EnvCfg(MicroDuckHD1910VelocityFlatAllC
     def play_mode(self):
         """The base play mode removes the push event; drop the schedule that addresses it or play crashes."""
         super().play_mode()
+        coerce_override_ranges(self)
         self.curriculum.push_magnitude = None
 
 
@@ -333,13 +338,11 @@ SLIP_WEIGHT = -20.0
 2-4 the tracking terms pay at their peak (reward weights are multiplied by dt alike)."""
 
 
-def apply_slippery_floor(cfg, friction_range=FOOT_FRICTION_RANGE_WIDE) -> None:
-    """Soles own the contact friction (startup event), wide per-reset sole friction, and the thresholded slip cost in
-    place of the always-on one. Measured before this change (``docs/friction/mu_eff_velstand_asis.json``): the floor is authored
-    at 1.0 and the solver takes the MAX of sole and floor, so the official 0.5-1.3 sole draw gave an effective
-    contact friction of 1.0-1.3 and the walker never trained on a slippery floor."""
-    cfg.events.sole_contact_priority = EventTerm(func=mdp.set_sole_contact_priority, mode="startup", params={"priority": 1})
-    apply_wide_foot_friction(cfg, friction_range, per_reset=True)
+def apply_slippery_floor(cfg) -> None:
+    """The thresholded slip cost in place of the always-on one, for the locomotion tasks. The sole friction itself
+    (priority over the floor, 0.25-1.2 per sole per reset) is applied to EVERY task by ``apply_replica_dr``; measured
+    before (``docs/friction/mu_eff_velstand_asis.json``) the floor at 1.0 and the solver's max rule meant no policy
+    ever trained on a contact below 1.0."""
     cfg.rewards.foot_slip.weight = 0.0
     cfg.rewards.foot_slip_excess = RewTerm(
         func=mdp.foot_slip_over_threshold,
@@ -354,9 +357,4 @@ def apply_slippery_floor(cfg, friction_range=FOOT_FRICTION_RANGE_WIDE) -> None:
 
 @configclass
 class MicroDuckHD1910RunV3LowMuAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCfg):
-    """Run v3 on a slippery floor: sole friction 0.25-1.2 (effective, per reset) and the thresholded slip cost.
-    Fine-tune target from run_v3 5999 with the servo P range of the real robots (kp_scale 1.0-1.6)."""
-
-    def __post_init__(self):
-        super().__post_init__()
-        apply_slippery_floor(self)
+    """Alias kept for the registered id: since 2026-11-19 run v3 itself carries the slippery floor and the slip cost."""

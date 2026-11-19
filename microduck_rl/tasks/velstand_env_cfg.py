@@ -56,6 +56,12 @@ class MicroDuckHD1910VelStandAllCollEnvCfg(MicroDuckHD1910VelocityFlatAllCollV4E
                 "fall_bank_path": "docs/fall_bank.json",
             },
         )
+        apply_slippery_floor(self)  # slip charged only above 0.2 m/s
+        # walking pushes (user 2026-11-19: standing under disturbance must be very robust): +-0.6 m/s every 2-4 s
+        self.events.push_robot.interval_range_s = (2.0, 4.0)
+        self.curriculum.push_magnitude = _schedule(
+            "events.push_robot.params.velocity_range", (16498 + 300, {"x": (-0.4, 0.4), "y": (-0.4, 0.4)}), (S + 300, {"x": (-0.6, 0.6), "y": (-0.6, 0.6)})
+        )
         # topple pushes: far beyond the walking randomisation, so falls are on-policy data
         self.events.topple_push = EventTerm(
             func=mdp.push_by_setting_velocity,
@@ -67,6 +73,7 @@ class MicroDuckHD1910VelStandAllCollEnvCfg(MicroDuckHD1910VelocityFlatAllCollV4E
             "events.topple_push.params.velocity_range",
             (S + 300, {"x": (-0.9, 0.9), "y": (-0.9, 0.9)}),
             (S + 800, {"x": (-1.2, 1.2), "y": (-1.2, 1.2)}),
+            (S + 1300, {"x": (-1.5, 1.5), "y": (-1.5, 1.5)}),
         )
         # a fallen duck gets up; the episode runs on
         self.terminations.fell_over = None
@@ -94,9 +101,4 @@ class MicroDuckHD1910VelStandAllCollEnvCfg(MicroDuckHD1910VelocityFlatAllCollV4E
 
 @configclass
 class MicroDuckHD1910VelStandLowMuAllCollEnvCfg(MicroDuckHD1910VelStandAllCollEnvCfg):
-    """VelStand on a slippery floor: sole friction 0.25-1.2 (effective, per reset) and the thresholded slip cost.
-    Fine-tune target from velstand 21495 with the servo P range of the real robots (kp_scale 1.0-1.6)."""
-
-    def __post_init__(self):
-        super().__post_init__()
-        apply_slippery_floor(self)
+    """Alias kept for the registered id: since 2026-11-19 VelStand itself carries the slippery floor and the slip cost."""

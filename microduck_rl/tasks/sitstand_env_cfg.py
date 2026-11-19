@@ -55,9 +55,9 @@ from microduck_rl.assets import (
     MICRODUCK_HD1910_ALLCOLLISIONS_CFG,
     MICRODUCK_JOINT_NAMES,
 )
-from microduck_rl.realism import apply_servo_realism
+from microduck_rl.realism import apply_servo_realism, coerce_override_ranges
 from microduck_rl.viz import clip_visualizer_cfg, play_visualizer_cfg
-from microduck_rl.dr import FOOT_FRICTION_RANGE, HEAD_COM_STAGES_M, MASS_SCALE_RANGE, TRUNK_COM_STAGES_M
+from microduck_rl.dr import FOOT_FRICTION_RANGE_WIDE, HEAD_COM_STAGES_M, MASS_SCALE_RANGE, TRUNK_MASS_SCALE_RANGE, TRUNK_COM_STAGES_M
 
 # ── Keyframes (upstream, stability-verified 2026-07-27; verify TILT in sim before changing) ──
 SITTING_TARGET_OVERRIDES: dict[str, float] = {
@@ -253,23 +253,36 @@ class TerminationsCfg:
 class EventsCfg:
     """Walking-task sim-to-real DR (replica ranges), seated/standing start mix, delayed pushes, seated hardening."""
 
+    # the soles own the contact friction (floor authored at 1.0, solver takes the max otherwise) and draw it wide,
+    # per sole, at every reset: docs/friction/NOTES.md
+    sole_contact_priority = EventTerm(func=mdp.set_sole_contact_priority, mode="startup", params={"priority": 1})
     foot_friction = EventTerm(
         func=mdp.randomize_rigid_body_material,
-        mode="startup",
+        mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=MICRODUCK_FOOT_BODY_NAMES),
-            "static_friction_range": FOOT_FRICTION_RANGE,
-            "dynamic_friction_range": FOOT_FRICTION_RANGE,
+            "static_friction_range": FOOT_FRICTION_RANGE_WIDE,
+            "dynamic_friction_range": FOOT_FRICTION_RANGE_WIDE,
             "restitution_range": (0.0, 0.0),
             "num_buckets": 64,
         },
     )
     encoder_bias = EventTerm(func=mdp.randomize_encoder_bias, mode="startup", params={"bias_range": (-0.015, 0.015)})
+    battery_mass = EventTerm(
+        func=mdp.randomize_rigid_body_mass,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=["trunk_base"]),
+            "mass_distribution_params": TRUNK_MASS_SCALE_RANGE,
+            "operation": "scale",
+            "recompute_inertia": True,
+        },
+    )
     mass_inertia = EventTerm(
         func=mdp.randomize_rigid_body_mass,
         mode="startup",
         params={
-            "asset_cfg": SceneEntityCfg("robot", body_names=[".*"]),
+            "asset_cfg": SceneEntityCfg("robot", body_names=[r"^(?!trunk_base$).*"]),
             "mass_distribution_params": MASS_SCALE_RANGE,
             "operation": "scale",
             "recompute_inertia": True,
@@ -437,6 +450,7 @@ class MicroDuckHD1910SitStandFlatEnvCfg(ManagerBasedRLEnvCfg):
     def play_mode(self):
         """Inference defaults; keep the pushes off so a clip shows the commanded behaviour."""
         super().play_mode()
+        coerce_override_ranges(self)
         self.events.push_robot = None
         self.curriculum.push_magnitude = None  # it schedules the push term that is now gone
         self.sim.visualizer_cfgs = play_visualizer_cfg()

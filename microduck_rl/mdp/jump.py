@@ -277,6 +277,7 @@ class JumpOneShotCommand(CommandTerm):
         super().__init__(cfg, env)
         self._command = torch.zeros(self.num_envs, 3, device=self.device)
         self._support_time = torch.zeros(self.num_envs, device=self.device)
+        self._elapsed = torch.zeros(self.num_envs, device=self.device)
 
     @property
     def command(self) -> torch.Tensor:
@@ -287,11 +288,18 @@ class JumpOneShotCommand(CommandTerm):
 
     def _resample_command(self, env_ids):
         self._support_time[env_ids] = 0.0
+        self._elapsed[env_ids] = 0.0
 
     def _update_command(self):
         s = update_state(self._env)
         self._support_time = torch.where(s["support"], self._support_time + self._env.step_dt, torch.zeros_like(self._support_time))
-        launch = s["support"] & (self._support_time <= self.cfg.launch_window_s) & ~s["landed"] & ~s["descending_spawn"]
+        self._elapsed += self._env.step_dt
+        if self.cfg.flag_on_s is not None:
+            # the duck has no contact sensing: its pilot holds the flag for a fixed time from the request (0.36 s, the
+            # simulator's own touchdown time), so train with the same clock and not with the touchdown
+            launch = (self._elapsed <= self.cfg.flag_on_s) & ~s["descending_spawn"]
+        else:
+            launch = s["support"] & (self._support_time <= self.cfg.launch_window_s) & ~s["landed"] & ~s["descending_spawn"]
         self._command[:, 0] = launch.float()
 
 
@@ -300,6 +308,8 @@ class JumpOneShotCommandCfg(CommandTermCfg):
     class_type: type[JumpOneShotCommand] = JumpOneShotCommand
     asset_name: str = "robot"
     launch_window_s: float = 0.75
+    flag_on_s: float | None = 0.36
+    """Fixed flag duration from the episode start [s], the duck's clock; None restores the touchdown-ended flag."""
     resampling_time_range: tuple[float, float] = (1.0e9, 1.0e9)
 
 
