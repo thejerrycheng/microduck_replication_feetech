@@ -18,6 +18,7 @@ from isaaclab.utils.configclass import configclass
 from isaaclab_tasks.contrib.microduck.flat_env_cfg import _SERVO_JOINT_CFG, _TRUNK_BODY_CFG, _backlash_preset, _schedule
 
 from microduck_rl import mdp
+from microduck_rl.realism import coerce_override_ranges
 from microduck_rl.tasks.roulade_env_cfg import MicroDuckRouladeSceneCfg
 from microduck_rl.tasks.sitstand_env_cfg import STAND_Z, EventsCfg as _SitStandEventsCfg, MicroDuckHD1910SitStandFlatEnvCfg
 from microduck_rl.viz import play_visualizer_cfg
@@ -153,6 +154,7 @@ class MicroDuckHD1910JumpFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
     def play_mode(self):
         """Standing starts only, no spawn curriculum: a checkpoint is judged on the real task."""
         super(MicroDuckHD1910SitStandFlatEnvCfg, self).play_mode()
+        coerce_override_ranges(self)
         p = self.events.set_jump_state.params
         p.update({"standing_prob": 1.0, "crouch_prob": 0.0, "descending_prob": 0.0, "standing_z_range": (STAND_Z, STAND_Z), "tilt_max_deg": 0.0, "joint_noise_std": 0.0})
         for name in ("spawn_standing", "spawn_crouch", "spawn_descending", "valid_takeoff_rate", "rise_mm", "airtime_ms", "stable_landing_rate", "durable_rate", "body_contact_rate"):

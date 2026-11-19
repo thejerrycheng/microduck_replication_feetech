@@ -24,6 +24,7 @@ from isaaclab_tasks.contrib.microduck.flat_env_cfg import (
 )
 
 from microduck_rl import mdp
+from microduck_rl.realism import coerce_override_ranges
 from microduck_rl.tasks.roulade_env_cfg import CommandsCfg as _RouladeCommandsCfg
 from microduck_rl.tasks.sitstand_env_cfg import (
     LEG_JOINT_INDICES,
@@ -213,6 +214,7 @@ class MicroDuckHD1910StandUpFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
     def play_mode(self):
         """Evaluation picks its own start family; default to the hard ones, no pushes, no curriculum."""
         super(MicroDuckHD1910SitStandFlatEnvCfg, self).play_mode()
+        coerce_override_ranges(self)
         self.events.push_robot = None
         self.events.set_fallen_state.params.update(_mix(0.0, 0.0, 0.3, 0.3, 0.4, 0.0))
         for name in ("mix_standing", "mix_sitting", "mix_prone", "mix_supine", "mix_random", "mix_bank", "push_magnitude", "stood_prone", "stood_supine", "stood_random", "stood_bank", "stood_sitting", "still_standing", "time_to_stand_s", "peak_omega"):

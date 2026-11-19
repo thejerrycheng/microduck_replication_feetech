@@ -25,6 +25,7 @@ from isaaclab.utils.configclass import configclass
 from isaaclab_tasks.contrib.microduck.flat_env_cfg import _SERVO_JOINT_CFG, _TRUNK_BODY_CFG, _backlash_preset, _schedule
 
 from microduck_rl import mdp
+from microduck_rl.realism import coerce_override_ranges
 from microduck_rl.tasks.sitstand_env_cfg import (
     _HEAD_BODY_CFG,
     LEG_JOINT_INDICES,
@@ -245,6 +246,7 @@ class MicroDuckHD1910RouladeFlatEnvCfg(MicroDuckHD1910SitStandFlatEnvCfg):
         """Standing starts only: a clip shows the whole roll from the feet."""
         ManagerBasedRLEnvCfgPlay = super(MicroDuckHD1910SitStandFlatEnvCfg, self)  # skip the sit/stand hook (push_robot is gone)
         ManagerBasedRLEnvCfgPlay.play_mode()
+        coerce_override_ranges(self)
         self.events.set_roulade_state.params["standing_prob"] = 1.0
         self.events.set_roulade_state.params["midroll_prob"] = 0.0
         self.curriculum.spawn_standing = None
