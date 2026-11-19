@@ -93,3 +93,26 @@ still improving at P 8 across its last three checkpoints (0.58, 0.70, 0.72), so 
 from 7999 with the same KP range is the next single-change run. Exported as
 `checkpoints/roulade_head_kp58_7999`, `exports/roulade_head_kp58_hd1910_iter7999.onnx` (self-contained);
 `roulade_head_7000` stays the P 5 pick.
+
+## run_v3 (base 5999 → ft run 2026-11-18_19-14-05, 1000 its at the run recipe's entropy 0.01 / lr 1e-3) — HOLD base, fine-tune COLLAPSED
+
+Every saved checkpoint at 96 envs, FIXED gains (`docs/gains/run_v3_ckpts/*_n96.json`):
+
+| ckpt | P | vx mean @0.5 | p10 | vx mean @0.9 | p10 | falls @0.9 |
+|---|---|---|---|---|---|---|
+| base 5999 | 5 | 0.455 | 0.415 | 0.641 | 0.603 | 0.000 |
+| base 5999 | 8 | 0.574 | 0.529 | 0.660 | 0.581 | 0.040 |
+| ft 6000 | 5 | 0.452 | 0.419 | 0.645 | 0.585 | 0.000 |
+| ft 6000 | 8 | 0.553 | 0.516 | 0.635 | 0.458 | 0.000 |
+| ft 6250 | 5 | 0.168 | 0.127 | 0.557 | 0.156 | 0.000 |
+| ft 6250 | 8 | 0.350 | 0.094 | 0.542 | 0.131 | 0.000 |
+| ft 6500 | 5 | 0.155 | 0.129 | 0.156 | 0.125 | 0.000 |
+| ft 6500 | 8 | 0.143 | 0.095 | 0.142 | 0.105 | 0.000 |
+| ft 6998 | 5 | 0.149 | 0.136 | 0.119 | 0.102 | 0.000 |
+
+Verdict: HOLD `run_v3_5999` as the P 5-8 runner. At 96 envs the base is as fast at P 8 as at P 5 (the 32-env baseline's
+"p10 0.62 -> 0.41" was noise at n=32: here 0.60 vs 0.58). The fine-tune collapsed inside 250 iterations into a 0.15 m/s
+shuffle that never falls, with the stochastic return only drifting 130 -> 123 and the tracking term 2.6 -> 1.8: the
+run recipe's entropy 0.01 / lr 1e-3, inherited from `agent.yaml`, is a training setting, not a fine-tuning one (the
+jump and front-flip fine-tunes ran at 0.001 and improved; the sprint fine-tune at 0.01 lost 0.3 m/s). Any further
+run/sprint fine-tune uses entropy 0.001 / lr 5e-4 (`RunV3LowMuPPORunnerCfg`).
