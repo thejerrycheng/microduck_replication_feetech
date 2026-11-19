@@ -1,0 +1,59 @@
+{
+ "when": "2026-11-18 10:06",
+ "results": {
+  "yes": {
+   "duration_s": 1.4,
+   "samples": 25,
+   "rate_hz": 17.9,
+   "delay_s": 0.12,
+   "request_s": 0.38,
+   "rms_deg": 1.59,
+   "worst_deg": 13.9,
+   "swing_deg": 40.1,
+   "end_off_rest_deg": 0.65,
+   "rms_by_joint": {
+    "neck pitch": 0.76,
+    "head pitch": 3.06,
+    "head yaw": 0.25,
+    "head roll": 0.14,
+    "beak": 1.61
+   }
+  },
+  "hello": {
+   "duration_s": 2.6,
+   "samples": 48,
+   "rate_hz": 18.5,
+   "delay_s": 0.14,
+   "request_s": 0.41,
+   "rms_deg": 0.83,
+   "worst_deg": 5.99,
+   "swing_deg": 34.4,
+   "end_off_rest_deg": 0.14,
+   "rms_by_joint": {
+    "neck pitch": 0.54,
+    "head pitch": 0.88,
+    "head yaw": 0.12,
+    "head roll": 0.63,
+    "beak": 1.39
+   }
+  },
+  "curious": {
+   "duration_s": 2.9,
+   "samples": 52,
+   "rate_hz": 17.9,
+   "delay_s": 0.12,
+   "request_s": 0.33,
+   "rms_deg": 2.22,
+   "worst_deg": 23.44,
+   "swing_deg": 45.8,
+   "end_off_rest_deg": 0.75,
+   "rms_by_joint": {
+    "neck pitch": 3.23,
+    "head pitch": 1.1,
+    "head yaw": 0.09,
+    "head roll": 1.45,
+    "beak": 3.3
+   }
+  }
+ }
+}

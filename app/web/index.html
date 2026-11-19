@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duck Live</title>
+<style>
+:root{--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,sans-serif;
+--bg0:#1b1d22;--bg1:#24272d;--bg2:#15161a;--glass:rgba(28,28,30,.66);--glass2:rgba(44,44,46,.72);--line:rgba(255,255,255,.12);
+--ink:#fff;--ink2:rgba(255,255,255,.64);--ink3:rgba(255,255,255,.38);--accent:#ffb340;--green:#30d158;--blue:#0a84ff;--red:#ff453a;--purple:#bf5af2;--teal:#64d2ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:linear-gradient(180deg,var(--bg0) 0%,var(--bg1) 50%,var(--bg2) 100%);color:var(--ink);font:500 13px/1.35 var(--font);
+-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;cursor:default}
+#vw{position:absolute;inset:0}
+#vw canvas{display:block;width:100%;height:100%}
+.glass{background:var(--glass);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.28)}
+.bdg{position:absolute;top:16px;left:16px;z-index:3;display:flex;align-items:center;gap:12px;padding:10px 16px 10px 12px;border-radius:16px}
+.bdg .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#ffd166,#ff9f0a);display:grid;place-items:center;font-size:20px}
+.bdg h1{font:700 15px/1.1 var(--font);letter-spacing:.01em}
+.bdg .sub{font:500 11.5px/1.2 var(--font);color:var(--ink2);margin-top:3px}
+.state{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:3;display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;font:700 13px/1 var(--font);letter-spacing:.08em;text-transform:uppercase}
+.state .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px currentColor}
+.state.walk .dot,.state.run .dot{background:var(--blue)} .state.run .dot{background:var(--purple)}
+.state.sit_down .dot,.state.seated .dot,.state.stand_up .dot{background:var(--accent)} .state.stopping .dot{background:var(--teal)}
+.state.fallen .dot{background:var(--red)} .state.recover .dot{background:#ff6482;animation:pulse 1s infinite} .state.jump .dot,.state.roulade .dot{background:#ff6482}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.state .sm{font:500 11px/1 var(--font);color:var(--ink2);letter-spacing:.02em;text-transform:none}
+.hud{position:absolute;right:16px;top:16px;z-index:3;width:272px;padding:12px 14px 10px;border-radius:16px;font-variant-numeric:tabular-nums}
+.hud .row{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.hud .row:last-child{border-bottom:0}
+.hud .k{color:var(--ink2);font-size:12px}
+.hud .v{font:600 13px/1.2 var(--font)}
+.hud .v small{font-weight:500;color:var(--ink3);font-size:11px}
+.hud .title{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.gear{appearance:none;border:0;background:rgba(255,255,255,.08);color:var(--ink);width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:14px}
+.gear:hover{background:rgba(255,255,255,.16)}
+.lvl{display:flex;gap:4px;margin:8px 0 2px}
+.lvl i{flex:1;height:7px;border-radius:4px;background:rgba(255,255,255,.12)}
+.lvl i.on{background:var(--accent);box-shadow:0 0 8px rgba(255,179,64,.6)}
+.lvl i.run{background:var(--purple)}
+.speedbar{position:relative;height:8px;border-radius:4px;background:rgba(255,255,255,.1);margin:6px 0 4px;overflow:hidden}
+.speedbar b{position:absolute;left:50%;top:0;bottom:0;background:var(--blue);border-radius:4px}
+.speedbar s{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--accent);text-decoration:none}
+.legend{position:absolute;left:0;right:0;margin:0 auto;width:max-content;max-width:calc(100% - 24px);bottom:18px;z-index:3;display:flex;align-items:flex-end;gap:20px;padding:12px 18px;border-radius:18px;white-space:nowrap}
+.grp{display:flex;flex-direction:column;align-items:center;gap:6px}
+.grp .lab{font:600 10.5px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.keys{display:grid;grid-template-columns:repeat(3,34px);grid-auto-rows:30px;gap:4px}
+.keys .e{visibility:hidden}
+.key{display:inline-grid;place-items:center;min-width:34px;height:30px;padding:0 8px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);
+box-shadow:inset 0 -2px 0 rgba(0,0,0,.35);font:600 12px/1 var(--font);color:var(--ink);transition:all .08s}
+.key.wide{min-width:58px} .key.xwide{min-width:92px}
+.key.on{background:var(--accent);color:#1b1300;border-color:var(--accent);box-shadow:0 0 16px rgba(255,179,64,.55);transform:translateY(1px)}
+.key.on.run{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 0 16px rgba(191,90,242,.6)}
+.key.off{opacity:.42}
+.toast{position:absolute;left:50%;bottom:112px;transform:translateX(-50%);z-index:4;padding:9px 16px;border-radius:12px;font:600 13px/1.2 var(--font);opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.conn{position:absolute;right:16px;bottom:18px;z-index:3;padding:8px 12px;border-radius:12px;font:600 11.5px/1 var(--font);color:var(--ink2);display:flex;gap:8px;align-items:center}
+.conn .dot{width:8px;height:8px;border-radius:50%;background:var(--red)} .conn.ok .dot{background:var(--green)}
+.pop{position:absolute;right:16px;top:260px;z-index:5;width:300px;padding:14px;border-radius:16px;display:none}
+.pop.show{display:block}
+.pop h3{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);margin:8px 0 8px}
+.pop h3:first-child{margin-top:0}
+.pop label{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;font-size:12px;color:var(--ink2)}
+.pop select,.pop input[type=number]{appearance:none;background:rgba(255,255,255,.1);color:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:500 12px/1 var(--font);max-width:180px}
+.pop input[type=number]{width:72px;text-align:right}
+.pop .btns{display:flex;gap:8px;margin-top:10px}
+.pop button{flex:1;appearance:none;border:0;border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.12);color:#fff;font:600 12px/1 var(--font);cursor:pointer}
+.pop button:hover{background:rgba(255,255,255,.2)}
+.pop button.pri{background:var(--accent);color:#1b1300}
+.pop .hint{font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.4}
+.state.emote .dot{background:#ff6fb5} .state.dead .dot{background:var(--ink3)}
+.emo{position:absolute;left:16px;top:82px;z-index:3;width:270px;max-height:calc(100% - 82px - 132px);overflow-y:auto;padding:12px 12px 10px;border-radius:16px;scrollbar-width:none}
+.emo::-webkit-scrollbar{display:none}
+.emo .title{display:flex;justify-content:space-between;align-items:center;font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.emo .chips{display:flex;gap:5px}
+.chip{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink3);border-radius:999px;padding:5px 9px;font:600 10.5px/1 var(--font);letter-spacing:.02em;text-transform:none;cursor:pointer;transition:all .15s}
+.chip:hover{background:rgba(255,255,255,.14)}
+.chip.on{background:rgba(255,179,64,.18);border-color:rgba(255,179,64,.55);color:var(--accent)}
+.emo .sec{margin:12px 2px 7px;font:600 10.5px/1.2 var(--font);color:var(--ink3);display:flex;justify-content:space-between;gap:8px}
+.emo .sec b{font-weight:700;color:var(--ink2)}
+.emo .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tile{position:relative;appearance:none;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:var(--ink);border-radius:12px;height:50px;padding:5px 2px 4px;
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;overflow:hidden;transition:transform .12s cubic-bezier(.3,1.6,.5,1),background .15s,border-color .15s,box-shadow .15s}
+.tile:hover{background:rgba(255,255,255,.15);transform:translateY(-1px) scale(1.03)}
+.tile:active{transform:scale(.95)}
+.tile .em{font-size:19px;line-height:1;transition:transform .2s cubic-bezier(.3,1.8,.5,1)}
+.tile:hover .em{transform:scale(1.18) rotate(-6deg)}
+.tile .nm{font:600 10.5px/1 var(--font);color:var(--ink2);white-space:nowrap}
+.tile kbd{position:absolute;top:4px;right:5px;font:700 8.5px/1 var(--font);color:var(--ink3);text-transform:uppercase}
+.tile .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);border-radius:0 2px 2px 0}
+.tile.on{background:rgba(255,179,64,.2);border-color:var(--accent);box-shadow:0 0 18px rgba(255,179,64,.35)}
+.tile.on .em{animation:wob .5s ease-in-out infinite alternate}
+.tile.on .nm{color:#fff}
+.tile.q{border-color:rgba(255,179,64,.6);animation:pulse 0.7s infinite}
+.tile.off{opacity:.35;cursor:default}
+@keyframes wob{from{transform:scale(1.15) rotate(-9deg)}to{transform:scale(1.25) rotate(9deg)}}
+.emo .hint{font-size:10.5px;color:var(--ink3);margin:10px 2px 0;line-height:1.45}
+#fx{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.fxp{position:absolute;font-size:28px;line-height:1;opacity:0;animation:floatUp 1.7s cubic-bezier(.2,.7,.3,1) forwards;will-change:transform,opacity;filter:drop-shadow(0 3px 8px rgba(0,0,0,.4))}
+@keyframes floatUp{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}14%{opacity:1;transform:translate(calc(-50% + var(--dx) * .25),-110%) scale(1.15)}
+70%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-380%) scale(.85) rotate(var(--rot))}}
+.bubble{position:absolute;z-index:2;pointer-events:none;transform:translate(-50%,-100%) scale(.5);opacity:0;padding:7px 12px 7px 9px;border-radius:16px 16px 16px 4px;font:700 13px/1 var(--font);white-space:nowrap;
+display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s cubic-bezier(.3,1.7,.5,1)}
+.bubble.show{opacity:1;transform:translate(-50%,-100%) scale(1)}
+.bubble .em{font-size:19px}
+@media (prefers-reduced-motion: reduce){.fxp{animation-duration:.01s}.tile.on .em{animation:none}}
+.fell{position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:inset 0 0 0 0 rgba(255,69,58,0);transition:box-shadow .3s}
+.fell.on{box-shadow:inset 0 0 120px 20px rgba(255,69,58,.35)}
+</style>
+</head>
+<body>
+<div id="vw"></div>
+<div class="fell" id="fell"></div>
+<div id="fx"></div>
+<div class="bubble glass" id="bubble"><span class="em" id="bubEm"></span><span id="bubTxt"></span></div>
+
+<div class="emo glass" id="emo">
+  <div class="title"><span>Emotions</span><span class="chips">
+    <button class="chip on" id="chAlive" title="Idle life: glances, breathing, looks at you, leads turns with its head, dozes off when seated">alive</button>
+    <button class="chip on" id="chReact" title="Reacts by itself: shakes off a fall, comments on its jumps and flips, yawns when bored">reacts</button>
+    <button class="chip on" id="chSound" title="Sound (M)">🔊</button></span></div>
+  <div class="sec"><b>Duck Live</b><span>head · beak · policies</span></div><div class="grid" id="gridLive"></div>
+  <div class="sec"><b>Pollen Robotics</b><span>open-source set</span></div><div class="grid" id="gridPollen"></div>
+  <div class="hint">Press the key on a tile, or click it. The legs stay on the RL policy the whole time; an arrow key interrupts.</div>
+</div>
+
+<div class="bdg glass"><div class="mark">🦆</div><div><h1>Duck Live</h1><div class="sub">HD1910 Microduck · MuJoCo on this Mac · <span id="polname">—</span></div></div></div>
+<div class="state glass stand" id="state"><span class="dot"></span><span id="stateTxt">Standing</span><span class="sm" id="stateSub"></span></div>
+
+<div class="hud glass">
+  <div class="title"><span>Telemetry</span><button class="gear" id="gear" title="Policies & physics">⚙︎</button></div>
+  <div class="row"><span class="k">Speed level · A / D</span><span class="v" id="lvlTxt">3 · brisk</span></div>
+  <div class="lvl" id="lvl"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="row"><span class="k">Forward</span><span class="v"><span id="vx">0.00</span> <small>/ <span id="vxc">0.00</span> m/s</small></span></div>
+  <div class="speedbar" id="sb"><b id="sbv"></b><s id="sbc"></s></div>
+  <div class="row"><span class="k">Turn</span><span class="v"><span id="wz">0.00</span> <small>/ <span id="wzc">0.00</span> rad/s</small></span></div>
+  <div class="row"><span class="k">Sidestep</span><span class="v"><span id="vy">0.00</span> <small>/ <span id="vyc">0.00</span> m/s</small></span></div>
+  <div class="row"><span class="k">Trunk height</span><span class="v"><span id="z">0.0</span> <small>mm · tilt <span id="tilt">0</span>°</small></span></div>
+  <div class="row"><span class="k">Distance</span><span class="v"><span id="odo">0.00</span> <small>m · falls <span id="falls">0</span></small></span></div>
+  <div class="row"><span class="k">Servo bus</span><span class="v"><span id="vin">7.7</span> <small>V · lag <span id="lag">4</span> steps</small></span></div>
+  <div class="row"><span class="k">Real time</span><span class="v"><span id="rate">0</span><small>× · step <span id="stepms">0</span> ms</small></span></div>
+</div>
+
+<div class="pop glass" id="pop">
+  <h3>Policies (exports/)</h3>
+  <label>Walk · stand (VelStand: also gets up) <select id="selWalk"></select></label>
+  <label>Run <select id="selRun"></select></label>
+  <label>Sprint (speed level 5) <select id="selSprint"></select></label>
+  <label>Sit · stand <select id="selSitstand"></select></label>
+  <label>Jump (space) <select id="selJump"></select></label>
+  <label>Front flip (R) <select id="selRoulade"></select></label>
+  <label>Stand-up after a fall <select id="selRecovery"></select></label>
+  <label>Under VelStand, let the walk policy get up by itself (off: always the stand-up policy) <input type="checkbox" id="inSelf" checked></label>
+  <h3>Plant</h3>
+  <label>Command delay (physics steps, 3–6) <input type="number" id="inLag" min="0" max="10" step="1" value="4"></label>
+  <label>Battery (V, 7.4–8.0) <input type="number" id="inVin" min="6.5" max="8.4" step="0.1" value="7.7"></label>
+  <label>Sag gain (V/N·m, 0–0.2) <input type="number" id="inSag" min="0" max="0.5" step="0.02" value="0.1"></label>
+  <label>Auto-reset 2 s after a fall when no policy can get it up (otherwise it stays down until ⏎) <input type="checkbox" id="inAuto"></label>
+  <label>Camera follows the duck <input type="checkbox" id="inFollow" checked></label>
+  <label>Voice volume <input type="range" id="inVol" min="0" max="1" step="0.05" value="0.8" style="width:140px"></label>
+  <div class="btns"><button id="btnApply" class="pri">Apply</button><button id="btnReset">Reset standing</button><button id="btnSeated">Reset seated</button></div>
+  <div class="hint">Changing a policy or the plant resets the duck. Policies are the ONNX exports of this checkout; <code>app/ducklive.sh --sync</code> pulls newer ones from the 5080.</div>
+</div>
+
+<div class="legend glass" id="legend">
+  <div class="grp"><div class="keys"><span class="key e"></span><span class="key" data-k="up">▲</span><span class="key e"></span><span class="key" data-k="left">◀</span><span class="key" data-k="down">▼</span><span class="key" data-k="right">▶</span></div><div class="lab">walk · turn</div></div>
+  <div class="grp"><span class="key wide" data-k="meta">⌘ + ▲</span><div class="lab">run · sprint at 5</div></div>
+  <div class="grp"><span class="key wide" data-k="alt">⌥ + ◀▶</span><div class="lab">sidestep</div></div>
+  <div class="grp"><div style="display:flex;gap:4px"><span class="key" data-k="a">A</span><span class="key" data-k="d">D</span></div><div class="lab">slower · faster</div></div>
+  <div class="grp"><span class="key" data-k="s">S</span><div class="lab">sit · stand</div></div>
+  <div class="grp"><span class="key xwide" data-k="space" id="kSpace">space</span><div class="lab">jump</div></div>
+  <div class="grp"><span class="key" data-k="r" id="kR">R</span><div class="lab">front flip</div></div>
+  <div class="grp"><span class="key" data-k="enter">⏎</span><div class="lab">reset</div></div>
+  <div class="grp"><span class="key xwide" data-k="drag">⌘ + drag duck</span><div class="lab">push · pull</div></div>
+  <div class="grp"><span class="key wide" data-k="emo">1–0 Q–P</span><div class="lab">emotions</div></div>
+</div>
+<div class="toast glass" id="toast"></div>
+<div class="conn glass" id="conn"><span class="dot"></span><span id="connTxt">connecting…</span></div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script>
+(function () {
+  "use strict";
+  var TOKEN = "__TOKEN__", WS_PORT = "__WS_PORT__";
+  var qs = new URLSearchParams(location.search);
+  var NATIVE = qs.get("native") === "1";             // keys come from the Swift shell (duckKey), not the DOM
+  var $ = function (id) { return document.getElementById(id); };
+  var api = function (p, o) { return fetch(p + (p.indexOf("?") < 0 ? "?" : "&") + "token=" + TOKEN, o); };
+
+  // ---- three.js -----------------------------------------------------------------------------------------------------
+  var three, groups = [], trunkIdx = 1, follow = true, SC = null;
+  function mq(q) { return new THREE.Quaternion(q[1], q[2], q[3], q[0]); }
+  var meshCache = {};
+  function meshGeo(i) {
+    if (!meshCache[i]) meshCache[i] = api("/api/mesh/" + i).then(function (r) { return r.arrayBuffer(); }).then(function (b) {
+      var hd = new Uint32Array(b, 0, 2), nv = hd[0], ni = hd[1], g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(b.slice(8, 8 + 12 * nv)), 3));
+      g.setAttribute("normal", new THREE.BufferAttribute(new Float32Array(b.slice(8 + 12 * nv, 8 + 24 * nv)), 3));   // crease-smoothed, from the engine
+      g.setIndex(new THREE.BufferAttribute(new Uint32Array(b.slice(8 + 24 * nv, 8 + 24 * nv + 4 * ni)), 1));
+      return g;
+    });
+    return meshCache[i];
+  }
+  var matCache = {};
+  function mat(rgba) {
+    var k = rgba.join(",");
+    if (!matCache[k]) matCache[k] = new THREE.MeshStandardMaterial({ color: new THREE.Color(rgba[0], rgba[1], rgba[2]), roughness: 0.55, metalness: 0.08 });
+    return matCache[k];
+  }
+  function initThree() {
+    var el = $("vw"), r = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    r.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    el.appendChild(r.domElement);
+    var s = new THREE.Scene(); s.fog = new THREE.FogExp2(0x1b1d22, 0.22);
+    var cam = new THREE.PerspectiveCamera(32, 16 / 10, 0.01, 50); cam.up.set(0, 0, 1); cam.position.set(-0.55, -0.75, 0.42);
+    s.add(new THREE.HemisphereLight(0xffffff, 0x3a3f48, 1.05));
+    var d1 = new THREE.DirectionalLight(0xffffff, 1.0); d1.position.set(0.9, -0.7, 1.6); d1.castShadow = true;
+    d1.shadow.mapSize.set(2048, 2048); d1.shadow.camera.near = 0.1; d1.shadow.camera.far = 6;
+    d1.shadow.camera.left = d1.shadow.camera.bottom = -1.2; d1.shadow.camera.right = d1.shadow.camera.top = 1.2; d1.shadow.bias = -0.0005;
+    s.add(d1); s.add(d1.target);
+    var d2 = new THREE.DirectionalLight(0xbfd4ff, 0.35); d2.position.set(-0.8, 0.9, 0.5); s.add(d2);
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0x2a2e36, roughness: 0.95, metalness: 0 }));
+    floor.receiveShadow = true; s.add(floor);
+    var grid = new THREE.GridHelper(60, 300, 0x4a5060, 0x343a46); grid.rotation.x = Math.PI / 2; grid.position.z = 0.0008;
+    grid.material.transparent = true; grid.material.opacity = 0.55; s.add(grid);
+    var grid2 = new THREE.GridHelper(60, 60, 0x6b7384, 0x6b7384); grid2.rotation.x = Math.PI / 2; grid2.position.z = 0.0012;
+    grid2.material.transparent = true; grid2.material.opacity = 0.35; s.add(grid2);
+    var ctl = new THREE.OrbitControls(cam, r.domElement); ctl.enableDamping = true; ctl.dampingFactor = 0.1; ctl.target.set(0, 0, 0.1);
+    ctl.minDistance = 0.15; ctl.maxDistance = 6; ctl.maxPolarAngle = Math.PI / 2 - 0.02; ctl.update();
+    function size() { var w = el.clientWidth, h = el.clientHeight; r.setSize(w, h, false); cam.aspect = w / Math.max(1, h); cam.updateProjectionMatrix(); }
+    size(); window.addEventListener("resize", size);
+    three = { r: r, s: s, cam: cam, ctl: ctl, sun: d1, follow: new THREE.Vector3(0, 0, 0.1) };
+    // ⌘-drag spring (MuJoCo viewer style): a line from the grab point to the cursor's point, and the cursor point
+    var spring = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+      new THREE.LineBasicMaterial({ color: 0xff453a, depthTest: false, transparent: true, opacity: 0.95 }));
+    spring.renderOrder = 9; spring.visible = false; s.add(spring);
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.006, 16, 12), new THREE.MeshBasicMaterial({ color: 0xff453a, depthTest: false }));
+    ball.renderOrder = 9; ball.visible = false; s.add(ball);
+    var grab = new THREE.Mesh(new THREE.SphereGeometry(0.004, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false }));
+    grab.renderOrder = 9; grab.visible = false; s.add(grab);
+    three.spring = spring; three.ball = ball; three.grab = grab;
+    wirePointer(r.domElement);
+    (function loop() { requestAnimationFrame(loop); tick(); ctl.update(); r.render(s, cam); })();
+  }
+
+  // ---- ⌘ + drag on the duck = perturbation force ---------------------------------------------------------------------------
+  var drag = null, ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  function pointerNdc(e, el) { var b = el.getBoundingClientRect(); ndc.set(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1); }
+  function bodyOf(obj) { while (obj) { var i = groups.indexOf(obj); if (i >= 0) return i; obj = obj.parent; } return -1; }
+  function wirePointer(el) {
+    el.addEventListener("pointerdown", function (e) {
+      if (!(e.metaKey || e.ctrlKey) || e.button !== 0 || groups.length === 0) return;
+      pointerNdc(e, el); ray.setFromCamera(ndc, three.cam);
+      var meshes = []; groups.forEach(function (g, i) { if (i > 0) g.traverse(function (o) { if (o.isMesh) meshes.push(o); }); });
+      var hits = ray.intersectObjects(meshes, false);
+      if (!hits.length) return;
+      var b = bodyOf(hits[0].object); if (b < 0) return;
+      var p = hits[0].point.clone(), local = groups[b].worldToLocal(p.clone());
+      var n = new THREE.Vector3(); three.cam.getWorldDirection(n);
+      drag = { body: b, local: [local.x, local.y, local.z], plane: new THREE.Plane().setFromNormalAndCoplanarPoint(n, p), target: p.clone(), last: 0 };
+      three.ctl.enabled = false; el.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
+      sendPerturb(); keyEls.drag.classList.add("on");
+    }, true);
+    el.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      pointerNdc(e, el); ray.setFromCamera(ndc, three.cam);
+      var hit = new THREE.Vector3(); if (ray.ray.intersectPlane(drag.plane, hit)) { drag.target.copy(hit); sendPerturb(); }
+    });
+    function end(e) { if (!drag) return; drag = null; wsSend(JSON.stringify({ t: "perturb", body: -1 })); three.ctl.enabled = !meta; keyEls.drag.classList.remove("on"); }
+    el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end); window.addEventListener("blur", end);
+  }
+  function sendPerturb() {
+    var now = performance.now(); if (now - drag.last < 15) return; drag.last = now;
+    wsSend(JSON.stringify({ t: "perturb", body: drag.body, local: drag.local, target: [drag.target.x, drag.target.y, drag.target.z] }));
+  }
+  function drawPerturb(s) {
+    var on = !!(s.perturb && drag);
+    three.spring.visible = three.ball.visible = three.grab.visible = on;
+    if (!on) return;
+    var pos = three.spring.geometry.attributes.position, p = s.perturb.p, t = drag.target;
+    pos.setXYZ(0, p[0], p[1], p[2]); pos.setXYZ(1, t.x, t.y, t.z); pos.needsUpdate = true;
+    three.ball.position.copy(t); three.grab.position.set(p[0], p[1], p[2]);
+  }
+  function buildScene(sc) {
+    SC = sc; trunkIdx = sc.trunk;
+    groups.forEach(function (g) { three.s.remove(g); }); groups = [];
+    for (var i = 0; i < sc.bodies.length; i++) { var g = new THREE.Group(); g.name = sc.bodies[i]; groups.push(g); if (i > 0) three.s.add(g); }
+    // the beak: the lower-jaw meshes hang from a pivot group at the beak servo's axis (the MJCF has no jaw joint)
+    var jaw = sc.jaw || { geoms: [] }, pv = jaw.pivot || [0, 0, 0];
+    jawPivot = null;
+    if (jaw.geoms.length) { jawPivot = new THREE.Group(); jawPivot.position.set(pv[0], pv[1], pv[2]); groups[sc.head].add(jawPivot); jawAxis.set(jaw.axis[0], jaw.axis[1], jaw.axis[2]); }
+    sc.geoms.forEach(function (e, gi) {
+      var isJaw = jaw.geoms.indexOf(gi) >= 0;
+      var h = new THREE.Group(); h.position.set(e.pos[0] - (isJaw ? pv[0] : 0), e.pos[1] - (isJaw ? pv[1] : 0), e.pos[2] - (isJaw ? pv[2] : 0)); h.quaternion.copy(mq(e.quat));
+      meshGeo(e.mesh).then(function (geo) { var m = new THREE.Mesh(geo, mat(e.rgba)); m.castShadow = true; m.receiveShadow = false; h.add(m); });
+      (isJaw ? jawPivot : groups[e.body]).add(h);
+    });
+    buildPalette(sc.anims || []);
+    $("lag").textContent = sc.lag; $("vin").textContent = sc.vin.toFixed(1);
+  }
+  var latest = null, lastDrawn = null, jawPivot = null, jawAxis = new THREE.Vector3(0, 1, 0);
+  function tick() {
+    if (!latest || latest === lastDrawn || groups.length === 0) return;
+    lastDrawn = latest;
+    var p = latest.pos, q = latest.quat, n = groups.length - 1;
+    for (var i = 0; i < n; i++) { var g = groups[i + 1]; g.position.set(p[3 * i], p[3 * i + 1], p[3 * i + 2]); g.quaternion.set(q[4 * i + 1], q[4 * i + 2], q[4 * i + 3], q[4 * i]); }
+    if (jawPivot) jawPivot.quaternion.setFromAxisAngle(jawAxis, (latest.mouth || 0) * SC.jaw.open_rad);
+    placeBubble();
+    var t = groups[trunkIdx].position;
+    if (follow) {
+      var tgt = new THREE.Vector3(t.x, t.y, Math.max(0.03, Math.min(t.z, 0.14)));
+      var d = tgt.clone().sub(three.ctl.target).multiplyScalar(0.18);
+      three.ctl.target.add(d); three.cam.position.add(d);
+    }
+    three.sun.position.set(t.x + 0.9, t.y - 0.7, 1.6); three.sun.target.position.set(t.x, t.y, 0);
+    drawPerturb(latest);
+  }
+
+  // ---- keys -----------------------------------------------------------------------------------------------------------
+  var held = {}, meta = false, alt = false, shift = false, lastSent = "";
+  var MOVE = { up: 1, down: 1, left: 1, right: 1 }, PRESS = { s: 1, space: 1, r: 1, a: 1, d: 1, enter: 1 };
+  function sendKeys(force) {
+    var h = Object.keys(held).filter(function (k) { return held[k] && MOVE[k]; }).sort();
+    var msg = JSON.stringify({ t: "keys", held: h, meta: meta, alt: alt });
+    if (msg !== lastSent || force) { lastSent = msg; wsSend(msg); }
+    paintKeys();
+  }
+  function press(k) { wsSend(JSON.stringify({ t: "press", key: k })); flash(k); }
+  // entry point for the Swift shell (and for the DOM handlers below)
+  window.duckKey = function (type, name, m, a, sh) {
+    meta = !!m; alt = !!a; shift = !!sh;
+    if (type === "flags") { if (!meta) { /* ⌘ released: WebKit may have swallowed arrow key-ups while it was down */ } sendKeys(); return; }
+    if (type === "down") {
+      if (MOVE[name]) { held[name] = true; sendKeys(); }
+      else if (PRESS[name]) press(name);
+      else if (EMO[name]) emote(EMO[name]);
+      else if (name === "m") setMuted(!muted);
+      else if (name === "escape") { held = {}; sendKeys(true); }
+    } else if (type === "up") {
+      if (MOVE[name]) { held[name] = false; sendKeys(); }
+    }
+  };
+  var CODES = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Space: "space", Enter: "enter", NumpadEnter: "enter",
+                KeyS: "s", KeyA: "a", KeyD: "d", KeyR: "r", Escape: "escape" };
+  function keyName(e) {      // arrows / space / enter / escape, and the letter or digit of any other key that means something here
+    var n = CODES[e.code]; if (n) return n;
+    var m = /^Key([A-Z])$/.exec(e.code) || /^Digit(\d)$/.exec(e.code); n = m ? m[1].toLowerCase() : null;
+    return n && (EMO[n] || n === "m") ? n : null;
+  }
+  if (!NATIVE) {
+    window.addEventListener("keydown", function (e) {
+      var n = keyName(e); if (e.ctrlKey) return;
+      if (e.key === "Meta" || e.key === "Alt" || e.key === "Shift") { window.duckKey("flags", "", e.metaKey, e.altKey, e.shiftKey); return; }
+      if (!n || (e.metaKey && !MOVE[n]) || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return; e.preventDefault(); if (e.repeat) return;
+      window.duckKey("down", n, e.metaKey, e.altKey, e.shiftKey);
+    });
+    window.addEventListener("keyup", function (e) {
+      var n = keyName(e);
+      if (e.key === "Meta" || e.key === "Alt" || e.key === "Shift") { if (e.key === "Meta") { held = {}; } window.duckKey("flags", "", e.metaKey, e.altKey, e.shiftKey); return; }
+      if (!n) return; e.preventDefault(); window.duckKey("up", n, e.metaKey, e.altKey, e.shiftKey);
+    });
+  }
+  window.addEventListener("blur", function () { held = {}; meta = alt = false; sendKeys(true); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) { held = {}; meta = alt = false; sendKeys(true); } });
+
+  var keyEls = {}; document.querySelectorAll(".key[data-k]").forEach(function (el) { keyEls[el.dataset.k] = el; });
+  function paintKeys() {
+    Object.keys(MOVE).forEach(function (k) { var el = keyEls[k]; el.classList.toggle("on", !!held[k]); el.classList.toggle("run", !!held[k] && meta); });
+    keyEls.meta.classList.toggle("on", meta); keyEls.meta.classList.toggle("run", meta);
+    keyEls.alt.classList.toggle("on", alt);
+    document.body.style.cursor = meta ? "grab" : "default";
+    if (three) three.ctl.enabled = !meta && !drag;       // ⌘ + drag is the perturbation, not an orbit
+  }
+  function flash(k) { var el = keyEls[k]; if (!el) return; el.classList.add("on"); setTimeout(function () { el.classList.remove("on"); }, 160); }
+
+  // ---- emotions: palette, voice, particles --------------------------------------------------------------------------------
+  var EMO = {}, tiles = {}, ANIMS = {};
+  function emote(name) { audio(); wsSend(JSON.stringify({ t: "emote", name: name })); flash("emo"); var t = tiles[name]; if (t) { t.classList.add("q"); setTimeout(function () { t.classList.remove("q"); }, 500); } }
+  function buildPalette(anims) {
+    EMO = {}; tiles = {}; ANIMS = {};
+    var gl = $("gridLive"), gp = $("gridPollen"); gl.innerHTML = ""; gp.innerHTML = "";
+    anims.forEach(function (a) {
+      ANIMS[a.name] = a;
+      var b = document.createElement("button"); b.className = "tile" + (a.available ? "" : " off");
+      b.title = a.description + "\n(" + a.uses.join(" · ") + " · " + a.T.toFixed(1) + " s)";
+      var em = document.createElement("span"); em.className = "em"; em.textContent = a.emoji;
+      var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = a.label;
+      var kb = document.createElement("kbd"); kb.textContent = a.key;
+      var bar = document.createElement("i"); bar.className = "bar";
+      b.appendChild(em); b.appendChild(nm); b.appendChild(kb); b.appendChild(bar);
+      if (a.available) { b.onclick = function () { emote(a.name); }; if (a.key) EMO[a.key] = a.name; }
+      (a.group === "live" ? gl : gp).appendChild(b); tiles[a.name] = b;
+      a.sounds.forEach(loadSound);
+    });
+  }
+  // voice: Web Audio, one clip sound at a time
+  var AC = null, master = null, buffers = {}, cur = null, muted = false, vol = 0.8, lastSfx = null, lastCut = null;
+  try { muted = localStorage.getItem("duck.muted") === "1"; var v0 = parseFloat(localStorage.getItem("duck.vol")); if (v0 >= 0 && v0 <= 1) vol = v0; } catch (e) {}
+  function audio() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.gain.value = muted ? 0 : vol; master.connect(AC.destination); } catch (e) { AC = null; } }
+    if (AC && AC.state === "suspended") AC.resume();
+    return AC;
+  }
+  function loadSound(f) {
+    if (!buffers[f]) buffers[f] = fetch("/animations/" + f).then(function (r) { return r.arrayBuffer(); }).then(function (b) {
+      return new Promise(function (res, rej) { var a = audio(); if (!a) return rej(new Error("no audio")); a.decodeAudioData(b, res, rej); });
+    }).catch(function () { delete buffers[f]; return null; });
+    return buffers[f];
+  }
+  function stopSound(fade) { if (!cur || !AC) return; var c = cur; cur = null; try { c.g.gain.setTargetAtTime(0, AC.currentTime, fade / 3); c.src.stop(AC.currentTime + fade * 2); } catch (e) {} }
+  function playSound(f) {
+    if (!audio()) return;
+    loadSound(f).then(function (buf) {
+      if (!buf) return; stopSound(0.03);
+      var src = AC.createBufferSource(), g = AC.createGain(); src.buffer = buf; src.connect(g); g.connect(master); src.start(); cur = { src: src, g: g };
+    });
+  }
+  function setMuted(m) { muted = m; if (master) master.gain.value = muted ? 0 : vol; $("chSound").classList.toggle("on", !muted); $("chSound").textContent = muted ? "🔇" : "🔊"; try { localStorage.setItem("duck.muted", muted ? "1" : "0"); } catch (e) {} }
+  ["pointerdown", "keydown"].forEach(function (ev) { window.addEventListener(ev, audio, { passive: true }); });   // browsers want a gesture first
+  // particles + the bubble over the head
+  function headScreen() {
+    if (!SC || !groups[SC.head] || !three) return null;
+    var v = groups[SC.head].position.clone(); v.z += 0.075; v.project(three.cam);
+    var el = $("vw"); return v.z < 1 ? { x: (v.x + 1) / 2 * el.clientWidth, y: (1 - v.y) / 2 * el.clientHeight } : null;
+  }
+  function burst(fx, n) {
+    var p = headScreen(); if (!p || !fx) return;
+    for (var i = 0; i < n; i++) {
+      var e = document.createElement("span"); e.className = "fxp"; e.textContent = fx;
+      e.style.left = (p.x + (Math.random() - 0.5) * 50) + "px"; e.style.top = (p.y - 8 + (Math.random() - 0.5) * 16) + "px";
+      e.style.setProperty("--dx", ((Math.random() - 0.5) * 130).toFixed(0) + "px"); e.style.setProperty("--rot", ((Math.random() - 0.5) * 50).toFixed(0) + "deg");
+      e.style.animationDelay = (i * 0.11).toFixed(2) + "s"; e.style.fontSize = (22 + Math.random() * 12).toFixed(0) + "px";
+      e.addEventListener("animationend", function () { this.remove(); }); $("fx").appendChild(e);
+    }
+  }
+  var bubbleOn = false;
+  function placeBubble() { if (!bubbleOn) return; var p = headScreen(), b = $("bubble"); if (p) { b.style.left = (p.x + 34) + "px"; b.style.top = (p.y - 10) + "px"; } }
+  var lastAnim = "", lastFxT = 0, lastZzz = 0;
+  function animHud(s) {
+    var a = s.anim, name = a ? a.name : "";
+    if (name !== lastAnim) {
+      if (lastAnim && tiles[lastAnim]) { tiles[lastAnim].classList.remove("on"); tiles[lastAnim].querySelector(".bar").style.width = "0"; }
+      lastAnim = name;
+      if (a) { if (tiles[name]) tiles[name].classList.add("on"); $("bubEm").textContent = a.emoji; $("bubTxt").textContent = a.label; burst(a.fx, 6); lastFxT = performance.now(); }
+      bubbleOn = !!a; $("bubble").classList.toggle("show", bubbleOn); placeBubble();
+    }
+    if (a) {
+      if (tiles[name]) tiles[name].querySelector(".bar").style.width = Math.min(100, 100 * a.t / a.T).toFixed(1) + "%";
+      if (a.T > 4 && performance.now() - lastFxT > 1900 && a.t < a.T - 1) { burst(a.fx, 2); lastFxT = performance.now(); }
+    }
+    if (s.doze > 0.6 && !a && performance.now() - lastZzz > 2100) { burst("💤", 1); lastZzz = performance.now(); }
+    if (s.sfx && lastSfx !== null && s.sfx.id !== lastSfx) playSound(s.sfx.file);
+    lastSfx = s.sfx ? s.sfx.id : 0;
+    if (lastCut !== null && s.sfx_cut !== lastCut) stopSound(0.08);
+    lastCut = s.sfx_cut;
+    $("chAlive").classList.toggle("on", !!s.lively); $("chReact").classList.toggle("on", !!s.react);
+  }
+  $("chAlive").onclick = function () { api("/api/config", { method: "POST", body: JSON.stringify({ lively: !$("chAlive").classList.contains("on") }) }); };
+  $("chReact").onclick = function () { api("/api/config", { method: "POST", body: JSON.stringify({ react: !$("chReact").classList.contains("on") }) }); };
+  $("chSound").onclick = function () { audio(); setMuted(!muted); };
+  $("inVol").value = vol; $("inVol").oninput = function () { vol = +this.value; if (master && !muted) master.gain.value = vol; try { localStorage.setItem("duck.vol", String(vol)); } catch (e) {} };
+  setMuted(muted);
+  // the duck looks at the viewer now and then: tell it where the camera is
+  var camSent = "";
+  setInterval(function () { if (!three || !wsOpen) return; var c = three.cam.position, m = JSON.stringify({ t: "cam", pos: [+c.x.toFixed(2), +c.y.toFixed(2), +c.z.toFixed(2)] }); if (m !== camSent) { camSent = m; wsSend(m); } }, 250);
+
+  // ---- websocket -------------------------------------------------------------------------------------------------------
+  var ws = null, wsOpen = false;
+  function wsSend(m) { if (wsOpen) ws.send(m); }
+  function connect() {
+    ws = new WebSocket("ws://127.0.0.1:" + WS_PORT + "/?token=" + TOKEN);
+    ws.onopen = function () { wsOpen = true; camSent = ""; $("conn").classList.add("ok"); $("connTxt").textContent = "engine connected"; sendKeys(true); };
+    ws.onclose = function () { wsOpen = false; $("conn").classList.remove("ok"); $("connTxt").textContent = "reconnecting…"; setTimeout(connect, 800); };
+    ws.onerror = function () { ws.close(); };
+    ws.onmessage = function (ev) { latest = JSON.parse(ev.data); hud(latest); };
+  }
+
+  // ---- HUD ------------------------------------------------------------------------------------------------------------
+  var STATE_TXT = { stand: ["Standing", ""], walk: ["Walking", ""], run: ["Running", "straight only"], sprint: ["Sprinting", "straight only · flat out"], stopping: ["Stopping", ""],
+                    sit_down: ["Sitting down", "S again to stand"], seated: ["Seated", "S or ▲ to stand up"], stand_up: ["Standing up", ""],
+                    jump: ["Jump", "launch flag"], roulade: ["Front flip", ""], recover: ["Getting up", "stand-up policy"], fallen: ["Fell", "no get-up policy · ⏎ resets"],
+                    dead: ["Playing dead", "policies off · any key wakes it"] };
+  var lastState = "", toastT = 0, lastNotice = "";
+  function hud(s) {
+    animHud(s);
+    var emo = s.anim && s.state !== "dead" && s.state !== "jump" && s.state !== "roulade" ? s.anim : null, key = s.state + (emo ? "+" + emo.name : "");
+    if (key !== lastState) { lastState = key; $("state").className = "state glass " + s.state + (s.state === "sprint" ? " run" : "") + (emo ? " emote" : ""); var t = STATE_TXT[s.state] || [s.state, ""]; $("stateTxt").textContent = emo ? emo.emoji + " " + emo.label : t[0]; $("stateSub").textContent = t[1]; }
+    var sub = s.sit_pending ? "then sit" : (STATE_TXT[s.state] || ["", ""])[1];
+    if (emo) sub = (s.state === "seated" || s.state === "sit_down" ? "seated · " : "") + "emotion on the " + (s.role === "sitstand" ? "sit-stand" : "walk") + " policy";
+    if (s.down && (s.state === "walk" || s.state === "stand" || s.state === "stopping")) sub = "fell · getting up by itself";
+    if (s.trick && s.trick.kind === "jump") sub = s.trick.landed ? "landed · rose " + s.trick.rise_mm.toFixed(0) + " mm" : (s.trick.airborne ? "airborne" : (s.trick.launch ? "launch flag 1" : "support"));
+    if (s.trick && s.trick.kind === "roulade") sub = "rolled " + s.trick.deg.toFixed(0) + "°";
+    $("stateSub").textContent = sub;
+    $("fell").classList.toggle("on", s.state === "fallen" || s.state === "recover" || s.down);
+    $("polname").textContent = s.policy.replace(/_hd1910|\.onnx/g, "").replace(/_/g, " ");
+    $("lvlTxt").textContent = s.level_label;
+    var segs = $("lvl").children; for (var i = 0; i < segs.length; i++) { segs[i].className = (i < s.level ? "on" : "") + ((s.state === "run" || s.state === "sprint") && i < s.level ? " run" : ""); }
+    $("vx").textContent = s.v[0].toFixed(2); $("vxc").textContent = s.cmd[0].toFixed(2);
+    $("vy").textContent = s.v[1].toFixed(2); $("vyc").textContent = s.cmd[1].toFixed(2);
+    $("wz").textContent = s.wz.toFixed(2); $("wzc").textContent = s.cmd[2].toFixed(2);
+    var vmax = 1.3, v = Math.max(-vmax, Math.min(vmax, s.v[0])), c = Math.max(-vmax, Math.min(vmax, s.cmd[0]));
+    var b = $("sbv"); if (v >= 0) { b.style.left = "50%"; b.style.width = (50 * v / vmax) + "%"; } else { b.style.left = (50 + 50 * v / vmax) + "%"; b.style.width = (-50 * v / vmax) + "%"; }
+    b.style.background = (s.state === "run" || s.state === "sprint") ? "var(--purple)" : "var(--blue)";
+    $("sbc").style.left = "calc(" + (50 + 50 * c / vmax) + "% - 1px)";
+    $("z").textContent = (s.z * 1000).toFixed(0); $("tilt").textContent = s.tilt.toFixed(0);
+    $("odo").textContent = s.odometer.toFixed(2); $("falls").textContent = s.falls;
+    $("vin").textContent = s.vin.toFixed(2); $("rate").textContent = ((s.rate || 0) / 50).toFixed(2); $("stepms").textContent = s.step_ms.toFixed(1);
+    $("kSpace").classList.toggle("off", !s.has.jump); $("kR").classList.toggle("off", !s.has.roulade);
+    if (s.perturb && drag) { $("stateSub").textContent = "pull " + s.perturb.F.toFixed(1) + " N"; }
+    if (s.notice && s.notice !== lastNotice) { lastNotice = s.notice; toast(s.notice); }
+    if (!s.notice) lastNotice = "";
+  }
+  function toast(t) { var el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { el.classList.remove("show"); }, 2200); }
+
+  // ---- settings popover ---------------------------------------------------------------------------------------------------
+  var ROLES = { walk: "selWalk", run: "selRun", sprint: "selSprint", sitstand: "selSitstand", jump: "selJump", roulade: "selRoulade", recovery: "selRecovery" };
+  var OPTIONAL = { sprint: 1, jump: 1, roulade: 1, recovery: 1 };
+  function fillPolicies(h) {
+    Object.keys(ROLES).forEach(function (role) {
+      var sel = $(ROLES[role]); sel.innerHTML = "";
+      var list = h.policies[role] || [];
+      if (OPTIONAL[role]) { var o = document.createElement("option"); o.value = ""; o.textContent = list.length ? "— off —" : "no export yet"; if (!h.chosen[role]) o.selected = true; sel.appendChild(o); }
+      list.forEach(function (f) { var o = document.createElement("option"); o.value = f; o.textContent = f.replace(/_hd1910|\.onnx/g, ""); if (h.chosen[role] === f) o.selected = true; sel.appendChild(o); });
+      sel.disabled = list.length === 0;
+    });
+    $("inLag").value = h.cfg.lag; $("inVin").value = h.cfg.vin; $("inSag").value = h.cfg.sag_gain; $("inAuto").checked = !!h.cfg.auto_reset;
+    $("inSelf").checked = h.cfg.walk_self_recovery !== false;
+  }
+  $("gear").onclick = function () { $("pop").classList.toggle("show"); };
+  $("inFollow").onchange = function () { follow = $("inFollow").checked; };
+  $("btnReset").onclick = function () { api("/api/reset", { method: "POST", body: "{}" }); };
+  $("btnSeated").onclick = function () { api("/api/reset", { method: "POST", body: JSON.stringify({ seated: true }) }); };
+  $("btnApply").onclick = function () {
+    var pol = {}; Object.keys(ROLES).forEach(function (role) { pol[role] = $(ROLES[role]).value; });   // "" = optional role off
+    var cfg = { lag: +$("inLag").value, vin: +$("inVin").value, sag_gain: +$("inSag").value, auto_reset: $("inAuto").checked, walk_self_recovery: $("inSelf").checked };
+    api("/api/policies", { method: "POST", body: JSON.stringify(pol) }).then(function () { return api("/api/config", { method: "POST", body: JSON.stringify(cfg) }); })
+      .then(function () { toast("applied · duck reset"); $("pop").classList.remove("show"); $("lag").textContent = cfg.lag; });
+  };
+  // clicking the 3-D view must not steal the keyboard: the page itself owns it
+  document.addEventListener("mousedown", function (e) { if (e.target.tagName !== "SELECT" && e.target.tagName !== "INPUT") { setTimeout(function () { if (document.activeElement && document.activeElement.blur && document.activeElement.tagName !== "BODY") document.activeElement.blur(); }, 0); } });
+
+  // ---- boot -------------------------------------------------------------------------------------------------------------
+  initThree();
+  api("/api/health").then(function (r) { return r.json(); }).then(function (h) { WS_PORT = String(h.ws_port); fillPolicies(h); connect(); });
+  api("/api/scene").then(function (r) { return r.json(); }).then(buildScene);
+  window.addEventListener("keydown", function (e) { if (e.code === "Space" && e.target === document.body) e.preventDefault(); });
+})();
+</script>
+</body>
+</html>

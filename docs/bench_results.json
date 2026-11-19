@@ -1,0 +1,2172 @@
+{
+ "date": "2026-11-16 14:52",
+ "policies": {
+  "walk": "velstand_allcoll_hd1910_iter21495.onnx",
+  "run": "run_v3_allcoll_hd1910_iter5999.onnx",
+  "sprint": "sprint_max_allcoll_hd1910_iter7998.onnx",
+  "sitstand": "sitstand_fast_hd1910_iter5499.onnx",
+  "jump": "jump_hd1910_iter1500.onnx",
+  "roulade": "roulade_head_hd1910_iter7000.onnx",
+  "recovery": "standup_hd1910_iter9999.onnx"
+ },
+ "plant": {
+  "physics_dt": 0.005,
+  "decimation": 4,
+  "vin": 7.7,
+  "sag_gain": 0.1,
+  "delay_steps": [
+   3,
+   6
+  ],
+  "kp_fw": 5.0,
+  "force_limit_Nm": 1.016271752963454,
+  "mass_kg": 0.7372431799999999
+ },
+ "levels": [
+  {
+   "walk": 0.2,
+   "run": 0.3,
+   "yaw": 0.5,
+   "label": "1 \u00b7 stroll"
+  },
+  {
+   "walk": 0.3,
+   "run": 0.5,
+   "yaw": 0.6,
+   "label": "2 \u00b7 easy"
+  },
+  {
+   "walk": 0.4,
+   "run": 0.7,
+   "yaw": 0.7,
+   "label": "3 \u00b7 brisk"
+  },
+  {
+   "walk": 0.5,
+   "run": 0.8,
+   "yaw": 0.8,
+   "label": "4 \u00b7 quick"
+  },
+  {
+   "walk": 0.6,
+   "run": "sprint",
+   "yaw": 0.8,
+   "label": "5 \u00b7 sprint"
+  }
+ ],
+ "quick": false,
+ "step": {
+  "n": 1500,
+  "total_ms": {
+   "median": 0.6190209969645366,
+   "p95": 0.7800732491887173,
+   "max": 1.0488330153748393
+  },
+  "physics_ms": {
+   "median": 0.4756245034513995,
+   "p95": 0.5999431552481838
+  },
+  "policy_ms": {
+   "median": 0.03016649861820042,
+   "p95": 0.05741810746258125
+  },
+  "budget_ms": 20.0,
+  "realtime_capacity": 32.30908175663352
+ },
+ "speed": {
+  "walk": [
+   {
+    "cmd": -0.4,
+    "achieved_mean": -0.4468211619505922,
+    "achieved_min": -0.4556288840192669,
+    "achieved_max": -0.43630261715880053,
+    "z_mean": 0.12080848464934217,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": -0.3,
+    "achieved_mean": -0.3497609749701555,
+    "achieved_min": -0.36224877466570143,
+    "achieved_max": -0.3366910895687721,
+    "z_mean": 0.11980506316032538,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": -0.2,
+    "achieved_mean": -0.23773260966368803,
+    "achieved_min": -0.23953622450750717,
+    "achieved_max": -0.23618540617232725,
+    "z_mean": 0.1192789270312776,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": -0.1,
+    "achieved_mean": -0.11655293924861446,
+    "achieved_min": -0.12164823181628659,
+    "achieved_max": -0.10953937125663228,
+    "z_mean": 0.11817370752244526,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.1,
+    "achieved_mean": 0.12976039975814171,
+    "achieved_min": 0.12735423973710563,
+    "achieved_max": 0.13252283878974666,
+    "z_mean": 0.12047260884003148,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.2,
+    "achieved_mean": 0.24169518621097372,
+    "achieved_min": 0.2350443750469953,
+    "achieved_max": 0.24895625503234045,
+    "z_mean": 0.12136067241042485,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.3,
+    "achieved_mean": 0.34133351125549916,
+    "achieved_min": 0.338538599984301,
+    "achieved_max": 0.34477920878838736,
+    "z_mean": 0.12125003403822017,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.4,
+    "achieved_mean": 0.41618647924327334,
+    "achieved_min": 0.4107325293614844,
+    "achieved_max": 0.4199010472719164,
+    "z_mean": 0.12069952584103998,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.5,
+    "achieved_mean": 0.5270064932045337,
+    "achieved_min": 0.5207810398741829,
+    "achieved_max": 0.5298572620927918,
+    "z_mean": 0.12196880412903005,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.6,
+    "achieved_mean": 0.6075906626784925,
+    "achieved_min": 0.5987568568454442,
+    "achieved_max": 0.6131402559430731,
+    "z_mean": 0.12151815571455635,
+    "falls": 0,
+    "trials": 4
+   }
+  ],
+  "run": [
+   {
+    "cmd": 0.2,
+    "achieved_mean": 0.16890501822593157,
+    "achieved_min": 0.1677876799415508,
+    "achieved_max": 0.17034320664737737,
+    "z_mean": 0.11778772022368211,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.3,
+    "achieved_mean": 0.3006731644281609,
+    "achieved_min": 0.2940133347717061,
+    "achieved_max": 0.30911749307484787,
+    "z_mean": 0.11915052897386069,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.4,
+    "achieved_mean": 0.37461893548786707,
+    "achieved_min": 0.37325184528885963,
+    "achieved_max": 0.3760010086753922,
+    "z_mean": 0.12073975566907488,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.5,
+    "achieved_mean": 0.4746575423299654,
+    "achieved_min": 0.47386210789176053,
+    "achieved_max": 0.47533845402379177,
+    "z_mean": 0.12133388893648378,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.6,
+    "achieved_mean": 0.554049239094224,
+    "achieved_min": 0.5513181625541763,
+    "achieved_max": 0.5569365037034671,
+    "z_mean": 0.12106139009324125,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.7,
+    "achieved_mean": 0.6336811860485104,
+    "achieved_min": 0.6232646790976485,
+    "achieved_max": 0.6495652636325456,
+    "z_mean": 0.12068851307207568,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.8,
+    "achieved_mean": 0.7145638526572773,
+    "achieved_min": 0.666007899604691,
+    "achieved_max": 0.8031648235978057,
+    "z_mean": 0.12009046895791158,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.9,
+    "achieved_mean": 0.8174707745139391,
+    "achieved_min": 0.7653961024353289,
+    "achieved_max": 0.8820848665038757,
+    "z_mean": 0.11654837720772492,
+    "falls": 1,
+    "trials": 4
+   },
+   {
+    "cmd": 1.0,
+    "achieved_mean": 0.5945308536306478,
+    "achieved_min": 0.4506923481360836,
+    "achieved_max": 0.8184890225435842,
+    "z_mean": 0.10961857984850955,
+    "falls": 3,
+    "trials": 4
+   },
+   {
+    "cmd": 1.1,
+    "achieved_mean": 0.5244255716017463,
+    "achieved_min": 0.4214902116351464,
+    "achieved_max": 0.6259538198622008,
+    "z_mean": 0.10610512405588277,
+    "falls": 4,
+    "trials": 4
+   }
+  ],
+  "sprint": [
+   {
+    "cmd": 1.2,
+    "achieved_mean": 1.3265035381029584,
+    "achieved_min": 1.238995562036113,
+    "achieved_max": 1.3882093650182954,
+    "z_mean": 0.12087488337238558,
+    "falls": 0,
+    "trials": 4
+   }
+  ]
+ },
+ "turn": {
+  "in_place": [
+   {
+    "cmd": -1.0,
+    "achieved_mean": -1.3606754723517989,
+    "achieved_min": -1.4092105486844508,
+    "achieved_max": -1.2771159672972405,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": -0.75,
+    "achieved_mean": -1.045693417841106,
+    "achieved_min": -1.081761611772997,
+    "achieved_max": -0.9878940096112545,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": -0.5,
+    "achieved_mean": -0.7014277792445922,
+    "achieved_min": -0.8059278340764191,
+    "achieved_max": -0.5896434180294133,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": -0.25,
+    "achieved_mean": -0.38614822990354614,
+    "achieved_min": -0.4114505652455674,
+    "achieved_max": -0.36442625524385314,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.25,
+    "achieved_mean": 0.31473923595179476,
+    "achieved_min": 0.2828781736815851,
+    "achieved_max": 0.346262723523068,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.5,
+    "achieved_mean": 0.6979980178950476,
+    "achieved_min": 0.6369576442249998,
+    "achieved_max": 0.7781951082874842,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 0.75,
+    "achieved_mean": 1.1078396414340046,
+    "achieved_min": 0.9870123983802804,
+    "achieved_max": 1.1868283352735138,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "cmd": 1.0,
+    "achieved_mean": 1.4815784321329533,
+    "achieved_min": 1.4204339403605122,
+    "achieved_max": 1.5798676965021252,
+    "falls": 0,
+    "trials": 4
+   }
+  ],
+  "with_forward": [
+   {
+    "vx_cmd": 0.35,
+    "yaw_cmd": 0.5,
+    "vx": 0.3793066198755647,
+    "wz": 0.272465280848451,
+    "falls": 0,
+    "trials": 4
+   },
+   {
+    "vx_cmd": 0.35,
+    "yaw_cmd": 0.85,
+    "vx": 0.38296409319002234,
+    "wz": 0.3547177914861157,
+    "falls": 0,
+    "trials": 4
+   }
+  ]
+ },
+ "transitions": {
+  "stand_z": [
+   0.11633323733434123,
+   0.11651614491118795,
+   0.11639965364146139,
+   0.11633977012492654,
+   0.11639107885520199,
+   0.11632321664930859
+  ],
+  "sit": [
+   {
+    "t_settle": 0.27999999999999997,
+    "z_final": 0.06210163974758659,
+    "tilt_final": 1.4839603773738959,
+    "fell": false
+   },
+   {
+    "t_settle": 0.26,
+    "z_final": 0.061951964393387925,
+    "tilt_final": 1.690698645584342,
+    "fell": false
+   },
+   {
+    "t_settle": 0.27999999999999997,
+    "z_final": 0.061948250487905726,
+    "tilt_final": 1.7043294313305042,
+    "fell": false
+   },
+   {
+    "t_settle": 0.27999999999999997,
+    "z_final": 0.062061631449480265,
+    "tilt_final": 1.927608966679528,
+    "fell": false
+   },
+   {
+    "t_settle": 0.27999999999999997,
+    "z_final": 0.06207555709417238,
+    "tilt_final": 1.4791920542897063,
+    "fell": false
+   },
+   {
+    "t_settle": 0.27999999999999997,
+    "z_final": 0.06209125452704349,
+    "tilt_final": 1.4461132830980659,
+    "fell": false
+   }
+  ],
+  "stand": [
+   {
+    "t_up": 0.2,
+    "z_final": 0.11633966878760386,
+    "tilt_final": 2.242000203699487,
+    "fell": false,
+    "standing": true
+   },
+   {
+    "t_up": 0.18000000000000002,
+    "z_final": 0.11652137317755522,
+    "tilt_final": 1.7543000032245544,
+    "fell": false,
+    "standing": true
+   },
+   {
+    "t_up": 0.18000000000000002,
+    "z_final": 0.1164731207713909,
+    "tilt_final": 2.237992206411221,
+    "fell": false,
+    "standing": true
+   },
+   {
+    "t_up": 0.2,
+    "z_final": 0.11636984296075135,
+    "tilt_final": 1.453713721228712,
+    "fell": false,
+    "standing": true
+   },
+   {
+    "t_up": 0.2,
+    "z_final": 0.11644576609796883,
+    "tilt_final": 1.3464144005247158,
+    "fell": false,
+    "standing": true
+   },
+   {
+    "t_up": 0.2,
+    "z_final": 0.11640607764359451,
+    "tilt_final": 1.8248585175768148,
+    "fell": false,
+    "standing": true
+   }
+  ],
+  "stop": [
+   {
+    "level": 1,
+    "role": "walk",
+    "cmd": 0.2,
+    "stop_s": 0.7733333333333334,
+    "stop_s_max": 0.8200000000000001,
+    "dist_m": 0.056098013622817806,
+    "dist_m_max": 0.06464825998270766,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 1,
+    "role": "run",
+    "cmd": 0.3,
+    "stop_s": 1.04,
+    "stop_s_max": 1.1400000000000001,
+    "dist_m": 0.1501238422347454,
+    "dist_m_max": 0.1969842962870502,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 2,
+    "role": "walk",
+    "cmd": 0.3,
+    "stop_s": 0.8466666666666667,
+    "stop_s_max": 0.9,
+    "dist_m": 0.07947168446951083,
+    "dist_m_max": 0.08522545628879608,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 2,
+    "role": "run",
+    "cmd": 0.5,
+    "stop_s": 1.11,
+    "stop_s_max": 1.22,
+    "dist_m": 0.21522588067508422,
+    "dist_m_max": 0.2768453451737223,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 3,
+    "role": "walk",
+    "cmd": 0.4,
+    "stop_s": 0.9266666666666667,
+    "stop_s_max": 0.96,
+    "dist_m": 0.11278207953737207,
+    "dist_m_max": 0.12190343566988848,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 3,
+    "role": "run",
+    "cmd": 0.7,
+    "stop_s": 1.2566666666666666,
+    "stop_s_max": 1.32,
+    "dist_m": 0.2992567926267773,
+    "dist_m_max": 0.3275563147448058,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 4,
+    "role": "walk",
+    "cmd": 0.5,
+    "stop_s": 1.0166666666666668,
+    "stop_s_max": 1.12,
+    "dist_m": 0.1575682843896574,
+    "dist_m_max": 0.18489237257193863,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 4,
+    "role": "run",
+    "cmd": 0.8,
+    "stop_s": 1.4400000000000002,
+    "stop_s_max": 1.82,
+    "dist_m": 0.4583010042707089,
+    "dist_m_max": 0.6707497625412301,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 5,
+    "role": "walk",
+    "cmd": 0.6,
+    "stop_s": 1.1033333333333333,
+    "stop_s_max": 1.1400000000000001,
+    "dist_m": 0.2096744149385339,
+    "dist_m_max": 0.2227830798438158,
+    "falls": 0,
+    "trials": 6
+   },
+   {
+    "level": 5,
+    "role": "sprint",
+    "cmd": 1.2,
+    "stop_s": 1.43,
+    "stop_s_max": 1.76,
+    "dist_m": 0.4772996230593602,
+    "dist_m_max": 0.5625688320543297,
+    "falls": 1,
+    "trials": 6
+   }
+  ],
+  "handover": {
+   "run": {
+    "falls": 0,
+    "trials": 6,
+    "level": 3
+   },
+   "sprint": {
+    "falls": 1,
+    "trials": 6,
+    "level": 5
+   }
+  }
+ },
+ "jump": {
+  "trials": 12,
+  "rows": [
+   {
+    "trial": 0,
+    "took_off": true,
+    "rise_mm": 25.21003714390267,
+    "air_ms": 120.0,
+    "t_land": 0.36,
+    "t_back": 0.5,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 1,
+    "took_off": true,
+    "rise_mm": 24.544765255747752,
+    "air_ms": 100.0,
+    "t_land": 0.36,
+    "t_back": 0.5,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 2,
+    "took_off": true,
+    "rise_mm": 25.07439532257018,
+    "air_ms": 120.0,
+    "t_land": 0.36,
+    "t_back": 0.5,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 3,
+    "took_off": true,
+    "rise_mm": 24.909693418794053,
+    "air_ms": 120.0,
+    "t_land": 0.36,
+    "t_back": 0.5,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 4,
+    "took_off": true,
+    "rise_mm": 23.17608586565162,
+    "air_ms": 100.0,
+    "t_land": 0.36,
+    "t_back": 0.5,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 5,
+    "took_off": true,
+    "rise_mm": 26.559208410130054,
+    "air_ms": 100.0,
+    "t_land": 0.36,
+    "t_back": 0.46,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 6,
+    "took_off": true,
+    "rise_mm": 22.22225282550405,
+    "air_ms": 100.0,
+    "t_land": 0.32,
+    "t_back": 0.46,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 7,
+    "took_off": true,
+    "rise_mm": 22.307190711389353,
+    "air_ms": 100.0,
+    "t_land": 0.32,
+    "t_back": 0.46,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 8,
+    "took_off": true,
+    "rise_mm": 21.74119085090688,
+    "air_ms": 100.0,
+    "t_land": 0.32,
+    "t_back": 0.46,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 9,
+    "took_off": true,
+    "rise_mm": 25.140628961507954,
+    "air_ms": 120.0,
+    "t_land": 0.36,
+    "t_back": 0.5,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 10,
+    "took_off": true,
+    "rise_mm": 22.302350361588452,
+    "air_ms": 100.0,
+    "t_land": 0.32,
+    "t_back": 0.46,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 11,
+    "took_off": true,
+    "rise_mm": 23.218848392945787,
+    "air_ms": 100.0,
+    "t_land": 0.32,
+    "t_back": 0.44,
+    "state_after": "stand",
+    "standing": true,
+    "fell": false
+   }
+  ],
+  "takeoff": 12,
+  "standing": 12,
+  "fell": 0,
+  "rise_mm": {
+   "mean": 23.8672206267199,
+   "min": 21.74119085090688,
+   "max": 26.559208410130054
+  }
+ },
+ "roulade": {
+  "trials": 12,
+  "rows": [
+   {
+    "trial": 0,
+    "peak_deg": 367.4893161291215,
+    "t_back": 1.78,
+    "state_after": "stand",
+    "t_upright": 1.78,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 1,
+    "peak_deg": 369.1473784537178,
+    "t_back": 1.8,
+    "state_after": "stand",
+    "t_upright": 1.8,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 2,
+    "peak_deg": 368.34437331279986,
+    "t_back": 1.8,
+    "state_after": "stand",
+    "t_upright": 1.8,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 3,
+    "peak_deg": 365.7937404725245,
+    "t_back": 2.36,
+    "state_after": "stand",
+    "t_upright": 2.36,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 4,
+    "peak_deg": 370.5707205043319,
+    "t_back": 1.78,
+    "state_after": "stand",
+    "t_upright": 1.78,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 5,
+    "peak_deg": 366.759057033094,
+    "t_back": 2.36,
+    "state_after": "stand",
+    "t_upright": 2.36,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 6,
+    "peak_deg": 370.6977888128271,
+    "t_back": 1.78,
+    "state_after": "stand",
+    "t_upright": 1.78,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 7,
+    "peak_deg": 367.795341445499,
+    "t_back": 1.8,
+    "state_after": "stand",
+    "t_upright": 1.8,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 8,
+    "peak_deg": 370.60204231159355,
+    "t_back": 1.8,
+    "state_after": "stand",
+    "t_upright": 1.8,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 9,
+    "peak_deg": 364.12941225998503,
+    "t_back": 1.76,
+    "state_after": "stand",
+    "t_upright": 1.76,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 10,
+    "peak_deg": 369.953294252107,
+    "t_back": 1.84,
+    "state_after": "stand",
+    "t_upright": 1.84,
+    "standing": true,
+    "fell": false
+   },
+   {
+    "trial": 11,
+    "peak_deg": 366.8911886566151,
+    "t_back": 2.42,
+    "state_after": "stand",
+    "t_upright": 2.42,
+    "standing": true,
+    "fell": false
+   }
+  ],
+  "completed": 12,
+  "standing": 12,
+  "fell": 0,
+  "peak_deg": {
+   "mean": 368.18113780368463,
+   "min": 364.12941225998503,
+   "max": 370.6977888128271
+  },
+  "t_upright": {
+   "mean": 1.9400000000000002,
+   "max": 2.42
+  }
+ },
+ "recovery": {
+  "levels": [
+   0.5,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0
+  ],
+  "repeats": 4,
+  "push": {
+   "stand \u00b7 walk policy gets up": [
+    {
+     "level": 0.5,
+     "fell_frac": 0.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": null,
+     "fell": 0,
+     "repeats": 4,
+     "t_upright_mean": null
+    },
+    {
+     "level": 1.0,
+     "fell_frac": 0.5,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 2,
+     "repeats": 4,
+     "t_upright_mean": 0.63
+    },
+    {
+     "level": 1.5,
+     "fell_frac": 0.5,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 2,
+     "repeats": 4,
+     "t_upright_mean": 0.72
+    },
+    {
+     "level": 2.0,
+     "fell_frac": 0.5,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 2,
+     "repeats": 4,
+     "t_upright_mean": 0.59
+    },
+    {
+     "level": 2.5,
+     "fell_frac": 0.75,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 3,
+     "repeats": 4,
+     "t_upright_mean": 0.6000000000000001
+    },
+    {
+     "level": 3.0,
+     "fell_frac": 0.75,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 3,
+     "repeats": 4,
+     "t_upright_mean": 0.7133333333333333
+    }
+   ],
+   "walk 0.3 \u00b7 walk policy gets up": [
+    {
+     "level": 0.5,
+     "fell_frac": 0.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": null,
+     "fell": 0,
+     "repeats": 4,
+     "t_upright_mean": null
+    },
+    {
+     "level": 1.0,
+     "fell_frac": 0.5,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 2,
+     "repeats": 4,
+     "t_upright_mean": 1.34
+    },
+    {
+     "level": 1.5,
+     "fell_frac": 0.5,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 2,
+     "repeats": 4,
+     "t_upright_mean": 1.19
+    },
+    {
+     "level": 2.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 0.75,
+     "recovered_after_fall_frac": 0.75,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.7866666666666666
+    },
+    {
+     "level": 2.5,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.9549999999999998
+    },
+    {
+     "level": 3.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.7650000000000001
+    }
+   ],
+   "walk 0.3 \u00b7 stand-up policy": [
+    {
+     "level": 0.5,
+     "fell_frac": 0.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": null,
+     "fell": 0,
+     "repeats": 4,
+     "t_upright_mean": null
+    },
+    {
+     "level": 1.0,
+     "fell_frac": 0.25,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 1,
+     "repeats": 4,
+     "t_upright_mean": 1.3
+    },
+    {
+     "level": 1.5,
+     "fell_frac": 0.5,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 2,
+     "repeats": 4,
+     "t_upright_mean": 0.9400000000000001
+    },
+    {
+     "level": 2.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.8
+    },
+    {
+     "level": 2.5,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.885
+    },
+    {
+     "level": 3.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.805
+    }
+   ],
+   "run 0.7 \u00b7 stand-up policy": [
+    {
+     "level": 0.5,
+     "fell_frac": 0.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": null,
+     "fell": 0,
+     "repeats": 4,
+     "t_upright_mean": null
+    },
+    {
+     "level": 1.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 1.42
+    },
+    {
+     "level": 1.5,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 1.28
+    },
+    {
+     "level": 2.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 1.035
+    },
+    {
+     "level": 2.5,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.905
+    },
+    {
+     "level": 3.0,
+     "fell_frac": 1.0,
+     "upright_after_2s_frac": 1.0,
+     "recovered_after_fall_frac": 1.0,
+     "fell": 4,
+     "repeats": 4,
+     "t_upright_mean": 0.985
+    }
+   ]
+  },
+  "getup": {
+   "walk policy (VelStand) at zero twist / prone": {
+    "policy": "walk policy (VelStand) at zero twist",
+    "family": "prone",
+    "success": 4,
+    "repeats": 4,
+    "t_up_mean": 0.395,
+    "t_up_max": 0.4
+   },
+   "walk policy (VelStand) at zero twist / supine": {
+    "policy": "walk policy (VelStand) at zero twist",
+    "family": "supine",
+    "success": 4,
+    "repeats": 4,
+    "t_up_mean": 0.495,
+    "t_up_max": 0.52
+   },
+   "walk policy (VelStand) at zero twist / side": {
+    "policy": "walk policy (VelStand) at zero twist",
+    "family": "side",
+    "success": 4,
+    "repeats": 4,
+    "t_up_mean": 0.64,
+    "t_up_max": 0.78
+   },
+   "stand-up policy / prone": {
+    "policy": "stand-up policy",
+    "family": "prone",
+    "success": 4,
+    "repeats": 4,
+    "t_up_mean": 0.485,
+    "t_up_max": 0.74
+   },
+   "stand-up policy / supine": {
+    "policy": "stand-up policy",
+    "family": "supine",
+    "success": 4,
+    "repeats": 4,
+    "t_up_mean": 0.53,
+    "t_up_max": 0.54
+   },
+   "stand-up policy / side": {
+    "policy": "stand-up policy",
+    "family": "side",
+    "success": 4,
+    "repeats": 4,
+    "t_up_mean": 0.54,
+    "t_up_max": 0.5800000000000001
+   }
+  }
+ },
+ "sequence": {
+  "trials": 8,
+  "falls_total": 4,
+  "clean_trials": 4,
+  "segments": [
+   "stand",
+   "walk \u25b2",
+   "run \u2318\u25b2",
+   "release",
+   "sit S",
+   "stand S",
+   "turn \u25c0",
+   "\u25b2+\u25b6",
+   "back \u25bc",
+   "sidestep \u2325\u25c0",
+   "release",
+   "jump space",
+   "flip R",
+   "sprint \u2318\u25b2 (D D)",
+   "release"
+  ],
+  "rows": [
+   {
+    "trial": 0,
+    "falls": 1,
+    "dist": 14.58524390088536,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.0008513383686242808,
+      "wz": -0.012349575330144686,
+      "z": 0.11642441236909727,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.42072157496029156,
+      "wz": -0.09549192509038736,
+      "z": 0.12101936469920072,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6210454981268095,
+      "wz": 0.006843169714620913,
+      "z": 0.12040532930324693,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0031183087110475986,
+      "wz": 0.04161496130112347,
+      "z": 0.11682183364262284,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 0.00013922535615022263,
+      "wz": 0.001183203947055369,
+      "z": 0.06223627527103723,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": -7.874401754231564e-05,
+      "wz": -0.00682359416299842,
+      "z": 0.11647555489297255,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": -0.006069804502699722,
+      "wz": 1.0653656082051841,
+      "z": 0.12027136261728275,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.4260758250426664,
+      "wz": -0.7404743593739417,
+      "z": 0.11985134118899907,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.4345612543648291,
+      "wz": -0.13722283742596397,
+      "z": 0.1210547779236935,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.022454968966559033,
+      "wz": -0.37639345865063106,
+      "z": 0.11843571544281005,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.00018523370117573497,
+      "wz": -0.0037564554654578902,
+      "z": 0.11636093814106435,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": -0.0002733217467864734,
+      "wz": -0.005933334240916076,
+      "z": 0.11695432694043126,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.0015843155446017576,
+      "wz": 0.020483956110365797,
+      "z": 0.11718164168330737,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.3751545852731266,
+      "wz": 0.09549805596739121,
+      "z": 0.12271277578019864,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.0005789803628962623,
+      "wz": 0.051165540218716894,
+      "z": 0.11662066121189285,
+      "state": "stand",
+      "falls": 1
+     }
+    ]
+   },
+   {
+    "trial": 1,
+    "falls": 0,
+    "dist": 13.987098711527786,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.0004059508769279472,
+      "wz": -0.00798121486685051,
+      "z": 0.116617463955028,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.40962614140211456,
+      "wz": -0.06817846382373845,
+      "z": 0.12157417281718498,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6593550068194376,
+      "wz": 0.01165273497215758,
+      "z": 0.12160157823860564,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.001158201916494785,
+      "wz": 0.021753887700024243,
+      "z": 0.11596974205278937,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 1.4711873949366447e-05,
+      "wz": 0.0015685197982735675,
+      "z": 0.06188717381692964,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": -0.000587818114655151,
+      "wz": -0.0068663758946622255,
+      "z": 0.1166046165694097,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": 0.0022153993409133417,
+      "wz": 1.1041999341133693,
+      "z": 0.11918787969590744,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.4030702086763812,
+      "wz": -0.5384095028870494,
+      "z": 0.12220974551422517,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.4634404764035078,
+      "wz": 0.009371559641153547,
+      "z": 0.1207700665755017,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.027813718317686822,
+      "wz": -0.09170320242820583,
+      "z": 0.1172844083582961,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.00032750488736466027,
+      "wz": -0.022171235727237136,
+      "z": 0.11606177896847804,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": 0.0003012127925457755,
+      "wz": -0.002189697860078173,
+      "z": 0.116956603506619,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.002261229894822161,
+      "wz": 0.027062669899426687,
+      "z": 0.11730662113537119,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.218330451480708,
+      "wz": 0.21443804153644563,
+      "z": 0.11685461052747467,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0032069973088224863,
+      "wz": 0.011689356977339627,
+      "z": 0.11641945674368522,
+      "state": "stand",
+      "falls": 0
+     }
+    ]
+   },
+   {
+    "trial": 2,
+    "falls": 0,
+    "dist": 14.273435524944151,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.000656709722853634,
+      "wz": -0.005545605709654078,
+      "z": 0.11659679830129636,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.4181727188707718,
+      "wz": -0.10129032919897032,
+      "z": 0.1204003951427933,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6261306569496495,
+      "wz": -0.0312976840298832,
+      "z": 0.12064939182587799,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0038278404013762086,
+      "wz": 0.023521501355605764,
+      "z": 0.11693194056713076,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 1.5576155277010604e-05,
+      "wz": -0.0001274875353969058,
+      "z": 0.06206044564444726,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": 0.000548203853786046,
+      "wz": 0.00396745254118829,
+      "z": 0.11656865000652315,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": 0.0010760794779711422,
+      "wz": 1.1012276035141144,
+      "z": 0.11970385631217904,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.41981337926315626,
+      "wz": -0.6289845600580162,
+      "z": 0.12057639587098894,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.45755770530105283,
+      "wz": -0.10614428930711764,
+      "z": 0.12081201051276291,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.026843707369001445,
+      "wz": -0.24224318070554005,
+      "z": 0.11853670092730878,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.00019976053840024412,
+      "wz": -0.015099425088063494,
+      "z": 0.11585380386661434,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": 8.65810010477236e-05,
+      "wz": -0.004681755825659782,
+      "z": 0.11677527917429925,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.002024416464984698,
+      "wz": 0.018636629491519258,
+      "z": 0.1173327435015981,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.2680288193849751,
+      "wz": 0.22257225855301876,
+      "z": 0.11832876220537696,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.004797504233232111,
+      "wz": 0.07624127667426805,
+      "z": 0.11649302927796013,
+      "state": "stand",
+      "falls": 0
+     }
+    ]
+   },
+   {
+    "trial": 3,
+    "falls": 1,
+    "dist": 14.64346523079487,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.000565034534369409,
+      "wz": -0.007438698992626802,
+      "z": 0.11662276629864209,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.4101298578998228,
+      "wz": -0.13324973806342252,
+      "z": 0.1213425707944317,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6756017341388797,
+      "wz": -0.007817395275504357,
+      "z": 0.12046478341513188,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0014227278238906874,
+      "wz": -0.02599101236711262,
+      "z": 0.1158498934857633,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": -4.7113099503441796e-05,
+      "wz": 0.0014414313255817776,
+      "z": 0.06186436433117995,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": -0.000727101661237657,
+      "wz": -0.006166493375189592,
+      "z": 0.11641776703161183,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": 0.0013618023441674119,
+      "wz": 1.0202882023008073,
+      "z": 0.11902853624793078,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.4320760295535219,
+      "wz": -0.5269710965896102,
+      "z": 0.1219024267077621,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.4683852776160712,
+      "wz": -0.0056277651058374845,
+      "z": 0.1209244802067058,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.025118633288695128,
+      "wz": -0.06452060963946735,
+      "z": 0.11751585256809527,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -1.0126677706599434e-05,
+      "wz": -0.014365189662082027,
+      "z": 0.11606816580575625,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": 0.00030131945032816477,
+      "wz": -0.003604097271827401,
+      "z": 0.11686862897374932,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.007323092594186065,
+      "wz": -1.7885971782855505,
+      "z": 0.11063395782259322,
+      "state": "recover",
+      "falls": 1
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.2568588326815395,
+      "wz": 0.27715833758404196,
+      "z": 0.11874496172790447,
+      "state": "sprint",
+      "falls": 1
+     },
+     {
+      "label": "release",
+      "vx": -0.02344415894994008,
+      "wz": -0.2958448734692352,
+      "z": 0.11609450496258379,
+      "state": "stand",
+      "falls": 1
+     }
+    ]
+   },
+   {
+    "trial": 4,
+    "falls": 1,
+    "dist": 14.194552889105497,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.00044598114180214514,
+      "wz": -0.008458022349286241,
+      "z": 0.11649709166565002,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.4113689462460372,
+      "wz": -0.018097332411533055,
+      "z": 0.1214733245899695,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6624790134786916,
+      "wz": -0.09962970565486305,
+      "z": 0.12060896878442497,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0024125751362194525,
+      "wz": -0.07193409248239341,
+      "z": 0.11600649326814923,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 8.70721929578211e-06,
+      "wz": 0.0014257506296636547,
+      "z": 0.061901380761865174,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": 0.0031639076934817946,
+      "wz": 0.054461725123274934,
+      "z": 0.11630384187894834,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": -0.0005023218460060225,
+      "wz": 0.92730221415152,
+      "z": 0.11908073703915094,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.4183751754416656,
+      "wz": -0.49098286851214984,
+      "z": 0.12145777877621565,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.44767510986642006,
+      "wz": -0.05609776961300695,
+      "z": 0.12168380178583904,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.012476052791114507,
+      "wz": -0.26464469481224295,
+      "z": 0.11756645231923235,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.00025924618800235487,
+      "wz": -0.014717381606256264,
+      "z": 0.11622884687864365,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": -0.0005482519454564343,
+      "wz": -0.007493733602540967,
+      "z": 0.11653340008920074,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": 0.005147996070090581,
+      "wz": 0.012689266512250174,
+      "z": 0.11734943774040214,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.2380362132799327,
+      "wz": -0.11119135648212516,
+      "z": 0.11842417308262658,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0007290722534904975,
+      "wz": 0.03926339427047284,
+      "z": 0.11649818239065592,
+      "state": "stand",
+      "falls": 1
+     }
+    ]
+   },
+   {
+    "trial": 5,
+    "falls": 1,
+    "dist": 14.4892656348819,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.001435712107686504,
+      "wz": -0.011327121496807459,
+      "z": 0.11640498500952237,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.4199413778871102,
+      "wz": 0.00669682540812363,
+      "z": 0.12039443616077598,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.5991604835223455,
+      "wz": 0.08467266111019212,
+      "z": 0.12016928575268894,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.007855153206379657,
+      "wz": 0.009701468004256213,
+      "z": 0.11663470638104456,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 7.695559798627031e-05,
+      "wz": -0.0007090348212194103,
+      "z": 0.06206989105831472,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": -0.00048554523425756483,
+      "wz": -0.012754625556048942,
+      "z": 0.11640244945412723,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": -0.0022335022576848596,
+      "wz": 1.0216456236167213,
+      "z": 0.12019285110138057,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.4130436211483254,
+      "wz": -0.9029214013954645,
+      "z": 0.12024419174864845,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.4350283118702536,
+      "wz": -0.17830590344300445,
+      "z": 0.12082482546957149,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.02652930141171467,
+      "wz": -0.296711035157408,
+      "z": 0.11878876822023875,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.0008391667006143769,
+      "wz": -0.01766404583331469,
+      "z": 0.11630855669214119,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": -5.4748349321303164e-05,
+      "wz": -0.004425632295047454,
+      "z": 0.11671009020497516,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.002729749548586001,
+      "wz": 0.00753042978291201,
+      "z": 0.11711485816579172,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.3826834265237995,
+      "wz": -0.0492382172185206,
+      "z": 0.12214474489531306,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0007201789393998395,
+      "wz": 0.011022394591862564,
+      "z": 0.11639040751536578,
+      "state": "stand",
+      "falls": 1
+     }
+    ]
+   },
+   {
+    "trial": 6,
+    "falls": 0,
+    "dist": 14.027903424922746,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.0007949232891500483,
+      "wz": -0.011190701878397368,
+      "z": 0.11642586642901083,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.40915251576455347,
+      "wz": -0.08457962385203203,
+      "z": 0.12182538945109422,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6494929642731535,
+      "wz": 0.021448187654958373,
+      "z": 0.12066876516076475,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.000726538248418844,
+      "wz": 0.05664123578402519,
+      "z": 0.11609755282516591,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 9.420249370593383e-05,
+      "wz": 0.0035644287602818936,
+      "z": 0.061873794727938275,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": -0.00013183529493649495,
+      "wz": -0.0073418716224168,
+      "z": 0.11631364065882005,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": -3.751865840480619e-05,
+      "wz": 1.0998069569878988,
+      "z": 0.11912975932564042,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.42026831500039286,
+      "wz": -0.5017976040403122,
+      "z": 0.12197698089833447,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.4559970802452894,
+      "wz": -0.11137893767793583,
+      "z": 0.12144688500776542,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.01700158961901316,
+      "wz": -0.16890942056065728,
+      "z": 0.11738721656884821,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0006239487366896876,
+      "wz": -0.02156291703615586,
+      "z": 0.1159627064839677,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": -0.00034041082717157036,
+      "wz": -0.005459240876318542,
+      "z": 0.11686492427280527,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.00014948377539432197,
+      "wz": 0.02013131795287412,
+      "z": 0.11741029086576742,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.1701371867228931,
+      "wz": 0.025219969472612028,
+      "z": 0.11633553105799396,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.0015823004501325563,
+      "wz": 0.003975429074053117,
+      "z": 0.11696165384611625,
+      "state": "stand",
+      "falls": 0
+     }
+    ]
+   },
+   {
+    "trial": 7,
+    "falls": 0,
+    "dist": 14.47518377372535,
+    "segs": [
+     {
+      "label": "stand",
+      "vx": -0.0007950808339991618,
+      "wz": -0.0054635001456121695,
+      "z": 0.11661757918238184,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "walk \u25b2",
+      "vx": 0.4225346345892584,
+      "wz": -0.03117529243181643,
+      "z": 0.12066987507087396,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "run \u2318\u25b2",
+      "vx": 0.6163162781413836,
+      "wz": -0.120534530350473,
+      "z": 0.12131943959223696,
+      "state": "run",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": -0.0047574656216961345,
+      "wz": 0.030282153089658273,
+      "z": 0.11544542768183824,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sit S",
+      "vx": 6.7065969982948875e-06,
+      "wz": 0.0005951999337508745,
+      "z": 0.061997363472875884,
+      "state": "seated",
+      "falls": 0
+     },
+     {
+      "label": "stand S",
+      "vx": -0.0006343177169921003,
+      "wz": -0.010027440246485782,
+      "z": 0.1163574948831945,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "turn \u25c0",
+      "vx": -0.0031751954885978597,
+      "wz": 0.9937743094181706,
+      "z": 0.11994802464670742,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "\u25b2+\u25b6",
+      "vx": 0.4196432068307001,
+      "wz": -0.7500674065119202,
+      "z": 0.12116212612284212,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "back \u25bc",
+      "vx": -0.44779606728945925,
+      "wz": -0.05512993491208956,
+      "z": 0.12046161117543702,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "sidestep \u2325\u25c0",
+      "vx": -0.02216394018894217,
+      "wz": -0.23789144925958008,
+      "z": 0.11853506267668557,
+      "state": "walk",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 4.7384285267523225e-05,
+      "wz": -0.023956158344121663,
+      "z": 0.11624741212425027,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "jump space",
+      "vx": -0.0001370747156299953,
+      "wz": 0.0019423368276745034,
+      "z": 0.1169193670063865,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "flip R",
+      "vx": -0.0029115501237368248,
+      "wz": 0.003700400982314159,
+      "z": 0.11714417576307422,
+      "state": "stand",
+      "falls": 0
+     },
+     {
+      "label": "sprint \u2318\u25b2 (D D)",
+      "vx": 1.3474274030667248,
+      "wz": 0.045375052466608654,
+      "z": 0.12203243620824168,
+      "state": "sprint",
+      "falls": 0
+     },
+     {
+      "label": "release",
+      "vx": 0.0026431018032643033,
+      "wz": -0.0369011849329265,
+      "z": 0.11691626176218974,
+      "state": "stand",
+      "falls": 0
+     }
+    ]
+   }
+  ]
+ }
+}

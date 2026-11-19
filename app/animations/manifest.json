@@ -1,0 +1,652 @@
+{
+ "about": "Duck Live emotion clips. Built by app/tools/make_animations.py; do not edit by hand.",
+ "pollen": {
+  "url": "https://github.com/pollen-robotics/microduck_emotions",
+  "commit": "431c73df8a9d3cb6b6067d09ced6c169fdfa59fd",
+  "licence": "Apache-2.0"
+ },
+ "clips": [
+  {
+   "name": "hello",
+   "source": "duck-live",
+   "duration_s": 2.6,
+   "keyframes": "keyframes/hello.json",
+   "sounds": [
+    "sounds/hello.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "q",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Hello",
+   "emoji": "👋",
+   "fx": "👋",
+   "face": true,
+   "group": "live",
+   "seated": true,
+   "description": "Looks at you, tilts its head one way then the other on two cheerful quacks, and nods."
+  },
+  {
+   "name": "happy",
+   "source": "duck-live",
+   "duration_s": 3.3,
+   "keyframes": "keyframes/happy.json",
+   "sounds": [
+    "sounds/happy.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "w",
+   "uses": [
+    "beak",
+    "head",
+    "jump policy",
+    "walk policy"
+   ],
+   "label": "Happy",
+   "emoji": "😄",
+   "fx": "✨",
+   "group": "live",
+   "mood": 0.8,
+   "description": "Wiggles on the spot (the walk policy turning left-right), chirps climbing in pitch, then jumps for joy (the jump policy)."
+  },
+  {
+   "name": "dance",
+   "source": "duck-live",
+   "duration_s": 6.0,
+   "keyframes": "keyframes/dance.json",
+   "sounds": [
+    "sounds/dance.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "e",
+   "uses": [
+    "beak",
+    "head",
+    "walk policy"
+   ],
+   "label": "Dance",
+   "emoji": "💃",
+   "fx": "🎵",
+   "group": "live",
+   "mood": 0.6,
+   "description": "Side-steps left and right on a beat (the walk policy's lateral command), bobs its head and sings an eight-note tune."
+  },
+  {
+   "name": "sing",
+   "source": "duck-live",
+   "duration_s": 5.0,
+   "keyframes": "keyframes/sing.json",
+   "sounds": [
+    "sounds/sing.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "t",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Sing",
+   "emoji": "🎤",
+   "fx": "🎶",
+   "group": "live",
+   "seated": true,
+   "mood": 0.5,
+   "description": "Beak up, sways and sings a ten-note phrase; the beak follows every note."
+  },
+  {
+   "name": "love",
+   "source": "duck-live",
+   "duration_s": 3.6,
+   "keyframes": "keyframes/love.json",
+   "sounds": [
+    "sounds/love.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "y",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Love",
+   "emoji": "🥰",
+   "fx": "❤️",
+   "face": true,
+   "group": "live",
+   "seated": true,
+   "mood": 0.7,
+   "description": "Looks at you, then goes shy: head tilted and turned away, a slow sway on two soft coos, and a peek back."
+  },
+  {
+   "name": "proud",
+   "source": "duck-live",
+   "duration_s": 2.4,
+   "keyframes": "keyframes/proud.json",
+   "sounds": [
+    "sounds/proud.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "u",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Proud",
+   "emoji": "😎",
+   "fx": "⭐",
+   "group": "live",
+   "seated": true,
+   "mood": 0.6,
+   "description": "Beak high on a two-note fanfare, then looks slowly over its audience."
+  },
+  {
+   "name": "showoff",
+   "source": "duck-live",
+   "duration_s": 3.4,
+   "keyframes": "keyframes/showoff.json",
+   "sounds": [
+    "sounds/showoff.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "i",
+   "uses": [
+    "beak",
+    "front-flip policy",
+    "head"
+   ],
+   "label": "Show off",
+   "emoji": "🤸",
+   "fx": "🌟",
+   "group": "live",
+   "mood": 0.8,
+   "description": "'Watch this': two quacks, a front flip (the front-flip policy), then the proud pose and its fanfare."
+  },
+  {
+   "name": "peck",
+   "source": "duck-live",
+   "duration_s": 3.4,
+   "keyframes": "keyframes/peck.json",
+   "sounds": [
+    "sounds/peck.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "o",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Peck",
+   "emoji": "🌾",
+   "fx": "🌾",
+   "group": "live",
+   "description": "Head down to the floor, three pecks with a beak click each, then beak up to swallow with a content hum."
+  },
+  {
+   "name": "yawn",
+   "source": "duck-live",
+   "duration_s": 4.2,
+   "keyframes": "keyframes/yawn.json",
+   "sounds": [
+    "sounds/yawn.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "p",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Yawn",
+   "emoji": "🥱",
+   "fx": "💤",
+   "group": "live",
+   "seated": true,
+   "mood": -0.4,
+   "description": "A long yawn: the beak opens wide as the head tips back, then it droops, drowsy, and shakes itself awake."
+  },
+  {
+   "name": "sneeze",
+   "source": "duck-live",
+   "duration_s": 2.5,
+   "keyframes": "keyframes/sneeze.json",
+   "sounds": [
+    "sounds/sneeze.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "f",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Sneeze",
+   "emoji": "🤧",
+   "fx": "💨",
+   "group": "live",
+   "seated": true,
+   "description": "'Ah... ah...': the head tips back in two steps, then snaps down on the sneeze and shakes it off."
+  },
+  {
+   "name": "startled",
+   "source": "duck-live",
+   "duration_s": 2.7,
+   "keyframes": "keyframes/startled.json",
+   "sounds": [
+    "sounds/startled.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "g",
+   "uses": [
+    "beak",
+    "head",
+    "walk policy"
+   ],
+   "label": "Startled",
+   "emoji": "😱",
+   "fx": "❗",
+   "group": "live",
+   "description": "Head snaps back with an alarm call, a quick step backwards (the walk policy), looks left and right, then creeps forward."
+  },
+  {
+   "name": "dizzy",
+   "source": "duck-live",
+   "duration_s": 2.0,
+   "keyframes": "keyframes/dizzy.json",
+   "sounds": [
+    "sounds/dizzy.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "h",
+   "uses": [
+    "beak",
+    "head"
+   ],
+   "label": "Shake off",
+   "emoji": "😵‍💫",
+   "fx": "💫",
+   "group": "live",
+   "seated": true,
+   "description": "A fast decaying head shake with a 'brrr', then a short 'ha'. Plays by itself after the duck has got up from a fall."
+  },
+  {
+   "name": "nap",
+   "source": "duck-live",
+   "duration_s": 6.0,
+   "keyframes": "keyframes/nap.json",
+   "sounds": [
+    "sounds/nap.wav"
+   ],
+   "sound_at_s": 0.0,
+   "key": "j",
+   "uses": [
+    "beak",
+    "head",
+    "sit-stand policy"
+   ],
+   "label": "Nap",
+   "emoji": "😴",
+   "fx": "💤",
+   "group": "live",
+   "ends": "seated",
+   "mood": -0.8,
+   "description": "Sits down (the sit-stand policy), the head sinks and it snores twice. It stays seated; S or an arrow wakes it."
+  },
+  {
+   "name": "yes",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 1.4,
+   "keyframes": "keyframes/yes.json",
+   "sounds": [
+    "sounds/yes.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "One clear nod with one quack that falls three semitones.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Yes",
+   "emoji": "👍",
+   "fx": "✔️",
+   "key": "1"
+  },
+  {
+   "name": "no",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 1.7,
+   "keyframes": "keyframes/no.json",
+   "sounds": [
+    "sounds/no_a.wav",
+    "sounds/no_b.wav",
+    "sounds/no_c.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "One head shake with a two-note 'no-ah'. Three voicings: pick one at random.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "No",
+   "emoji": "🙅",
+   "fx": "✖️",
+   "key": "2"
+  },
+  {
+   "name": "mmh",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 1.9,
+   "keyframes": "keyframes/mmh.json",
+   "sounds": [
+    "sounds/mmh.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "'What do you mean?': a small head tilt held for a second with a muffled rising 'mmh?'.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Mmh?",
+   "emoji": "🤨",
+   "fx": "❔",
+   "key": "3"
+  },
+  {
+   "name": "curious",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 2.9,
+   "keyframes": "keyframes/curious.json",
+   "sounds": [
+    "sounds/curious.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "'What? what?': the head comes forward and tilts one way, then the other, on two rising chirps.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Curious",
+   "emoji": "🤔",
+   "fx": "❓",
+   "key": "4"
+  },
+  {
+   "name": "laugh",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 2.9,
+   "keyframes": "keyframes/laugh.json",
+   "sounds": [
+    "sounds/laugh.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "Beak up, the head wagging with a body dip on every 'ha': one long 'haaa', then seven short ones dying out.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Laugh",
+   "emoji": "😂",
+   "fx": "😂",
+   "key": "5",
+   "mood": 0.7
+  },
+  {
+   "name": "excited",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 3.3,
+   "keyframes": "keyframes/excited.json",
+   "sounds": [
+    "sounds/excited.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "Six faster and faster head swings with a body bob on each, and a run of quacks climbing in pitch.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Excited",
+   "emoji": "🤩",
+   "fx": "✨",
+   "key": "6",
+   "mood": 0.8
+  },
+  {
+   "name": "angry",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 2.5,
+   "keyframes": "keyframes/angry.json",
+   "sounds": [
+    "sounds/angry_a.wav",
+    "sounds/angry_b.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "Beak-up glare, then four head snaps with a hard bark on each and a small body pulse. Two voicings.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Angry",
+   "emoji": "😠",
+   "fx": "💢",
+   "key": "7",
+   "mood": -0.3
+  },
+  {
+   "name": "sad",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 8.2,
+   "keyframes": "keyframes/sad.json",
+   "sounds": [
+    "sounds/sad.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "Standing, the head droops while a low coo glides down with it, two slow silent head shakes, then back up.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Sad",
+   "emoji": "😢",
+   "fx": "💧",
+   "key": "8",
+   "mood": -0.7
+  },
+  {
+   "name": "mock",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 2.5,
+   "keyframes": "keyframes/mock.json",
+   "sounds": [
+    "sounds/mock.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "'Gnagnagnagna': beak up, the head rolling side to side on a staccato mocking run.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Mock",
+   "emoji": "😜",
+   "fx": "🎵",
+   "key": "9"
+  },
+  {
+   "name": "defiant",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 2.1,
+   "keyframes": "keyframes/defiant.json",
+   "sounds": [
+    "sounds/defiant.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "'Says who?': beak up to its left with a curt quack, then up to its right with a second one.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Defiant",
+   "emoji": "😤",
+   "fx": "💢",
+   "key": "0"
+  },
+  {
+   "name": "impatient",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 2.5,
+   "keyframes": "keyframes/impatient.json",
+   "sounds": [
+    "sounds/impatient.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "'Come on!': four quick head shakes with a body bob each, then the beak flicks up on a huff.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Impatient",
+   "emoji": "😒",
+   "fx": "⏱️",
+   "key": "k"
+  },
+  {
+   "name": "yes_fast",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 1.4,
+   "keyframes": "keyframes/yes_fast.json",
+   "sounds": [
+    "sounds/yes_fast.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "The same nod with a curt 'wak'.",
+   "group": "pollen",
+   "seated": true,
+   "uses": [
+    "head",
+    "beak"
+   ],
+   "label": "Yep",
+   "emoji": "👌",
+   "fx": "✔️",
+   "key": "l"
+  },
+  {
+   "name": "devastated",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 10.5,
+   "keyframes": "keyframes/devastated.json",
+   "sounds": [
+    "sounds/devastated.wav"
+   ],
+   "sound_at_s": 0.3,
+   "description": "Sits down at once with an alarmed call, the head droops and shakes three times on three sobs, then comes back level. It stays seated.",
+   "group": "pollen",
+   "seated": false,
+   "uses": [
+    "head",
+    "beak",
+    "sit-stand policy"
+   ],
+   "label": "Devastated",
+   "emoji": "😭",
+   "fx": "💧",
+   "key": "z",
+   "mood": -0.9,
+   "ends": "seated"
+  },
+  {
+   "name": "play_dead",
+   "source": "pollen-robotics/microduck_emotions",
+   "duration_s": 7.4,
+   "keyframes": "keyframes/play_dead.json",
+   "sounds": [
+    "sounds/play_dead.wav"
+   ],
+   "sound_at_s": 0.0,
+   "description": "Alarm call while the head whips to the side and the duck sits, then it goes limp, rolls onto its back and lifts its legs, with a dying quack. Needs a mat.",
+   "group": "pollen",
+   "seated": false,
+   "uses": [
+    "head",
+    "beak",
+    "sit-stand policy",
+    "stand-up policy"
+   ],
+   "pose_joints": {
+    "note": "Absolute joint angles in radians (not deltas). Joints in torque_off hang free; the joints listed in targets ramp linearly from where they are over ramp_s at servo P gain `gain` (160 = the standing value) and hold; the others hold. The balance policy is off from the first stage on.",
+    "stages": [
+     {
+      "at_s": 1.8,
+      "torque_off": [
+       "neck_pitch",
+       "head_pitch",
+       "head_yaw"
+      ],
+      "targets": {
+       "left_hip_yaw": 0.0,
+       "left_hip_roll": 0.0,
+       "left_hip_pitch": 0.0,
+       "left_knee": 0.0,
+       "left_ankle": 0.0,
+       "right_hip_yaw": 0.0,
+       "right_hip_roll": 0.0,
+       "right_hip_pitch": 0.0,
+       "right_knee": 0.0,
+       "right_ankle": 0.0
+      },
+      "ramp_s": 1.5,
+      "gain": 160,
+      "what": "legs straight: the seated duck rolls flat onto its back"
+     },
+     {
+      "at_s": 4.0,
+      "torque_off": [
+       "neck_pitch",
+       "head_pitch",
+       "head_yaw"
+      ],
+      "targets": {
+       "left_hip_yaw": 0.0,
+       "left_hip_roll": 0.0,
+       "left_hip_pitch": -1.0,
+       "left_knee": 1.5,
+       "left_ankle": 0.0,
+       "right_hip_yaw": 0.0,
+       "right_hip_roll": 0.0,
+       "right_hip_pitch": 1.0,
+       "right_knee": -1.5,
+       "right_ankle": 0.0
+      },
+      "ramp_s": 1.0,
+      "gain": 160,
+      "what": "the legs come up"
+     }
+    ]
+   },
+   "label": "Play dead",
+   "emoji": "💀",
+   "fx": "👻",
+   "key": "x",
+   "ends": "down"
+  }
+ ]
+}
