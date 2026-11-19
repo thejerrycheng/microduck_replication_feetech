@@ -9,7 +9,7 @@
 # Launch: systemd-run --user --unit microduck-real -p WorkingDirectory="$PWD" scripts/train_real.sh
 set -u
 cd "$(dirname "$0")/.."
-COMMON="--rl_library rsl_rl --num_envs 4096 presets=backlash --video --video_length 400 --video_interval 6000 --max_visible_envs 16"
+COMMON="--rl_library rsl_rl --num_envs ${NUM_ENVS:-4096} presets=backlash --video --video_length 400 --video_interval 6000 --max_visible_envs 16"
 SYM="--agent rsl_rl_with_symmetry_cfg_entry_point"
 ITERS=${REAL_ITERS:-2000}
 POLICIES=${POLICIES:-"velstand standup run_v3 sitstand_fast jump roulade_head sprint_max"}
