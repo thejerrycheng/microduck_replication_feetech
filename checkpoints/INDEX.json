@@ -251,5 +251,226 @@
   "measured": "docs/gains/roulade_head_ckpts/*_n96.json, docs/gains/NOTES.md",
   "onnx": "exports/roulade_head_kp58_hd1910_iter7999.onnx",
   "role": "front flip (the R key) for P 5-8 servos -- provisional; roulade_head_7000 stays the P 5 pick"
+ },
+ "standup_13248": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_13248.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 13248,
+  "run": "microduck_standup_flat_hd1910_backlash/2026-11-19_14-54-43",
+  "eval_task": "Microduck-StandUp-Flat-HD1910"
+ },
+ "standup_r4_18499": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_18499.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 18499,
+  "run": "microduck_standup_flat_hd1910_backlash/2026-11-20_11-49-50",
+  "eval_task": "Microduck-StandUp-Flat-HD1910"
+ },
+ "standup_r5_21498": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_21498.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 21498,
+  "run": "microduck_standup_flat_hd1910_backlash/2026-11-20_19-40-16",
+  "eval_task": "Microduck-StandUp-Flat-HD1910"
+ },
+ "velstand_r2_26748": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_26748.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 26748,
+  "run": "microduck_velstand_allcoll_hd1910_backlash/2026-11-20_05-37-40",
+  "eval_task": "Microduck-VelStand-Flat-HD1910-AllColl"
+ },
+ "velstand_stress_30747": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_30747.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 30747,
+  "run": "microduck_velstand_stress_hd1910_backlash/2026-11-20_19-37-13",
+  "eval_task": "Microduck-VelStand-Flat-HD1910-AllColl"
+ },
+ "sitstand_levelhead_8497": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_8497.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 8497,
+  "run": "microduck_sitstand_fast_flat_hd1910_backlash/2026-11-20_07-19-10",
+  "eval_task": "Microduck-SitStandFast-Flat-HD1910"
+ },
+ "sitstand_anim_9750": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_9750.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 9750,
+  "run": "microduck_sitstand_anim_hd1910_backlash/2026-11-20_11-51-03",
+  "eval_task": "Microduck-SitStandFast-Flat-HD1910"
+ },
+ "roulade_head_13249": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_13249.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 13249,
+  "run": "microduck_roulade_head_flat_hd1910_backlash/2026-11-19_19-23-05",
+  "eval_task": "Microduck-RouladeHead-Flat-HD1910"
+ },
+ "roulade_recover_14000": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_14000.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 14000,
+  "run": "microduck_roulade_recover_flat_hd1910_backlash/2026-11-20_05-48-21",
+  "eval_task": "Microduck-RouladeRecover-Flat-HD1910"
+ },
+ "jump_6748": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_6748.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 6748,
+  "run": "microduck_jump_flat_hd1910_backlash/2026-11-19_17-36-43",
+  "eval_task": "Microduck-Jump-Flat-HD1910"
+ },
+ "sprint_max_9497": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_9497.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 9497,
+  "run": "microduck_sprint_max_allcoll_hd1910_backlash/2026-11-19_14-16-14",
+  "eval_task": "Microduck-SprintMax-Flat-HD1910-AllColl"
+ },
+ "openmd_walk_ft_2999": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_2999.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 2999,
+  "run": "microduck_openmd_walk_hd1910_backlash/2026-11-20_07-34-30",
+  "eval_task": "Microduck-OpenMDWalk-Flat-HD1910"
+ },
+ "openmd_stand_ft_2500": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_2500.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 2500,
+  "run": "microduck_openmd_stand_hd1910_backlash/2026-11-20_07-38-37",
+  "eval_task": "Microduck-OpenMDStand-Flat-HD1910"
+ },
+ "openmd_animwalk_2999": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_2999.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 2999,
+  "run": "microduck_openmd_animwalk_hd1910_backlash/2026-11-20_11-53-40",
+  "eval_task": "Microduck-OpenMDAnimWalk-Flat-HD1910"
+ },
+ "openmd_animwalk_stress_6998": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_6998.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 6998,
+  "run": "microduck_openmd_animwalk_stress_hd1910_backlash/2026-11-20_19-35-44",
+  "eval_task": "Microduck-OpenMDAnimWalk-Flat-HD1910"
+ },
+ "ball_kick_7998": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_7998.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 7998,
+  "run": "microduck_ball_kick_right_hd1910_backlash/2026-11-20_03-06-06",
+  "eval_task": "Microduck-BallKick-Flat-HD1910"
+ },
+ "ball_kick_9750": {
+  "files": [
+   "agent.yaml",
+   "env.yaml",
+   "model_9750.pt",
+   "policy.onnx",
+   "policy.onnx.data",
+   "policy.pt"
+  ],
+  "iteration": 9750,
+  "run": "microduck_ball_kick_right_hd1910_backlash/2026-11-20_09-29-22",
+  "eval_task": "Microduck-BallKick-Flat-HD1910"
  }
 }
