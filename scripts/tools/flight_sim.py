@@ -43,6 +43,7 @@ class FanPlant:
         self.aux = dict(v_bus=np.array([self.bat.n_s * 4.15]), i_bus=np.zeros(1), i_phase=np.zeros((1, 4)), w_dot=np.zeros((1, 4)))
         self.thrust = np.zeros(4)
         self.lip = 0.5 * PACK["duct_len"]
+        self.fan_gain = np.ones(4)       # per-fan thrust multiplier (unit-to-unit spread)
 
     def command(self, u):
         self.u = np.clip(np.asarray(u, dtype=float), 0.0, 1.0)
@@ -60,7 +61,7 @@ class FanPlant:
             mujoco.mj_objectVelocity(m, d, mujoco.mjtObj.mjOBJ_SITE, s, vel, 0)       # world frame (rot, lin)
             v_ax = float(vel[3:] @ axis)
             wk = self.w[0, k]
-            T = float(F.thrust(np.array(wk), v_ax, p, np))
+            T = float(F.thrust(np.array(wk), v_ax, p, np)) * self.fan_gain[k]
             mdot = F.mass_flow(wk, p)
             v_perp = vel[3:] - v_ax * axis
             force = T * axis - mdot * v_perp                                          # thrust + inlet momentum drag
@@ -148,7 +149,7 @@ class FlightController:
         Rd = np.c_[np.cross(yb, zb), yb, zb]
         E = 0.5 * (Rd.T @ R - R.T @ Rd)
         e_R = np.array([E[2, 1], E[0, 2], E[1, 0]])
-        self.int_e = np.clip(self.int_e + e_R * self.dt, -0.1, 0.1)
+        self.int_e = np.clip(self.int_e + e_R * self.dt, -0.5, 0.5)   # at ki = 2 kp this can hold a 30 mm CoM error; 0.1 could not hold 7.5 mm
         tau = -self.kp * e_R - self.kd * om_b - self.ki * self.int_e
         Fz = self.mass * (G + az) / max(R[2, 2], 0.5)
         B = self.allocation()

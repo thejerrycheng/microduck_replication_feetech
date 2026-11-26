@@ -1,0 +1,638 @@
+{
+ "command": "vx, vy, vz, yaw rate (heading frame)",
+ "schedule": [
+  [
+   0.0,
+   [
+    0,
+    0,
+    0.5,
+    0
+   ]
+  ],
+  [
+   1.2,
+   [
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  [
+   3.0,
+   [
+    0.4,
+    0,
+    0,
+    0
+   ]
+  ],
+  [
+   5.0,
+   [
+    0,
+    0,
+    0.4,
+    0
+   ]
+  ],
+  [
+   6.0,
+   [
+    0,
+    0.25,
+    0,
+    0
+   ]
+  ],
+  [
+   8.0,
+   [
+    0,
+    0,
+    0,
+    0.8
+   ]
+  ],
+  [
+   10.0,
+   [
+    0,
+    0,
+    -0.3,
+    0
+   ]
+  ],
+  [
+   11.0,
+   [
+    0,
+    0,
+    0,
+    0
+   ]
+  ]
+ ],
+ "grid": {
+  "thrust0.80_com-15.0mm": {
+   "crashed": true,
+   "max_tilt": 77.16538280116282,
+   "z_peak": 0.11883211572987075,
+   "z_end": 0.05455302128133506,
+   "success": false
+  },
+  "thrust0.80_com-7.5mm": {
+   "crashed": true,
+   "max_tilt": 81.93907381741182,
+   "z_peak": 0.11881918288574683,
+   "z_end": 0.05479086977913603,
+   "success": false
+  },
+  "thrust0.80_com+0.0mm": {
+   "crashed": false,
+   "max_tilt": 9.803734640579687,
+   "z_peak": 0.9798439919822686,
+   "z_end": 0.6609532787747667,
+   "rms_vxy": 0.40404191020681307,
+   "rms_vz": 0.11840326244011871,
+   "rms_wz": 0.18808359727992705,
+   "took_off": true,
+   "diff_throttle": 0.020317157754002675,
+   "leg_offset_rms": 0.05891799065901994,
+   "leg_offset_max": 0.24511314949220786,
+   "success": false
+  },
+  "thrust0.80_com+7.5mm": {
+   "crashed": true,
+   "max_tilt": 71.82545879531489,
+   "z_peak": 0.11881117689187537,
+   "z_end": 0.06371673345045095,
+   "success": false
+  },
+  "thrust0.80_com+15.0mm": {
+   "crashed": true,
+   "max_tilt": 70.68357348264328,
+   "z_peak": 0.11881893842127175,
+   "z_end": 0.06728624181682348,
+   "success": false
+  },
+  "thrust0.90_com-15.0mm": {
+   "crashed": true,
+   "max_tilt": 79.19556500303163,
+   "z_peak": 0.11887153255901653,
+   "z_end": 0.05501542157377145,
+   "success": false
+  },
+  "thrust0.90_com-7.5mm": {
+   "crashed": true,
+   "max_tilt": 74.58613108359815,
+   "z_peak": 0.1188567297115808,
+   "z_end": 0.05629557123386579,
+   "success": false
+  },
+  "thrust0.90_com+0.0mm": {
+   "crashed": false,
+   "max_tilt": 9.750530230301935,
+   "z_peak": 1.0319067010575873,
+   "z_end": 0.6619427063680232,
+   "rms_vxy": 0.41043302823224337,
+   "rms_vz": 0.14756701181456355,
+   "rms_wz": 0.18880068024018956,
+   "took_off": true,
+   "diff_throttle": 0.022606964660182135,
+   "leg_offset_rms": 0.06213300727811039,
+   "leg_offset_max": 0.26903545528285355,
+   "success": false
+  },
+  "thrust0.90_com+7.5mm": {
+   "crashed": true,
+   "max_tilt": 75.8326315229646,
+   "z_peak": 0.11884708755468386,
+   "z_end": 0.058979483589717094,
+   "success": false
+  },
+  "thrust0.90_com+15.0mm": {
+   "crashed": true,
+   "max_tilt": 75.09083139987649,
+   "z_peak": 0.1188556653026547,
+   "z_end": 0.05914596201813149,
+   "success": false
+  },
+  "thrust1.00_com-15.0mm": {
+   "crashed": true,
+   "max_tilt": 71.41237589780668,
+   "z_peak": 0.11891097363192724,
+   "z_end": 0.055925002360873124,
+   "success": false
+  },
+  "thrust1.00_com-7.5mm": {
+   "crashed": true,
+   "max_tilt": 73.94025393673903,
+   "z_peak": 0.12997680032645903,
+   "z_end": 0.07375539889951817,
+   "success": false
+  },
+  "thrust1.00_com+0.0mm": {
+   "crashed": false,
+   "max_tilt": 10.901466189170145,
+   "z_peak": 1.02568396766892,
+   "z_end": 0.6885120961050923,
+   "rms_vxy": 0.44506463791289197,
+   "rms_vz": 0.14892359282160664,
+   "rms_wz": 0.18838705646754178,
+   "took_off": true,
+   "diff_throttle": 0.02195776724795175,
+   "leg_offset_rms": 0.06712534878114167,
+   "leg_offset_max": 0.23570336857753696,
+   "success": false
+  },
+  "thrust1.00_com+7.5mm": {
+   "crashed": false,
+   "max_tilt": 24.865882210303045,
+   "z_peak": 1.0210160715763348,
+   "z_end": 0.6775890499337854,
+   "rms_vxy": 0.617718281428989,
+   "rms_vz": 0.14932584580445313,
+   "rms_wz": 0.19594178535405737,
+   "took_off": true,
+   "diff_throttle": 0.1022319572165284,
+   "leg_offset_rms": 0.06517767977036784,
+   "leg_offset_max": 0.2146203140933898,
+   "success": false
+  },
+  "thrust1.00_com+15.0mm": {
+   "crashed": true,
+   "max_tilt": 75.37412957507232,
+   "z_peak": 0.11889242676120802,
+   "z_end": 0.06023766415543954,
+   "success": false
+  },
+  "thrust1.10_com-15.0mm": {
+   "crashed": true,
+   "max_tilt": 71.91091847701716,
+   "z_peak": 0.12225275851912315,
+   "z_end": 0.05535606287156008,
+   "success": false
+  },
+  "thrust1.10_com-7.5mm": {
+   "crashed": false,
+   "max_tilt": 28.699694731962914,
+   "z_peak": 1.0169902227520011,
+   "z_end": 0.6733036476824656,
+   "rms_vxy": 0.5886471052295431,
+   "rms_vz": 0.13327185211883147,
+   "rms_wz": 0.22091571520427486,
+   "took_off": true,
+   "diff_throttle": 0.12141293667813488,
+   "leg_offset_rms": 0.07945312806475582,
+   "leg_offset_max": 0.22986241184985573,
+   "success": false
+  },
+  "thrust1.10_com+0.0mm": {
+   "crashed": false,
+   "max_tilt": 9.408504597955366,
+   "z_peak": 1.041676158049871,
+   "z_end": 0.6665256164296126,
+   "rms_vxy": 0.386817468953898,
+   "rms_vz": 0.15189032354198242,
+   "rms_wz": 0.18965410807199062,
+   "took_off": true,
+   "diff_throttle": 0.02067942047086358,
+   "leg_offset_rms": 0.07141149344881068,
+   "leg_offset_max": 0.22795272112868836,
+   "success": false
+  },
+  "thrust1.10_com+7.5mm": {
+   "crashed": false,
+   "max_tilt": 25.587586247267748,
+   "z_peak": 1.0286358047623017,
+   "z_end": 0.67622651086827,
+   "rms_vxy": 0.65927582243832,
+   "rms_vz": 0.14788973382205442,
+   "rms_wz": 0.20126259129477725,
+   "took_off": true,
+   "diff_throttle": 0.09484071112859636,
+   "leg_offset_rms": 0.06956987018774555,
+   "leg_offset_max": 0.23532695010128712,
+   "success": false
+  },
+  "thrust1.10_com+15.0mm": {
+   "crashed": true,
+   "max_tilt": 76.8248943246122,
+   "z_peak": 0.11892923881377729,
+   "z_end": 0.05933431694818505,
+   "success": false
+  },
+  "thrust1.20_com-15.0mm": {
+   "crashed": true,
+   "max_tilt": 70.72659307109552,
+   "z_peak": 0.13675590790293712,
+   "z_end": 0.084063538347307,
+   "success": false
+  },
+  "thrust1.20_com-7.5mm": {
+   "crashed": false,
+   "max_tilt": 29.416998710420717,
+   "z_peak": 1.0331317725201545,
+   "z_end": 0.6742586305761672,
+   "rms_vxy": 0.5899757738630708,
+   "rms_vz": 0.13220374573568178,
+   "rms_wz": 0.22390548030857296,
+   "took_off": true,
+   "diff_throttle": 0.11500337885096851,
+   "leg_offset_rms": 0.08314525854202667,
+   "leg_offset_max": 0.23560851292799073,
+   "success": false
+  },
+  "thrust1.20_com+0.0mm": {
+   "crashed": false,
+   "max_tilt": 10.07419354787172,
+   "z_peak": 1.0320863017214494,
+   "z_end": 0.6429006911512711,
+   "rms_vxy": 0.3398742831825773,
+   "rms_vz": 0.15012203397941862,
+   "rms_wz": 0.19162082916600431,
+   "took_off": true,
+   "diff_throttle": 0.02025266910336817,
+   "leg_offset_rms": 0.07514049403180457,
+   "leg_offset_max": 0.22110955791546857,
+   "success": false
+  },
+  "thrust1.20_com+7.5mm": {
+   "crashed": false,
+   "max_tilt": 26.51066581601161,
+   "z_peak": 1.0306470194848365,
+   "z_end": 0.6862118891793618,
+   "rms_vxy": 0.6040529695812467,
+   "rms_vz": 0.15377309889648474,
+   "rms_wz": 0.19931028861962213,
+   "took_off": true,
+   "diff_throttle": 0.08883891857201397,
+   "leg_offset_rms": 0.0725025447270556,
+   "leg_offset_max": 0.2387067777118887,
+   "success": false
+  },
+  "thrust1.20_com+15.0mm": {
+   "crashed": true,
+   "max_tilt": 74.51824122330221,
+   "z_peak": 0.1283550809572889,
+   "z_end": 0.06566345512785232,
+   "success": false
+  }
+ },
+ "grid_success": 0,
+ "grid_n": 25,
+ "random_no_crash": 38,
+ "random_n": 100,
+ "train_steps": 2332800,
+ "train_time_s": 4072.5240790843964,
+ "final_return": 416.0645034520378,
+ "final_crash_rate": 0.59,
+ "nominal": {
+  "crashed": false,
+  "max_tilt": 10.901466189170145,
+  "z_peak": 1.02568396766892,
+  "z_end": 0.6885120961050923,
+  "rms_vxy": 0.44506463791289197,
+  "rms_vz": 0.14892359282160664,
+  "rms_wz": 0.18838705646754178,
+  "took_off": true,
+  "diff_throttle": 0.02195776724795175,
+  "leg_offset_rms": 0.06712534878114167,
+  "leg_offset_max": 0.23570336857753696,
+  "success": false
+ },
+ "legs": true,
+ "residual": true,
+ "base": {
+  "grid": {
+   "thrust0.80_com-15.0mm": {
+    "crashed": true,
+    "max_tilt": 77.70419652976685,
+    "z_peak": 0.11883211572987075,
+    "z_end": 0.05479328554635661,
+    "success": false
+   },
+   "thrust0.80_com-7.5mm": {
+    "crashed": true,
+    "max_tilt": 81.96542793548252,
+    "z_peak": 0.11881918288574683,
+    "z_end": 0.054785906744704446,
+    "success": false
+   },
+   "thrust0.80_com+0.0mm": {
+    "crashed": false,
+    "max_tilt": 4.218187430787852,
+    "z_peak": 1.0546991699150232,
+    "z_end": 0.44494093243599053,
+    "rms_vxy": 0.15540799115044154,
+    "rms_vz": 0.16335554155622947,
+    "rms_wz": 0.23017258795994874,
+    "took_off": true,
+    "diff_throttle": 0.013421598164000684,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": true
+   },
+   "thrust0.80_com+7.5mm": {
+    "crashed": true,
+    "max_tilt": 72.1117909048828,
+    "z_peak": 0.11881117689187537,
+    "z_end": 0.06301045185290592,
+    "success": false
+   },
+   "thrust0.80_com+15.0mm": {
+    "crashed": true,
+    "max_tilt": 70.64647481926639,
+    "z_peak": 0.11881893842127175,
+    "z_end": 0.06645459153574919,
+    "success": false
+   },
+   "thrust0.90_com-15.0mm": {
+    "crashed": true,
+    "max_tilt": 79.18462408234569,
+    "z_peak": 0.11887153255901653,
+    "z_end": 0.05503712954728049,
+    "success": false
+   },
+   "thrust0.90_com-7.5mm": {
+    "crashed": true,
+    "max_tilt": 74.10001776077495,
+    "z_peak": 0.1188567297115808,
+    "z_end": 0.05643012495629548,
+    "success": false
+   },
+   "thrust0.90_com+0.0mm": {
+    "crashed": false,
+    "max_tilt": 4.481547103124392,
+    "z_peak": 1.0915878651648006,
+    "z_end": 0.5006881561897476,
+    "rms_vxy": 0.1489756189632199,
+    "rms_vz": 0.15768945695065548,
+    "rms_wz": 0.22806765636886198,
+    "took_off": true,
+    "diff_throttle": 0.012377609715961952,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": true
+   },
+   "thrust0.90_com+7.5mm": {
+    "crashed": true,
+    "max_tilt": 71.17041198820141,
+    "z_peak": 0.11884708755468386,
+    "z_end": 0.06656646319048111,
+    "success": false
+   },
+   "thrust0.90_com+15.0mm": {
+    "crashed": true,
+    "max_tilt": 75.50584359494601,
+    "z_peak": 0.1188556653026547,
+    "z_end": 0.0592555345916408,
+    "success": false
+   },
+   "thrust1.00_com-15.0mm": {
+    "crashed": true,
+    "max_tilt": 71.28949895348373,
+    "z_peak": 0.11891097363192724,
+    "z_end": 0.0550907584383043,
+    "success": false
+   },
+   "thrust1.00_com-7.5mm": {
+    "crashed": false,
+    "max_tilt": 39.63833058178223,
+    "z_peak": 1.0027207688927942,
+    "z_end": 0.5244984004812221,
+    "rms_vxy": 0.4845206609276985,
+    "rms_vz": 0.15049561166148498,
+    "rms_wz": 0.22741553209425897,
+    "took_off": true,
+    "diff_throttle": 0.1243518575538092,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": false
+   },
+   "thrust1.00_com+0.0mm": {
+    "crashed": false,
+    "max_tilt": 4.690984474956349,
+    "z_peak": 1.0867785762319162,
+    "z_end": 0.5277356777369512,
+    "rms_vxy": 0.14363722460837666,
+    "rms_vz": 0.15489034534264884,
+    "rms_wz": 0.2262675830688323,
+    "took_off": true,
+    "diff_throttle": 0.011676744800615957,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": true
+   },
+   "thrust1.00_com+7.5mm": {
+    "crashed": false,
+    "max_tilt": 25.18301910562743,
+    "z_peak": 1.088084543754855,
+    "z_end": 0.5064291682909495,
+    "rms_vxy": 0.28027064824562453,
+    "rms_vz": 0.15734033719199067,
+    "rms_wz": 0.22566163201059636,
+    "took_off": true,
+    "diff_throttle": 0.10728982662697427,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": false
+   },
+   "thrust1.00_com+15.0mm": {
+    "crashed": true,
+    "max_tilt": 74.67341504358403,
+    "z_peak": 0.11889242676120802,
+    "z_end": 0.060276136775151055,
+    "success": false
+   },
+   "thrust1.10_com-15.0mm": {
+    "crashed": true,
+    "max_tilt": 71.2623082743369,
+    "z_peak": 0.12268746443613072,
+    "z_end": 0.05447472565983245,
+    "success": false
+   },
+   "thrust1.10_com-7.5mm": {
+    "crashed": false,
+    "max_tilt": 29.230078726009403,
+    "z_peak": 1.080833725503154,
+    "z_end": 0.5396863634149542,
+    "rms_vxy": 0.3014483484538511,
+    "rms_vz": 0.15823099484268838,
+    "rms_wz": 0.2256391940504782,
+    "took_off": true,
+    "diff_throttle": 0.11694303289212442,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": false
+   },
+   "thrust1.10_com+0.0mm": {
+    "crashed": false,
+    "max_tilt": 4.942172632410668,
+    "z_peak": 1.0788837890536191,
+    "z_end": 0.5477526933359258,
+    "rms_vxy": 0.13887912577138872,
+    "rms_vz": 0.1589827334619938,
+    "rms_wz": 0.22470131055995776,
+    "took_off": true,
+    "diff_throttle": 0.011409067482904262,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": true
+   },
+   "thrust1.10_com+7.5mm": {
+    "crashed": false,
+    "max_tilt": 26.453173044098797,
+    "z_peak": 1.0800381388578448,
+    "z_end": 0.5429523055076704,
+    "rms_vxy": 0.2900481401892105,
+    "rms_vz": 0.15563585598766735,
+    "rms_wz": 0.22435630490192376,
+    "took_off": true,
+    "diff_throttle": 0.09988625276203471,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": false
+   },
+   "thrust1.10_com+15.0mm": {
+    "crashed": true,
+    "max_tilt": 71.08459400017037,
+    "z_peak": 0.11892923881377729,
+    "z_end": 0.06950969387869609,
+    "success": false
+   },
+   "thrust1.20_com-15.0mm": {
+    "crashed": true,
+    "max_tilt": 70.95154670880152,
+    "z_peak": 0.13755822314776678,
+    "z_end": 0.09859249951609825,
+    "success": false
+   },
+   "thrust1.20_com-7.5mm": {
+    "crashed": false,
+    "max_tilt": 30.074266341093686,
+    "z_peak": 1.072363998628472,
+    "z_end": 0.5266487681825216,
+    "rms_vxy": 0.3108582041573452,
+    "rms_vz": 0.15694886694930116,
+    "rms_wz": 0.22377321031969666,
+    "took_off": true,
+    "diff_throttle": 0.10979258646572711,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": false
+   },
+   "thrust1.20_com+0.0mm": {
+    "crashed": false,
+    "max_tilt": 5.263937235694244,
+    "z_peak": 1.1195036156319593,
+    "z_end": 0.5523843996450727,
+    "rms_vxy": 0.13574197143917582,
+    "rms_vz": 0.1501366351870382,
+    "rms_wz": 0.22338355947432817,
+    "took_off": true,
+    "diff_throttle": 0.01157677070907453,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": true
+   },
+   "thrust1.20_com+7.5mm": {
+    "crashed": false,
+    "max_tilt": 27.73456369407611,
+    "z_peak": 1.0920365496358524,
+    "z_end": 0.5313421492089833,
+    "rms_vxy": 0.3047179644291101,
+    "rms_vz": 0.15358060216584293,
+    "rms_wz": 0.22335096887449138,
+    "took_off": true,
+    "diff_throttle": 0.09400545332419478,
+    "leg_offset_rms": 0.0,
+    "leg_offset_max": 0.0,
+    "success": false
+   },
+   "thrust1.20_com+15.0mm": {
+    "crashed": true,
+    "max_tilt": 73.1619610471561,
+    "z_peak": 0.1301127983543338,
+    "z_end": 0.06626130911344785,
+    "success": false
+   }
+  },
+  "grid_success": 5,
+  "paired": {
+   "n": 0,
+   "rms_vxy_base": null,
+   "rms_vxy_policy": null,
+   "rms_vz_base": null,
+   "rms_vz_policy": null,
+   "diff_throttle_base": null,
+   "diff_throttle_policy": null,
+   "max_tilt_base": null,
+   "max_tilt_policy": null
+  }
+ },
+ "random_same_seeds": {
+  "base": {
+   "no_crash": 31,
+   "n": 100,
+   "vxy_err": 0.25221812261463356,
+   "vz_err": 0.2029010040528614,
+   "diff_throttle": 0.0739367737597343,
+   "leg_max_rad": 0.0
+  },
+  "policy": {
+   "no_crash": 38,
+   "n": 100,
+   "vxy_err": 0.591988151576491,
+   "vz_err": 0.15333113526848183,
+   "diff_throttle": 0.07221721373867114,
+   "leg_max_rad": 0.22703604921468548
+  }
+ },
+ "grid_no_crash": {
+  "base": 11,
+  "policy": 10
+ }
+}

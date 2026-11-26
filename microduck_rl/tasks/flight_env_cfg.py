@@ -2,7 +2,8 @@
 
 * ``Microduck-WalkPack-Flat-HD1910-AllColl``  walk v4 carrying the flight hardware, fans off (fine-tune of walk v4)
 * ``Microduck-RunPack-Flat-HD1910-AllColl``   run v3 carrying it (fine-tune of run v3)
-* ``Microduck-Takeoff-Flat-HD1910-AllColl``   run, then take off on command and hold a height: the legs' 14 joint
+* ``Microduck-Takeoff-Flat-HD1910-AllColl``   run, then take off on command and track a velocity
+  command with a vertical component (vx, vy, vz, wz): the legs' 14 joint
   targets plus 4 fan throttles from one policy. The action size differs from the run policy's, so this one trains
   from scratch (and without the mirror loss, whose joint map does not know the fans).
 
@@ -69,8 +70,8 @@ class MicroDuckHD1910TakeoffAllCollEnvCfg(MicroDuckHD1910RunPackAllCollEnvCfg):
 
         r = self.rewards
         # flight
-        r.flight_height = RewTerm(func=flight.flight_height_tracking, weight=4.0, params={"std": 0.08})
-        r.flight_progress = RewTerm(func=flight.flight_height_progress, weight=2.0, params={"span": 0.5})
+        r.flight_vz = RewTerm(func=flight.flight_vz_tracking, weight=3.0, params={"std": 0.22, "asset_cfg": SceneEntityCfg("robot")})
+        r.flight_airborne = RewTerm(func=flight.flight_airborne, weight=1.5, params={"clearance_m": 0.05})
         r.flight_feet_off = RewTerm(func=flight.flight_feet_off_ground, weight=0.5, params={"sensor_cfg": _FEET})
         r.flight_upright = RewTerm(func=flight.flight_upright, weight=1.0, params={"asset_cfg": SceneEntityCfg("robot")})
         r.fan_ground = RewTerm(func=flight.fan_throttle_ground, weight=-0.5)
@@ -80,10 +81,11 @@ class MicroDuckHD1910TakeoffAllCollEnvCfg(MicroDuckHD1910RunPackAllCollEnvCfg):
             term = getattr(r, name, None)
             if term is not None:
                 setattr(r, name, flight.gated(term, on_ground=True))
-        self.terminations.ceiling = DoneTerm(func=flight.above_ceiling, params={"ceiling_m": 1.2})
+        self.terminations.ceiling = DoneTerm(func=flight.above_ceiling, params={"ceiling_m": 1.6})
 
     def play_mode(self):
         super().play_mode()
         self.commands.takeoff.no_takeoff_prob = 0.0
         self.commands.takeoff.takeoff_time_range_s = (3.0, 3.0)
-        self.commands.takeoff.height_range_m = (0.5, 0.5)
+        self.commands.takeoff.climb_vz_range = (0.5, 0.5)
+        self.commands.takeoff.hover_prob = 1.0

@@ -4,6 +4,7 @@ import json, os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 J = lambda n: json.load(open(os.path.join(ROOT, "docs", n)))
 fea, sid, ro, cad, res = J("flight_fea_results.json"), J("fan_sysid_results.json"), J("flight_rollout_results.json"), J("flight_cad_results.json"), J("flight_results.json")
+rl = J("flight_rl_res_legs_results.json"); rb, rp = rl["random_same_seeds"]["base"], rl["random_same_seeds"]["policy"]
 a, p = fea["materials"]["ABS"], fea["materials"]["PLA"]
 b, c = ro["baseline"], ro["carry"]
 tab = {r["name"]: r for r in sid["table"]}
@@ -26,6 +27,10 @@ N = dict(
     RobOk=f"{sum(v['success'] for v in rob.values())}", RobN=f"{len(rob)}",
     RobThrustOk=f"{ok(lambda k: 'com+0.0' in k)}/{tot(lambda k: 'com+0.0' in k)}",
     RobComSmallOk=f"{ok(lambda k: '7.5mm' in k)}/{tot(lambda k: '7.5mm' in k)}", RobComBigOk=f"{ok(lambda k: '15.0mm' in k)}/{tot(lambda k: '15.0mm' in k)}",
+    RlSteps=f"{rl['train_steps']/1e6:.1f}", RlMin=f"{rl['train_time_s']/60:.0f}", RlBaseOk=f"{rb['no_crash']}", RlPolOk=f"{rp['no_crash']}",
+    RlBaseVxy=f"{rb['vxy_err']:.2f}", RlPolVxy=f"{rp['vxy_err']:.2f}", RlBaseVz=f"{rb['vz_err']:.2f}", RlPolVz=f"{rp['vz_err']:.2f}",
+    RlLegDeg=f"{rp['leg_max_rad']*57.3:.0f}", RlGridBase=f"{rl['grid_no_crash']['base']}", RlGridPol=f"{rl['grid_no_crash']['policy']}",
+    RlNomVxy=f"{rl['nominal']['rms_vxy']:.2f}", RlNomVz=f"{rl['nominal']['rms_vz']:.2f}", RlNomTilt=f"{rl['nominal']['max_tilt']:.0f}",
     PackG=f"{json.load(open(os.path.join(ROOT, 'microduck_rl', 'flight', 'flight_pack.json')))['mass']*1e3:.0f}",
 )
 open(os.path.join(ROOT, "docs", "duck_flight_report_numbers.tex"), "w").write(

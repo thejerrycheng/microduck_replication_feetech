@@ -27,7 +27,8 @@ bench identification is implemented and checked on synthetic data. In MuJoCo the
 run policies fall \frCarryWalkFalls{} and \frCarryRunFalls{} times with the pack, so both must be
 retrained; with fan stabilisation on the ground a model-based controller runs at \frRoRun\,m/s,
 takes off, hovers within \frRoZerr\,mm and lands. Isaac Lab tasks for the retraining and for a
-learned take-off are written but not run: the training machine was unreachable.
+learned take-off are written but not run: the training machine was unreachable. A policy trained on a CPU
+instead does not improve on the classical controller.
 \end{abstract}
 \textbf{Keywords:} legged robot, ducted fan, battery sag, system identification, FDM structure,
 thrust-assisted locomotion.
@@ -98,7 +99,8 @@ at the measured bus voltage gives throttles. Attitude bandwidth is 8--9\,rad/s b
 (about 45\,ms) and command delay leave little phase beyond that. On the ground the fans carry
 1.2 times the hardware's weight through its own centre of mass and hold roll and pitch. Isaac Lab
 tasks: walk and run with the pack's mass, centre of mass and inertia added to the trunk, and a
-take-off task whose policy outputs 14 joint targets and 4 throttles, with the model of
+take-off task whose policy outputs 14 joint targets and 4 throttles and tracks a velocity command with a vertical
+component, with the model of
 Section~\ref{sec:model} as an action term and its parameters redrawn per episode.
 
 \section{Experiments}
@@ -244,6 +246,36 @@ Nominal rollout: lift-off at \frRoVlift\,m/s, maximum tilt \frRoTilt$^\circ$, ho
 \frRobComSmallOk{} with a $\pm7.5$\,mm centre-of-mass error, \frRobComBigOk{} at $\pm15$\,mm.
 The centre of mass must therefore be known to a few millimetres, or adapted online.
 
+
+\subsection{Learned flight policy (MuJoCo on a CPU): a negative result}
+With the GPU machine unreachable, a flight policy was trained with PPO in MuJoCo on nine CPU cores, on the same fan
+and pack model with its parameters redrawn every episode (thrust $\pm20$\,\%, per fan $\pm7$\,\%, rotor inertia
+$\times0.7$--1.8, cell resistance $\times0.6$--1.6, command delay 5--20\,ms, centre of mass $\pm12$\,mm). The command
+is a velocity in the heading frame, $(v_x, v_y, v_z, \dot\psi)$: the walk's command with a vertical component, so
+take-off is a positive $v_z$ from the ground. Three findings.
+\begin{itemize}
+\item \textbf{From scratch it did not learn to fly.} After 3\,M steps the policy balanced on the ground with the fans
+but crashed within 1.6\,s from 15 of 16 mid-air starts. Two errors were found on the way: body rates were read in the
+trunk's inertial-axis frame instead of the body frame, and a narrow velocity kernel gave no gradient from standstill.
+\item \textbf{The classical controller flies the same environment} at the same 50\,Hz, so the policy was retrained as
+a residual on it: four fan corrections in mixer coordinates plus offsets on the ten leg joints, with a cost on
+differential thrust so that a steady offset is cheaper to answer with the legs.
+\item \textbf{The residual did not help.} After \frRlSteps\,M steps (\frRlMin\,min) and on the same 100 randomised
+robots with random commands, the policy finishes \frRlPolOk{} episodes without a crash and the base controller alone
+\frRlBaseOk. Horizontal velocity error is \frRlPolVxy\,m/s against \frRlBaseVxy\,m/s (worse), vertical
+\frRlPolVz{} against \frRlBaseVz\,m/s. The legs move by up to \frRlLegDeg$^\circ$ with no measurable benefit.
+On the nominal robot it follows a scripted sequence (take off, hover, forward, climb, sidestep, yaw, descend) without
+crashing, tilting at most \frRlNomTilt$^\circ$.
+\end{itemize}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_rl_res_legs.pdf}
+\caption{Residual policy: training curve, the nominal command sequence, and vertical-velocity error against plant error.}
+\end{figure}
+The limiting factor is the base controller, which under this randomisation survives 20 of 30 episodes at
+$\pm5$\,mm of centre-of-mass error and 7 of 30 at $\pm12$\,mm; raising its trim gain made it unstable. Related work
+(\texttt{docs/duck\_flight\_related\_work.md}) points to the remedies: one policy over legs and fans trained at GPU
+scale, action history in the observation, and thrust-rate or body-rate commands.
+
 \section{Implementation and Usage}\label{sec:use}
 {\small
 \begin{verbatim}
@@ -271,6 +303,7 @@ replays the recorded trajectory in Isaac Sim with a smoke emitter per fan.
 \begin{itemize}
 \item \textbf{No hardware data.} Every fan number is a seller row; $R$, $I_0$, $J$, $\kappa$ and the
 pack resistance are assumed. The identification has only been run on synthetic logs.
+\item \textbf{No working learned flight policy.} The CPU-trained policy does not beat the classical controller, and neither is robust to centre-of-mass error.
 \item \textbf{Not run:} the Isaac Lab tasks, the retraining of walk and run, the learned take-off and
 the Isaac Sim replay. They were written against the Isaac Lab source without a GPU; expect fixes at
 the smoke-test stage. No Isaac Sim render exists yet.

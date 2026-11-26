@@ -7,7 +7,8 @@
   :mod:`microduck_rl.flight.fan_model` stepped at the physics rate, and the resulting wrench on the trunk
   (momentum thrust with inflow, inlet momentum drag, swirl / spin-up reaction, rotor gyroscopics).
   Fan and pack parameters are redrawn per environment at reset.
-* :class:`TakeoffCommand` raises a take-off flag at a random time and ramps a target height.
+* :class:`TakeoffCommand` raises a take-off flag at a random time and then commands a vertical velocity: with the
+  walk's (vx, vy, wz) command the policy tracks a full (vx, vy, vz, wz) velocity command.
 * observation and reward terms for the take-off task, and :func:`gated` to switch a ground-only reward off in flight.
 
 Nothing here has been identified on hardware: the parameter ranges are the priors of ``scripts/tools/fan_sysid.py``.
@@ -43,8 +44,8 @@ __all__ = [
     "TakeoffCommandCfg",
     "fan_state",
     "base_height_noisy",
-    "flight_height_tracking",
-    "flight_height_progress",
+    "flight_vz_tracking",
+    "flight_airborne",
     "flight_feet_off_ground",
     "flight_upright",
     "fan_throttle_ground",
@@ -266,15 +267,24 @@ class FanThrottleActionCfg(ActionTermCfg):
 
 # ------------------------------------------------------------------------------------------------ take-off command
 class TakeoffCommand(CommandTerm):
-    """(flag, target height): the flag rises at a per-episode time; the height then ramps from the stand to a target."""
+    """(flag, vertical velocity): the walk's velocity command gets its missing z component.
+
+    The flag rises at a per-episode time (take-off). From then on the term commands a vertical velocity [m/s]: a climb
+    for ``climb_s``, then a value redrawn every ``resample_s`` (zero with probability ``hover_prob``). Outside the
+    height band the command is overridden so the duck comes back into it. Forward, sideways and yaw-rate commands stay
+    with ``base_velocity``; together the policy tracks (vx, vy, vz, wz).
+    """
 
     cfg: "TakeoffCommandCfg"
 
     def __init__(self, cfg: "TakeoffCommandCfg", env: ManagerBasedRLEnv):
         super().__init__(cfg, env)
-        self._cmd = torch.zeros(self.num_envs, 2, device=self.device)
-        self._t_go = torch.full((self.num_envs,), 1.0e9, device=self.device)
-        self._h = torch.full((self.num_envs,), STAND_Z, device=self.device)
+        n, dev = self.num_envs, self.device
+        self._cmd = torch.zeros(n, 2, device=dev)
+        self._t_go = torch.full((n,), 1.0e9, device=dev)
+        self._vz_climb = torch.zeros(n, device=dev)
+        self._vz = torch.zeros(n, device=dev)
+        self._next = torch.zeros(n, device=dev)
 
     @property
     def command(self) -> torch.Tensor:
@@ -288,28 +298,44 @@ class TakeoffCommand(CommandTerm):
         t = torch.empty(k, device=self.device).uniform_(*self.cfg.takeoff_time_range_s)
         stay = torch.rand(k, device=self.device) < self.cfg.no_takeoff_prob
         self._t_go[env_ids] = torch.where(stay, torch.full_like(t, 1.0e9), t)
-        self._h[env_ids] = torch.empty(k, device=self.device).uniform_(*self.cfg.height_range_m)
+        self._vz_climb[env_ids] = torch.empty(k, device=self.device).uniform_(*self.cfg.climb_vz_range)
+        self._vz[env_ids] = 0.0
+        self._next[env_ids] = 0.0
         self._cmd[env_ids] = 0.0
 
     def _update_command(self):
+        c = self.cfg
         t = self._env.episode_length_buf.float() * self._env.step_dt
         since = t - self._t_go
         flag = (since >= 0.0).float()
-        ramp = torch.clamp((since - self.cfg.spool_s) / self.cfg.climb_s, 0.0, 1.0)
+        # after the climb, redraw the vertical velocity every resample_s
+        due = (since >= c.climb_s) & (t >= self._next)
+        if due.any():
+            ids = due.nonzero(as_tuple=False).squeeze(-1)
+            vz = torch.empty(len(ids), device=self.device).uniform_(*c.vz_range)
+            vz = torch.where(torch.rand(len(ids), device=self.device) < c.hover_prob, torch.zeros_like(vz), vz)
+            self._vz[ids] = vz
+            self._next[ids] = t[ids] + c.resample_s
+        vz = torch.where(since < c.climb_s, self._vz_climb, self._vz)
+        z = _height(self._env)
+        vz = torch.where(z > c.height_band_m[1], torch.clamp(vz, max=-0.3), vz)
+        vz = torch.where((z < c.height_band_m[0]) & (since > c.climb_s), torch.clamp(vz, min=0.2), vz)
         self._cmd[:, 0] = flag
-        self._cmd[:, 1] = flag * (STAND_Z + ramp * (self._h - STAND_Z))
+        self._cmd[:, 1] = flag * vz
 
 
 @configclass
 class TakeoffCommandCfg(CommandTermCfg):
     class_type: type[CommandTerm] = TakeoffCommand
     resampling_time_range: tuple[float, float] = (1.0e6, 1.0e6)
-    """Drawn once per episode (at reset)."""
+    """The take-off time is drawn once per episode (at reset)."""
     takeoff_time_range_s: tuple[float, float] = (2.0, 5.0)
-    height_range_m: tuple[float, float] = (0.35, 0.60)
-    spool_s: float = 0.3
-    """Seconds between the flag and the start of the height ramp: the rotors need about 0.2 s."""
-    climb_s: float = 1.0
+    climb_vz_range: tuple[float, float] = (0.3, 0.6)
+    climb_s: float = 1.2
+    vz_range: tuple[float, float] = (-0.4, 0.6)
+    hover_prob: float = 0.4
+    resample_s: float = 2.0
+    height_band_m: tuple[float, float] = (0.25, 1.0)
     no_takeoff_prob: float = 0.15
 
 
@@ -327,15 +353,16 @@ def base_height_noisy(env: ManagerBasedEnv, noise_m: float = 0.01) -> torch.Tens
 
 
 # ------------------------------------------------------------------------------------------------ rewards
-def flight_height_tracking(env: ManagerBasedRLEnv, std: float = 0.08) -> torch.Tensor:
+def flight_vz_tracking(env: ManagerBasedRLEnv, std: float = 0.22, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """Vertical-velocity tracking after the take-off flag: exp(-(vz - vz_cmd)^2 / std^2)."""
     cmd = env.command_manager.get_command(TAKEOFF_CMD)
-    return cmd[:, 0] * torch.exp(-torch.square((_height(env) - cmd[:, 1]) / std))
+    vz = torch.nan_to_num(env.scene[asset_cfg.name].data.root_link_lin_vel_w.torch[:, 2], nan=0.0)
+    return cmd[:, 0] * torch.exp(-torch.square((vz - cmd[:, 1]) / std))
 
 
-def flight_height_progress(env: ManagerBasedRLEnv, span: float = 0.5) -> torch.Tensor:
-    """Linear shaping far from the target, where the Gaussian term is flat."""
-    cmd = env.command_manager.get_command(TAKEOFF_CMD)
-    return cmd[:, 0] * torch.clamp(1.0 - torch.abs(_height(env) - cmd[:, 1]) / span, 0.0, 1.0)
+def flight_airborne(env: ManagerBasedRLEnv, clearance_m: float = 0.05) -> torch.Tensor:
+    """After the flag: being clear of the floor at all (the velocity term alone is satisfied by standing when vz_cmd = 0)."""
+    return flight_flag(env) * (_height(env) > STAND_Z + clearance_m).float()
 
 
 def flight_feet_off_ground(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, threshold: float = 1.0) -> torch.Tensor:

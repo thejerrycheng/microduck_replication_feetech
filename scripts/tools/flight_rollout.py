@@ -89,7 +89,7 @@ def rollout(thrust_scale=1.0, com_dx=0.0, model_scale=1.0, z_hover=0.55, record=
         ctrl.ki = ki_scale * ctrl.kp
     orig = duck.apply_perturb
     duck.apply_perturb = lambda: (orig(), plant.substep())
-    log = {k: [] for k in ("t", "pos", "quat", "vel", "u", "w", "thrust", "v_bus", "i_bus", "soc", "tilt", "mode", "xpos", "xquat", "z_ref")}
+    log = {k: [] for k in ("t", "pos", "quat", "vel", "u", "w", "thrust", "v_bus", "i_bus", "soc", "tilt", "mode", "xpos", "xquat", "z_ref", "qpos")}
     mode, z_ref, landed_t, t_off = "ground", None, None, None
     z_stand = None
     hold = E.DEFAULT_POSE.astype(np.float64)
@@ -158,7 +158,7 @@ def rollout(thrust_scale=1.0, com_dx=0.0, model_scale=1.0, z_hover=0.55, record=
                          ("mode", ["ground", "flight", "descend", "landed"].index(mode)), ("z_ref", z_ref if z_ref is not None else z)):
             log[key].append(val)
         if record:
-            log["xpos"].append(d.xpos.copy()); log["xquat"].append(d.xquat.copy())
+            log["xpos"].append(d.xpos.copy()); log["xquat"].append(d.xquat.copy()); log["qpos"].append(d.qpos.copy())
     L = {k: np.array(v) for k, v in log.items() if len(v)}
     fl = L["mode"] == 1
     hov = fl & (L["t"] > (t_off or t_takeoff) + 2.5)
