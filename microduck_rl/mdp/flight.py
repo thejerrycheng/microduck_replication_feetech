@@ -95,7 +95,7 @@ def attach_flight_pack(
     """
     asset = env.scene[asset_cfg.name]
     b = asset_cfg.body_ids
-    b = [b[0]] if not isinstance(b, slice) else asset.find_bodies(TRUNK)[0][:1]
+    b = [int(b[0])] if not isinstance(b, slice) else [int(asset.find_bodies(TRUNK)[0][0])]   # plain ints: the setters build warp arrays
     dev = asset.device
     n = env.num_envs
     m0 = asset.data.body_mass.torch[:, b[0]].clone()                       # (N,)
@@ -124,8 +124,9 @@ class FanThrottleAction(ActionTerm):
     """Four ducted fans on one LiPo pack: throttle commands in, a wrench on the trunk out.
 
     The raw action ``a`` maps to throttle ``u = clip(offset + scale * a, 0, 1)``. :meth:`apply_actions` runs every
-    physics step: it advances the command delay line, the rotor and battery states, and writes the net force and torque
-    (body frame, about the trunk's CoM) into the articulation's permanent wrench composer.
+    physics step (or once per control step when the physics owns the decimation, as Newton does): it advances the
+    command delay line and the rotor and battery states by the physics steps that elapsed, and writes the net force
+    and torque (body frame, about the trunk's CoM) into the articulation's permanent wrench composer.
     """
 
     cfg: "FanThrottleActionCfg"
@@ -133,7 +134,7 @@ class FanThrottleAction(ActionTerm):
     def __init__(self, cfg: "FanThrottleActionCfg", env: ManagerBasedEnv):
         super().__init__(cfg, env)
         n, dev = self.num_envs, self.device
-        self._trunk = self._asset.find_bodies(TRUNK)[0][0]
+        self._trunk = int(self._asset.find_bodies(TRUNK)[0][0])
         fans = FLIGHT_PACK["fans"]
         self._pos = torch.tensor([f["pos"] for f in fans], device=dev)            # (4, 3) trunk frame
         self._axis = torch.tensor([f["axis"] for f in fans], device=dev)          # (4, 3)
@@ -163,6 +164,7 @@ class FanThrottleAction(ActionTerm):
         self._u = torch.zeros(n, 4, device=dev)
         self._u_prev = torch.zeros(n, 4, device=dev)
         self._all = torch.arange(n, device=dev)
+        self._last_counter = int(getattr(env, "_sim_step_counter", 0))
         self._randomize(self._all)
 
     # -- ActionTerm interface
@@ -189,13 +191,21 @@ class FanThrottleAction(ActionTerm):
         self._u[:] = torch.clamp(self.cfg.offset + self.cfg.scale * torch.nan_to_num(actions, nan=0.0), 0.0, 1.0)
 
     def apply_actions(self):
+        # With physics-owned decimation (Newton) this is called once per control step, covering `decimation` physics
+        # steps; otherwise once per physics step. Advance the delay line and the fan model by the steps that elapsed.
         dt = self._env.physics_dt
-        self._queue = torch.roll(self._queue, 1, dims=1)
-        self._queue[:, 0] = self._u
-        u = self._queue[self._all, self._delay]
+        counter = int(self._env._sim_step_counter)
+        n_steps = max(counter - self._last_counter, 1)
+        self._last_counter = counter
         p = replace(self._base, eta_inst=self._eta, kq=self._kq, J=self._J)
         bat = replace(self._bat, r_cell=self._r_cell)
-        self.w, self.soc, self.v1, aux = F.step(self.w, self.soc, self.v1, u, dt, p, bat, torch, substeps=1)
+        w_start = self.w
+        for _ in range(n_steps):
+            self._queue = torch.roll(self._queue, 1, dims=1)
+            self._queue[:, 0] = self._u
+            u = self._queue[self._all, self._delay]
+            self.w, self.soc, self.v1, aux = F.step(self.w, self.soc, self.v1, u, dt, p, bat, torch, substeps=1)
+        aux["w_dot"] = (self.w - w_start) / (n_steps * dt)
         self.soc = torch.clamp(self.soc, 0.0, 1.0)
         self.v_bus, self.i_bus = aux["v_bus"], aux["i_bus"]
 
@@ -220,7 +230,12 @@ class FanThrottleAction(ActionTerm):
         )
 
     def reset(self, env_ids: Sequence[int] | None = None) -> None:
-        ids = self._all if env_ids is None else torch.as_tensor(env_ids, device=self.device)
+        if env_ids is None:
+            ids = self._all
+        elif isinstance(env_ids, slice):
+            ids = self._all[env_ids]
+        else:
+            ids = torch.as_tensor(env_ids, device=self.device)
         self._raw[ids] = 0.0
         self._u[ids] = 0.0
         self._u_prev[ids] = 0.0
@@ -294,6 +309,8 @@ class TakeoffCommand(CommandTerm):
         pass
 
     def _resample_command(self, env_ids: Sequence[int]):
+        if isinstance(env_ids, slice):
+            env_ids = torch.arange(self.num_envs, device=self.device)[env_ids]
         k = len(env_ids)
         t = torch.empty(k, device=self.device).uniform_(*self.cfg.takeoff_time_range_s)
         stay = torch.rand(k, device=self.device) < self.cfg.no_takeoff_prob
@@ -417,5 +434,8 @@ def gated(term: RewardTermCfg, on_ground: bool = True) -> RewardTermCfg:
             return self._inner(env, *args, **kwargs) * ((1.0 - flag) if on_ground else flag)
 
     _Gated.__call__.__signature__ = sig.replace(parameters=params)
-    _Gated.__name__ = _Gated.__qualname__ = f"gated_{getattr(inner, '__name__', 'term')}"
+    name = f"gated_{'ground' if on_ground else 'air'}_{getattr(inner, '__name__', 'term')}"
+    _Gated.__name__ = _Gated.__qualname__ = name
+    _Gated.__module__ = __name__
+    globals()[name] = _Gated      # configs are stored as 'module:name' strings and resolved again: the class must be importable
     return term.replace(func=_Gated)

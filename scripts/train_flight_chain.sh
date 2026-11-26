@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 # Flying-duck training chain for the GPU desktop (docs/duck_flight.tex, "Training chain").
+#   -  plant check (scripts/check_flight_plant.py): pack mass on the trunk, thrust against weight
 #   0  smoke test of the three new tasks (64 envs, 3 iterations): catches config / API errors in minutes
 #   1  walk with the flight hardware   (fine-tune of VelStand 21495, mirror loss)
 #   2  run with the flight hardware    (fine-tune of run v3 5999, mirror loss)
 #   3  run -> take-off                 (from scratch: 18 actions)
 #   4  play each final checkpoint: exports policy.onnx and records a clip
-# NOT YET RUN: written on a machine without a GPU while the desktop was unreachable (2026-11-25). Expect to fix
-# details at stage 0. Launch:  tmux new -d -s flight "scripts/train_flight_chain.sh > logs/flight_chain.out 2>&1"
+# Stage 0 and the plant check pass on the 5080 (2026-11-26). Each training stage waits for free GPU memory.
+# Launch: systemd-run --user --unit microduck-flight-chain --working-directory "$PWD" scripts/train_flight_chain.sh
 set -u
 cd "$(dirname "$0")/.."
 mkdir -p logs
-UV="uv run --project external/IsaacLab python"
+# The package is installed editable from another checkout on the GPU machine: PYTHONPATH makes THIS tree win.
+export PYTHONPATH="$PWD"
+UV="external/IsaacLab/.venv/bin/python"
 COMMON="--rl_library rsl_rl presets=backlash"
 SYM="--agent rsl_rl_with_symmetry_cfg_entry_point"
 N=${NUM_ENVS:-4096}
@@ -18,9 +21,15 @@ VIDEO="--video --video_length 400 --video_interval 6000"
 log() { echo "[$(date +%F_%T)] $*" | tee -a logs/flight_chain.log; }
 newest() { ls -td logs/rsl_rl/"$1"*/*/ 2>/dev/null | head -1; }
 last_ckpt() { ls "$1"/model_*.pt | sed 's/.*model_//; s/.pt//' | sort -n | tail -1; }
+# other projects train on this GPU: wait for room instead of pushing them out of memory (same gate as finetune_gains.sh)
+gate() { local said=""; while [ "$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1)" -lt "${MIN_GPU_FREE_MB:-7500}" ] || [ "$(free -m | awk 'NR==2{print $7}')" -lt "${MIN_RAM_FREE_MB:-6000}" ]; do
+    [ -z "$said" ] && { log "waiting for GPU >= ${MIN_GPU_FREE_MB:-7500} MB and RAM >= ${MIN_RAM_FREE_MB:-6000} MB free"; said=1; }; sleep 60; done; }
 
-python scripts/tools/flight_design.py >/dev/null && python scripts/tools/flight_model.py || { log "model build failed"; exit 1; }
-
+if [ -z "${SKIP_CHECK:-}" ]; then
+  log "plant check"
+  $UV scripts/check_flight_plant.py presets=backlash --out docs/flight_isaac_check.json > logs/flight_check.log 2>&1 || { log "PLANT CHECK FAILED (logs/flight_check.log)"; exit 1; }
+  grep "\[check\]" logs/flight_check.log | tee -a logs/flight_chain.log
+fi
 if [ -z "${SKIP_SMOKE:-}" ]; then
   for t in Microduck-WalkPack-Flat-HD1910-AllColl Microduck-RunPack-Flat-HD1910-AllColl Microduck-Takeoff-Flat-HD1910-AllColl; do
     log "smoke $t"
@@ -28,16 +37,19 @@ if [ -z "${SKIP_SMOKE:-}" ]; then
   done
 fi
 if [ -z "${SKIP_WALK:-}" ]; then
+  gate
   log "walk + pack: fine-tune from VelStand 21495, ${WALK_ITERS:-3000} iterations"
   $UV scripts/train.py $COMMON $SYM --task Microduck-WalkPack-Flat-HD1910-AllColl --num_envs $N $VIDEO \
       --checkpoint "$PWD/checkpoints/velstand_21495/model_21495.pt" --max_iterations ${WALK_ITERS:-3000} > logs/flight_walkpack.log 2>&1 || log "walk+pack FAILED"
 fi
 if [ -z "${SKIP_RUN:-}" ]; then
+  gate
   log "run + pack: fine-tune from run v3 5999, ${RUN_ITERS:-3000} iterations"
   $UV scripts/train.py $COMMON $SYM --task Microduck-RunPack-Flat-HD1910-AllColl --num_envs $N $VIDEO \
       --checkpoint "$PWD/checkpoints/run_v3_5999/model_5999.pt" --max_iterations ${RUN_ITERS:-3000} > logs/flight_runpack.log 2>&1 || log "run+pack FAILED"
 fi
 if [ -z "${SKIP_TAKEOFF:-}" ]; then
+  gate
   log "take-off: from scratch, ${TAKEOFF_ITERS:-8000} iterations"
   $UV scripts/train.py $COMMON --task Microduck-Takeoff-Flat-HD1910-AllColl --num_envs $N $VIDEO \
       --max_iterations ${TAKEOFF_ITERS:-8000} > logs/flight_takeoff.log 2>&1 || log "take-off FAILED"
