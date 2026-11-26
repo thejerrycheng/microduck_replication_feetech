@@ -2,8 +2,8 @@
 
 * ``Microduck-WalkPack-Flat-HD1910-AllColl``  walk v4 carrying the flight hardware, fans off (fine-tune of walk v4)
 * ``Microduck-RunPack-Flat-HD1910-AllColl``   run v3 carrying it (fine-tune of run v3)
-* ``Microduck-Takeoff-Flat-HD1910-AllColl``   run, then take off on command and track a velocity
-  command with a vertical component (vx, vy, vz, wz): the legs' 14 joint
+* ``Microduck-Takeoff-Flat-HD1910-AllColl``   the full cycle: run, take off on command, track a velocity
+  command with a vertical component (vx, vy, vz, wz), land with a flare, and walk on: the legs' 14 joint
   targets plus 4 fan throttles from one policy. The action size differs from the run policy's, so this one trains
   from scratch (and without the mirror loss, whose joint map does not know the fans).
 
@@ -57,7 +57,7 @@ class MicroDuckHD1910RunPackAllCollEnvCfg(MicroDuckHD1910RunV3FlatAllCollEnvCfg)
 class MicroDuckHD1910TakeoffAllCollEnvCfg(MicroDuckHD1910RunPackAllCollEnvCfg):
     def __post_init__(self):
         super().__post_init__()
-        self.episode_length_s = 12.0
+        self.episode_length_s = 16.0     # walk 2-5 s, fly 4-7 s, land, walk again
         self.actions.fans = flight.FanThrottleActionCfg()
         self.commands.takeoff = flight.TakeoffCommandCfg()
         self.commands.base_velocity.ranges.lin_vel_x = (0.20, 0.60)
@@ -76,6 +76,7 @@ class MicroDuckHD1910TakeoffAllCollEnvCfg(MicroDuckHD1910RunPackAllCollEnvCfg):
         r.flight_upright = RewTerm(func=flight.flight_upright, weight=1.0, params={"asset_cfg": SceneEntityCfg("robot")})
         r.fan_ground = RewTerm(func=flight.fan_throttle_ground, weight=-0.5)
         r.fan_rate = RewTerm(func=flight.fan_throttle_rate, weight=-0.5)
+        r.landing_impact = RewTerm(func=flight.landing_impact, weight=-8.0, params={"asset_cfg": SceneEntityCfg("robot")})
         # gait terms mean nothing in the air: switch them off after the take-off flag
         for name in ("air_time", "foot_clearance", "foot_swing_height", "foot_slip"):
             term = getattr(r, name, None)
@@ -89,3 +90,5 @@ class MicroDuckHD1910TakeoffAllCollEnvCfg(MicroDuckHD1910RunPackAllCollEnvCfg):
         self.commands.takeoff.takeoff_time_range_s = (3.0, 3.0)
         self.commands.takeoff.climb_vz_range = (0.5, 0.5)
         self.commands.takeoff.hover_prob = 1.0
+        self.commands.takeoff.no_landing_prob = 0.0
+        self.commands.takeoff.flight_time_range_s = (5.0, 5.0)

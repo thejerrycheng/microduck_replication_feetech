@@ -282,7 +282,11 @@ class FanThrottleActionCfg(ActionTermCfg):
 
 # ------------------------------------------------------------------------------------------------ take-off command
 class TakeoffCommand(CommandTerm):
-    """(flag, vertical velocity): the walk's velocity command gets its missing z component.
+    """(flag, vertical velocity): the walk's velocity command gets its missing z component, over a full cycle
+    walk -> take-off -> fly -> land -> walk.
+
+    After a per-episode flight time the term commands a descent that slows near the floor (a flare); when the trunk is
+    back at standing height the flag drops and the gait rewards apply again, so the episode ends with walking.
 
     The flag rises at a per-episode time (take-off). From then on the term commands a vertical velocity [m/s]: a climb
     for ``climb_s``, then a value redrawn every ``resample_s`` (zero with probability ``hover_prob``). Outside the
@@ -300,6 +304,9 @@ class TakeoffCommand(CommandTerm):
         self._vz_climb = torch.zeros(n, device=dev)
         self._vz = torch.zeros(n, device=dev)
         self._next = torch.zeros(n, device=dev)
+        self._t_land = torch.full((n,), 1.0e9, device=dev)
+        self._landed = torch.zeros(n, dtype=torch.bool, device=dev)
+        self.landing = torch.zeros(n, dtype=torch.bool, device=dev)
 
     @property
     def command(self) -> torch.Tensor:
@@ -318,6 +325,11 @@ class TakeoffCommand(CommandTerm):
         self._vz_climb[env_ids] = torch.empty(k, device=self.device).uniform_(*self.cfg.climb_vz_range)
         self._vz[env_ids] = 0.0
         self._next[env_ids] = 0.0
+        fly = torch.empty(k, device=self.device).uniform_(*self.cfg.flight_time_range_s)
+        keep = torch.rand(k, device=self.device) < self.cfg.no_landing_prob
+        self._t_land[env_ids] = torch.where(keep, torch.full_like(fly, 1.0e9), self._t_go[env_ids] + fly)
+        self._landed[env_ids] = False
+        self.landing[env_ids] = False
         self._cmd[env_ids] = 0.0
 
     def _update_command(self):
@@ -337,6 +349,13 @@ class TakeoffCommand(CommandTerm):
         z = _height(self._env)
         vz = torch.where(z > c.height_band_m[1], torch.clamp(vz, max=-0.3), vz)
         vz = torch.where((z < c.height_band_m[0]) & (since > c.climb_s), torch.clamp(vz, min=0.2), vz)
+        # landing: descend, slowing near the floor; at standing height the flag drops for good and the duck walks on
+        self.landing = (t >= self._t_land) & ~self._landed
+        flare = torch.clamp(c.flare_gain * (z - STAND_Z), min=c.touchdown_vz)
+        vz = torch.where(self.landing, -torch.minimum(torch.full_like(z, c.descent_vz), flare), vz)
+        self._landed |= self.landing & (z < STAND_Z + c.touchdown_m)
+        flag = flag * (~self._landed).float()
+        self.landing = self.landing & ~self._landed
         self._cmd[:, 0] = flag
         self._cmd[:, 1] = flag * vz
 
@@ -354,6 +373,14 @@ class TakeoffCommandCfg(CommandTermCfg):
     resample_s: float = 2.0
     height_band_m: tuple[float, float] = (0.25, 1.0)
     no_takeoff_prob: float = 0.15
+    flight_time_range_s: tuple[float, float] = (4.0, 7.0)
+    """Time in the air before the landing is commanded."""
+    no_landing_prob: float = 0.2
+    descent_vz: float = 0.35
+    flare_gain: float = 2.5
+    """Commanded descent speed [m/s] per metre of height above standing, below the flare height."""
+    touchdown_vz: float = 0.12
+    touchdown_m: float = 0.015
 
 
 # ------------------------------------------------------------------------------------------------ observations
@@ -377,15 +404,27 @@ def flight_vz_tracking(env: ManagerBasedRLEnv, std: float = 0.22, asset_cfg: Sce
     return cmd[:, 0] * torch.exp(-torch.square((vz - cmd[:, 1]) / std))
 
 
+def _landing(env) -> torch.Tensor:
+    return env.command_manager.get_term(TAKEOFF_CMD).landing.float()
+
+
 def flight_airborne(env: ManagerBasedRLEnv, clearance_m: float = 0.05) -> torch.Tensor:
-    """After the flag: being clear of the floor at all (the velocity term alone is satisfied by standing when vz_cmd = 0)."""
-    return flight_flag(env) * (_height(env) > STAND_Z + clearance_m).float()
+    """After the flag: being clear of the floor at all (the velocity term alone is satisfied by standing when vz_cmd = 0).
+    Not paid while a landing is commanded."""
+    return flight_flag(env) * (1.0 - _landing(env)) * (_height(env) > STAND_Z + clearance_m).float()
+
+
+def landing_impact(env: ManagerBasedRLEnv, safe_vz: float = 0.25, near_m: float = 0.08, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """Penalty for arriving at the floor fast: squared descent speed beyond ``safe_vz`` within ``near_m`` of standing height."""
+    vz = torch.nan_to_num(env.scene[asset_cfg.name].data.root_link_lin_vel_w.torch[:, 2], nan=0.0)
+    near = (_height(env) < STAND_Z + near_m).float()
+    return _landing(env) * near * torch.square(torch.clamp(-vz - safe_vz, min=0.0))
 
 
 def flight_feet_off_ground(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, threshold: float = 1.0) -> torch.Tensor:
     f = env.scene.sensors[sensor_cfg.name].data.net_forces_w.torch[:, sensor_cfg.body_ids]
     off = (torch.nan_to_num(f, nan=0.0).norm(dim=-1) < threshold).all(dim=-1).float()
-    return flight_flag(env) * off
+    return flight_flag(env) * (1.0 - _landing(env)) * off
 
 
 def flight_upright(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
