@@ -1,0 +1,299 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,graphicx,booktabs,hyperref}
+\sloppy
+\input{duck_flight_numbers}
+\input{duck_flight_power_numbers}
+\input{duck_flight_report_numbers}
+\makeatletter\let\tabinput\@@input\makeatother
+
+\title{A Flying MicroDuck: Ducted-Fan Sizing, Fan and Pack Model, Identification, a Rigid Printed Frame, and Run-to-Take-off Control}
+\author{MicroDuck replication (Feetech HD1910 build)}
+\date{2026-11-25 \quad design and simulation; nothing built, identified on hardware, or trained yet}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We design a ducted-fan pack that lets the 25\,cm MicroDuck biped run, take off, hover and land. Four
+50\,mm fans on one 4S pack are sized with a grey-box model of the fan, ESC and battery that includes
+voltage sag: catalogue thrust is quoted near 16\,V, but four fans pull the pack to
+\fpPackVfull\,V, which changes the fan choice (5000\,KV, thrust-to-weight \fpPackTW) and fixes the
+smallest pack (4S \fpPackMah\,mAh, \fpPackG\,g) for a 30\,s flight. The flight hardware adds
+\frPackG\,g to the \flDuckG\,g duck. A five-part printed frame of \frFrameABS\,g (ABS) carries the
+fans on two spars across the trunk roof; finite elements give \frFeaLiftABS\,mm ring lift and
+\frFeaTiltABS$^\circ$ ring tilt at full thrust and a first mode of \frFeaModeABS\,Hz. A three-stage
+bench identification is implemented and checked on synthetic data. In MuJoCo the deployed walk and
+run policies fall \frCarryWalkFalls{} and \frCarryRunFalls{} times with the pack, so both must be
+retrained; with fan stabilisation on the ground a model-based controller runs at \frRoRun\,m/s,
+takes off, hovers within \frRoZerr\,mm and lands. Isaac Lab tasks for the retraining and for a
+learned take-off are written but not run: the training machine was unreachable.
+\end{abstract}
+\textbf{Keywords:} legged robot, ducted fan, battery sag, system identification, FDM structure,
+thrust-assisted locomotion.
+
+\section{Overview}
+Three design questions (how many fans, which fan, where) and four engineering ones (pack, structure,
+simulation model, control) are answered. What is \emph{measured} here is simulation and analysis
+only. What is \emph{not} done is listed in Section~\ref{sec:lim}; the main items are that no fan has
+been on a bench, the duck has not been weighed, and no policy has been trained.
+
+\section{Method}
+\subsection{Mass budget and fan count}
+All-up mass is duck, $n$ fans, ESC, flight controller, pack, wiring and printed frame. The duck is
+the model's \flDuckModelG\,g plus 5\,g for each of 15 servos (\flDuckG\,g, unweighed). For the
+screening table, listed static thrust is derated by 0.8 (seller claim) and 0.9 (installation).
+
+\subsection{Fan, ESC and battery model}\label{sec:model}
+Each fan has one state, rotor speed $\omega$, and throttle $u\in[0,1]$:
+\begin{align}
+i &= \mathrm{clip}\!\left(\frac{u V_b - K_e\omega}{R},\,0,\,i_{\max}\right), &
+J\dot\omega &= K_e i - k_q\omega^2 - K_e I_0, \\
+T &= \eta\,\rho A\,k_v\omega\,(k_v\omega - v_{ax})^+, &
+\mathbf F_{\mathrm{ram}} &= -\rho A k_v\omega\,\mathbf v_\perp ,
+\end{align}
+with $K_e = 60/(2\pi K_V)$, $A$ the fan annulus, $v_{ax}$ and $\mathbf v_\perp$ the airspeed along and
+across the thrust axis. Thrust is momentum flux of a jet of exit speed $k_v\omega$ \cite{leishman,pereira};
+static thrust is $k_f\omega^2$, $k_f=\eta\rho A k_v^2$. The airframe also receives
+$-s(\kappa k_q\omega^2 + J\dot\omega)$ about the axis ($s$ spin sign, $\kappa$ the swirl left after
+the stators) and the gyroscopic torque $-\boldsymbol\Omega\times sJ\omega\hat{\mathbf a}$. The pack is
+a Thevenin cell string, $V_b = n_s\,\mathrm{OCV}(\mathrm{soc}) - R_0 I_b - v_1$ with one RC pair and
+$I_b=\sum_k u_k i_k$; $V_b$ and $I_b$ are solved together in closed form. Assumptions: no winding
+inductance, ESC as an ideal buck stage, fixed fan efficiency, no ground or jet--leg interaction.
+First-order rotor models with a battery-dependent thrust map are standard in agile quadrotor
+simulation \cite{agilicious,ferede}; residual models learned from flight data \cite{neurobem,swift}
+are the next step once hardware exists. Priors come from one seller row per fan
+($K_V$, thrust, voltage, current) with $R=30$\,m$\Omega$ and $I_0=2.5$\,A assumed.
+
+\subsection{Pack sizing}
+For capacity $Q$ the pack weighs $14.8\,Q/118$\,kg and has cell resistance $6.5\,\mathrm{m\Omega\,Ah}/Q$
+(5\,m$\Omega$ at 1.3\,Ah; charger readings on comparable packs are 4.5--7.5). The smallest $Q$ is
+sought such that, at mid charge, full-throttle thrust is at least 1.5 times weight, cell heating
+$I_b^2 n_s r\,t/(m c_p)$ over a 30\,s hover stays under 20\,K, and no more than 75\,\% of charge is
+used.
+
+\subsection{Identification}\label{sec:sysid}
+Three bench runs, one fan: (A) a throttle staircase on a load cell, fitting $K_e, R, k_q, I_0, k_f$
+by output error on rotor speed, bus current and thrust given $(u,V_b)$, with a bootstrap for
+intervals; (B) throttle steps with ESC rotor-speed telemetry, fitting $J$ and command delay by
+simulating the rotor equation; (C) pack current pulses, fitting $R_0, R_1, \tau_1$. The intervals
+are what the simulator's randomisation should draw from.
+
+\subsection{Layout and attitude authority}
+Fans sit at $(\pm l_x,\pm l_y)$ about the all-up centre of mass, each canted $6^\circ$ about its
+radial line so differential thrust gives yaw (stators leave little reaction torque). Torques are
+$4\Delta T\,l_y$, $4\Delta T\,l_x$ and $4\Delta T\sin\gamma\sqrt{l_x^2+l_y^2}$ with
+$\Delta T=\min(T_{\max}-T_h, T_h)$ \cite{mahony}.
+
+\subsection{Structure}
+Linear elasticity on quadratic tetrahedra (gmsh, scikit-fem), both frame halves bonded at their
+laps, pinned along the two rail lines the lift hooks hold, listed full thrust on the four ring bores,
+fans as lumped masses for the modes. Printed material is modelled as 0.6 of the bulk modulus with the
+printed density (1.2\,mm skins, 15\,\% infill).
+
+\subsection{Control baseline and learning tasks}
+The baseline is a cascade: altitude and horizontal-velocity PI-D give a desired thrust vector,
+attitude PID gives torques, a $4\times4$ allocation gives fan thrusts, and the inverse static fan map
+at the measured bus voltage gives throttles. Attitude bandwidth is 8--9\,rad/s because the rotor lag
+(about 45\,ms) and command delay leave little phase beyond that. On the ground the fans carry
+1.2 times the hardware's weight through its own centre of mass and hold roll and pitch. Isaac Lab
+tasks: walk and run with the pack's mass, centre of mass and inertia added to the trunk, and a
+take-off task whose policy outputs 14 joint targets and 4 throttles, with the model of
+Section~\ref{sec:model} as an action term and its parameters redrawn per episode.
+
+\section{Experiments}
+Everything below is regenerated by the scripts in Section~\ref{sec:use}; all are deterministic.
+
+\subsection{Fan count}
+\begin{table}[h]\centering\small
+\caption{Screening at listed voltage, \flBattAh\,Ah pack. Thrust: (m) measured by a buyer, (c) claimed.
+The 5000\,KV row is evaluated with the sag model instead.}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & mass & thrust & & \multicolumn{2}{c}{2 fans} & \multicolumn{2}{c}{4 fans} & hover & hover\\
+fan & [g] & [g] & FoM & [g] & T/W & [g] & T/W & [W] & [s]\\
+\midrule
+\tabinput duck_flight_trade_table.tex
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_tw_trade.pdf}
+\caption{Usable thrust over weight, two and four fans.}
+\end{figure}
+Two 50\,mm fans do not lift the duck with margin (best \flTwoFanTW) and two fixed fans control roll
+only. \textbf{Four fans}; the 30 and 40\,mm classes cannot hover.
+
+\subsection{Fan variant and pack: the effect of sag}
+\begin{table}[h]\centering\small
+\caption{Same 50\,mm fan family on a 4S \fpPackMah\,mAh pack at mid charge, 45\,A limit. Left block:
+seller thrust derated to 80\,\%; right block: taken at face value.}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrrrrr}
+\toprule
+ & & \multicolumn{4}{c}{derated} & \multicolumn{4}{c}{as listed}\\
+fan & seller row & T/W & $V_b$ & $i$ [A] & hover [A] & T/W & $V_b$ & $i$ [A] & hover [A]\\
+\midrule
+\tabinput duck_flight_variant_table.tex
+\bottomrule
+\end{tabular}
+\end{table}
+The 4000\,KV unit that looks best at its listed 16.2\,V reaches only 1.30 on the sagging pack; the
+5000\,KV unit, held at its 45\,A rating by the ESC limit, reaches \fpPackTW. \textbf{Choice: QX-Motor
+QF2611-5000KV}, also the only family found in both rotation directions.
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_pack_opt.pdf}
+\caption{Pack constraints against capacity.}
+\end{figure}
+\begin{table}[h]\centering\small
+\caption{Mass budget.}
+\begin{tabular}{lr}
+\toprule item & mass [g]\\ \midrule
+\tabinput duck_flight_budget_table.tex
+\bottomrule
+\end{tabular}
+\end{table}
+The smallest commercial pack meeting all three constraints is \textbf{4S \fpPackMah\,mAh}
+(\fpPackG\,g): thrust-to-weight \fpPackTW{} at \fpPackVfull\,V, hover at \fpPackUhover\,\% throttle,
+\fpPackHoverA\,A (\fpPackC\,C), \fpPackDT\,K of heating and \fpPackSoc\,\% of charge in 30\,s, and
+\fpPackHoverS\,s of hover to 20\,\%. Larger packs add little thrust margin (1.79 at 2200\,mAh).
+All-up mass is \flAllUpG\,g. Over a duck mass of 750--1000\,g and 68--100\,\% of listed thrust,
+thrust-to-weight spans \flTwLow--\flTwHigh.
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_tw_sensitivity.pdf}
+\caption{Thrust-to-weight against the unweighed duck mass and the thrust derating.}
+\end{figure}
+
+\subsection{Identification pipeline on synthetic data}
+\begin{table}[h]\centering\small
+\caption{Recovery of a known plant from simulated bench logs with sensor noise (5\,g, 0.3\,\% rpm,
+0.4\,A, 20\,mV). \emph{Synthetic}: this validates the procedure, not the fan.}
+\begin{tabular}{llrrrlrr}
+\toprule
+parameter & unit & prior & truth & fit & 95\,\% interval & prior err [\%] & fit err [\%]\\
+\midrule
+\tabinput duck_flight_sysid_table.tex
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/fan_sysid.pdf}
+\caption{Fits of the three identification stages (synthetic data).}
+\end{figure}
+Thrust coefficient is recovered to \frSidKfErr\,\% (prior \frSidKfPrior\,\%), rotor inertia to
+\frSidJErr\,\%, delay to \frSidDelayErr\,\%, pack resistance to \frSidRzeroErr\,\%. Winding resistance
+is poorly conditioned from the static sweep alone (\frSidRErr\,\%; it trades against $K_e$) and
+should be measured directly. Commanding the model's hover throttle on the true plant gives
+\frSidHoverPrior\,\% of weight with the prior and \frSidHoverFit\,\% after identification.
+
+\subsection{Placement}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_layout.pdf}
+\caption{Layout on the standing duck.}
+\end{figure}
+Fans are at $x=\flXc\pm42$\,mm, $y=\pm102$\,mm, clamp plane 172\,mm above the floor (the spars pass
+over the trunk roof at 162\,mm). The jets' inner edge clears the legs by \flClrStand\,mm and the
+ducts clear the head by \flHeadClr\,mm in plan. Angular accelerations available are \flAccRoll,
+\flAccPitch{} and \flAccYaw\,rad/s$^2$; sitting or folding the legs moves the centre of mass
+\flSitDx/\flFoldDx\,mm, \flSitPct/\flFoldPct\,\% of pitch authority. Hip roll beyond
+\flRollClearHi$^\circ$ outward puts a foot in a jet.
+
+\subsection{Frame}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_frame.pdf}
+\caption{Printed parts (spar frame).}
+\end{figure}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_fea.pdf}
+\caption{Deflection at listed full thrust (ABS) and the first six modes.}
+\end{figure}
+Each half is a filled twin-ring pod on two 7$\times$18\,mm spars that cross the roof and lap with the
+other half's spars (four M3), plus a rail beside the shell; the right half is the left turned
+$180^\circ$. Two C-hooks from the rails to the underside of the shell carry the lift; a tray on the
+rear lap bolts holds the pack. Envelope \frSpanY$\times$\frLenX\,mm, \frFrameABS\,g in ABS
+(\frFramePLA\,g PLA) with fasteners. Three iterations were needed: a collar frame gave 2.3\,mm lift,
+$6^\circ$ ring tilt and a 16\,Hz first mode (the collar wall twisted, which a beam estimate had
+missed); spars with bare rings gave 23\,Hz (the rings nodded on thin struts); filling the pods and
+deepening the spars gives, with pinned supports and \frFeaDofs\,k degrees of freedom,
+\textbf{\frFeaLiftABS\,mm lift, \frFeaTiltABS$^\circ$ tilt, first mode \frFeaModeABS\,Hz in ABS}
+(\frFeaLiftPLA\,mm, \frFeaTiltPLA$^\circ$, \frFeaModePLA\,Hz in PLA) and \frFeaVmABS\,MPa peak
+von Mises stress (factor \frFeaSfABS{} on yield). Hook straps see \frHookMpa\,MPa (factor \frHookSf).
+The first mode is about six times the attitude bandwidth; it is not far above it, and a stiffer
+frame costs mass.
+
+\subsection{MuJoCo: carrying the pack, and run to take-off}
+With the fans off and a forward command for 6\,s over six servo-delay and supply variants, the bare
+duck walks at \frCarryWalkBare\,m/s and runs at \frCarryRunBare\,m/s with no falls; with the pack the
+deployed policies fall \frCarryWalkFalls{} (walk) and \frCarryRunFalls{} (run). Cancelling the pack's
+weight with the fans is not enough (its inertia remains); with fan roll/pitch stabilisation the run
+policy reaches \frRoRun\,m/s.
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_rollout.pdf}
+\caption{Thrust-assisted run, take-off, hover and landing (model-based controller, deployed run policy).}
+\end{figure}
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_rollout_robust.pdf}
+\caption{Take-off from a stand with the true thrust scaled and the controller's centre-of-mass belief shifted.}
+\end{figure}
+Nominal rollout: lift-off at \frRoVlift\,m/s, maximum tilt \frRoTilt$^\circ$, hover height error
+\frRoZerr\,mm and drift \frRoHoverV\,cm/s, hover at \frRoU\,\% throttle, \frRoI\,A and \frRoV\,V,
+\frRoSoc\,\% of charge for the 9\,s of fan time, upright after landing. Against model error
+\frRobOk{} of \frRobN{} runs succeed: \frRobThrustOk{} for thrust errors of $\pm20$\,\% alone,
+\frRobComSmallOk{} with a $\pm7.5$\,mm centre-of-mass error, \frRobComBigOk{} at $\pm15$\,mm.
+The centre of mass must therefore be known to a few millimetres, or adapted online.
+
+\section{Implementation and Usage}\label{sec:use}
+{\small
+\begin{verbatim}
+python scripts/tools/flight_design.py            # budget, layout, screening
+.venv-cad/bin/python cad/flight/build_parts.py   # STEP/STL (run the pair twice)
+python scripts/tools/flight_power.py             # pack and KV choice with sag
+.venv-cad/bin/python cad/flight/fea_frame.py     # stiffness and modes
+python scripts/tools/flight_model.py             # flight_pack.json, MuJoCo scenes
+~/.venvs/microduck_live/bin/python scripts/tools/flight_rollout.py
+python scripts/tools/fan_sysid.py [--stand a.csv --step b.csv --pack c.csv]
+.venv-cad/bin/python cad/flight/make_drawings.py # 2D drawings
+python scripts/tools/flight_report.py && make -C docs
+scripts/train_flight_chain.sh                    # GPU machine: Isaac Lab training
+\end{verbatim}}
+Constants: \texttt{scripts/tools/flight\_config.py}. Model: \texttt{microduck\_rl/flight/fan\_model.py}
+(numpy or torch; the two agree to 0.002\,rad/s). Isaac Lab terms:
+\texttt{microduck\_rl/mdp/flight.py}; tasks \texttt{Microduck-WalkPack-}, \texttt{-RunPack-} and
+\texttt{-Takeoff-Flat-HD1910-AllColl}. Bill of materials: \texttt{docs/duck\_flight\_bom.md};
+drawings: \texttt{cad/flight/drawings/}. Hardware path: one 4S pack, a 4-in-1 AM32 ESC with a 45\,A
+limit and a flight controller logging rotor speed, current and voltage; the duck's computer sends
+throttles or attitude setpoints. Rendering: \texttt{scripts/tools/isaacsim\_replay\_flight.py}
+replays the recorded trajectory in Isaac Sim with a smoke emitter per fan.
+
+\section{Limitations}\label{sec:lim}
+\begin{itemize}
+\item \textbf{No hardware data.} Every fan number is a seller row; $R$, $I_0$, $J$, $\kappa$ and the
+pack resistance are assumed. The identification has only been run on synthetic logs.
+\item \textbf{Not run:} the Isaac Lab tasks, the retraining of walk and run, the learned take-off and
+the Isaac Sim replay. They were written against the Isaac Lab source without a GPU; expect fixes at
+the smoke-test stage. No Isaac Sim render exists yet.
+\item The duck is unweighed; a 1\,kg duck with fans at 68\,\% of listing has thrust-to-weight \flTwLow.
+\item The frame is fitted to the official model's shell and to a 54.0\,mm shroud from one seller
+page; the real shell differs. The front spar pair sits \frNeckGap\,mm behind the modelled neck, and
+the hook strap passes 1.2\,mm above the modelled thigh.
+\item No aerodynamics beyond momentum theory: inlet distortion beside the trunk, jets on the legs and
+ground effect are one factor of 0.95.
+\item The baseline controller uses the simulator's true state, needs the centre of mass to
+$\pm7.5$\,mm, and runs only because the fans stabilise the old run policy.
+\item Hover lasts under a minute and one fan failing is not survivable.
+\item Taobao was not searched (browser not connected); vendor links are to other shops.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{leishman} J. G. Leishman, \emph{Principles of Helicopter Aerodynamics}, 2nd ed., Cambridge Univ. Press, 2006.
+\bibitem{pereira} J. L. Pereira, ``Hover and wind-tunnel testing of shrouded rotors for improved micro air vehicle design,'' Ph.D. thesis, Univ. of Maryland, 2008.
+\bibitem{mahony} R. Mahony, V. Kumar, P. Corke, ``Multirotor aerial vehicles: modeling, estimation, and control of quadrotor,'' \emph{IEEE Robotics \& Automation Magazine}, 19(3), 2012.
+\bibitem{agilicious} P. Foehn et al., ``Agilicious: open-source and open-hardware agile quadrotor for vision-based flight,'' \emph{Science Robotics}, 7(67), 2022.
+\bibitem{neurobem} L. Bauersfeld, E. Kaufmann, P. Foehn, S. Sun, D. Scaramuzza, ``NeuroBEM: hybrid aerodynamic quadrotor model,'' \emph{Robotics: Science and Systems}, 2021.
+\bibitem{swift} E. Kaufmann et al., ``Champion-level drone racing using deep reinforcement learning,'' \emph{Nature}, 620, 2023.
+\bibitem{ferede} R. Ferede, C. De Wagter, D. Izzo, G. C. H. E. de Croon, ``End-to-end reinforcement learning for time-optimal quadcopter flight,'' \emph{IEEE Int. Conf. on Robotics and Automation}, 2024.
+\bibitem{leo} K. Kim et al., ``A bipedal walking robot that can fly, slackline, and skateboard,'' \emph{Science Robotics}, 6(59), 2021.
+\end{thebibliography}
+\end{document}

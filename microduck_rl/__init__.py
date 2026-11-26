@@ -117,6 +117,15 @@ _register(
     "RunV3LowMuPPORunnerCfg",
 )
 
+# flying duck (docs/duck_flight.tex): the walk and the run carrying the flight hardware, and run -> take-off
+_register(
+    "Microduck-WalkPack-Flat-HD1910-AllColl", "flight_env_cfg:MicroDuckHD1910WalkPackAllCollEnvCfg", "WalkPackPPORunnerCfg", "WalkPackPPORunnerCfg"
+)
+_register(
+    "Microduck-RunPack-Flat-HD1910-AllColl", "flight_env_cfg:MicroDuckHD1910RunPackAllCollEnvCfg", "RunPackPPORunnerCfg", "RunPackPPORunnerCfg"
+)
+_register("Microduck-Takeoff-Flat-HD1910-AllColl", "flight_env_cfg:MicroDuckHD1910TakeoffAllCollEnvCfg", "TakeoffPPORunnerCfg")
+
 TASK_IDS = [
     "Microduck-Velocity-Flat-HD1910",
     "Microduck-Velocity-Rough-HD1910",
@@ -144,4 +153,7 @@ TASK_IDS = [
     "Microduck-Pick-Flat-HD1910-AllColl",
     "Microduck-VelStand-Flat-HD1910-AllColl-LowMu",
     "Microduck-RunV3-Flat-HD1910-AllColl-LowMu",
+    "Microduck-WalkPack-Flat-HD1910-AllColl",
+    "Microduck-RunPack-Flat-HD1910-AllColl",
+    "Microduck-Takeoff-Flat-HD1910-AllColl",
 ]

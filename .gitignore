@@ -35,3 +35,4 @@ docs/*.out
 openmicroduck_image/
 # this duck's own calibration: lives on the duck, with a local copy here
 firmware/calibration.json
+.venv-cad/

@@ -276,3 +276,27 @@ class RunV3LowMuPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
         super().__post_init__()
         self.algorithm.entropy_coef = 0.001
         self.algorithm.learning_rate = 5.0e-4
+
+
+@configclass
+class WalkPackPPORunnerCfg(WalkV4AllCollPPORunnerCfg):
+    """Walk v4 carrying the flight hardware: fine-tune from walk v4 / VelStand (mirror loss kept; the pack is symmetric)."""
+
+    experiment_name = _names("microduck_walk_pack_allcoll")
+    max_iterations = 3000
+
+
+@configclass
+class RunPackPPORunnerCfg(RunFlatAllCollMirrorPPORunnerCfg):
+    """Run v3 carrying the flight hardware: fine-tune from run v3."""
+
+    experiment_name = _names("microduck_run_pack_allcoll")
+    max_iterations = 3000
+
+
+@configclass
+class TakeoffPPORunnerCfg(MicroDuckPPORunnerCfg):
+    """Run -> take-off, 18 actions (14 joints + 4 fan throttles): from scratch, no mirror loss."""
+
+    experiment_name = _names("microduck_takeoff_allcoll")
+    max_iterations = 8000

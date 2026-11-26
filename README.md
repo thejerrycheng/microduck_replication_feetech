@@ -171,3 +171,19 @@ external/IsaacLab              (git-ignored) Isaac Lab main
 Code: Apache-2.0. The Microduck meshes in the official USDs are CC BY-NC-SA 4.0 (Pollen Robotics).
 OpenMicroDuck hardware files keep their own licences (CERN-OHL-S hardware, Apache-2.0 software, CC BY-SA docs);
 nothing from it is copied into this repo — it is linked.
+
+## Flying duck (design stage)
+
+A ducted-fan pack for run -> take-off -> hover: sizing with battery sag, a fan/ESC/pack model shared by MuJoCo and
+Isaac Lab, bench system identification, a printed spar frame with FE checks, and the tasks to retrain walk/run with
+the pack and to learn the take-off. Nothing is built or trained yet; see the limitations section of the document.
+
+| What | Where |
+|---|---|
+| Technical document | [`docs/duck_flight.pdf`](docs/duck_flight.pdf) |
+| Bill of materials with links | [`docs/duck_flight_bom.md`](docs/duck_flight_bom.md) |
+| Printable parts (STEP, STL) and 2D drawings | `cad/flight/out/`, [`cad/flight/drawings/flight_frame_drawings.pdf`](cad/flight/drawings/flight_frame_drawings.pdf) |
+| Constants, sizing, pack choice, sys-id, rollout | `scripts/tools/flight_*.py`, `scripts/tools/fan_sysid.py` |
+| Fan + battery model; Isaac Lab terms and tasks | `microduck_rl/flight/`, `microduck_rl/mdp/flight.py`, `microduck_rl/tasks/flight_env_cfg.py` |
+| Training chain for the GPU machine (not yet run) | `scripts/train_flight_chain.sh` |
+| Isaac Sim replay with fan smoke (not yet run) | `scripts/tools/isaacsim_replay_flight.py` |
