@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Linear-elastic FE check of the bolted frame (both halves, laps bonded), held at the two lift-hook pads.
+"""Linear-elastic FE check of the bolted frame v4 (hoop halves + arms + pods, joints bonded), resting on the belly strap.
 
     .venv-cad/bin/python cad/flight/fea_frame.py        # after build_parts.py
 
@@ -31,11 +31,13 @@ MESH_MM = float(os.environ.get("FEA_MESH_MM", 4.0))
 cad = json.load(open(os.path.join(ROOT, "docs", "flight_cad_results.json")))
 layout = json.load(open(os.path.join(ROOT, "docs", "flight_results.json")))["layout"]
 
-vol_mm3 = sum(cq.importers.importStep(os.path.join(OUT, n + ".step")).val().Volume() for n in ("frame_left", "frame_right"))
+PARTS = ("hoop_arm_left", "hoop_arm_right", "pod_left", "pod_right")
+vol_mm3 = sum(cq.importers.importStep(os.path.join(OUT, n + ".step")).val().Volume() for n in PARTS)
 gmsh.initialize(); gmsh.option.setNumber("General.Terminal", 0)
-a_ = gmsh.model.occ.importShapes(os.path.join(OUT, "frame_left.step"))
-b_ = gmsh.model.occ.importShapes(os.path.join(OUT, "frame_right.step"))
-gmsh.model.occ.fuse(a_, b_)                      # the laps are bolted: bonded here
+ents = []
+for n in PARTS:
+    ents += gmsh.model.occ.importShapes(os.path.join(OUT, n + ".step"))
+gmsh.model.occ.fuse(ents[:1], ents[1:])          # bolted joints (hoop halves, pods on saddles): bonded here
 gmsh.model.occ.synchronize()
 gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 5); gmsh.option.setNumber("Mesh.MeshSizeMax", MESH_MM); gmsh.option.setNumber("Mesh.MeshSizeMin", 0.7)
 try:
@@ -54,15 +56,17 @@ basis = Basis(mesh, ElementVector(ElementTetP2()), intorder=4)
 print(f"mesh {MESH_MM} mm: {mesh.t.shape[1]} tets, {basis.N} dofs, solid volume {vol_mm3/1e3:.1f} cm^3")
 
 X = basis.doflocs  # (3, N)
-hx0, hx1, hy0, hy1, hz = (v * 1e-3 for v in cad["hook_fix_box_mm"])   # rail top under the lift-hook flanges
-ymid = 0.5 * (hy0 + hy1)
-# pinned line along x on each rail top (a hook holds the rail down but does not stop it rotating about x)
-fixed_nodes = np.where((X[0] >= hx0) & (X[0] <= hx1) & (np.abs(np.abs(X[1]) - ymid) <= 1.2e-3) & (np.abs(X[2] - hz) < 1e-4))[0]
-fixed = fixed_nodes
+fx0, fx1, fy0, fy1, fz0, fz1 = (v * 1e-3 for v in cad["fix_box_mm"])   # belly strap: the trunk rests on it under thrust
+# support: the top face of the belly strap, vertical only, plus one pinned line on the centre plane against rigid motion
+top = np.where((X[0] >= fx0 - 1e-4) & (X[0] <= fx1 + 1e-4) & (np.abs(X[1]) <= fy1) & (np.abs(X[2] - fz1) < 1e-4))[0]
+zd = set(basis.nodal_dofs[2].tolist()) | set(basis.facet_dofs[2].tolist() if basis.facet_dofs.size else []) | set(basis.edge_dofs[2].tolist() if basis.edge_dofs.size else [])
+fixed_z = np.array([i for i in top if i in zd], dtype=int)
+line = np.where((X[0] >= fx0 - 1e-4) & (X[0] <= fx1 + 1e-4) & (np.abs(X[1]) <= 3e-3) & (np.abs(X[2] - fz1) < 1e-4))[0]
+fixed = np.unique(np.r_[fixed_z, line])
 r_bore = (C.DUCT_OD_MM / 2 + 0.15) * 1e-3
 fans = np.array(layout["fans"])
 results = {"mesh_mm": MESH_MM, "dofs": int(basis.N), "materials": {}}
-printed_mass = {m: sum(cad["parts"][k]["mass_g"][m] for k in ("frame_left", "frame_right")) * 1e-3 for m in C.MATERIALS}
+printed_mass = {m: sum(cad["parts"][k]["mass_g"][m] for k in PARTS) * 1e-3 for m in C.MATERIALS}
 T_fan = C.FANS[C.PRIMARY]["thrust_g"] * 1e-3 * C.G
 m_fan = C.FANS[C.PRIMARY]["mass_g"] * 1e-3
 
@@ -91,7 +95,7 @@ for mat, pm in C.MATERIALS.items():
     x[I] = spsolve(K[I][:, I].tocsc(), f[I])
     uz = x[basis.nodal_dofs[2]]
     if mat == 'ABS':
-        for (px, py) in ((-18, 36), (-18, 50), (-18, 70), (4, 50), (4, 70), (-11, 102), (-11, 72), (31, 75), (31, 131), (-53, 75), (-53, 131), (-11, 0)):
+        for (px, py) in ((-40, 36), (-34, 60), (-28, 85), (-22, 108), (-13, 135), (29, 135), (-55, 135), (-13, 163)):
             k = np.argmin((vx[0] * 1e3 - px) ** 2 + (vx[1] * 1e3 - py) ** 2)
             print(f'   probe ({px},{py}): uz {uz[k]*1e3:.3f} mm')
     tip = [float(uz[bn].mean()) for bn in bore_nodes]
@@ -124,7 +128,7 @@ for mat, pm in C.MATERIALS.items():
         sc = axs[0].scatter(vx[1] * 1e3, vx[0] * 1e3, c=uz * 1e3, s=1.5, cmap="viridis")
         plt.colorbar(sc, ax=axs[0], label="vertical deflection [mm]")
         axs[0].set_aspect("equal"); axs[0].set_xlabel("y [mm]"); axs[0].set_ylabel("x [mm]")
-        axs[0].set_title(f"ABS, {T_fan:.1f} N per fan, held at the hook pads", fontsize=8)
+        axs[0].set_title(f"ABS, {T_fan:.1f} N per fan, resting on the belly strap", fontsize=8)
     axs[1].plot(range(1, 7), freqs, "o-", label=mat)
 axs[1].set_xlabel("mode"); axs[1].set_ylabel("frequency [Hz]"); axs[1].legend(); axs[1].grid(alpha=0.3)
 axs[1].set_title("Frame modes with four 76 g fans", fontsize=8)

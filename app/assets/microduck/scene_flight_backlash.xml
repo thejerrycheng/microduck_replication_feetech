@@ -159,11 +159,17 @@
     <mesh name="sole_right" file="sole_right.stl"/>
     <mesh name="power_support" file="power_support.stl"/>
     <mesh name="motor_support" file="motor_support.stl"/>
-    <mesh name="flight_frame_left" file="flight_frame_left.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_frame_right" file="flight_frame_right.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_lift_hook_left" file="flight_lift_hook_left.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_lift_hook_right" file="flight_lift_hook_right.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_pack_tray" file="flight_pack_tray.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_backpack" file="flight_backpack.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_bottom_cap" file="flight_bottom_cap.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_wing_left" file="flight_wing_left.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_wing_right" file="flight_wing_right.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_nacelle_left" file="flight_nacelle_left.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_nacelle_right" file="flight_nacelle_right.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_fan_collar" file="flight_fan_collar.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_shroud" file="flight_edf_shroud.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_rotor_ccw" file="flight_edf_rotor_ccw.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_rotor_cw" file="flight_edf_rotor_cw.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_motor" file="flight_edf_motor.stl" scale="0.001 0.001 0.001"/>
   </asset>
 
   <worldbody>
@@ -331,22 +337,49 @@
           </body>
         </body>
       </body>
-      <body name="flight_pack" pos="-0.0254017 0 0.0399299">
-        <inertial pos="0 0 0" quat="0.385518 0.384909 -0.593211 0.592724" mass="0.68446" diaginertia="0.0053903 0.00442833 0.00159166"/>
-        <geom pos="0.0254017 0 -0.15993" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.82 0.38 0.24 1" mesh="flight_frame_left"/>
-        <geom pos="0.0254017 0 -0.15993" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.82 0.38 0.24 1" mesh="flight_frame_right"/>
-        <geom pos="0.0254017 0 -0.15993" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.16 0.42 0.59 1" mesh="flight_lift_hook_left"/>
-        <geom pos="0.0254017 0 -0.15993" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.16 0.42 0.59 1" mesh="flight_lift_hook_right"/>
-        <geom pos="0.0254017 0 -0.15993" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.2 0.2 0.22 1" mesh="flight_pack_tray"/>
-        <geom size="0.017 0.01675 0.037" pos="-0.0410983 0 -0.0359299" type="box" contype="0" conaffinity="0" group="2" mass="0" rgba="0.1 0.1 0.1 1"/>
-        <geom size="0.027 0.0195" pos="0.0566692 0.102 0.0120701" quat="0.998629 -0.0198802 -0.0484131 -0.000963783" type="cylinder" contype="0" conaffinity="0" group="2" mass="0" rgba="0.08 0.08 0.08 1"/>
-        <geom size="0.027 0.0195" pos="-0.0273308 0.102 0.0120701" quat="0.998629 -0.0198802 0.0484131 0.000963783" type="cylinder" contype="0" conaffinity="0" group="2" mass="0" rgba="0.08 0.08 0.08 1"/>
-        <geom size="0.027 0.0195" pos="0.0566692 -0.102 0.0120701" quat="0.998629 0.0198802 -0.0484131 0.000963783" type="cylinder" contype="0" conaffinity="0" group="2" mass="0" rgba="0.08 0.08 0.08 1"/>
-        <geom size="0.027 0.0195" pos="-0.0273308 -0.102 0.0120701" quat="0.998629 0.0198802 0.0484131 -0.000963783" type="cylinder" contype="0" conaffinity="0" group="2" mass="0" rgba="0.08 0.08 0.08 1"/>
-        <site name="fan_FL" pos="0.0566692 0.102 0.0120701" quat="0.998629 -0.0198802 -0.0484131 -0.000963783" size="0.004"/>
-        <site name="fan_RL" pos="-0.0273308 0.102 0.0120701" quat="0.998629 -0.0198802 0.0484131 0.000963783" size="0.004"/>
-        <site name="fan_FR" pos="0.0566692 -0.102 0.0120701" quat="0.998629 0.0198802 -0.0484131 0.000963783" size="0.004"/>
-        <site name="fan_RR" pos="-0.0273308 -0.102 0.0120701" quat="0.998629 0.0198802 0.0484131 -0.000963783" size="0.004"/>
+      <body name="flight_pack" pos="-0.0352385 0 0.0628392">
+        <inertial pos="0 0 0" quat="0.679411 0.679411 0.195962 -0.195962" mass="0.790491" diaginertia="0.0106992 0.00849119 0.00356243"/>
+        <geom pos="0.0352385 0 -0.182839" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_backpack"/>
+        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_bottom_cap"/>
+        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_wing_left"/>
+        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_wing_right"/>
+        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_nacelle_left"/>
+        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_nacelle_right"/>
+        <geom name="col_backpack" size="0.0222 0.0227 0.0506" pos="-0.0334615 0 -0.0657392" type="box" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_left_0" size="0.0136818 0.0115914" pos="-0.031979 0.0341269 -0.034218" quat="0.435541 0.89698 -0.0757049 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_left_1" size="0.0134032 0.0163877" pos="-0.0286324 0.0522406 -0.013613" quat="0.301353 0.916971 -0.261439 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_left_2" size="0.0151713 0.0175273" pos="-0.0211187 0.0703544 0.0139708" quat="0.309356 0.835167 -0.454747 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_left_3" size="0.0127909 0.0151878" pos="-0.00851821 0.0884681 0.037621" quat="0.433569 0.687695 -0.582317 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_nacelle_left" size="0.0649125 0.03055 0.01" pos="0.0223324 0.135 0.0496608" type="box" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_right_0" size="0.0136818 0.0115914" pos="-0.031979 -0.0341269 -0.034218" quat="0.435541 -0.89698 -0.0757049 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_right_1" size="0.0134032 0.0163877" pos="-0.0286324 -0.0522406 -0.013613" quat="0.301353 -0.916971 -0.261439 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_right_2" size="0.0151713 0.0175273" pos="-0.0211187 -0.0703544 0.0139708" quat="0.309356 -0.835167 -0.454747 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_wing_right_3" size="0.0127909 0.0151878" pos="-0.00851821 -0.0884681 0.037621" quat="0.433569 -0.687695 -0.582317 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom name="col_nacelle_right" size="0.0649125 0.03055 0.01" pos="0.0223324 -0.135 0.0496608" type="box" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
+        <geom pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_cw"/>
+        <geom pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
+        <geom pos="0.0647316 0.134876 0.0331827" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
+        <geom name="col_fan_FL" size="0.027 0.0255" pos="0.0651308 0.134752 0.0292046" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
+        <geom pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_ccw"/>
+        <geom pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
+        <geom pos="-0.0200669 0.134876 0.0331827" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
+        <geom name="col_fan_RL" size="0.027 0.0255" pos="-0.0204661 0.134752 0.0292046" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
+        <geom pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_ccw"/>
+        <geom pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
+        <geom pos="0.0647316 -0.134876 0.0331827" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
+        <geom name="col_fan_FR" size="0.027 0.0255" pos="0.0651308 -0.134752 0.0292046" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <geom pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
+        <geom pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_cw"/>
+        <geom pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
+        <geom pos="-0.0200669 -0.134876 0.0331827" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
+        <geom name="col_fan_RR" size="0.027 0.0255" pos="-0.0204661 -0.134752 0.0292046" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
+        <site name="fan_FL" pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" size="0.004"/>
+        <site name="fan_RL" pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" size="0.004"/>
+        <site name="fan_FR" pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" size="0.004"/>
+        <site name="fan_RR" pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" size="0.004"/>
       </body>
     </body>
   </worldbody>

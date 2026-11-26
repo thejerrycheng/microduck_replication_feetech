@@ -7,8 +7,9 @@ Writes
   microduck_rl/flight/flight_pack.json            mass, CoM, inertia of everything added to the trunk + the four fans
                                                   (position, thrust axis, spin) in the trunk_base frame: read by the
                                                   Isaac Lab tasks and by the MuJoCo rollout
-  app/assets/microduck/scene_flight[_backlash].xml  the official scenes with the pack welded to the trunk (visual meshes,
-                                                  fan sites); body masses scaled to the HD1910 build (+5 g per servo)
+  app/assets/microduck/scene_flight[_backlash].xml  the official scenes with the pack welded to the trunk: printed parts,
+                                                  detailed fans, collision geometry, fan sites; body masses scaled to
+                                                  the HD1910 build (+5 g per servo)
 """
 import json, math, os, shutil, sys
 import mujoco
@@ -24,7 +25,7 @@ res = json.load(open(os.path.join(ROOT, "docs", "flight_results.json")))
 cad = json.load(open(os.path.join(ROOT, "docs", "flight_cad_results.json")))
 TRUNK0 = np.array([0.0, 0.0, 0.12])     # trunk_base origin in the design (world, standing) frame
 xc = res["layout"]["x_c"]
-MAT = "ABS"
+MAT = "PLA"      # 15 % infill
 
 
 def box_I(m, s):
@@ -51,7 +52,14 @@ items.append(("esc_fc", m, np.array(C.FC_POS) - TRUNK0, box_I(m, (0.036, 0.036, 
 m = bud["wiring"] * 1e-3
 items.append(("wiring", m, np.array([xc, 0, C.FAN_Z]) - TRUNK0, box_I(m, (0.08, 0.16, 0.01))))
 printed = 0.0
+collar_g = cad["parts"]["fan_collar"]["mass_g"][MAT] if "fan_collar" in cad["parts"] else 0.0
+for k_, it in enumerate(items):
+    if it[0].startswith("fan_"):                       # each fan carries its collar
+        items[k_] = (it[0], it[1] + collar_g * 1e-3, it[2], it[3])
+printed += 4 * collar_g * 1e-3
 for name, part in cad["parts"].items():
+    if name == "fan_collar":
+        continue
     m = part["mass_g"][MAT] * 1e-3
     printed += m
     I = np.array(part["inertia_unit_mm5"]) * 1e-15 * (m / (part["volume_cm3"] * 1e-6))
@@ -78,8 +86,17 @@ pack = dict(mass=M, com=com.tolist(), inertia=I.tolist(), fans=fans, thrust_cent
 json.dump(pack, open(os.path.join(ROOT, "microduck_rl", "flight", "flight_pack.json"), "w"), indent=1)
 
 # ---- MuJoCo scenes ---------------------------------------------------------------------------------
-for part in cad["parts"]:
+# Visuals: the printed parts and a detailed fan (shroud, 12-blade rotor, motor) per station. Collision: boxes for the
+# frame, pack and stack, a capsule per arm and a cylinder per fan (docs/flight_cad_results.json), in the trunk frame.
+# They collide with the floor (bit 1) and with the legs' and head's self-collision geoms (bit 2); MuJoCo does not
+# collide them with their parent, the trunk.
+import glob
+for old in glob.glob(os.path.join(ASSETS, "assets", "flight_*.stl")):
+    os.remove(old)
+EDF_PARTS = ("edf_shroud", "edf_rotor_ccw", "edf_rotor_cw", "edf_motor")
+for part in list(cad["parts"]) + list(EDF_PARTS):
     shutil.copy(os.path.join(ROOT, "cad", "flight", "out", part + ".stl"), os.path.join(ASSETS, "assets", "flight_" + part + ".stl"))
+ecol = cad["edf_collision"]
 for scene in ("scene.xml", "scene_backlash.xml"):
     spec = mujoco.MjSpec.from_file(os.path.join(ASSETS, scene))
     for b in spec.bodies:
@@ -91,21 +108,48 @@ for scene in ("scene.xml", "scene_backlash.xml"):
     fp.ipos = [0, 0, 0]
     fp.fullinertia = [I[0, 0], I[1, 1], I[2, 2], I[0, 1], I[0, 2], I[1, 2]]
     fp.explicitinertial = True
-    rgba = dict(frame_left=[0.82, 0.38, 0.24, 1], frame_right=[0.82, 0.38, 0.24, 1], pack_tray=[0.2, 0.2, 0.22, 1])
+    vis = dict(type=mujoco.mjtGeom.mjGEOM_MESH, contype=0, conaffinity=0, group=2, mass=0)
+    # the MicroDuck's own palette, read from its materials: shell white, ankle orange, sole yellow, servo gray, frame dark
+    WHITE, ORANGE, YELLOW = [0.851, 0.851, 0.839, 1], [1.0, 0.404, 0.122, 1], [0.957, 0.686, 0.137, 1]
+    GRAY, DARK = [0.286, 0.286, 0.286, 1], [0.129, 0.153, 0.129, 1]
+    rgba = dict(bottom_cap=ORANGE, fan_collar=ORANGE)
+    for part in list(cad["parts"]) + list(EDF_PARTS):
+        spec.add_mesh(name="flight_" + part, file="flight_" + part + ".stl", scale=[1e-3] * 3)
     for part in cad["parts"]:
-        mesh = spec.add_mesh(name="flight_" + part, file="flight_" + part + ".stl", scale=[1e-3] * 3)
-        fp.add_geom(type=mujoco.mjtGeom.mjGEOM_MESH, meshname="flight_" + part, pos=(-TRUNK0 - com).tolist(), contype=0, conaffinity=0,
-                    group=2, rgba=rgba.get(part, [0.16, 0.42, 0.59, 1]), mass=0)
-    bp = np.array(C.BATT_POS) - TRUNK0 - com
-    fp.add_geom(type=mujoco.mjtGeom.mjGEOM_BOX, size=(np.array(C.BATT_SIZE) / 2).tolist(), pos=bp.tolist(), contype=0, conaffinity=0, group=2, rgba=[0.1, 0.1, 0.1, 1], mass=0)
+        if part != "fan_collar":
+            fp.add_geom(meshname="flight_" + part, pos=(-TRUNK0 - com).tolist(), rgba=rgba.get(part, WHITE), **vis)
+    # the pack and the FC/ESC stack are inside the backpack: not drawn
+    col = dict(contype=3, conaffinity=3, group=3, mass=0, rgba=[0.9, 0.2, 0.2, 0.35])
+    for c in cad["collision"]:
+        if c["type"] == "box":
+            fp.add_geom(name="col_" + c["name"], type=mujoco.mjtGeom.mjGEOM_BOX, size=c["size"], pos=(np.array(c["pos"]) - com).tolist(), **col)
+        else:
+            ft = (np.array(c["fromto"]).reshape(2, 3) - com).flatten().tolist()
+            fp.add_geom(name="col_" + c["name"], type=mujoco.mjtGeom.mjGEOM_CAPSULE, size=[c["radius"], 0, 0], fromto=ft, **col)
     for fn in fans:
         z = np.array(fn["axis"]); x = np.cross([0, 1, 0], z); x /= np.linalg.norm(x); y = np.cross(z, x)
         q = np.zeros(4); mujoco.mju_mat2Quat(q, np.c_[x, y, z].flatten())
-        fp.add_site(name="fan_" + fn["name"], pos=(np.array(fn["pos"]) - com).tolist(), quat=q.tolist(), size=[0.004] * 3)
-        fp.add_geom(type=mujoco.mjtGeom.mjGEOM_CYLINDER, size=[r, h / 2, 0], pos=(np.array(fn["pos"]) - com).tolist(), quat=q.tolist(),
-                    contype=0, conaffinity=0, group=2, rgba=[0.08, 0.08, 0.08, 1], mass=0)
+        pos = (np.array(fn["pos"]) - com)
+        fp.add_site(name="fan_" + fn["name"], pos=pos.tolist(), quat=q.tolist(), size=[0.004] * 3)
+        fp.add_geom(meshname="flight_edf_shroud", pos=pos.tolist(), quat=q.tolist(), rgba=GRAY, **vis)
+        fp.add_geom(meshname="flight_edf_rotor_" + ("ccw" if fn["spin"] > 0 else "cw"), pos=pos.tolist(), quat=q.tolist(), rgba=YELLOW, **vis)
+        fp.add_geom(meshname="flight_edf_motor", pos=pos.tolist(), quat=q.tolist(), rgba=DARK, **vis)
+        if "fan_collar" in cad["parts"]:
+            zc_ = (cad["pod_z_mm"][0] - C.FAN_Z * 1e3 - 6.5) * 1e-3          # just under the nacelle
+            fp.add_geom(meshname="flight_fan_collar", pos=(pos + z * zc_).tolist(), quat=q.tolist(), rgba=ORANGE, **vis)
+        zc, hh = 0.5e-3 * (ecol["z0_mm"] + ecol["z1_mm"]), 0.5e-3 * (ecol["z1_mm"] - ecol["z0_mm"])
+        fp.add_geom(name="col_fan_" + fn["name"], type=mujoco.mjtGeom.mjGEOM_CYLINDER, size=[ecol["radius_mm"] * 1e-3, hh, 0], pos=(pos + z * zc).tolist(), quat=q.tolist(), **col)
     model = spec.compile()
     out = os.path.join(ASSETS, scene.replace("scene", "scene_flight"))
     open(out, "w").write(spec.to_xml())
     chk = mujoco.MjModel.from_xml_path(out)
-    print(f"{os.path.relpath(out, ROOT)}: total mass {chk.body_subtreemass[1]*1e3:.1f} g, {chk.nbody} bodies")
+    d = mujoco.MjData(chk)
+    mujoco.mj_resetDataKeyframe(chk, d, mujoco.mj_name2id(chk, mujoco.mjtObj.mjOBJ_KEY, "STAND")); mujoco.mj_forward(chk, d)
+    fb = mujoco.mj_name2id(chk, mujoco.mjtObj.mjOBJ_BODY, "flight_pack")
+    touching = [(chk.geom(c_.geom1).name or chk.body(chk.geom_bodyid[c_.geom1]).name, chk.geom(c_.geom2).name or chk.body(chk.geom_bodyid[c_.geom2]).name)
+                for c_ in d.contact[:d.ncon] if fb in (chk.geom_bodyid[c_.geom1], chk.geom_bodyid[c_.geom2])]
+    ncol = sum(1 for g in range(chk.ngeom) if chk.geom_bodyid[g] == fb and chk.geom_contype[g])
+    print(f"{os.path.relpath(out, ROOT)}: total mass {chk.body_subtreemass[1]*1e3:.1f} g, {ncol} collision geoms on the flight hardware, "
+          f"contacts with it in the stand pose: {touching if touching else 'none'}")
+pack["collision"] = cad["collision"]; pack["edf_collision"] = ecol
+json.dump(pack, open(os.path.join(ROOT, "microduck_rl", "flight", "flight_pack.json"), "w"), indent=1)

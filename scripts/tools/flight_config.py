@@ -48,12 +48,12 @@ STRUCT_G_FALLBACK = {2: 45.0, 4: 80.0}  # replaced by the CAD mass (docs/flight_
 
 # ---------------------------------------------------------------- layout (4 fans, X) -----------
 FAN_LX = 0.042           # fan centre, fore/aft half-spacing about the thrust centroid
-FAN_LY = 0.102           # fan centre, lateral half-spacing
-FAN_Z = 0.172            # clamp-ring mid-plane: the spars run over the trunk roof (z = 162 mm)
+FAN_LY = 0.135           # fan centre, lateral half-spacing
+FAN_Z = 0.220            # clamp-ring mid-plane: the spars run over the trunk roof (z = 162 mm)
 FAN_CANT_DEG = 6.0       # each duct tilted about its radial line: yaw torque from differential thrust
-BATT_POS = (-0.0665, 0.0, 0.124)   # flight pack centre, upright on the back of the trunk
-BATT_SIZE = (0.034, 0.0335, 0.074)  # CNHL 4S 1300 mAh
-FC_POS = (-0.013, 0.0, 0.189)     # FC + 4-in-1 ESC stack on the spars
+BATT_POS = (-0.0680, 0.0, 0.1070)   # flight pack centre, upright on the back of the trunk
+BATT_SIZE = (0.034, 0.0335, 0.074)  # CNHL 4S 1300 mAh, upright inside the backpack
+FC_POS = (-0.068, 0.0, 0.1545)    # FC + 4-in-1 ESC stack above the pack, inside the backpack
 
 # ---------------------------------------------------------------- printed parts ----------------
 MATERIALS = {  # typical FDM filament data-sheet values; sigma_allow = design stress (in-plane yield / 5)
@@ -105,3 +105,55 @@ SPAR_W_MM = 7.0           # each spar; two lap side by side over the roof (14 mm
 SPAR_OFFSET_MM = 18.3     # spar inner edge from the thrust centroid: leaves the hook zone free on both sides, front pair clears the neck
 LAP_Y_MM = 32.4           # spars cross the whole roof and butt on the other half's rail; lap bolts at +-22 mm
 RAIL_Y_MM = (32.8, 38.0)  # longitudinal rail beside the shell: ties the spars and carries the lift hook
+
+# ---------------------------------------------------------------- frame v4: hoop + arms + pods ---
+# Chosen with scripts/tools/flight_clearance.py: nothing over the roof behind the neck, pods outside both swept volumes.
+HOOP_X_MM = (-46.0, -34.0)   # station of the hoop around the trunk (rear, behind the hips, under the battery holder)
+HOOP_T_MM = 4.0              # hoop wall (in its plane); width along x = the station width
+TRUNK_BOTTOM_Z_MM = 76.0     # underside of the battery holder / power support the hoop passes under (world z, standing)
+ARM_ROOT_Z_MM = 150.0        # where the arm leaves the hoop side (world z): high, so hip pitch stays free
+ARM_TOP_X_MM = -22.0         # arm slants forward to here at the pod, to sit near the thrust centroid
+ARM_T_MM, ARM_D_MM = 14.0, 22.0   # arm section: thickness (along x at the root) x depth (in the lift plane)
+POD_H_MM = 16.0              # pod / clamp-ring height
+
+# ---------------------------------------------------------------- frame v5: yoke + nacelles ------
+# One rounded backpack box on the trunk's rear face with both arms rooted in its top corners (the two sides' lift
+# reacts through the box), arms leaving at roof height (above the thigh's back-swing), smooth twin-fan nacelles.
+PACK_WALL_MM = 3.2           # backpack shell wall (2.4 let the wing roots rock: 25 Hz first mode)
+PACK_FILLET_MM = 7.0         # backpack outer edge radius
+ARM_ROOT_MM = (-62.0, 20.0, 166.0)    # arm root centre on the backpack's top corner (world, y > 0 side)
+ARM_SECTIONS_MM = ((9.0, 16.0), (8.0, 13.5), (7.5, 11.0), (7.5, 10.0))   # ellipse half-axes (across, in the lift plane) root -> tip
+POD_H5_MM = 24.0             # nacelle height
+POD_WALL_MM = 4.5            # nacelle wall around the shroud
+POD_FILLET_MM = 5.0
+BELL_MM = 3.0                # bell-mouth lip formed by the nacelle above the shroud (the fan's own intake ring is removed)
+
+# ---------------------------------------------------------------- frame v6: backpack + wing trusses + nacelles ---
+# The swept single arm of v5 is replaced by two flat triangulated trusses per side (rear and front), a V in plan:
+# each nacelle is held at two lugs, the structure is triangulated in the lift plane and in plan, and every wing
+# prints flat without supports.
+WING_T_MM = 9.0              # wing thickness (print height)
+WING_BAR_MM = 7.0            # width of a truss member in the wing's plane
+WING_REAR = dict(root_x=-64.0, root_z=(112.0, 164.0))    # root post on the backpack side: x station, z span (world)
+WING_FRONT = dict(root_x=-51.0, root_z=(142.0, 164.0))   # shallower: its lower chord must stay above the thigh's arc
+LUG_IN_MM = 11.0             # nacelle lugs reach this far inboard of the nacelle's flank
+POD_H6_MM = 20.0             # nacelle height
+POD_WALL6_MM = 3.4
+
+# v7 (after the first stress analysis of v6: strong enough, but 1.8 mm / 1.6 deg at full thrust and a 25 Hz first mode,
+# because the nacelle hung off inboard lugs 37 mm from the thrust line): the wings now carry each nacelle at its tail and
+# nose, on the thrust line, on seats two screws wide; the rear wings lie flat on the backpack's rear face.
+TAB_R_MM = 15.0              # nacelle nose / tail tabs (discs under the ends, on the centre line)
+SEAT_MM = 30.0               # length of a wing's seat under a tab; two screws 18 mm apart
+WING_REAR7 = dict(root_y=9.0, root_z=(112.0, 166.0))     # root post on the backpack's REAR face, this far from the centre plane
+WING_FRONT7 = dict(root_x=-52.0, root_z=(140.0, 166.0))  # root post on the backpack's side wall
+
+# ---------------------------------------------------------------- frame v8: backpack + blade wings + nacelles ----
+# The exposed trusses of v6/v7 read as industrial. v8 carries each nacelle on ONE sculpted hollow wing: a closed shell
+# lofted through superelliptic sections, deep at the root on the backpack's side wall, flattening and widening into the
+# nacelle's inboard flank. The closed section plus the infill inside it is the stiffening; nothing is exposed.
+BLADE_ROOT_MM = dict(x=-68.0, z=141.0, a=13.0, b=18.0)   # root section centre (x, z) and half-sizes (a along x, b along z)
+BLADE_TIP_MM = dict(a=27.0, b=10.0, dx=-14.0)   # dx: tip centre behind the nacelle's middle, so the wing stays out of the head's yaw sweep
+                      # tip section: as tall as the nacelle allows, wide along its flank
+BLADE_EXP = (2.6, 5.0)                                   # superellipse exponent of the sections: root, tip (the tip matches the nacelle's slab)
+TONGUE_MM = dict(w=14.0, t=5.0, reach=14.0)              # tongue under the nacelle between the fans: two screws from below

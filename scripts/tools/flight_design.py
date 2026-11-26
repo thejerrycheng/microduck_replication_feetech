@@ -92,7 +92,7 @@ def fan_point(name):
 def struct_g(n):
     p = os.path.join(ROOT, "docs", "flight_cad_results.json")
     if n == 4 and os.path.exists(p):
-        return json.load(open(p))["frame_mass_g"]["ABS"], "CAD"
+        return json.load(open(p))["frame_mass_g"]["PLA"], "CAD"   # PLA, 15 % infill
     return C.STRUCT_G_FALLBACK[n], "estimate"
 
 
