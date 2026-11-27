@@ -70,7 +70,9 @@ def run_e1():
 
 # ---- E2 / E3 ----------------------------------------------------------------------------------------
 def rollout(thrust_scale=1.0, com_dx=0.0, model_scale=1.0, z_hover=0.55, record=False, t_run=1.0, t_spool=3.0, t_takeoff=3.5, t_land=8.5, t_end=12.5,
-            assist=None, run=True, ki_scale=None, verbose=False, tuck_frac=0.0):
+            assist=None, run=True, ki_scale=None, verbose=False, tuck_frac=0.0, walk=False, walk_after=False, lift_s=0.6, stop_s=0.0, brake=0.3):
+    # stop_s: stand still (stick zero, thrust leaned against the velocity) for this long before a vertical take-off
+    # walk: walk (not run) before take-off; walk_after: walk away again 1 s after touchdown, fans still carrying the pack
     """thrust_scale scales the PLANT's thrust; com_dx is the controller's CoM belief error; the controller keeps the nominal fan model."""
     duck = make(FLIGHT_XML)
     m, d = duck.model, duck.data
@@ -107,18 +109,21 @@ def rollout(thrust_scale=1.0, com_dx=0.0, model_scale=1.0, z_hover=0.55, record=
             z_ref_dummy = z
         full = F.steady_state(1.0, 4, float(plant.soc[0]), p_ctrl, bat)["thrust"]
         if mode in ("ground", "landed"):
-            go = mode == "ground" and t >= t_run
-            duck.set_stick(0.0, 1.0 if (go and run) else 0.0, 0.0, run=run and go)
+            go = mode == "ground" and t_run <= t < t_takeoff - stop_s
+            again = walk_after and mode == "landed" and t >= landed_t + 1.0
+            duck.set_stick(0.0, 1.0 if ((go and (run or walk)) or again) else 0.0, 0.0, run=run and go and not walk)
             # thrust assist: the deployed policies fall with the pack (E1), also when its weight alone is cancelled
             # (the trunk's inertia doubles). So on the ground the fans carry `assist` x the hardware's weight through
             # its own CoM and hold the trunk level; from t_spool the lift ramps to 85 % of the all-up weight.
+            Rg = d.xmat[duck.trunk].reshape(3, 3); yaw_g = math.atan2(Rg[1, 0], Rg[0, 0])      # speed hold: the gait's speed along the heading while moving, zero otherwise
+            v_gait = ((0.48 if (run and not walk and not again) else 0.37) if ((go and (run or walk)) or again) else 0.0) * np.array([math.cos(yaw_g), math.sin(yaw_g)])
             lift = (assist if mode == "ground" else 1.2) * S.PACK["mass"] * S.G * min(t / 0.5, 1.0)
             extra = 0.0
             if mode == "ground" and t >= t_spool:   # pre-load: up to 80 % of the all-up weight on the fans, legs still running
                 extra = max(0.80 * ctrl.mass * S.G - lift, 0.0) * min((t - t_spool) / max(t_takeoff - t_spool, 1e-3), 1.0)
-            if mode == "landed" and t > landed_t + 2.0:
+            if mode == "landed" and t > landed_t + 2.0 and not walk_after:
                 lift *= max(1.0 - (t - landed_t - 2.0) / 1.0, 0.0)
-            plant.command(ctrl.ground_assist(lift, extra=extra) if lift + extra > 0 else np.zeros(4))
+            plant.command(ctrl.ground_assist(lift, extra=extra, brake=brake if (stop_s > 0 or walk_after) else 0.0, v_ref=v_gait) if lift + extra > 0 else np.zeros(4))
             duck.step()
             # decisive lift-off: at t_takeoff the flight controller takes over with a height step, so the feet clear the
             # floor within a few ticks (a slow ramp leaves them dragging and trips the duck); legs ease to the hold pose
@@ -136,7 +141,8 @@ def rollout(thrust_scale=1.0, com_dx=0.0, model_scale=1.0, z_hover=0.55, record=
                 z_ref = max(z_ref - 0.25 * duck.control_dt, 0.10); vz_ref = -0.25
             v_ref = v_ref * math.exp(-duck.control_dt / 0.8)                 # carry the run speed, then brake to hover
             for _ in range(duck.decimation):
-                u, info = ctrl.update(z_ref, vz_ref, v_ref, full)
+                first = mode == "flight" and t < t_off + lift_s
+                u, info = ctrl.update(z_ref, vz_ref, v_ref, full, lift_first=1.15 * ctrl.mass * S.G if first else None, a_xy_max=1.0 if first else 3.0)
                 plant.command(u)
                 # legs: tuck at lift-off so the feet leave the floor at once, stay tucked in flight, extend for landing
                 bl = min((t - t_off) / 0.15, 1.0)

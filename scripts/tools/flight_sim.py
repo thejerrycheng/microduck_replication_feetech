@@ -113,7 +113,7 @@ class FlightController:
         u = (p.ke * w + p.R * i) / max(float(self.plant.aux["v_bus"][0]), 6.0)
         return np.clip(np.where(T > 0, u, 0.0), 0.0, 1.0)
 
-    def ground_assist(self, lift, gain=1.0, extra=0.0):
+    def ground_assist(self, lift, gain=1.0, extra=0.0, brake=0.0, v_ref=(0.0, 0.0)):
         """On the ground: carry ``lift`` newtons applied through the flight hardware's own CoM (so the legs see the
         bare duck's weight distribution), plus ``extra`` newtons through the all-up CoM (the take-off ramp: no pitching
         moment), and hold the trunk level in roll and pitch with the fans; yaw is left free."""
@@ -123,12 +123,19 @@ class FlightController:
         vel = np.zeros(6)
         mujoco.mj_objectVelocity(self.m, d, mujoco.mjtObj.mjOBJ_BODY, self.trunk, vel, 0)
         om_b = R.T @ vel[:3]
-        e_b = R.T @ np.cross(R[:, 2], [0.0, 0.0, 1.0])
+        # brake [rad per m/s]: lean the thrust against the horizontal velocity (stops the duck before a vertical take-off;
+        # with the feet unloaded the canted fans otherwise push it forward and the dragging feet pitch it over at lift-off)
+        up = np.array([0.0, 0.0, 1.0])
+        if brake > 0.0:
+            up[:2] = np.clip(-brake * (vel[3:5] - np.asarray(v_ref)), -0.15, 0.15); up /= np.linalg.norm(up)
+        e_b = R.T @ np.cross(R[:, 2], up)
         tau = np.cross(np.asarray(PACK["com"]) - com_b, [0.0, 0.0, lift]) + gain * (self.kp * e_b - self.kd * om_b) * np.array([1.0, 1.0, 0.0])
         T = np.linalg.solve(self.allocation(), np.r_[lift + extra, tau[0], tau[1], 0.0])
         return self.throttle(T)
 
-    def update(self, z_ref, vz_ref, v_xy_ref, t_max_each):
+    def update(self, z_ref, vz_ref, v_xy_ref, t_max_each, lift_first=None, a_xy_max=3.0):
+        # lift_first [N]: during lift-off keep at least this much collective and scale the torques to fit (feet dragging on
+        # the floor otherwise saturate the pitch channel, the collective is given up and the duck never leaves the ground)
         d, p = self.d, self.plant.p
         R = d.xmat[self.trunk].reshape(3, 3)
         vel = np.zeros(6)
@@ -142,7 +149,7 @@ class FlightController:
         az = 6.0 * ez + 4.0 * (vz_ref - v[2]) + 6.0 * self.int_z
         ev = np.asarray(v_xy_ref) - v[:2]
         self.int_v = np.clip(self.int_v + ev * self.dt, -1.5, 1.5)                # trims a steady tilt bias (CoM error)
-        a_xy = np.clip(1.5 * ev + 2.0 * self.int_v, -3.0, 3.0)
+        a_xy = np.clip(1.5 * ev + 2.0 * self.int_v, -a_xy_max, a_xy_max)
         zb = np.array([a_xy[0], a_xy[1], G + max(az, -0.6 * G)]); zb /= np.linalg.norm(zb)
         xc = np.array([math.cos(self.yaw_ref), math.sin(self.yaw_ref), 0.0])
         yb = np.cross(zb, xc); yb /= np.linalg.norm(yb)
@@ -155,7 +162,15 @@ class FlightController:
         B = self.allocation()
         T = np.linalg.solve(B, np.r_[Fz, tau])
         lo, hi = 0.05 * t_max_each, t_max_each
-        if T.max() > hi or T.min() < lo:          # keep the torques, give up collective first
+        if lift_first is not None and (T.max() > hi or T.min() < lo):
+            Tc = np.linalg.solve(B, np.r_[1.0, 0, 0, 0]) * min(max(Fz, lift_first), 0.97 * hi / np.linalg.solve(B, np.r_[1.0, 0, 0, 0]).max())
+            Tm = np.linalg.solve(B, np.r_[0.0, tau])
+            sc = 1.0
+            for k in range(4):
+                if Tm[k] > 1e-9: sc = min(sc, (hi - Tc[k]) / Tm[k])
+                elif Tm[k] < -1e-9: sc = min(sc, (lo - Tc[k]) / Tm[k])
+            T = Tc + max(sc, 0.0) * Tm
+        elif T.max() > hi or T.min() < lo:          # keep the torques, give up collective first
             Tm = np.linalg.solve(B, np.r_[0.0, tau])
             Tc = np.linalg.solve(B, np.r_[1.0, 0, 0, 0])
             c_hi = np.min((hi - Tm) / np.maximum(Tc, 1e-9)); c_lo = np.max((lo - Tm) / np.maximum(Tc, 1e-9))
