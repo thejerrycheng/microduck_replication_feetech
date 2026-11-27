@@ -51,9 +51,17 @@ FAN_LX = 0.042           # fan centre, fore/aft half-spacing about the thrust ce
 FAN_LY = 0.135           # fan centre, lateral half-spacing
 FAN_Z = 0.220            # clamp-ring mid-plane: the spars run over the trunk roof (z = 162 mm)
 FAN_CANT_DEG = 6.0       # each duct tilted about its radial line: yaw torque from differential thrust
+# Bay sized for a standard 30.5 mm stack as sold (SpeedyBee F405 V4: FC 41.6 x 39.4 x 7.8 mm, 4-in-1 ESC 45.6 x 44 x 8 mm,
+# Betaflight board page and seller listing); the earlier 38 x 39 mm bay only fitted a bare 36 mm board.
+BAY_MM = dict(depth=38.0, half_w=19.5)        # lower bay, around the pack: as slim as before (a full-height wide box cost leg clearance:
+                                              # blocked leg poses 23.3 -> 27.8 %, and the walk -> fly -> land check failed)
+BAY_HEAD_MM = dict(depth=47.0, half_w=24.0, z0=121.0)   # upper bay, from z0 up: holds the stack and carries the wing roots
+FC_STACK_MM = dict(x=44.0, y=45.6, h=22.0, hole=30.5, boss=5.5)   # ESC footprint, stack height incl. standoffs, mounting pattern, lid boss height
+# The stack does not pass up through the lower bay (44 x 45.6 mm board, 38 x 39 mm opening), so the head has a removable lid:
+# the stack bolts under the lid on the bench; the lid tucks a tab into the front wall and takes two screws at the rear.
 BATT_POS = (-0.0680, 0.0, 0.1070)   # flight pack centre, upright on the back of the trunk
 BATT_SIZE = (0.034, 0.0335, 0.074)  # CNHL 4S 1300 mAh, upright inside the backpack
-FC_POS = (-0.068, 0.0, 0.1545)    # FC + 4-in-1 ESC stack above the pack, inside the backpack
+FC_POS = (-0.0732, 0.0, 0.1565)   # FC + 4-in-1 ESC stack above the pack, inside the backpack
 
 # ---------------------------------------------------------------- printed parts ----------------
 MATERIALS = {  # typical FDM filament data-sheet values; sigma_allow = design stress (in-plane yield / 5)
@@ -157,3 +165,7 @@ BLADE_TIP_MM = dict(a=27.0, b=10.0, dx=-14.0)   # dx: tip centre behind the nace
                       # tip section: as tall as the nacelle allows, wide along its flank
 BLADE_EXP = (2.6, 5.0)                                   # superellipse exponent of the sections: root, tip (the tip matches the nacelle's slab)
 TONGUE_MM = dict(w=14.0, t=5.0, reach=14.0)              # tongue under the nacelle between the fans: two screws from below
+SIDE_JOINT_MM = dict(dx=(-12.0, 12.0), grip=7.0, bore=3.1)   # v8.1 side screws: two holes through the wing tip itself, along y, into inserts
+                      # in the nacelle's flank. dx: hole positions about the tip's centre; grip: wing material under the screw head;
+                      # bore: radius of the channel the head goes down (it breaks out of the wing's top surface inboard of the tip).
+                      # A first version used a land on the nacelle and ears beside the tip: it worked but added a visible flange.

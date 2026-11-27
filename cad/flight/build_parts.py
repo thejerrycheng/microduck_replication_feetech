@@ -48,12 +48,19 @@ POD_BOT = POD_TOP - HP
 XR = C.TRUNK_X0_MM                                     # trunk rear face
 W = C.PACK_WALL_MM
 bx, by, bz = (v * 1e3 for v in C.BATT_SIZE)
-BAY_X = (XR - W - 38.0, XR - W)                        # inner bay: 38 deep (pack 34, stack 36)
-BAY_Y = 19.5                                           # inner half-width (stack 36 wide)
-BAY_Z = (C.BATT_POS[2] * 1e3 - bz / 2 - 0.5, C.FC_POS[2] * 1e3 + 10.0)
-BOX = (BAY_X[0] - W, XR, -(BAY_Y + W), BAY_Y + W, BAY_Z[0], BAY_Z[1] + W)   # outer backpack box (open at the bottom)
+BAY_X = (XR - W - C.BAY_MM["depth"], XR - W)           # lower bay, around the pack: 38 deep (pack 34)
+BAY_Y = C.BAY_MM["half_w"]
+HD = C.BAY_HEAD_MM                                     # upper bay ("head"): 47 deep, 48 wide for the stack (ESC 44 x 45.6)
+BAYU_X, BAYU_Y, Z_HEAD = (XR - W - HD["depth"], XR - W), HD["half_w"], HD["z0"]
+ST = C.FC_STACK_MM
+BAY_Z = (C.BATT_POS[2] * 1e3 - bz / 2 - 0.5, C.FC_POS[2] * 1e3 + ST["h"] / 2 + ST["boss"])
+STACK_XY = [((BAYU_X[0] + BAYU_X[1]) / 2 + sx * ST["hole"] / 2, sy * ST["hole"] / 2) for sx in (1, -1) for sy in (1, -1)]
+USB_Z = BAY_Z[1] - ST["boss"] - 5.0                    # FC is the board next to the roof; its USB-C faces the rear wall (check on the board)
+BOX = (BAY_X[0] - W, XR, -(BAY_Y + W), BAY_Y + W, BAY_Z[0], BAY_Z[1] + W)   # outer box of the lower part (open at the bottom)
+WR = 6.5                                                                     # head rear wall: thick enough for the lid's two inserts (no external lugs)
+BOXU = (BAYU_X[0] - WR, XR, -(BAYU_Y + W), BAYU_Y + W, Z_HEAD, BAY_Z[1] + W)  # outer box of the head
 M3_CLEAR, INSERT_D, INSERT_L = 3.4, 4.0, 5.5
-YB = BAY_Y + W                                                               # backpack outer half-width
+YB = BAYU_Y + W                                                               # backpack outer half-width
 WT, WB = C.WING_T_MM, C.WING_BAR_MM
 FANS_L = [(XC + LX, LY, +1), (XC - LX, LY, -1)]                              # x, y, yaw-cant sign
 
@@ -70,6 +77,13 @@ def cyl(r, p0, d, length):
 Y_ROOT, Y_TIP = YB, LY - R_OUT + 1.5
 Z_TIP = POD_BOT + HP / 2
 GEO = dict(root_x=C.BLADE_ROOT_MM["x"], root_z=[C.BLADE_ROOT_MM["z"] - 9.0, C.BLADE_ROOT_MM["z"] + 9.0], tongue_y=[LY - 10.0, LY + 10.0])
+# side joint (v8.1): the tongue's two screws from below left the wing-nacelle joint with no fastener across the flank.
+# Two horizontal M3 screws now go through the wing tip itself into inserts in the nacelle's flank, in the web between
+# the fans (8.6 mm of material there). Each head goes down a channel that opens on the wing's top surface.
+SJ = C.SIDE_JOINT_MM
+Y_FLANK = LY - R_OUT
+SIDE_X = [XC + C.BLADE_TIP_MM["dx"] + d for d in SJ["dx"]]
+GEO.update(side_land_y=Y_FLANK, side_x=SIDE_X, side_y=Y_FLANK - SJ["grip"], side_z=Z_TIP)
 
 
 def blade_section(t):
@@ -102,6 +116,8 @@ def wing(side=1):
     s = s.union(ton)
     s = s.cut(box(-300, 300, -300, Y_ROOT, 0, 400))                                        # flat root face on the backpack's side wall
     s = s.cut(cq.Workplane("XY").workplane(offset=POD_BOT).center(XC, LY).slot2D(2 * LX + 2 * R_OUT, 2 * R_OUT).extrude(HP + 20))   # mate with the nacelle's flank
+    for x in SIDE_X:                                                                       # side screws: clearance hole, then the head's channel
+        s = s.cut(cyl(M3_CLEAR / 2, (x, Y_FLANK, Z_TIP), (0, 1, 0), 2 * SJ["grip"] + 2)).cut(cyl(SJ["bore"], (x, GEO["side_y"] - 25.0, Z_TIP), (0, 1, 0), 50.0))
     for y in GEO["tongue_y"]:                                                              # tongue screws, from below, counterbored
         s = s.cut(cyl(M3_CLEAR / 2, (XC, y, POD_BOT - tg["t"] - 1), (0, 0, 1), 30)).cut(cyl(3.0, (XC, y, POD_BOT - tg["t"] - 1), (0, 0, 1), 3.0))
     for z in GEO["root_z"]:                                                                # root inserts: the screws come from inside the bay
@@ -109,9 +125,37 @@ def wing(side=1):
     return s if side == 1 else s.mirror("XZ")
 
 
+LID_Y, TAB_Y = (-14.0, 14.0), 10.0
+LUG_X = BAYU_X[0] - WR / 2
+
+
+def head_solid():
+    u0, u1, v0, v1, w0, w1 = BOXU
+    head = box(u0, u1, v0, v1, w0, w1).edges("|X or |Y or |Z").edges(cq.selectors.BoxSelector((u0 - 1, v0 - 1, w0 + 5), (u1 - 3, v1 + 1, w1 + 1))).fillet(C.PACK_FILLET_MM)
+    return head.faces("<Z").edges(cq.selectors.BoxSelector((u0 - 1, v0 - 1, w0 - 1), (u1 - 3, v1 + 1, w0 + 1))).chamfer(min(BAYU_Y - BAY_Y, BAY_X[0] - BAYU_X[0]) - 0.3)   # sloped underside
+
+
+def top_lid():
+    """Lid of the head. The FC/ESC stack hangs under it on four bosses (inserts, long screws from below, done on the bench);
+    a tab at the front goes into a slot in the front wall, two screws at the rear go down into the backpack's lugs."""
+    u0, u1, v0, v1, w0, w1 = BOXU
+    zt = BAY_Z[1]
+    s = head_solid().intersect(box(u0 - 1, u1 + 1, v0 - 1, v1 + 1, zt, w1 + 1))
+    for y in LID_Y:
+        s = s.cut(cyl(M3_CLEAR / 2, (LUG_X, y, zt), (0, 0, 1), 30)).cut(cyl(3.0, (LUG_X, y, w1), (0, 0, 1), 3.2))   # head sunk 1.6 mm
+    for x, y in STACK_XY:
+        s = s.union(cyl(4.0, (x, y, zt - ST["boss"] / 2 + 0.25), (0, 0, 1), ST["boss"] + 0.5))
+        s = s.cut(cyl(INSERT_D / 2, (x, y, zt - ST["boss"]), (0, 0, 1), 2 * INSERT_L))
+    s = s.union(box(BAYU_X[1] - 4.0, BAYU_X[1] - 0.2, -TAB_Y, TAB_Y, zt - 5.0, zt + 0.5))            # front block
+    s = s.union(box(BAYU_X[1] - 0.5, XR - 0.5, -TAB_Y, TAB_Y, zt - 5.0, zt - 2.5))                   # tab into the front wall
+    return s
+
+
 def backpack():
     x0, x1, y0, y1, z0, z1 = BOX
-    s = box(x0, x1, y0, y1, z0, z1).edges("|X or |Y or |Z").edges(cq.selectors.BoxSelector((x0 - 1, y0 - 1, z0 + 5), (x1 - 3, y1 + 1, z1 + 1))).fillet(C.PACK_FILLET_MM)
+    s = box(x0, x1, y0, y1, z0, z1).edges("|Z").edges(cq.selectors.BoxSelector((x0 - 1, y0 - 1, z0 - 1), (x1 - 3, y1 + 1, z1 + 1))).fillet(C.PACK_FILLET_MM)
+    u0, u1, v0, v1, w0, w1 = BOXU
+    s = s.union(head_solid())
     # hook over the roof's rear edge and two thin fingers on the rear corners (location only)
     s = s.union(box(XR - 0.1, XR + 12.0, -24.0, 24.0, C.ROOF_Z_MM + 0.4, C.ROOF_Z_MM + 2.9).edges("|Z").fillet(4.0))
     for side in (1, -1):
@@ -119,12 +163,18 @@ def backpack():
         s = s.union(box(XR - 0.1, XR + 9.0, yy[0], yy[1], 132.0, 158.0))
         s = s.union(box(XR - 5.0, XR, min(side * YB, side * (C.TRUNK_WID_MM / 2 + 2.4)), max(side * YB, side * (C.TRUNK_WID_MM / 2 + 2.4)), 128.0, 162.0))
     s = s.cut(box(BAY_X[0], BAY_X[1], -BAY_Y, BAY_Y, BAY_Z[0] - 1.0, BAY_Z[1]))                # the bay, open at the bottom
+    s = s.cut(box(BAYU_X[0], BAYU_X[1], -BAYU_Y, BAYU_Y, Z_HEAD + W, BAY_Z[1]))                # the head's bay
     s = s.cut(box(XR, XR + 200, -C.TRUNK_WID_MM / 2, C.TRUNK_WID_MM / 2, C.TRUNK_BOTTOM_Z_MM, C.ROOF_Z_MM + 0.4))   # trunk volume
+    s = s.cut(box(u0 - 1, u1 + 1, v0 - 1, v1 + 1, BAY_Z[1], w1 + 1))                           # open top: closed by top_lid()
+    for y in LID_Y:                                                                            # lid screws: inserts in the thick rear wall
+        s = s.cut(cyl(INSERT_D / 2, (LUG_X, y, BAY_Z[1]), (0, 0, 1), 2 * INSERT_L))
+    s = s.cut(box(BAYU_X[1] - 0.1, XR + 0.1, -TAB_Y - 0.3, TAB_Y + 0.3, BAY_Z[1] - 5.2, BAY_Z[1] - 2.3))   # slot for the lid's front tab
+    s = s.cut(box(BAYU_X[0] - WR - 1, BAYU_X[0] + 1, -7.0, 7.0, USB_Z - 4.0, USB_Z + 4.0).edges("|X").fillet(2.0))   # rear slot: USB-C and the UART lead to the duck
     for side in (1, -1):
         for z in GEO["root_z"]:                                                                # wing-root screws, heads inside the bay
-            s = s.cut(cyl(M3_CLEAR / 2, (GEO["root_x"], side * (BAY_Y + W / 2), z), (0, 1, 0), 3 * W))
+            s = s.cut(cyl(M3_CLEAR / 2, (GEO["root_x"], side * (BAYU_Y + W / 2), z), (0, 1, 0), 3 * W))
         s = s.cut(cyl(INSERT_D / 2, (BAY_X[0] - W / 2 + 4.5, side * (BAY_Y - 4.0), BAY_Z[0]), (0, 0, 1), 2 * INSERT_L + 2))     # bottom-cap inserts
-        s = s.cut(cyl(3.0, (GEO["root_x"], side * (BAY_Y + W / 2), C.BLADE_ROOT_MM["z"]), (0, 1, 0), 3 * W))  # motor wires pass through the wing root, hidden
+        s = s.cut(cyl(3.0, (GEO["root_x"], side * (BAYU_Y + W / 2), C.BLADE_ROOT_MM["z"]), (0, 1, 0), 3 * W))  # motor wires pass through the wing root, hidden
     return s
 
 
@@ -167,6 +217,8 @@ def nacelle_with_lugs():
     s = nacelle_left()
     for y in GEO["tongue_y"]:
         s = s.cut(cyl(INSERT_D / 2, (XC, y, POD_BOT), (0, 0, 1), 2 * INSERT_L))
+    for x in SIDE_X:                                                                       # side inserts, horizontal
+        s = s.cut(cyl(INSERT_D / 2, (x, Y_FLANK, Z_TIP), (0, 1, 0), 2 * INSERT_L))
     return s
 
 
@@ -186,8 +238,8 @@ def print_mass(solid, rho, infill=None):
     return rho * 1e-6 * (skin + (C.PRINT_INFILL if infill is None else infill) * (v - skin))
 
 
-bp = backpack(); cap = bottom_cap(); nl = nacelle_with_lugs(); nr = nl.mirror("XZ"); col_part = fan_collar(); wl = wing()
-parts = {"backpack": bp, "bottom_cap": cap, "wing_left": wl, "wing_right": wl.mirror("XZ"), "nacelle_left": nl, "nacelle_right": nr, "fan_collar": col_part}
+bp = backpack(); lid = top_lid(); cap = bottom_cap(); nl = nacelle_with_lugs(); nr = nl.mirror("XZ"); col_part = fan_collar(); wl = wing()
+parts = {"backpack": bp, "top_lid": lid, "bottom_cap": cap, "wing_left": wl, "wing_right": wl.mirror("XZ"), "nacelle_left": nl, "nacelle_right": nr, "fan_collar": col_part}
 QTY = {"fan_collar": 4}
 
 res = {"parts": {}, "frame_mass_g": {}, "version": "v8 backpack + sculpted blade wings + nacelles"}
@@ -205,10 +257,19 @@ for name, p in parts.items():
     if name != "fan_collar":
         asm.add(p, name=name)
 asm.export(os.path.join(OUT, "flight_frame_assembly.step"))
-FAST_G = 11.0   # 4 tongue + 4 root + 2 cap screws with inserts, 4 collar screws, pack strap (estimate)
+FAST_G = 17.9   # 4 tongue + 4 side + 4 root + 2 cap + 2 lid + 4 stack screws with inserts, 4 collar screws, pack strap (estimate)
 for m in ("PLA", "PLA25", "ABS"):
     res["frame_mass_g"][m] = sum(v["mass_g"][m] * v["qty"] for v in res["parts"].values()) + FAST_G
 print("frame incl. %.0f g fasteners: PLA 15 %% %.0f g, PLA 25 %% %.0f g, ABS 15 %% %.0f g" % (FAST_G, res["frame_mass_g"]["PLA"], res["frame_mass_g"]["PLA25"], res["frame_mass_g"]["ABS"]))
+# every screw (left side; the right side mirrors): head position, direction towards the driver, parts present at that step
+_tg = C.TONGUE_MM
+res["screws"] = ([dict(name=f"tongue y={y - LY:+.0f}", head=[XC, y, POD_BOT - _tg["t"]], out=[0, 0, -1], present=["wing_left", "nacelle_left", "fans"]) for y in GEO["tongue_y"]]
+                 + [dict(name=f"side x={x - XC:+.0f}", head=[x, GEO["side_y"], Z_TIP], out=[0, -1, 0], present=["wing_left", "nacelle_left", "fans"]) for x in SIDE_X]
+                 + [dict(name=f"root z={z:.0f}", head=[GEO["root_x"], BAYU_Y, z], out=[0, -1, 0], present=["wing_left", "backpack"]) for z in GEO["root_z"]]
+                 + [dict(name="lid", head=[LUG_X, LID_Y[1], BOXU[5]], out=[0, 0, 1], present=["wing_left", "backpack", "top_lid"])]
+                 + [dict(name="cap", head=[BAY_X[0] - W / 2 + 4.5, BAY_Y - 4.0, BOX[4] - 3.0], out=[0, 0, -1], present=["backpack", "bottom_cap", "trunk"])])
+res["bay"] = dict(x=list(BAY_X), half_w=BAY_Y, head_x=list(BAYU_X), head_half_w=BAYU_Y, head_z0=Z_HEAD, z=list(BAY_Z), wall=W, stack_xy=STACK_XY, lid_xy=[[LUG_X, y] for y in LID_Y], lid_z=BAY_Z[1], stack_z=BAY_Z[1] - ST["boss"], usb_z=USB_Z)
+res["fans_left"] = dict(x=[XC - LX, XC + LX], y=LY, r=C.DUCT_OD_MM / 2, z0=ZM - C.DUCT_LEN_MM / 2 - 14.0, z1=ZM + C.DUCT_LEN_MM / 2)
 res["span_y_mm"] = 2 * (LY + R_OUT); res["length_x_mm"] = 2 * (LX + R_OUT)
 res["fix_box_mm"] = [XR - 2.0, XR + 12.5, -24.0, 24.0, C.ROOF_Z_MM - 40.0, C.ROOF_Z_MM + 3.0]      # FE support region: the faces bearing on the trunk
 res["pod_z_mm"] = [POD_BOT, POD_TOP]; res["wing"] = dict(GEO, stations=[[*blade_section(t)[0].tolist(), blade_section(t)[1], blade_section(t)[2]] for t in np.linspace(0, 1, 9)])
@@ -219,7 +280,7 @@ T0 = np.array([0, 0, 120.0])
 edf = json.load(open(os.path.join(ROOT, "docs", "flight_edf.json")))
 bxs = lambda x0, x1, y0, y1, z0, z1, n: dict(name=n, type="box", pos=((np.array([x0 + x1, y0 + y1, z0 + z1]) / 2 - T0) * 1e-3).tolist(),
                                               size=(np.array([x1 - x0, y1 - y0, z1 - z0]) / 2 * 1e-3).tolist())
-col = [bxs(BOX[0], BOX[1], BOX[2], BOX[3], BOX[4] - 3.0, BOX[5], "backpack")]
+col = [bxs(BOX[0], BOX[1], BOX[2], BOX[3], BOX[4] - 3.0, BOX[5], "backpack"), bxs(*BOXU, "backpack_head")]
 for sy, side in ((1, "left"), (-1, "right")):
     ts = np.linspace(0.04, 0.9, 5)
     for k in range(len(ts) - 1):                                                       # the wing as a chain of capsules along its axis
@@ -232,7 +293,7 @@ res["collision"] = col
 res["edf_collision"] = dict(type="cylinder", radius_mm=C.DUCT_OD_MM / 2, z0_mm=-C.DUCT_LEN_MM / 2 - edf["motor_out_mm"], z1_mm=C.DUCT_LEN_MM / 2 - 2.0)   # below / inside the nacelle
 json.dump(res, open(os.path.join(ROOT, "docs", "flight_cad_results.json"), "w"), indent=1)
 
-colors = {"backpack": "#d8d8d8", "bottom_cap": "#e9762b", "nacelle_left": "#f2f2f2", "nacelle_right": "#f2f2f2", "wing_left": "#e4e4e4", "wing_right": "#e4e4e4"}
+colors = {"backpack": "#d8d8d8", "top_lid": "#e9762b", "bottom_cap": "#e9762b", "nacelle_left": "#f2f2f2", "nacelle_right": "#f2f2f2", "wing_left": "#e4e4e4", "wing_right": "#e4e4e4"}
 fig, axs = plt.subplots(1, 3, figsize=(9.6, 3.6))
 for ax, ((i, j), lab) in zip(axs, [((1, 0), "top: y, x forward [mm]"), ((0, 2), "side: x, z [mm]"), ((1, 2), "rear: y, z [mm]")]):
     for name, p in parts.items():

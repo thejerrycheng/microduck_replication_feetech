@@ -1,0 +1,63 @@
+{
+ "r_tool_mm": 2.0,
+ "need_mm": 28.0,
+ "tilt_max_deg": 25.0,
+ "screws": [
+  {
+   "name": "tongue y=-10",
+   "straight_mm": 120.0,
+   "tilt_deg": 0.0,
+   "free_mm": 120.0,
+   "ok": true
+  },
+  {
+   "name": "tongue y=+10",
+   "straight_mm": 120.0,
+   "tilt_deg": 0.0,
+   "free_mm": 120.0,
+   "ok": true
+  },
+  {
+   "name": "side x=-26",
+   "straight_mm": 120.0,
+   "tilt_deg": 0.0,
+   "free_mm": 120.0,
+   "ok": true
+  },
+  {
+   "name": "side x=-2",
+   "straight_mm": 120.0,
+   "tilt_deg": 0.0,
+   "free_mm": 120.0,
+   "ok": true
+  },
+  {
+   "name": "root z=132",
+   "straight_mm": 48.0,
+   "tilt_deg": 0.0,
+   "free_mm": 48.0,
+   "ok": true
+  },
+  {
+   "name": "root z=150",
+   "straight_mm": 48.0,
+   "tilt_deg": 0.0,
+   "free_mm": 48.0,
+   "ok": true
+  },
+  {
+   "name": "lid",
+   "straight_mm": 120.0,
+   "tilt_deg": 0.0,
+   "free_mm": 120.0,
+   "ok": true
+  },
+  {
+   "name": "cap",
+   "straight_mm": 120.0,
+   "tilt_deg": 0.0,
+   "free_mm": 120.0,
+   "ok": true
+  }
+ ]
+}

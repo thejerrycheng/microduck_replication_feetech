@@ -48,7 +48,7 @@ bud = res["primary"]["items"]
 m = bud["battery"] * 1e-3
 items.append(("pack", m, np.array(C.BATT_POS) - TRUNK0, box_I(m, C.BATT_SIZE)))
 m = (bud["ESC"] + bud["flight controller"]) * 1e-3
-items.append(("esc_fc", m, np.array(C.FC_POS) - TRUNK0, box_I(m, (0.036, 0.036, 0.016))))
+items.append(("esc_fc", m, np.array(C.FC_POS) - TRUNK0, box_I(m, (C.FC_STACK_MM["x"] * 1e-3, C.FC_STACK_MM["y"] * 1e-3, C.FC_STACK_MM["h"] * 1e-3))))
 m = bud["wiring"] * 1e-3
 items.append(("wiring", m, np.array([xc, 0, C.FAN_Z]) - TRUNK0, box_I(m, (0.08, 0.16, 0.01))))
 printed = 0.0
@@ -112,7 +112,7 @@ for scene in ("scene.xml", "scene_backlash.xml"):
     # the MicroDuck's own palette, read from its materials: shell white, ankle orange, sole yellow, servo gray, frame dark
     WHITE, ORANGE, YELLOW = [0.851, 0.851, 0.839, 1], [1.0, 0.404, 0.122, 1], [0.957, 0.686, 0.137, 1]
     GRAY, DARK = [0.286, 0.286, 0.286, 1], [0.129, 0.153, 0.129, 1]
-    rgba = dict(bottom_cap=ORANGE, fan_collar=ORANGE)
+    rgba = dict(bottom_cap=ORANGE, fan_collar=ORANGE, top_lid=ORANGE)
     for part in list(cad["parts"]) + list(EDF_PARTS):
         spec.add_mesh(name="flight_" + part, file="flight_" + part + ".stl", scale=[1e-3] * 3)
     for part in cad["parts"]:

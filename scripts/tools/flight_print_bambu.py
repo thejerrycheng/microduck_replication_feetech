@@ -15,7 +15,7 @@ PROF = os.path.join(APP, "Resources", "profiles", "BBL")
 OUT = os.path.join(ROOT, "cad", "flight", "print")
 OVERRIDE = dict(wall_loops="3", sparse_infill_density="15%", sparse_infill_pattern="gyroid", top_shell_layers="5", bottom_shell_layers="4",
                 enable_support="1", support_type="tree(auto)", support_threshold_angle="35", brim_type="auto_brim")
-PARTS = [("backpack", 1), ("bottom_cap", 1), ("wing_left", 1), ("wing_right", 1), ("nacelle_left", 1), ("nacelle_right", 1), ("fan_collar", 4)]
+PARTS = [("backpack", 1), ("top_lid", 1), ("bottom_cap", 1), ("wing_left", 1), ("wing_right", 1), ("nacelle_left", 1), ("nacelle_right", 1), ("fan_collar", 4)]
 
 
 def flatten(kind, name):

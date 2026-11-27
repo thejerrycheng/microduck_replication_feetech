@@ -77,9 +77,9 @@ raw = np.fromfile(os.path.join(ROOT, "cad", "flight", "out", "backpack.stl"), dt
 cad_off = groups["backpack"][0].max(0) - raw.max(0) * 1e-3
 bs = np.array(C.BATT_SIZE)
 groups["battery"] = box(np.array(C.BATT_POS) + cad_off, bs / 2)
-groups["stack"] = box(np.array(C.FC_POS) + cad_off, [0.018, 0.018, 0.008])
+groups["stack"] = box(np.array(C.FC_POS) + cad_off, [C.FC_STACK_MM["x"] / 2e3, C.FC_STACK_MM["y"] / 2e3, C.FC_STACK_MM["h"] / 2e3])
 
-COL = dict(duck="#d9d9d6", backpack="#f2f2ee", bottom_cap="#ff671f", wing="#f2f2ee", nacelle="#f2f2ee", shroud="#4a4a4a", rotor="#f4af23", motor="#212721", ring="#ff671f", battery="#2b2f36", stack="#1f6f54")
+COL = dict(duck="#d9d9d6", backpack="#f2f2ee", top_lid="#ff671f", bottom_cap="#ff671f", wing="#f2f2ee", nacelle="#f2f2ee", shroud="#4a4a4a", rotor="#f4af23", motor="#212721", ring="#ff671f", battery="#2b2f36", stack="#1f6f54")
 os.makedirs(a.out, exist_ok=True)
 man, blob = dict(units="m", up="z", parts=[]), b""
 for k, (v, f) in groups.items():

@@ -14,7 +14,7 @@ SRC, DST = os.path.join(ROOT, "cad", "flight", "out"), os.path.join(ROOT, "cad",
 DT = np.dtype([("n", "<f4", 3), ("v", "<f4", (3, 3)), ("a", "<u2")])
 RX = lambda deg: np.array([[1, 0, 0], [0, np.cos(np.radians(deg)), -np.sin(np.radians(deg))], [0, np.sin(np.radians(deg)), np.cos(np.radians(deg))]])
 # rotation about x that puts the wanted face down
-ROT = dict(backpack=RX(180), nacelle_left=RX(180), nacelle_right=RX(180), wing_left=RX(90), wing_right=RX(-90), bottom_cap=RX(0), fan_collar=RX(0))
+ROT = dict(backpack=RX(180), nacelle_left=RX(180), nacelle_right=RX(180), wing_left=RX(90), wing_right=RX(-90), bottom_cap=RX(0), fan_collar=RX(0), top_lid=RX(180))
 os.makedirs(DST, exist_ok=True)
 for name, R in ROT.items():
     t = np.fromfile(os.path.join(SRC, name + ".stl"), dtype=DT, offset=84)

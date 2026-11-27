@@ -225,6 +225,74 @@ von Mises stress (factor \frFeaSfABS{} on yield). Hook straps see \frHookMpa\,MP
 The first mode is about six times the attitude bandwidth; it is not far above it, and a stiffer
 frame costs mass.
 
+\subsection{Frame v8.1: side-screwed nacelle joint, lidded backpack, tool access}\label{sec:v81}
+\emph{This subsection records the frame as of 2026-11-27 (\texttt{cad/flight/build\_parts.py}). The text of the
+preceding Frame subsection still describes the earlier spar frame and has not been rewritten; the stress analysis
+there was not repeated for the changes below.}
+
+\textbf{Joint.} In frame v8 each wing met its nacelle with a tongue under the nacelle and two vertical M3 screws,
+so nothing crossed the flank where the wing tip butts against the nacelle. Two horizontal M3$\times$12 screws now
+pass through the wing tip itself, $\pm12$\,mm about the tip's centre, into heat-set inserts in the nacelle's flank
+(the web between the fans, $8.6$\,mm of material at the holes). Each head sits on $7$\,mm of wing material at the
+bottom of a $6.2$\,mm channel that opens on the wing's top surface inboard of the tip. Each wing-to-nacelle joint
+therefore has four screws on two perpendicular axes, and no part was added. A first version with a raised land on
+the nacelle and an ear on each side of the wing tip also passed the checks below but added a visible flange and
+$9$\,g; it was dropped.
+
+\textbf{Tool access: definition.} For a screw with head position $\mathbf p$ and outward axis $\mathbf a$, a driver
+shank is modelled as a cylinder of radius $r=2$\,mm (a 2.5\,mm hex key) leaving $\mathbf p$ along a direction
+$\mathbf d$ with $\angle(\mathbf d,\mathbf a)\le 25^\circ$ (ball-end limit). The free length
+$\ell(\mathbf d)=\min\{s>s_0 : \|\mathbf q-\mathbf p-s\mathbf d\|_\perp<r\}$ is taken over points $\mathbf q$ sampled on the
+surfaces of the parts present at that assembly step ($4\times10^5$ area-weighted points per part, seed 0; the fans as
+cylinders, the trunk as a box), ignoring the first $s_0=3$\,mm inside the counterbore, and is cut off at 120\,mm. A screw
+passes if $\ell\ge 28$\,mm (an 8\,mm screw plus a 20\,mm tool) for some admissible $\mathbf d$. The check is a
+point-sample test: it can miss an obstacle thinner than the sample spacing (about 0.3\,mm here), and it does not
+model the hand or the long arm of the key.
+
+\textbf{What the check found.} (i) In the version with ears, the rear ear's screw directly behind the wing tip had
+$\ell=3.0$\,mm on its axis and $6.8$\,mm at $25^\circ$: the wing itself was in the way (moving it $14$\,mm aft
+gave $\ell\ge120$\,mm). In the final version the channels through the wing tip are clear on their axes. (ii) The
+electronics bay ($38\times39$\,mm) had been sized for a bare 36\,mm board; the chosen stack's ESC is
+$45.6\times44$\,mm. Widening the whole backpack to $47\times48$\,mm raised the blocked leg poses from $23.3\,\%$ to
+$27.8\,\%$ (left hip pitch free only to $+12^\circ$ instead of $+54^\circ$) and the walk--take-off--land baseline
+no longer completed, so only the upper part of the backpack (above $z=121$\,mm, where the wing roots attach) was
+widened. (iii) The stack then cannot pass up through the lower bay, so the head has a removable lid: the stack bolts
+under the lid on the bench, the lid tucks a tab into the front wall and takes two screws into inserts in the head's
+rear wall ($6.5$\,mm thick for that purpose). Table~\ref{tab:tool} and Fig.~\ref{fig:tool} give the final values.
+
+\begin{table}[h]\centering
+\caption{Free length for a driver at each screw of the final frame (left side; the right side mirrors). All pass on
+the screw axis itself (tilt $0^\circ$); needed: 28\,mm.}\label{tab:tool}
+\begin{tabular}{llr}\toprule
+Screw & Driver comes from & Free length [mm]\\\midrule
+Tongue, 2 per side & below the nacelle, between the fans & $\ge 120$\\
+Through the wing tip, 2 per side & inboard, above the wing & $\ge 120$\\
+Wing root, 2 per side & inside the head bay (open top) & 48\\
+Lid, 2 & above & $\ge 120$\\
+Bottom cap, 2 & below & $\ge 120$\\\bottomrule
+\end{tabular}\end{table}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{figures/flight_tool_clearance.pdf}
+\caption{Largest free length over azimuth against driver tilt, for each screw of the final frame.}\label{fig:tool}
+\end{figure}
+
+\textbf{Effect on the design.} Eleven printed parts, 273\,g in PLA at 15\,\% infill including 18\,g of fasteners
+(v8: ten parts, 248\,g); all-up mass 1627\,g, thrust-to-weight 1.54 (v8: 1603\,g, 1.56). Blocked poses with the
+final frame: head and neck $17.6\,\%$, legs $23.7\,\%$ (v8: $18.5\,\%$, $23.3\,\%$); the free ranges of the leg
+joints from the stand pose are unchanged. With the hand-written controller (one deterministic MuJoCo rollout per
+setting, no randomisation) the take-off from a stand reaches 0.63\,m, holds height within 0.013\,m and touches down
+at 10.1\,s, with a maximum tilt of $33^\circ$ in flight. The walk--take-off--land--walk sequence was run for braked
+stops of 1.2, 1.4, 1.6, 1.8 and 2.0\,s before take-off: all five take off, hover (error 0.011--0.013\,m) and touch
+down upright at 10.6\,s; the maximum tilt in flight was $11^\circ$ to $53^\circ$, and the 1.8\,s case exceeded the
+script's $35^\circ$ success limit. The spread with stop time shows that the handover depends on the gait phase at
+which it happens; this controller is a baseline, not a robust solution. The Isaac Lab trainings queued before this
+change used the v8 mass properties (25\,g lighter) and must be restarted from the new ones.
+
+\textbf{Flight controller.} SpeedyBee F405~V4 with its 60\,A BLHeli\_S 4-in-1 ESC, hung under the lid; a three-wire
+3.3\,V serial link (MSP) to the duck's computer, with arming and the kill switch kept on a radio receiver. Wiring,
+firmware settings and open checks are in \texttt{docs/duck\_flight\_bom.md}. None of it has been bench-tested.
+
 \subsection{MuJoCo: carrying the pack, and run to take-off}
 With the fans off and a forward command for 6\,s over six servo-delay and supply variants, the bare
 duck walks at \frCarryWalkBare\,m/s and runs at \frCarryRunBare\,m/s with no falls; with the pack the

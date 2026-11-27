@@ -1,5 +1,5 @@
 <mujoco model="scene">
-  <compiler angle="radian" meshdir="assets/"/>
+  <compiler angle="radian" meshdir="assets"/>
 
   <size nkey="4"/>
 
@@ -16,7 +16,7 @@
       <joint armature="0.005" frictionloss="0.1"/>
 
       <equality solref="0.02" solimp="0.9 0.95 0.001"/>
-      <general biastype="affine" gainprm="50" biasprm="0 -50 1"/>
+      <general input="pos" biastype="affine" gainprm="50" biasprm="0 -50 1"/>
       <default class="visual">
         <geom type="mesh" contype="0" conaffinity="0" group="2"/>
       </default>
@@ -29,35 +29,35 @@
       <geom contype="0" conaffinity="0"/>
 
       <equality solref="0.02" solimp="0.9 0.95 0.001"/>
-      <general forcerange="-20 20" biastype="affine" gainprm="10" biasprm="0 -10 -0.1"/>
+      <general forcerange="-20 20" input="pos" biastype="affine" gainprm="10" biasprm="0 -10 -0.1"/>
     </default>
     <default class="chosen_actuator_old">
       <joint armature="0.002" damping="0.048" frictionloss="0.006"/>
       <geom contype="0" conaffinity="0"/>
 
       <equality solref="0.02" solimp="0.9 0.95 0.001"/>
-      <general ctrlrange="-10 10" forcerange="-0.91 0.91" biastype="affine" gainprm="0.52" biasprm="0 -0.52"/>
+      <general ctrlrange="-10 10" forcerange="-0.91 0.91" input="pos" biastype="affine" gainprm="0.52" biasprm="0 -0.52"/>
     </default>
     <default class="chosen_actuator_new">
       <joint armature="0.002" damping="0.041" frictionloss="0.032"/>
       <geom contype="0" conaffinity="0"/>
 
       <equality solref="0.02" solimp="0.9 0.95 0.001"/>
-      <general ctrlrange="-10 10" forcerange="-0.67 0.67" biastype="affine" gainprm="0.386" biasprm="0 -0.386"/>
+      <general ctrlrange="-10 10" forcerange="-0.67 0.67" input="pos" biastype="affine" gainprm="0.386" biasprm="0 -0.386"/>
     </default>
     <default class="chosen_actuator_antoine">
       <joint armature="0.0017" damping="0.044" frictionloss="0.013"/>
       <geom contype="0" conaffinity="0"/>
 
       <equality solref="0.02" solimp="0.9 0.95 0.001"/>
-      <general ctrlrange="-10 10" forcerange="-0.75 0.75" biastype="affine" gainprm="0.43" biasprm="0 -0.43"/>
+      <general ctrlrange="-10 10" forcerange="-0.75 0.75" input="pos" biastype="affine" gainprm="0.43" biasprm="0 -0.43"/>
     </default>
     <default class="chosen_actuator">
       <joint armature="0.0018" damping="0.053" frictionloss="0.0048"/>
       <geom contype="0" conaffinity="0"/>
 
       <equality solref="0.02" solimp="0.9 0.95 0.001"/>
-      <general ctrlrange="-10 10" forcerange="-0.96 0.96" biastype="affine" gainprm="0.55" biasprm="0 -0.55"/>
+      <general ctrlrange="-10 10" forcerange="-0.96 0.96" input="pos" biastype="affine" gainprm="0.55" biasprm="0 -0.55"/>
     </default>
     <default class="passive_wheel">
       <joint armature="0.0001"/>
@@ -75,7 +75,7 @@
       <geom contype="2" conaffinity="2" group="3"/>
     </default>
     <default class="backlash">
-      <joint solreflimit="0.01" solimplimit="0.95 0.999 0.0001" limited="true" range="-0.0174533 0.0174533" armature="0.001" damping="0.01"/>
+      <joint solreflimit="0.01" solimplimit="0.95 0.999 0.0001" range="-0.0174533 0.0174533" armature="0.001" damping="0.01" limited="true"/>
     </default>
   </default>
 
@@ -120,61 +120,62 @@
     <material name="ankle_right_material" rgba="1 0.403922 0.121569 1"/>
     <material name="sole_right_material" rgba="0.956863 0.686275 0.137255 1"/>
     <material name="foot_right_material" rgba="1 0.403922 0.121569 1"/>
-    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
-    <mesh name="leg" file="leg.stl"/>
-    <mesh name="yaw_roll_motion" file="yaw_roll_motion.stl"/>
-    <mesh name="face_part" file="face_part.stl"/>
-    <mesh name="upper_leg_rigidity_plate" file="upper_leg_rigidity_plate.stl"/>
-    <mesh name="soft_mouth_top" file="soft_mouth_top.stl"/>
-    <mesh name="right_shell" file="right_shell.stl"/>
-    <mesh name="jaw_soft" file="jaw_soft.stl"/>
-    <mesh name="neck" file="neck.stl"/>
-    <mesh name="foot_right" file="foot_right.stl"/>
-    <mesh name="ankle_left" file="ankle_left.stl"/>
-    <mesh name="trunk_base" file="trunk_base.stl"/>
-    <mesh name="bearing_roll" file="bearing_roll.stl"/>
-    <mesh name="upper_leg_left" file="upper_leg_left.stl"/>
-    <mesh name="neck_pitch" file="neck_pitch.stl"/>
-    <mesh name="noenoeil" file="noenoeil.stl"/>
-    <mesh name="top_head_shell" file="top_head_shell.stl"/>
-    <mesh name="pcb__raspberry_pi_zero_2_w" file="pcb__raspberry_pi_zero_2_w.stl"/>
-    <mesh name="seeed_bearing__configuration__22x16x4" file="seeed_bearing__configuration__22x16x4.stl"/>
-    <mesh name="yaw2roll" file="yaw2roll.stl"/>
-    <mesh name="m12_lens_holder" file="m12_lens_holder.stl"/>
-    <mesh name="speaker" file="speaker.stl"/>
-    <mesh name="bottom_head_shell" file="bottom_head_shell.stl"/>
-    <mesh name="hip_l" file="hip_l.stl"/>
-    <mesh name="elec_rpi_robot_hat_pcb" file="elec_rpi_robot_hat_pcb.stl"/>
-    <mesh name="xl330" file="xl330.stl"/>
-    <mesh name="lens" file="lens.stl"/>
-    <mesh name="seeed_bearing__configuration_default" file="seeed_bearing__configuration_default.stl"/>
-    <mesh name="ankle_right" file="ankle_right.stl"/>
-    <mesh name="jaw" file="jaw.stl"/>
-    <mesh name="np_f970" file="np_f970.stl"/>
-    <mesh name="banana_pcb_locker" file="banana_pcb_locker.stl"/>
-    <mesh name="upper_leg_right" file="upper_leg_right.stl"/>
-    <mesh name="left_shell" file="left_shell.stl"/>
-    <mesh name="foot_left" file="foot_left.stl"/>
-    <mesh name="sole_left" file="sole_left.stl"/>
-    <mesh name="sole_right" file="sole_right.stl"/>
-    <mesh name="power_support" file="power_support.stl"/>
-    <mesh name="motor_support" file="motor_support.stl"/>
-    <mesh name="flight_backpack" file="flight_backpack.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_bottom_cap" file="flight_bottom_cap.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_wing_left" file="flight_wing_left.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_wing_right" file="flight_wing_right.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_nacelle_left" file="flight_nacelle_left.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_nacelle_right" file="flight_nacelle_right.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_fan_collar" file="flight_fan_collar.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_edf_shroud" file="flight_edf_shroud.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_edf_rotor_ccw" file="flight_edf_rotor_ccw.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_edf_rotor_cw" file="flight_edf_rotor_cw.stl" scale="0.001 0.001 0.001"/>
-    <mesh name="flight_edf_motor" file="flight_edf_motor.stl" scale="0.001 0.001 0.001"/>
+    <material name="groundplane" texture="groundplane" texrepeat="5 5" texuniform="true" reflectance="0.2"/>
+    <mesh name="leg" content_type="model/stl" file="leg.stl"/>
+    <mesh name="yaw_roll_motion" content_type="model/stl" file="yaw_roll_motion.stl"/>
+    <mesh name="face_part" content_type="model/stl" file="face_part.stl"/>
+    <mesh name="upper_leg_rigidity_plate" content_type="model/stl" file="upper_leg_rigidity_plate.stl"/>
+    <mesh name="soft_mouth_top" content_type="model/stl" file="soft_mouth_top.stl"/>
+    <mesh name="right_shell" content_type="model/stl" file="right_shell.stl"/>
+    <mesh name="jaw_soft" content_type="model/stl" file="jaw_soft.stl"/>
+    <mesh name="neck" content_type="model/stl" file="neck.stl"/>
+    <mesh name="foot_right" content_type="model/stl" file="foot_right.stl"/>
+    <mesh name="ankle_left" content_type="model/stl" file="ankle_left.stl"/>
+    <mesh name="trunk_base" content_type="model/stl" file="trunk_base.stl"/>
+    <mesh name="bearing_roll" content_type="model/stl" file="bearing_roll.stl"/>
+    <mesh name="upper_leg_left" content_type="model/stl" file="upper_leg_left.stl"/>
+    <mesh name="neck_pitch" content_type="model/stl" file="neck_pitch.stl"/>
+    <mesh name="noenoeil" content_type="model/stl" file="noenoeil.stl"/>
+    <mesh name="top_head_shell" content_type="model/stl" file="top_head_shell.stl"/>
+    <mesh name="pcb__raspberry_pi_zero_2_w" content_type="model/stl" file="pcb__raspberry_pi_zero_2_w.stl"/>
+    <mesh name="seeed_bearing__configuration__22x16x4" content_type="model/stl" file="seeed_bearing__configuration__22x16x4.stl"/>
+    <mesh name="yaw2roll" content_type="model/stl" file="yaw2roll.stl"/>
+    <mesh name="m12_lens_holder" content_type="model/stl" file="m12_lens_holder.stl"/>
+    <mesh name="speaker" content_type="model/stl" file="speaker.stl"/>
+    <mesh name="bottom_head_shell" content_type="model/stl" file="bottom_head_shell.stl"/>
+    <mesh name="hip_l" content_type="model/stl" file="hip_l.stl"/>
+    <mesh name="elec_rpi_robot_hat_pcb" content_type="model/stl" file="elec_rpi_robot_hat_pcb.stl"/>
+    <mesh name="xl330" content_type="model/stl" file="xl330.stl"/>
+    <mesh name="lens" content_type="model/stl" file="lens.stl"/>
+    <mesh name="seeed_bearing__configuration_default" content_type="model/stl" file="seeed_bearing__configuration_default.stl"/>
+    <mesh name="ankle_right" content_type="model/stl" file="ankle_right.stl"/>
+    <mesh name="jaw" content_type="model/stl" file="jaw.stl"/>
+    <mesh name="np_f970" content_type="model/stl" file="np_f970.stl"/>
+    <mesh name="banana_pcb_locker" content_type="model/stl" file="banana_pcb_locker.stl"/>
+    <mesh name="upper_leg_right" content_type="model/stl" file="upper_leg_right.stl"/>
+    <mesh name="left_shell" content_type="model/stl" file="left_shell.stl"/>
+    <mesh name="foot_left" content_type="model/stl" file="foot_left.stl"/>
+    <mesh name="sole_left" content_type="model/stl" file="sole_left.stl"/>
+    <mesh name="sole_right" content_type="model/stl" file="sole_right.stl"/>
+    <mesh name="power_support" content_type="model/stl" file="power_support.stl"/>
+    <mesh name="motor_support" content_type="model/stl" file="motor_support.stl"/>
+    <mesh name="flight_backpack" content_type="model/stl" file="flight_backpack.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_top_lid" content_type="model/stl" file="flight_top_lid.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_bottom_cap" content_type="model/stl" file="flight_bottom_cap.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_wing_left" content_type="model/stl" file="flight_wing_left.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_wing_right" content_type="model/stl" file="flight_wing_right.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_nacelle_left" content_type="model/stl" file="flight_nacelle_left.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_nacelle_right" content_type="model/stl" file="flight_nacelle_right.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_fan_collar" content_type="model/stl" file="flight_fan_collar.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_shroud" content_type="model/stl" file="flight_edf_shroud.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_rotor_ccw" content_type="model/stl" file="flight_edf_rotor_ccw.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_rotor_cw" content_type="model/stl" file="flight_edf_rotor_cw.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="flight_edf_motor" content_type="model/stl" file="flight_edf_motor.stl" scale="0.001 0.001 0.001"/>
   </asset>
 
   <worldbody>
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
-    <light pos="0 0 3.5" dir="0 0 -1" type="directional"/>
+    <light pos="0 0 3.5" type="directional"/>
     <body name="trunk_base" childclass="microduck" pos="0 0 0.12">
       <inertial pos="-0.0226332 -2.70828e-05 0.00280064" quat="0.664866 0.238381 0.235012 0.667756" mass="0.219491" diaginertia="0.000145932 0.000140799 9.85265e-05"/>
       <joint name="trunk_base_freejoint" type="free" armature="0" frictionloss="0"/>
@@ -193,39 +194,39 @@
       <site name="imu" pos="-0.021 6.64098e-05 -0.0146984" group="3"/>
       <body name="yaw2roll" pos="0.006 0.0175 -0.005" quat="0 -0.707107 -0.707107 0">
         <inertial pos="-8.8e-11 0.00099414 0.0168917" quat="0.99973 -0.0232487 0 0" mass="0.0253845" diaginertia="4.1964e-06 3.41989e-06 2.32413e-06"/>
-        <joint name="left_hip_yaw" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-0.436332 0.523599"/>
-        <joint name="passive_left_hip_yaw_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+        <joint name="left_hip_yaw" class="chosen_actuator" range="-0.436332 0.523599"/>
+        <joint name="passive_left_hip_yaw_backlash" class="backlash"/>
         <geom class="visual" pos="-0.0175 -0.002 0.0125" quat="0 1 0 0" material="yaw2roll_material" mesh="yaw2roll"/>
         <geom class="visual" pos="0 0 0.0125" quat="0 -0.707107 0.707107 0" material="xl330_material" mesh="xl330"/>
         <geom class="visual" pos="0 0.0165 0.0125" quat="0.5 0.5 0.5 -0.5" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
         <geom class="visual" pos="-0.0175 -0.002 0.0125" quat="0 -1 0 0" material="bearing_roll_material" mesh="bearing_roll"/>
         <body name="hip_l" pos="0 0.0165 0.0125" quat="0.707107 -0.707107 0 0">
-          <inertial pos="0.014815 1.6179e-08 -0.00829992" quat="0.94694 -8.2459e-07 -0.321411 -2.79883e-07" mass="0.00681898" diaginertia="1.15976e-06 1.15753e-06 3.52458e-07"/>
-          <joint name="left_hip_roll" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-0.383972 0.383972"/>
-          <joint name="passive_left_hip_roll_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+          <inertial pos="0.014815 1.6179e-08 -0.00829992" quat="0.94694 -1.41596e-05 -0.321411 3.90078e-05" mass="0.00681898" diaginertia="1.15976e-06 1.15753e-06 3.52458e-07"/>
+          <joint name="left_hip_roll" class="chosen_actuator" range="-0.383972 0.383972"/>
+          <joint name="passive_left_hip_roll_backlash" class="backlash"/>
           <geom class="visual" pos="0.021 0 -0.0185" quat="0.5 0.5 0.5 0.5" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
           <geom class="visual" pos="-0.0175 0 -0.0185" quat="0.707107 -0.707107 0 0" material="hip_l_material" mesh="hip_l"/>
           <geom class="collision" pos="-0.0175 0 -0.0185" quat="0.707107 -0.707107 0 0" type="mesh" material="hip_l_material" mesh="hip_l"/>
           <body name="upper_leg_left" pos="0.025 0 -0.0185" quat="0.5 -0.5 0.5 -0.5">
             <inertial pos="0.006766 0.0228838 0.0134531" quat="0.620818 0.374279 -0.583696 0.365786" mass="0.0531108" diaginertia="1.98453e-05 1.9108e-05 8.11799e-06"/>
-            <joint name="left_hip_pitch" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-            <joint name="passive_left_hip_pitch_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+            <joint name="left_hip_pitch" class="chosen_actuator" range="-1.5708 1.5708"/>
+            <joint name="passive_left_hip_pitch_backlash" class="backlash"/>
             <geom class="visual" pos="0 0 -0.0425" quat="0.5 -0.5 -0.5 -0.5" material="upper_leg_left_material" mesh="upper_leg_left"/>
             <geom class="visual" pos="0.022 0.0357771 0.0125" quat="0 0.707107 0 0.707107" material="xl330_material" mesh="xl330"/>
             <geom class="visual" pos="0 0 -0.0425" quat="0.5 -0.5 -0.5 -0.5" material="upper_leg_rigidity_plate_material" mesh="upper_leg_rigidity_plate"/>
             <geom class="visual" pos="0.022 0.0357771 -0.004" quat="0 0 0 1" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
             <geom class="visual" pos="0 0 0.0125" quat="0.5 0.5 -0.5 0.5" material="xl330_material" mesh="xl330"/>
             <body name="leg" pos="0.022 0.0357771 -0.004" quat="0 0.707107 0.707107 0">
-              <inertial pos="-1.52e-10 0.0318937 -0.00953505" quat="0.806473 0.591271 0 0" mass="0.0237802" diaginertia="5.25056e-06 4.58054e-06 1.91378e-06"/>
-              <joint name="left_knee" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-              <joint name="passive_left_knee_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+              <inertial pos="-1.52e-10 0.0318937 -0.00953505" quat="0.806473 0.591271 1.74721e-08 -2.65524e-07" mass="0.0237802" diaginertia="5.25056e-06 4.58054e-06 1.91378e-06"/>
+              <joint name="left_knee" class="chosen_actuator" range="-1.5708 1.5708"/>
+              <joint name="passive_left_knee_backlash" class="backlash"/>
               <geom class="visual" pos="-0.022 0.0357771 0.0385" quat="0.5 0.5 0.5 -0.5" material="leg_material" mesh="leg"/>
               <geom class="collision" pos="-0.022 0.0357771 0.0385" quat="0.5 0.5 0.5 -0.5" type="mesh" material="leg_material" mesh="leg"/>
               <geom class="visual" pos="0 0.042 -0.0115" quat="0.5 -0.5 -0.5 -0.5" material="xl330_material" mesh="xl330"/>
               <body name="ankle_left" pos="0 0.042 -0.026" quat="0 -1 0 0">
                 <inertial pos="-0.00615742 -0.0137483 -0.0156585" quat="0.474723 0.505182 0.517427 0.501696" mass="0.033079" diaginertia="1.11623e-05 7.7432e-06 5.90334e-06"/>
-                <joint name="left_ankle" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-                <joint name="passive_left_ankle_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+                <joint name="left_ankle" class="chosen_actuator" range="-1.5708 1.5708"/>
+                <joint name="passive_left_ankle_backlash" class="backlash"/>
                 <geom class="visual" pos="-0.022 0.00622291 -0.0647" quat="0.5 -0.5 -0.5 -0.5" material="sole_left_material" mesh="sole_left"/>
                 <geom name="left_foot_collision" class="collision" pos="-0.022 0.00622291 -0.0647" quat="0.5 -0.5 -0.5 -0.5" type="mesh" material="sole_left_material" mesh="sole_left"/>
                 <geom class="visual" pos="-0.022 0.00622291 -0.0647" quat="0.5 -0.5 -0.5 -0.5" material="foot_left_material" mesh="foot_left"/>
@@ -239,30 +240,30 @@
       </body>
       <body name="neck" pos="0.026 0.0145 0.0324215" quat="0 0 0.707107 -0.707107">
         <inertial pos="0 -0.025 0.0141665" quat="0.707107 0.707107 0 0" mass="0.0405893" diaginertia="1.72925e-05 1.63707e-05 3.12694e-06"/>
-        <joint name="neck_pitch" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.0472"/>
-        <joint name="passive_neck_pitch_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+        <joint name="neck_pitch" class="chosen_actuator" range="-1.5708 1.0472"/>
+        <joint name="passive_neck_pitch_backlash" class="backlash"/>
         <geom class="visual" pos="0.022 0.05 0.028" quat="0.5 0.5 0.5 -0.5" material="neck_material" mesh="neck"/>
         <geom class="visual" pos="0 0 0.0145" quat="0.5 -0.5 -0.5 -0.5" material="xl330_material" mesh="xl330"/>
         <geom class="visual" pos="0 -0.05 0.0145" quat="0.5 0.5 -0.5 0.5" material="xl330_material" mesh="xl330"/>
         <geom class="visual" pos="0.022 0.05 0.003" quat="0.5 0.5 0.5 -0.5" material="neck_material" mesh="neck"/>
         <body name="neck_pitch" pos="0 -0.05 0" quat="0 1 0 0">
           <inertial pos="-6.533e-09 0.0116641 -0.0145" mass="0.0063019" diaginertia="1.09186e-06 9.66855e-07 5.12111e-07"/>
-          <joint name="head_pitch" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-          <joint name="passive_head_pitch_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+          <joint name="head_pitch" class="chosen_actuator" range="-1.5708 1.5708"/>
+          <joint name="passive_head_pitch_backlash" class="backlash"/>
           <geom class="visual" pos="0 0.0287931 -0.0145" quat="0.5 -0.5 -0.5 -0.5" material="neck_pitch_material" mesh="neck_pitch"/>
           <geom class="visual" pos="0 0.0207931 -0.0145" quat="0.707107 0.707107 0 0" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
           <body name="yaw_roll_motion" pos="0 0.0186931 -0.0145" quat="0 0 -0.707107 -0.707107">
             <inertial pos="-0.000166657 -0.00500964 0.0178065" quat="0.174483 0.690172 -0.0192577 0.702031" mass="0.0535441" diaginertia="9.65512e-06 8.11788e-06 6.8878e-06"/>
-            <joint name="head_yaw" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-2.96706 2.96706"/>
-            <joint name="passive_head_yaw_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+            <joint name="head_yaw" class="chosen_actuator" range="-2.96706 2.96706"/>
+            <joint name="passive_head_yaw_backlash" class="backlash"/>
             <geom class="visual" pos="0 0 0.01" quat="0.707107 0 0 0.707107" material="yaw_roll_motion_material" mesh="yaw_roll_motion"/>
             <geom class="visual" pos="0 0 0.0145" quat="0.5 -0.5 -0.5 -0.5" material="xl330_material" mesh="xl330"/>
             <geom class="visual" pos="-0.016 0 0.0145" quat="0.707107 0 -0.707107 0" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
             <geom class="visual" pos="0.018 0 0.0145" quat="0.707107 0 -0.707107 0" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
             <body name="jaw_soft" pos="-0.0179 0 0.0145" quat="0.707107 0 -0.707107 0">
-              <inertial pos="0.00460523 0.00120047 -0.0324761" quat="0.999608 0.0201488 -0.0191644 -0.00313932" mass="0.207969" diaginertia="0.000321067 0.000254266 0.000149461"/>
-              <joint name="head_roll" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-0.436332 0.436332"/>
-              <joint name="passive_head_roll_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+              <inertial pos="0.00460523 0.00120047 -0.0324761" quat="0.999608 0.0201494 -0.0191644 -0.0031393" mass="0.207969" diaginertia="0.000321067 0.000254266 0.000149461"/>
+              <joint name="head_roll" class="chosen_actuator" range="-0.436332 0.436332"/>
+              <joint name="passive_head_roll_backlash" class="backlash"/>
               <geom class="visual" pos="0.0155 -9.13778e-05 -0.05548" quat="0.5 -0.5 0.5 -0.5" material="lens_material" mesh="lens"/>
               <geom class="visual" pos="-0.0045 -9.13778e-05 -0.0178" quat="0.5 0.5 0.5 0.5" material="face_part_material" mesh="face_part"/>
               <geom class="visual" pos="0.003 0.0255 -0.018" quat="0.707107 0 0 -0.707107" material="xl330_material" mesh="xl330"/>
@@ -286,30 +287,30 @@
               <site name="tof" pos="0.0135 0.0224086 -0.0733" quat="0.707107 0 0.707107 0" group="3"/>
               <site name="head_imu" pos="0.0152323 0.000111069 -0.05106" group="3"/>
               <site name="mouth_tip" pos="-0.00809334 0 -0.0777383" quat="0.704015 0 0.710185 0" group="3"/>
-              <camera name="head_camera" pos="0.0155 -9.13778e-05 -0.0733" quat="0 0 -1 0"/>
+              <camera name="head_camera" quat="0 0 -1 0" pos="0.0155 -9.13778e-05 -0.0733"/>
             </body>
           </body>
         </body>
       </body>
       <body name="bearing_roll" pos="0.006 -0.0175 -0.005" quat="0 -0.707107 -0.707107 0">
         <inertial pos="-8.8e-11 0.00099414 0.0168917" quat="0.99973 -0.0232487 0 0" mass="0.0253845" diaginertia="4.1964e-06 3.41989e-06 2.32413e-06"/>
-        <joint name="right_hip_yaw" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-0.523599 0.436332"/>
-        <joint name="passive_right_hip_yaw_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+        <joint name="right_hip_yaw" class="chosen_actuator" range="-0.523599 0.436332"/>
+        <joint name="passive_right_hip_yaw_backlash" class="backlash"/>
         <geom class="visual" pos="-0.0175 -0.002 0.0125" quat="0 1 0 0" material="yaw2roll_material" mesh="yaw2roll"/>
         <geom class="visual" pos="0 0 0.0125" quat="0 -0.707107 0.707107 0" material="xl330_material" mesh="xl330"/>
         <geom class="visual" pos="-0.0175 -0.002 0.0125" quat="0 1 0 0" material="bearing_roll_material" mesh="bearing_roll"/>
         <geom class="visual" pos="0 0.0165 0.0125" quat="0.5 0.5 0.5 -0.5" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
         <body name="hip_l_2" pos="0 0.0165 0.0125" quat="0 0 0.707107 0.707107">
-          <inertial pos="0.014815 1.6212e-08 -0.00829992" quat="0.94694 -8.2459e-07 -0.321411 -2.79883e-07" mass="0.00681898" diaginertia="1.15976e-06 1.15753e-06 3.52458e-07"/>
-          <joint name="right_hip_roll" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-0.383972 0.383972"/>
-          <joint name="passive_right_hip_roll_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+          <inertial pos="0.014815 1.6212e-08 -0.00829992" quat="0.94694 -1.41596e-05 -0.321411 3.90078e-05" mass="0.00681898" diaginertia="1.15976e-06 1.15753e-06 3.52458e-07"/>
+          <joint name="right_hip_roll" class="chosen_actuator" range="-0.383972 0.383972"/>
+          <joint name="passive_right_hip_roll_backlash" class="backlash"/>
           <geom class="visual" pos="-0.0175 0 -0.0185" quat="0.707107 -0.707107 0 0" material="hip_l_material" mesh="hip_l"/>
           <geom class="collision" pos="-0.0175 0 -0.0185" quat="0.707107 -0.707107 0 0" type="mesh" material="hip_l_material" mesh="hip_l"/>
           <geom class="visual" pos="0.025 0 -0.0185" quat="0.5 0.5 -0.5 -0.5" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
           <body name="upper_leg_right" pos="0.025 0 -0.0185" quat="0.5 -0.5 0.5 -0.5">
             <inertial pos="-0.006766 0.0228838 0.0134531" quat="0.365786 0.583696 -0.374279 0.620818" mass="0.0531108" diaginertia="1.98453e-05 1.9108e-05 8.11799e-06"/>
-            <joint name="right_hip_pitch" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-            <joint name="passive_right_hip_pitch_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+            <joint name="right_hip_pitch" class="chosen_actuator" range="-1.5708 1.5708"/>
+            <joint name="passive_right_hip_pitch_backlash" class="backlash"/>
             <geom class="visual" pos="-0.022 0.0357771 0.0125" quat="0.707107 0 -0.707107 0" material="xl330_material" mesh="xl330"/>
             <geom class="visual" pos="-0.022 0.0357771 0" quat="0 1 0 0" material="seeed_bearing__configuration__22x16x4_material" mesh="seeed_bearing__configuration__22x16x4"/>
             <geom class="visual" pos="0 0 0.0435" quat="0.5 -0.5 0.5 0.5" material="upper_leg_rigidity_plate_material" mesh="upper_leg_rigidity_plate"/>
@@ -317,15 +318,15 @@
             <geom class="visual" pos="0 0 0.0125" quat="0.5 0.5 -0.5 0.5" material="xl330_material" mesh="xl330"/>
             <body name="leg_2" pos="-0.022 0.0357771 -0.004" quat="0 1 0 0">
               <inertial pos="-0.0318937 -1.52e-10 -0.00953505" quat="0.570263 0.418091 0.418091 0.570263" mass="0.0237802" diaginertia="5.25056e-06 4.58054e-06 1.91378e-06"/>
-              <joint name="right_knee" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-              <joint name="passive_right_knee_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+              <joint name="right_knee" class="chosen_actuator" range="-1.5708 1.5708"/>
+              <joint name="passive_right_knee_backlash" class="backlash"/>
               <geom class="visual" pos="-0.042 0 -0.0115" quat="0.707107 0 -0.707107 0" material="xl330_material" mesh="xl330"/>
               <geom class="visual" pos="-0.0357771 -0.022 0.0385" quat="0.707107 0 0.707107 0" material="leg_material" mesh="leg"/>
               <geom class="collision" pos="-0.0357771 -0.022 0.0385" quat="0.707107 0 0.707107 0" type="mesh" material="leg_material" mesh="leg"/>
               <body name="ankle_right" pos="-0.042 0 -0.026" quat="0 -0.707107 -0.707107 0">
                 <inertial pos="0.00615539 -0.0137482 -0.0156566" quat="0.517424 0.501653 0.474682 0.505266" mass="0.0330796" diaginertia="1.11622e-05 7.74321e-06 5.90344e-06"/>
-                <joint name="right_ankle" class="chosen_actuator" pos="0 0 0" axis="0 0 1" range="-1.5708 1.5708"/>
-                <joint name="passive_right_ankle_backlash" class="backlash" pos="0 0 0" axis="0 0 1"/>
+                <joint name="right_ankle" class="chosen_actuator" range="-1.5708 1.5708"/>
+                <joint name="passive_right_ankle_backlash" class="backlash"/>
                 <geom class="visual" pos="0.022 0.00622291 -0.0647" quat="0.5 -0.5 0.5 0.5" material="ankle_right_material" mesh="ankle_right"/>
                 <geom class="visual" pos="0.022 0.00622291 -0.0647" quat="0.5 -0.5 0.5 0.5" material="sole_right_material" mesh="sole_right"/>
                 <geom name="right_foot_collision" class="collision" pos="0.022 0.00622291 -0.0647" quat="0.5 -0.5 0.5 0.5" type="mesh" material="sole_right_material" mesh="sole_right"/>
@@ -337,49 +338,51 @@
           </body>
         </body>
       </body>
-      <body name="flight_pack" pos="-0.0352385 0 0.0628392">
-        <inertial pos="0 0 0" quat="0.679411 0.679411 0.195962 -0.195962" mass="0.790491" diaginertia="0.0106992 0.00849119 0.00356243"/>
-        <geom pos="0.0352385 0 -0.182839" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_backpack"/>
-        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_bottom_cap"/>
-        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_wing_left"/>
-        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_wing_right"/>
-        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_nacelle_left"/>
-        <geom pos="0.0352385 0 -0.182839" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.851 0.851 0.839 1" mesh="flight_nacelle_right"/>
-        <geom name="col_backpack" size="0.0222 0.0227 0.0506" pos="-0.0334615 0 -0.0657392" type="box" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_left_0" size="0.0136818 0.0115914" pos="-0.031979 0.0341269 -0.034218" quat="0.435541 0.89698 -0.0757049 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_left_1" size="0.0134032 0.0163877" pos="-0.0286324 0.0522406 -0.013613" quat="0.301353 0.916971 -0.261439 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_left_2" size="0.0151713 0.0175273" pos="-0.0211187 0.0703544 0.0139708" quat="0.309356 0.835167 -0.454747 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_left_3" size="0.0127909 0.0151878" pos="-0.00851821 0.0884681 0.037621" quat="0.433569 0.687695 -0.582317 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_nacelle_left" size="0.0649125 0.03055 0.01" pos="0.0223324 0.135 0.0496608" type="box" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_right_0" size="0.0136818 0.0115914" pos="-0.031979 -0.0341269 -0.034218" quat="0.435541 -0.89698 -0.0757049 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_right_1" size="0.0134032 0.0163877" pos="-0.0286324 -0.0522406 -0.013613" quat="0.301353 -0.916971 -0.261439 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_right_2" size="0.0151713 0.0175273" pos="-0.0211187 -0.0703544 0.0139708" quat="0.309356 -0.835167 -0.454747 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_wing_right_3" size="0.0127909 0.0151878" pos="-0.00851821 -0.0884681 0.037621" quat="0.433569 -0.687695 -0.582317 0" type="capsule" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom name="col_nacelle_right" size="0.0649125 0.03055 0.01" pos="0.0223324 -0.135 0.0496608" type="box" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
-        <geom pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_cw"/>
-        <geom pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
-        <geom pos="0.0647316 0.134876 0.0331827" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
-        <geom name="col_fan_FL" size="0.027 0.0255" pos="0.0651308 0.134752 0.0292046" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
-        <geom pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_ccw"/>
-        <geom pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
-        <geom pos="-0.0200669 0.134876 0.0331827" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
-        <geom name="col_fan_RL" size="0.027 0.0255" pos="-0.0204661 0.134752 0.0292046" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
-        <geom pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_ccw"/>
-        <geom pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
-        <geom pos="0.0647316 -0.134876 0.0331827" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
-        <geom name="col_fan_FR" size="0.027 0.0255" pos="0.0651308 -0.134752 0.0292046" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <geom pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.286 0.286 0.286 1" mesh="flight_edf_shroud"/>
-        <geom pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.957 0.686 0.137 1" mesh="flight_edf_rotor_cw"/>
-        <geom pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="0.129 0.153 0.129 1" mesh="flight_edf_motor"/>
-        <geom pos="-0.0200669 -0.134876 0.0331827" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" mass="0" rgba="1 0.404 0.122 1" mesh="flight_fan_collar"/>
-        <geom name="col_fan_RR" size="0.027 0.0255" pos="-0.0204661 -0.134752 0.0292046" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" mass="0" rgba="0.9 0.2 0.2 0.35"/>
-        <site name="fan_FL" pos="0.0643324 0.135 0.0371608" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" size="0.004"/>
-        <site name="fan_RL" pos="-0.0196676 0.135 0.0371608" quat="0.998629 -0.0155084 0.0499854 0.000776258" size="0.004"/>
-        <site name="fan_FR" pos="0.0643324 -0.135 0.0371608" quat="0.998629 0.0155084 -0.0499854 0.000776258" size="0.004"/>
-        <site name="fan_RR" pos="-0.0196676 -0.135 0.0371608" quat="0.998629 0.0155084 0.0499854 -0.000776258" size="0.004"/>
+      <body name="flight_pack" pos="-0.036734 1.58217e-13 0.0627882">
+        <inertial pos="0 0 0" quat="0.677242 0.677242 0.20333 -0.20333" mass="0.81514" diaginertia="0.0107921 0.00855275 0.00365923"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.851 0.851 0.839 1" mass="0" mesh="flight_backpack"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 0.404 0.122 1" mass="0" mesh="flight_top_lid"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 0.404 0.122 1" mass="0" mesh="flight_bottom_cap"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.851 0.851 0.839 1" mass="0" mesh="flight_wing_left"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.851 0.851 0.839 1" mass="0" mesh="flight_wing_right"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.851 0.851 0.839 1" mass="0" mesh="flight_nacelle_left"/>
+        <geom pos="0.036734 0 -0.182788" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.851 0.851 0.839 1" mass="0" mesh="flight_nacelle_right"/>
+        <geom name="col_backpack" size="0.0222 0.0227 0.05485" pos="-0.031966 -1.58217e-13 -0.0614382" type="box" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_backpack_head" size="0.02835 0.0272 0.0276" pos="-0.038116 -1.58217e-13 -0.0341882" type="box" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_left_0" size="0.0136818 0.0112173" pos="-0.0304869 0.0379631 -0.034167" quat="0.423492 0.902352 -0.0800981 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_left_1" size="0.0134032 0.0161235" pos="-0.0271552 0.0551094 -0.013562" quat="0.290017 0.916695 -0.274881 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_left_2" size="0.0151713 0.0172761" pos="-0.0196749 0.0722556 0.0140218" quat="0.299703 0.827891 -0.474104 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_left_3" size="0.0127909 0.0148869" pos="-0.00713038 0.0894019 0.0376721" quat="0.426233 0.675552 -0.601627 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_nacelle_left" size="0.0649125 0.03055 0.01" pos="0.0236453 0.135 0.0497118" type="box" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_right_0" size="0.0136818 0.0112173" pos="-0.0304869 -0.0379631 -0.034167" quat="0.423492 -0.902352 -0.0800981 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_right_1" size="0.0134032 0.0161235" pos="-0.0271552 -0.0551094 -0.013562" quat="0.290017 -0.916695 -0.274881 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_right_2" size="0.0151713 0.0172761" pos="-0.0196749 -0.0722556 0.0140218" quat="0.299703 -0.827891 -0.474104 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_wing_right_3" size="0.0127909 0.0148869" pos="-0.00713038 -0.0894019 0.0376721" quat="0.426233 -0.675552 -0.601627 0" type="capsule" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom name="col_nacelle_right" size="0.0649125 0.03055 0.01" pos="0.0236453 -0.135 0.0497118" type="box" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom pos="0.0656453 0.135 0.0372118" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.286 0.286 0.286 1" mass="0" mesh="flight_edf_shroud"/>
+        <geom pos="0.0656453 0.135 0.0372118" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.957 0.686 0.137 1" mass="0" mesh="flight_edf_rotor_cw"/>
+        <geom pos="0.0656453 0.135 0.0372118" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.129 0.153 0.129 1" mass="0" mesh="flight_edf_motor"/>
+        <geom pos="0.0660445 0.134876 0.0332337" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 0.404 0.122 1" mass="0" mesh="flight_fan_collar"/>
+        <geom name="col_fan_FL" size="0.027 0.0255" pos="0.0664438 0.134752 0.0292556" quat="0.998629 -0.0155084 -0.0499854 -0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom pos="-0.0183547 0.135 0.0372118" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.286 0.286 0.286 1" mass="0" mesh="flight_edf_shroud"/>
+        <geom pos="-0.0183547 0.135 0.0372118" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.957 0.686 0.137 1" mass="0" mesh="flight_edf_rotor_ccw"/>
+        <geom pos="-0.0183547 0.135 0.0372118" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.129 0.153 0.129 1" mass="0" mesh="flight_edf_motor"/>
+        <geom pos="-0.0187539 0.134876 0.0332337" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 0.404 0.122 1" mass="0" mesh="flight_fan_collar"/>
+        <geom name="col_fan_RL" size="0.027 0.0255" pos="-0.0191532 0.134752 0.0292556" quat="0.998629 -0.0155084 0.0499854 0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom pos="0.0656453 -0.135 0.0372118" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.286 0.286 0.286 1" mass="0" mesh="flight_edf_shroud"/>
+        <geom pos="0.0656453 -0.135 0.0372118" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.957 0.686 0.137 1" mass="0" mesh="flight_edf_rotor_ccw"/>
+        <geom pos="0.0656453 -0.135 0.0372118" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.129 0.153 0.129 1" mass="0" mesh="flight_edf_motor"/>
+        <geom pos="0.0660445 -0.134876 0.0332337" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 0.404 0.122 1" mass="0" mesh="flight_fan_collar"/>
+        <geom name="col_fan_FR" size="0.027 0.0255" pos="0.0664438 -0.134752 0.0292556" quat="0.998629 0.0155084 -0.0499854 0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <geom pos="-0.0183547 -0.135 0.0372118" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.286 0.286 0.286 1" mass="0" mesh="flight_edf_shroud"/>
+        <geom pos="-0.0183547 -0.135 0.0372118" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.957 0.686 0.137 1" mass="0" mesh="flight_edf_rotor_cw"/>
+        <geom pos="-0.0183547 -0.135 0.0372118" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="0.129 0.153 0.129 1" mass="0" mesh="flight_edf_motor"/>
+        <geom pos="-0.0187539 -0.134876 0.0332337" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="mesh" contype="0" conaffinity="0" group="2" rgba="1 0.404 0.122 1" mass="0" mesh="flight_fan_collar"/>
+        <geom name="col_fan_RR" size="0.027 0.0255" pos="-0.0191532 -0.134752 0.0292556" quat="0.998629 0.0155084 0.0499854 -0.000776258" type="cylinder" contype="3" conaffinity="3" group="3" rgba="0.9 0.2 0.2 0.35" mass="0"/>
+        <site name="fan_FL" size="0.004" pos="0.0656453 0.135 0.0372118" quat="0.998629 -0.0155084 -0.0499854 -0.000776258"/>
+        <site name="fan_RL" size="0.004" pos="-0.0183547 0.135 0.0372118" quat="0.998629 -0.0155084 0.0499854 0.000776258"/>
+        <site name="fan_FR" size="0.004" pos="0.0656453 -0.135 0.0372118" quat="0.998629 0.0155084 -0.0499854 0.000776258"/>
+        <site name="fan_RR" size="0.004" pos="-0.0183547 -0.135 0.0372118" quat="0.998629 0.0155084 0.0499854 -0.000776258"/>
       </body>
     </body>
   </worldbody>

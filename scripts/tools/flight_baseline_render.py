@@ -13,7 +13,7 @@ sys.path.insert(0, HERE)
 import flight_rollout as FR
 CYCLE = '--cycle' in sys.argv      # walk -> take-off -> fly -> land -> walk
 
-out, L, (m, duck) = FR.rollout(record=True, walk=True, run=False, walk_after=True, lift_s=0.5, stop_s=1.2, t_takeoff=4.0, t_land=9.0, t_end=18.0) if CYCLE else FR.rollout(record=True)
+out, L, (m, duck) = FR.rollout(record=True, walk=True, run=False, walk_after=True, lift_s=0.8, stop_s=1.6, t_takeoff=4.0, t_land=9.0, t_end=18.0) if CYCLE else FR.rollout(record=True)
 if CYCLE:
     lt = L['t'][L['mode'] == 3]; x = L['pos'][:, 0]
     print(f"walk before take-off {L['vel'][(L['t']>2)&(L['t']<3),0].mean():.2f} m/s; touchdown {lt[0]:.2f} s; after landing walked {np.linalg.norm(L['pos'][-1,:2]-L['pos'][L['mode']==3][0,:2]):.2f} m (path {np.linalg.norm(np.diff(L['pos'][L['mode']==3][:,:2],axis=0),axis=1).sum():.2f} m) in {lt[-1]-lt[0]:.1f} s; max tilt after landing {L['tilt'][L['mode']==3].max():.1f} deg")
