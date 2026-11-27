@@ -31,8 +31,10 @@ DUCK = {
 # v1.0.131, "this historical Walk used P5/D20 and beakP10"). P 5 is also the firmware gain the policies here were
 # trained against. The official Pollen duck (Dynamixel XL330) runs P 200, I 0, D 0 in Dynamixel units -- a different
 # servo and scale, so its numbers do not carry over; only "D is set on purpose, not left at factory" does.
+# 2026-11-20 (user: "make the P gain higher and D gain smaller"): P 8, D 10 on the joints (set_gains.py), P 8 being
+# near the top of the policies' trained firmware-P range (4.5-8.5, microduck_rl/realism.py KP_SCALE_RANGE x P 5).
 def replica_gains(sid):
-    return (10 if DUCK.get(sid) == "mouth" else 5, 20)
+    return (10, 20) if DUCK.get(sid) == "mouth" else (8, 10)
 
 
 # Joint travel, read from the MuJoCo model the policies train on (the URDF's limits), so the studio cannot command
@@ -62,8 +64,9 @@ def limits(sid, zero=ZERO, direction=None):
 
 
 def angle(sid, ticks, zero, direction=None):
-    """Joint angle in degrees for a servo position, given the calibrated zero and direction."""
-    return (ticks - zero) * 360 / 4096 * (direction or sign(sid))
+    """Joint angle in degrees for a servo position, given the calibrated zero and direction. The HD1910 counts on
+    past one turn, so the reading is taken in the turn nearest the zero (every joint's range is within +-180 deg)."""
+    return ((ticks - zero + 2048) % 4096 - 2048) * 360 / 4096 * (direction or sign(sid))
 
 
 # Charge left in a lithium-ion cell against its resting voltage (a typical 18650 discharge curve). Rough by nature:

@@ -47,7 +47,7 @@ os.makedirs(LOGD, exist_ok=True)
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--port", type=int, default=int(os.environ.get("DUCK_APP_PORT", "8811")))
-for _r in ("walk", "run", "sprint", "sitstand", "jump", "roulade", "recovery"):
+for _r in ("walk", "run", "sprint", "sitstand", "jump", "roulade", "recovery", "kick"):
     ap.add_argument("--" + _r, help=f"ONNX export for the {_r} role (default: the contract's pick, else the newest export)")
 ap.add_argument("--lag", type=int, default=4); ap.add_argument("--vin", type=float, default=7.7); ap.add_argument("--sag", type=float, default=0.1)
 ap.add_argument("--auto-reset", action="store_true", help="reset 2 s after a fall when no policy can get the duck up (default: stay down)")

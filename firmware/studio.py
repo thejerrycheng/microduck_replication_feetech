@@ -120,7 +120,7 @@ class Brain(Link):
     talks to it. Closing the studio leaves the agent running for the duck's own studio and the next connection."""
     port = TUNNEL
     DIR = "~/microduck/studio/firmware"          # where the duck keeps the agent (the same place duck_serve.sh uses)
-    FILES = ("duck_agent.py", "duck_voice.py", "duck_pilot.py", "policy_net.py")
+    FILES = ("duck_agent.py", "duck_voice.py", "duck_pilot.py", "policy_net.py", "run_log.py")
 
     def __init__(self, host):
         # Two SSH connections in all: one copies both files and checks the ToF readers, one is the tunnel.
@@ -267,7 +267,11 @@ class Studio:
             if isinstance(self.brain, Brain) and pack.exists():
                 data = pack.read_bytes()
                 if self.brain.pilot("pack")["pack"] != hashlib.sha256(data).hexdigest():
-                    self.brain.pilot("install", data)
+                    # installing stops the pilot, and a stopped pilot lets every joint go limp: never under live policies
+                    if ((self.brain.status() or {}).get("pilot") or {}).get("live"):
+                        print("policies: a newer pack is waiting; not installed while the duck's policies are live", flush=True)
+                    else:
+                        self.brain.pilot("install", data)
         except Exception as e:
             print("animations:", e, flush=True)
 
@@ -604,6 +608,18 @@ class Studio:
             raise ValueError(f"{sid} reads {round(self.sent[sid])}, outside its joint range {lo}-{hi}: pose it at zero, then Zero")
         return max(lo, min(hi, int(pos)))
 
+    def _clips(self):
+        """The emotion clips this studio would give the duck (anim_pack.py, from app/animations), without their motion
+        and sound: so the page lists every clip even with no duck connected (it greys them out until one is). On the
+        duck itself without app/animations, an empty list."""
+        if not hasattr(self, "_clip_list"):
+            try:
+                import anim_pack
+                self._clip_list = [{k: c[k] for k in ("name", "label", "emoji", "group", "T", "needs")} for c in anim_pack.pack()[1]]
+            except Exception:
+                self._clip_list = []
+        return self._clip_list
+
     # ---- routes -------------------------------------------------------------------------------------------------
     def state(self, q=None):
         """Everything the page shows. `since` = last sample number it has; newer ones ride along."""
@@ -627,7 +643,7 @@ class Studio:
                              imu=bool(self.cal.get("imu")), imu_step=1 if getattr(self, "imu_up", None) else 0,
                              imu_how=(self.cal.get("imu") or {}).get("how", "level only" if self.cal.get("imu") else None),
                              edge=[i for i, m in motors.items() if self.calibrating and not EDGE < m["pos"] < 4095 - EDGE]),
-                    anims=getattr(self, "anims", []) if self.brain else [],
+                    anims=(getattr(self, "anims", None) or self._clips()) if self.brain else self._clips(),
                     brain=dict(on=self.brain is not None, linking=self.linking.locked(), host=self.host, sensors=self.sensors,
                                size=(duck_agent.W, duck_agent.H)),
                     samples=[r for r in list(self.log) if r[0] > since][-600:])

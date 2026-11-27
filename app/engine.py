@@ -109,7 +109,17 @@ JUMP_STABLE_S = 0.1         # landed + quiet for this long -> hand back to the w
                             # 1 s wait, 1/12 with 0.3 s), so the walk policy takes the stand over as soon as the landing is quiet
 JUMP_MAX_S = 2.5            # hand back at the latest here (the task's episode is 3.5 s; recovery times out at 1.4 s)
 QUIET_TILT_DEG = 20.0       # "quiet landing": a foot down, tilt below this, z >= ON_FEET_Z + 5 mm, slow (the task's test uses 18 deg)
-ROULADE_MIN_S = 1.0         # a front flip takes ~1.5 s; hand back once upright for RECOVERED_S after this ...
+# kick (B): the real-duck ball-kick policy, right foot. Training (ball_kick_env_cfg.py): standing start, ball centre at
+# (0.09, -0.058) m in the trunk's yaw frame, 5 s episodes, the ball gone 0.04-0.06 s in. Its round-2 export then
+# leans back ~50 deg. KICK_S (app/bench_kick.py, 12 starts each): handing the walk policy the stand at 0.06-0.12 s the
+# duck topples to 82-101 deg (12/12 past 60) and VelStand pops it back up; held to 0.3 s the kick policy stops at a
+# 46-53 deg lean (0-1/12 past 60, with or without a ball, from a fresh stand, after walking or after a get-up) and the
+# stand-up policy straightens it (standing at 3 s 12/12). The lean is not counted as a fall.
+BALL_BODY, BALL_RADIUS, BALL_MASS_KG, BALL_FRICTION = "ball", 0.035, 0.015, 0.5
+BALL_OFFSET = (0.09, -0.058)
+BALL_PARK = (0.0, 50.0, BALL_RADIUS)          # off the stage while not in play
+KICK_S = 0.30                 # then the stand-up policy straightens the lean (or the walk policy, if already upright)
+ROULADE_MIN_S = 1.0        # a front flip takes ~1.5 s; hand back once upright for RECOVERED_S after this ...
 ROULADE_MAX_S = 3.0         # ... or here at the latest (not upright -> the get-up policy)
 QUIET_V = 0.30              # m/s, QUIET_W rad/s: "quiet" after a landing (the jump task's stable-landing test: 0.2 / 1.5)
 QUIET_W = 1.5
@@ -153,10 +163,28 @@ def yaw_of(q):
 # or a plain walk export; recovery: the standalone stand-up policy (used after a fall under run / sprint / sit / jump /
 # flip; the VelStand walk gets up by itself).
 ROLES = dict(walk=("velstand_*.onnx", "walk_*.onnx"), run="run_*.onnx", sprint="sprint_*.onnx", sitstand="sitstand_*.onnx",
-             jump="jump_*.onnx", roulade="roulade_*.onnx", recovery=("standup_*.onnx", "recovery_*.onnx", "getup_*.onnx"))
+             jump="jump_*.onnx", roulade="roulade_*.onnx", recovery=("standup_*.onnx", "recovery_*.onnx", "getup_*.onnx"),
+             kick="kick_*.onnx")
+# Real-duck round-2 fine-tunes (4090 laptop, 2026-11-19/20, docs/real2/LATEST.txt there): trained under slippery soles
+# (0.05-1.0), the heavier rear battery, randomised joint limits, P 4.5-8.5, 6.2-8.4 V, 20-40 ms ticks. run stays the
+# base run_v3_5999 (its round 1 froze in place). walk stays velstand_21495: the round-2 walk velstand_real2_..._25249
+# creeps at 0.15 m/s with a zero command on this plant (so no trick ever sees a still stand) and stalls at sole
+# friction 0.3 (app/bench_real2.py, docs/bench_real2_results.json); it is in exports/ and selectable in the settings.
+# The pre-fine-tune picks are all still in exports/ and selectable. 2026-11-20, after testing on the real duck (user:
+# "use the old sit and stand policy, the new ones are horrible"): sit-stand and get-up are back to sitstand_fast_5499
+# and standup_9999; the round-2 sitstand_fast_real2_6998 and standup_real2_13248 stay selectable.
+# 2026-11-20 later (4090 LATEST.txt): sit-stand -> the level-head fine-tune 8497 (6998 + a world-frame level-head
+# reward, made for the head drooping while seated; Isaac grader: head off level median 3.3 deg, stress tilt 2-4 deg vs
+# 5499's 12-43 deg) and flip -> RouladeRecover round 6 @14000 (completed and standing 69/74 % nominal/stress vs
+# 13249's 32/56 %; app plant: 12/12 standing, 0 falls vs 11 for 13249, app/bench_real3.py). 5499 and 13249 stay selectable.
 DEFAULTS = dict(walk="velstand_allcoll_hd1910_iter21495.onnx", run="run_v3_allcoll_hd1910_iter5999.onnx",
-                sprint="sprint_max_allcoll_hd1910_iter7998.onnx", sitstand="sitstand_fast_hd1910_iter5499.onnx",
-                jump="jump_hd1910_iter1500.onnx", roulade="roulade_head_hd1910_iter7000.onnx", recovery="standup_hd1910_iter9999.onnx")
+                sprint="sprint_max_real2_hd1910_iter9497.onnx", sitstand="sitstand_fast_levelhead_hd1910_iter8497.onnx",
+                jump="jump_real2_hd1910_iter6748.onnx", roulade="roulade_head_real3_hd1910_iter14000.onnx",
+                recovery="standup_hd1910_iter9999.onnx", kick="kick_right_real2_hd1910_iter7998.onnx")
+# Jump exports trained with the duck's fixed launch clock (microduck_rl/mdp/jump.py JumpOneShotCommandCfg.flag_on_s:
+# the flag is 1 for the first 0.36 s of the jump, no contact sensing); older exports keep the touchdown-ended flag.
+JUMP_CLOCK_EXPORTS = ("jump_real",)
+JUMP_FLAG_ON_S = 0.36
 REQUIRED = ("walk", "run", "sitstand")
 SELF_RECOVERING = ("velstand_",)    # walk exports that get up on their own (VelStand recipe: no fall termination in training)
 
@@ -240,6 +268,14 @@ class Servos:
                     break
         if names != JOINTS:
             raise RuntimeError(f"actuator order {names} != contract {JOINTS}")
+        # the kick's ball (microduck_rl/tasks/ball_kick_env_cfg.py: 70 mm, 15 g, friction 0.5), parked off the stage
+        # until B places it; added last so the duck's own qpos / dof addresses are untouched
+        ball = spec.worldbody.add_body(name=BALL_BODY, pos=BALL_PARK)
+        ball.add_freejoint(name=BALL_BODY + "_free")
+        ball.add_geom(name=BALL_BODY, type=mujoco.mjtGeom.mjGEOM_SPHERE, size=[BALL_RADIUS, 0, 0], mass=BALL_MASS_KG,
+                      friction=[BALL_FRICTION, 0.005, 0.0001], condim=3, rgba=[1.0, 0.45, 0.1, 1.0])
+        for k in spec.keys:                               # every keyframe gets the parked ball
+            k.qpos = list(k.qpos) + list(BALL_PARK) + [1.0, 0.0, 0.0, 0.0]
         self.model = spec.compile()
         self.model.opt.timestep = timestep
         self.data = mujoco.MjData(self.model)
@@ -292,7 +328,8 @@ class Servos:
 class Duck:
     """Physics + servos + policies + operator logic. All public methods are called from one thread."""
 
-    STATES = ("stand", "walk", "run", "sprint", "stopping", "sit_down", "seated", "stand_up", "jump", "roulade", "recover", "fallen", "dead")
+    STATES = ("stand", "walk", "run", "sprint", "stopping", "sit_down", "seated", "stand_up", "jump", "roulade", "kick", "recover", "fallen", "dead")
+    TRICKS = ("jump", "roulade", "kick")      # episodic, started from a still stand; their own falls are judged at the end
 
     def __init__(self, policies: dict | None = None, vin: float = sum(VIN_RANGE) / 2, sag_gain: float = 0.1,
                  lag: int = 4, level: int = DEFAULT_LEVEL, auto_reset: bool = False, walk_self_recovery: bool = True,
@@ -321,6 +358,10 @@ class Duck:
         self.floor = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_GEOM, "floor")
         self.feet = (mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_GEOM, "left_foot_collision"),
                      mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_GEOM, "right_foot_collision"))
+        self.ball = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, BALL_BODY)
+        bj = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, BALL_BODY + "_free")
+        self.ball_qadr, self.ball_dadr = m.jnt_qposadr[bj], m.jnt_dofadr[bj]
+        self.kick = None             # per-kick state (see operate_kick)
 
         self.policies: dict[str, Policy] = {}
         self.load_policies(policies or {})
@@ -370,6 +411,8 @@ class Duck:
             if role not in self.policies or self.policies[role].path != path:
                 self.policies[role] = Policy(path)
         self.walk_recovers = any(self.policies["walk"].name.startswith(p) for p in SELF_RECOVERING)
+        # decided here, from the file name: callers may later wrap the policies in plain functions (policy_pack.py)
+        self.jump_clock = "jump" in self.policies and any(self.policies["jump"].name.startswith(p) for p in JUMP_CLOCK_EXPORTS)
 
     def recover_role(self):
         """The policy that gets the duck up after a fall: the stand-up export, else a self-recovering walk, else none."""
@@ -453,7 +496,7 @@ class Duck:
         if self.state == "dead" and key != "enter":
             self.wake()
             return
-        if key in ("s", "space", "r"):
+        if key in ("s", "space", "r", "b"):
             self.anim.cancel(cut=True)          # the user's own command comes first
         if key == "a":
             self.level = max(1, self.level - 1)
@@ -465,9 +508,9 @@ class Duck:
             self.reset()
         elif key == "s":
             self.toggle_sit()
-        elif key in ("space", "r"):
-            role = "jump" if key == "space" else "roulade"
-            what = "jump" if role == "jump" else "front flip"
+        elif key in ("space", "r", "b"):
+            role = dict(space="jump", r="roulade", b="kick")[key]
+            what = dict(jump="jump", roulade="front flip", kick="kick")[role]
             if role not in self.policies:
                 self.say(what + ": no policy in exports/")
             elif self.state in ("stand", "stopping") and not self.down and self.tilt_deg < UPRIGHT_TILT_DEG and self.z > UPRIGHT_Z:
@@ -485,9 +528,29 @@ class Duck:
         self.quiet_since = None
         if role == "jump":
             self.jump = dict(grounded=0, support=False, support_s=0.0, airborne=False, landed=False, air_steps=0,
-                             z0=self.z, rise=0.0, launch=False)
+                             z0=self.z, rise=0.0, launch=False, elapsed=0.0,
+                             clock=self.jump_clock)
         elif role == "roulade":
             self.roll = dict(angle=0.0, peak=0.0)
+        elif role == "kick":
+            self.place_ball()
+            self.kick = dict(peak=0.0, t_contact=None, yaw=yaw_of(self.data.qpos[self.free_qadr + 3:self.free_qadr + 7]))
+
+    def place_ball(self):
+        """The ball where the kick task spawns it: BALL_OFFSET in the trunk's yaw frame, on the floor, at rest."""
+        d = self.data
+        yaw = yaw_of(d.qpos[self.free_qadr + 3:self.free_qadr + 7])
+        c, s = math.cos(yaw), math.sin(yaw)
+        x0, y0 = d.xpos[self.trunk][:2]
+        ox, oy = BALL_OFFSET
+        d.qpos[self.ball_qadr:self.ball_qadr + 7] = [x0 + c * ox - s * oy, y0 + s * ox + c * oy, BALL_RADIUS, 1, 0, 0, 0]
+        d.qvel[self.ball_dadr:self.ball_dadr + 6] = 0
+        mujoco.mj_forward(self.model, d)
+
+    def ball_speed_fwd(self) -> float:
+        """Ball speed along the duck's heading at the kick (m/s)."""
+        v = self.data.qvel[self.ball_dadr:self.ball_dadr + 2]
+        return float(v[0] * math.cos(self.kick["yaw"]) + v[1] * math.sin(self.kick["yaw"]))
 
     def toggle_sit(self):
         if self.state in ("seated", "sit_down"):
@@ -707,7 +770,7 @@ class Duck:
         else:
             self.down_since = None
         fell = self.down_since is not None and t - self.down_since >= FALL_HOLD_S
-        if fell and not self.down and st not in ("jump", "roulade", "recover", "fallen"):
+        if fell and not self.down and st not in self.TRICKS + ("recover", "fallen"):
             self.down = True
             self.falls += 1
             self.sit_pending = False
@@ -721,7 +784,7 @@ class Duck:
                 self.state_to("fallen")
                 self.say("fell · resetting" if self.auto_reset else "fell · no get-up policy in exports/ · ⏎ resets")
             st = self.state
-        if self.down and self.upright and st not in ("recover", "fallen", "jump", "roulade"):
+        if self.down and self.upright and st not in self.TRICKS + ("recover", "fallen"):
             self.down = False
             self.say("back up")
             self.emit("back_up")
@@ -761,6 +824,9 @@ class Duck:
             return
         if st == "roulade":
             self.operate_roulade(upright_for)
+            return
+        if st == "kick":
+            self.operate_kick()
             return
         if st in ("seated", "sit_down"):
             if moving:
@@ -842,7 +908,8 @@ class Duck:
             self.cmd[0] = 1.0 if st in ("sit_down", "seated") else 0.0
 
     def operate_jump(self, upright_for: float):
-        """Space: the jump policy with the training command (``JumpOneShotCommand``): launch flag 1 once both feet have
+        """Space: the jump policy with the training command (``JumpOneShotCommand``): for the real-duck exports
+        (``JUMP_CLOCK_EXPORTS``) the flag is 1 for the first 0.36 s; for the older ones, 1 once both feet have
         been down for 4 control steps, for 0.75 s of support time, until the first touchdown after a flight. Hands back
         to the walk policy once the landing is quiet for 1 s (or at JUMP_MAX_S); on the floor -> the get-up policy."""
         j = self.jump
@@ -864,7 +931,11 @@ class Duck:
                 j["rise"] = max(j["rise"], self.z - j["z0"])
             elif j["air_steps"] >= 1:
                 j["landed"] = True
-        j["launch"] = j["support"] and j["support_s"] <= JUMP_LAUNCH_WINDOW_S and not j["landed"]
+        j["elapsed"] += dt
+        if j["clock"]:      # the duck's clock (training flag_on_s): on for the first 0.36 s, whatever the feet do
+            j["launch"] = j["elapsed"] <= JUMP_FLAG_ON_S + 1e-9
+        else:
+            j["launch"] = j["support"] and j["support_s"] <= JUMP_LAUNCH_WINDOW_S and not j["landed"]
         self.policy_role = "jump"
         self.cmd[:] = 0
         self.cmd[0] = 1.0 if j["launch"] else 0.0
@@ -891,6 +962,23 @@ class Duck:
         if (self.state_time >= ROULADE_MIN_S and upright_for >= RECOVERED_S - 1e-9) or self.state_time >= ROULADE_MAX_S - 1e-9:
             self.end_behavior("front flip · rolled %.0f°" % math.degrees(r["peak"]))
 
+    def operate_kick(self):
+        """B: the kick policy at zero twist from a still stand, the ball placed as in training. The ball's forward speed
+        is tracked for the HUD / bench (the policy is blind to it, as on the duck). Hands back after KICK_S."""
+        k = self.kick
+        k["peak"] = max(k["peak"], self.ball_speed_fwd())
+        self.policy_role = "kick"
+        self.cmd[:] = 0
+        if self.state_time >= KICK_S - 1e-9:
+            text = "kick · ball %.2f m/s" % k["peak"]
+            if self.tilt_deg < FALL_TILT_DEG and self.tilt_deg >= UPRIGHT_TILT_DEG and self.recover_role() is not None:
+                self.emit("jump_ok" if k["peak"] >= 0.5 else "jump_fail")
+                self.kick = None
+                self.start_behavior("recovery")        # the lean the kick ends in: straightened, not a fall
+                self.say(text + " · straightening up")
+            else:
+                self.end_behavior(text)
+
     def end_behavior(self, text: str):
         """A jump / flip is over: back to the walk policy if on its feet, else the get-up policy (the fall is counted)."""
         by_anim, self.behavior_by_anim = self.behavior_by_anim, False
@@ -898,7 +986,10 @@ class Duck:
             self.state_to("stand")
             self.say(text)
             if not by_anim:                               # a trick the user asked for: the duck has an opinion about it
-                self.emit("flip_ok" if self.roll is not None else ("jump_ok" if self.jump and self.jump["airborne"] else "jump_fail"))
+                if self.kick is not None:
+                    self.emit("jump_ok" if self.kick["peak"] >= 0.5 else "jump_fail")      # yes / mmh, as for a jump
+                else:
+                    self.emit("flip_ok" if self.roll is not None else ("jump_ok" if self.jump and self.jump["airborne"] else "jump_fail"))
         else:
             self.falls += 1
             self.down = True
@@ -911,6 +1002,7 @@ class Duck:
                 self.say(text + " · fell · getting up")
         self.jump = None
         self.roll = None
+        self.kick = None
 
     def slew(self, vx, vy, yaw, vx_lo=None):
         dt = self.control_dt
@@ -937,7 +1029,7 @@ class Duck:
                     jaw=dict(geoms=jaw, pivot=JAW_PIVOT, axis=JAW_AXIS, open_rad=JAW_OPEN_RAD), anims=self.anim.manifest(),
                     joints=JOINTS, default_pose=DEFAULT_POSE.tolist(), control_dt=self.control_dt,
                     physics_dt=float(m.opt.timestep), lag=self.servos.lag, vin=self.servos.vin0,
-                    sag_gain=self.servos.sag_gain, levels=LEVELS)
+                    sag_gain=self.servos.sag_gain, levels=LEVELS, ball=dict(body=int(self.ball), radius=BALL_RADIUS))
 
     def mesh(self, i: int, crease_deg: float = 40.0) -> bytes:
         """Mesh ``i`` as [uint32 nv, uint32 ni][float32 xyz * nv][float32 normal * nv][uint32 idx * ni], with
@@ -1001,6 +1093,8 @@ class Duck:
             trick = dict(kind="jump", launch=bool(j["launch"]), airborne=bool(j["airborne"]), landed=bool(j["landed"]), rise_mm=round(j["rise"] * 1000, 1))
         elif self.state == "roulade" and self.roll is not None:
             trick = dict(kind="roulade", deg=round(math.degrees(self.roll["angle"]), 0), peak_deg=round(math.degrees(self.roll["peak"]), 0))
+        elif self.state == "kick" and self.kick is not None:
+            trick = dict(kind="kick", ball=round(self.ball_speed_fwd(), 2), peak=round(self.kick["peak"], 2))
         return dict(
             **self.anim.snapshot(),
             t=round(float(d.time - self.sim_t0), 3),

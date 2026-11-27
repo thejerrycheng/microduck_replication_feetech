@@ -72,6 +72,7 @@ BANK = HOME + "/sounds"
 CALIBRATION = ("/data" if os.path.ismount("/data") else HOME) + "/calibration.json"
 ANIM = ("/data" if os.path.ismount("/data") else HOME) + "/animations"     # the emotion clips (anim_pack.py)
 POLICIES = ("/data" if os.path.ismount("/data") else HOME) + "/policies.npz"     # the policy pack (policy_pack.py)
+RUNS = ("/data" if os.path.ismount("/data") else HOME) + "/runs"     # every policy run, tick by tick (run_log.py)
 RUNTIME = ("robotd", "tofd")        # the duck's own services that hold the servo bus and the ToF ranger
 UART = "/dev/ttyS2"                 # the servo bus on a Radxa Zero 3W (UART2 on the 40-pin header)
 
@@ -199,14 +200,22 @@ class Player:
     between. A joint's target is its default angle plus the offset, kept inside the calibrated joint range, and
     becomes ticks through the calibration (zero and direction): so a duck that is not calibrated does not play.
     The head eases from wherever it is to the clip's first pose (0.5 s), plays, eases back to the default pose
-    (0.4 s) and stays held there; `stop` lets it go limp."""
+    (0.4 s) and stays held there; `stop` lets it go limp.
+
+    While the policies drive the duck (Drive, live) a clip still plays at once: it is mixed in on top (see `_run`)."""
     IDS = (30, 31, 32, 33, 34)
     DEFAULT = (0.3491, 0.3491, 0.0, 0.0, 0.0)      # rad at rest: neck and head pitch as the policies' default pose
     BEAK = 0.42                                    # rad, fully open (Duck Live's JAW_OPEN_RAD)
-    LO, HI = (-0.80, -0.75, -1.50, -0.42), (0.45, 1.00, 1.50, 0.42)      # head offsets, Duck Live's seated limits
+    # No head limits of its own: every head angle is bounded only by the joint ranges of the model the policies were
+    # trained on (Pollen's MicroDuck USD in Isaac Lab = robot_groundcontact.xml = calibration.json min_rad / max_rad:
+    # neck_pitch -90..+60 deg, head_pitch -90..+90, head_yaw -170..+170, head_roll -25..+25). `ticks` and the runner's
+    # clip apply them. (Until 2026-11-20 the clips were also held to Duck Live's offset limits, head_pitch -0.75 rad
+    # behind its 20 deg default: about -23 deg, a quarter of the joint's real travel.)
 
     def __init__(self, duck):
         self.duck, self.now, self.halt, self.lock, self.lib, self.stamp = duck, None, threading.Event(), threading.Lock(), None, None
+        self.mix = None                            # while the policies drive: (weight 0..1, the four head angles [rad])
+        self.twist = None                          # ... and the clip's walk command (vx, vy, yaw), duck_pilot.ClipBody
 
     def library(self):
         """{pack, clips} as the pack on the card says; read again when the file changes."""
@@ -261,7 +270,8 @@ class Player:
         self._tx(0xFE, 0x83, [addr, n, *[b for sid, v in rows.items() for b in (sid, *v)]])
 
     def _goto(self, ticks):
-        self._sync(42, {sid: bytes([t & 0xFF, t >> 8, 0, 0, 0, 0]) for sid, t in zip(self.IDS, ticks)})
+        sm = lambda t: abs(t) | (0x8000 if t < 0 else 0)          # sign-magnitude, as the HD1910 takes it
+        self._sync(42, {sid: bytes([sm(t) & 0xFF, sm(t) >> 8, 0, 0, 0, 0]) for sid, t in zip(self.IDS, ticks)})
 
     def _present(self):
         out = []
@@ -269,7 +279,8 @@ class Player:
             r = self._tx(sid, 2, [56, 2], 8) or self._tx(sid, 2, [56, 2], 8)
             if r is None:
                 raise OSError(f"servo {sid} does not answer")
-            out.append(r[5] | r[6] << 8)
+            v = r[5] | r[6] << 8
+            out.append(-(v & 0x7FFF) if v & 0x8000 else v)
         return out
 
     def play(self, name):
@@ -284,8 +295,6 @@ class Player:
         cal = {j["id"]: j for j in (self.duck.calibration() or {}).get("joints", [])}
         if any(i not in cal for i in self.IDS):
             raise OSError("calibrate first: the head's zero is not known")
-        if self.duck.drive.info and self.duck.drive.info["live"] and not self.duck.drive.info.get("ended"):
-            raise OSError("the policies are driving the duck: stop them first")
         self._present()                            # the head servos answer, or this raises before anything moves
         self.stop(release=False)
         self.halt.clear()
@@ -293,23 +302,31 @@ class Player:
         threading.Thread(target=self._run, args=(clip, [cal[i] for i in self.IDS], lib["rate"], self.now), daemon=True).start()
         return self.now
 
+    def driven(self):
+        """The policies have the joints right now (duck_agent.Drive, live)."""
+        d = getattr(self.duck, "drive", None)
+        return bool(d and d.info and d.info["live"] and not d.info.get("ended"))
+
     def stop(self, release=True):
         """End the clip now. `release`: also let the head go limp."""
         self.halt.set()
         with self.lock:                            # waits for the clip's thread to let go
-            self.now = None
-            if release and self.duck.mode() == "setup":
+            self.now = self.mix = None
+            if release and self.duck.mode() == "setup" and not self.driven():      # under the policies the head is theirs
                 try:
                     self._sync(40, {sid: bytes([0]) for sid in self.IDS})
                 except OSError:
                     pass
 
     def _run(self, clip, cal, rate, mine):
-        ticks = lambda q: [min(4095, max(0, round(j["zero_raw"] + j["direction"] * min(j["max_rad"], max(j["min_rad"], a)) * 4096 / (2 * math.pi))))
-                           for j, a in zip(cal, q)]
+        # In the turn each servo is counting in (the HD1910 counts past one turn; see Drive._run): set from the
+        # first reading below, so a head servo read a turn away is never sent round a whole turn.
+        turns = [0] * len(cal)
+        ticks = lambda q: [round(j["zero_raw"] + n + j["direction"] * min(j["max_rad"], max(j["min_rad"], a)) * 4096 / (2 * math.pi))
+                           for j, a, n in zip(cal, q, turns)]
 
         def pose(row):                             # a keyframe -> the five joint angles [rad]
-            head = [min(hi, max(lo, v / 1000)) for v, lo, hi in zip(row[1:5], self.LO, self.HI)]
+            head = [v / 1000 for v in row[1:5]]                    # offsets; the model's joint ranges bound them
             return [d + o for d, o in zip(self.DEFAULT, head + [row[5] / 100 * self.BEAK])]
 
         keys, sound = clip["k"], None
@@ -324,13 +341,52 @@ class Player:
         with self.lock:
             try:
                 start = self._present()
-                self._goto(start)
-                self._sync(40, {sid: bytes([1]) for sid in self.IDS})
+                turns[:] = [round((p - j["zero_raw"]) / 4096) * 4096 for p, j in zip(start, cal)]
                 first, rest, T = ticks(at(0)), ticks(list(self.DEFAULT)), clip["T"]
-                t0 = time.monotonic()
+                over = self.driven()
+                if not over:
+                    self._goto(start)
+                    self._sync(40, {sid: bytes([1]) for sid in self.IDS})
+                else:                              # only the beak is ours to switch on
+                    self._sync(42, {34: (lambda v: bytes([v & 0xFF, v >> 8, 0, 0, 0, 0]))(abs(start[4]) | (0x8000 if start[4] < 0 else 0))})
+                    self._sync(40, {34: bytes([1])})
+                import duck_pilot
+                body = duck_pilot.ClipBody(clip) if over else None
+                t0 = prev = time.monotonic()
                 while not self.halt.is_set():
-                    t = time.monotonic() - t0 - 0.5                       # < 0: easing in; > T: easing out
+                    now = time.monotonic()
+                    if body is not None and body.waiting:
+                        t0 += now - prev                                   # a jump / flip / stand-up: the clip waits
+                    prev = now
+                    t = now - t0 - 0.5                                     # < 0: easing in; > T: easing out
                     if t >= T + 0.4:
+                        break
+                    if over and self.driven():
+                        # The policies are driving. The clip jumps in on top, as in Duck Live: the head's four
+                        # joints are handed to the runner as (weight, angles) and it writes them with its own
+                        # packet, the policy balancing against them; the clip's legs (ClipBody: its walk command
+                        # and its sit / jump / flip) go to the pilot, so the whole duck moves; the beak and the
+                        # sound are played from here. The runner keeps the head inside the model's joint ranges.
+                        pilot = self.duck.drive.pilot
+                        for key in body.step(t, 0.02, pilot.state if pilot else "stand", pilot.still() if pilot else False):
+                            self.duck.drive.press(key)
+                        self.twist = body.twist
+                        if body.done:
+                            print("animation:", body.note, flush=True)
+                            break
+                        w = ease((t + 0.5) / 0.5) if t < 0 else 1.0 if t <= T else 1.0 - ease((t - T) / 0.4)
+                        if body.waiting:
+                            w = 0.0                                        # the skill's policy has the head too
+                        q = at(min(T, max(0.0, t)) * 1000)
+                        head = list(q[:4])
+                        self.mix = (w, head)
+                        self._sync(42, {34: (lambda v: bytes([v & 0xFF, v >> 8, 0, 0, 0, 0]))((lambda t: abs(t) | (0x8000 if t < 0 else 0))(ticks(q)[4] if 0 <= t <= T else rest[4]))})
+                        if sound is None and clip["snd"] and t >= clip["snd_at"]:
+                            sound = self._sound(random.choice(clip["snd"]), rate)
+                        mine["t"] = round(min(T, max(0.0, t)), 2)
+                        time.sleep(max(0.001, 0.02 - (time.monotonic() - t0) % 0.02))
+                        continue
+                    if over:                       # the policies stopped mid-clip: the clip ends with them
                         break
                     if t < 0:
                         w = ease((t + 0.5) / 0.5)
@@ -348,6 +404,7 @@ class Player:
             except OSError as e:
                 print("animation:", e, flush=True)
             finally:
+                self.mix = self.twist = None
                 if sound and self.halt.is_set():
                     sound.kill()
                 if self.now is mine:
@@ -386,11 +443,21 @@ class Drive:
     `stop` ends it and lets every joint go limp. A driver who stops sending (0.5 s) counts as sticks released; ten
     control ticks in a row without a full reading from the joints or the IMU stop a live run.
 
+    Every run, live or dry, is recorded tick by tick in RUNS (run_log.py: what the policy was given and answered,
+    what was written, each servo's position, speed, load, current, temperature and voltage, the IMU, the loop's
+    timing). The servos' load, current, temperature and voltage take a second read of the bus; it is made after the
+    goals are written, so the policy gets its reading no later than without the log, and it is skipped on a tick
+    that is already running long.
+
     Units: a joint angle is (ticks - zero) * 2 pi / 4096 * direction from the calibration, a speed is the servo's
     count * 50 ticks/s the same way; targets go back to ticks through the same numbers and are not clipped to the
-    joint's range (the policies stand up by asking past it; the simulator does not clip either)."""
+    joint's range for the legs (the policies stand up by asking past it; the simulator does not clip either). The neck
+    and head are held to the model's range, where the simulated joints stop."""
     IDS = (20, 21, 22, 23, 24, 30, 31, 32, 33, 10, 11, 12, 13, 14)        # duck_pilot.JOINTS order
+    NECK_PAST = math.radians(3)                                           # how far past its range the simulated neck is pushed
     BLEND = 2.0                                                           # s from the pose it starts in to the policy's
+    ALL = IDS + (34,)                                                     # the log's servo order: the joints, then the beak
+    EXTRAS_BY = 0.014                                                     # s into a tick after which the log's read is skipped
 
     def __init__(self, duck):
         self.duck, self.halt, self.lock, self.pilot, self.info = duck, threading.Event(), threading.Lock(), None, None
@@ -448,7 +515,7 @@ class Drive:
         self.stick, self.stick_t = (float(x), float(y), float(w), bool(run)), time.monotonic()
 
     def press(self, key):
-        if key not in ("sit", "jump", "flip", "faster", "slower"):
+        if key not in ("sit", "jump", "flip", "kick", "faster", "slower"):
             raise OSError(f"no such key: {key}")
         self.keys.append(key)
 
@@ -471,12 +538,56 @@ class Drive:
                if r[i:i + 2] == b"\xff\xff" and (sum(r[i + 2:i + 10]) & 0xFF) == 0xFF}
         return out if all(i in out for i in self.IDS) else None
 
+    def _block(self, addr, n, timeout=0.004):
+        """{id: the n bytes from register `addr`} for the servos of ALL that answered one sync read."""
+        body = [0xFE, len(self.ALL) + 4, 0x82, addr, n, *self.ALL]
+        r = self.duck.bus(bytes([0xFF, 0xFF, *body, ~sum(body) & 0xFF]), (n + 6) * len(self.ALL), timeout)
+        return {r[i + 2]: r[i + 5:i + 5 + n] for i in range(0, len(r) - n - 5, n + 6)
+                if r[i:i + 2] == b"\xff\xff" and r[i + 3] == n + 2 and (sum(r[i + 2:i + n + 6]) & 0xFF) == 0xFF}
+
+    def _extras(self):
+        """Per servo of ALL (NaN where one did not answer): load -1000..1000, current counts, temperature deg C,
+        supply V, status byte. Registers 60-70 in one sync read."""
+        got, nan = self._block(60, 11), float("nan")
+        sm = lambda v, bit: -(v & ((1 << bit) - 1)) if v & (1 << bit) else v
+        rows = [(sm(b[0] | b[1] << 8, 10), sm(b[9] | b[10] << 8, 15), b[3], b[2] / 10, b[5]) if b else (nan,) * 5
+                for b in (got.get(i) for i in self.ALL)]
+        return list(zip(*rows))
+
+    def _recorder(self, live, cal):
+        """Open this run's log, or None (and why in the status) if it cannot be: a run never waits on its log."""
+        import duck_pilot, run_log
+        try:
+            gains = {i: list(b) for i, b in self._block(50, 2, 0.01).items()}        # P, D as the servos hold them now
+        except OSError:
+            gains = {}
+        names = {j["id"]: j.get("name") for j in (self.duck.calibration() or {}).get("joints", [])}
+        return run_log.Recorder(RUNS, dict(
+            live=live, host=os.uname().nodename, pack=self.pack(), dt=duck_pilot.DT, ids=list(self.IDS),
+            joints=list(duck_pilot.JOINTS), servo_ids=list(self.ALL), servos=[*duck_pilot.JOINTS, "mouth"],
+            default_pose=[float(v) for v in duck_pilot.DEFAULT_POSE], calibration=self.duck.calibration(),
+            names=names, gains_p_d=gains, blend_s=self.BLEND))
+
     def _run(self, live, cal, info):
         import numpy as np
         import duck_pilot, policy_net
         k = np.array([j["direction"] * 2 * math.pi / 4096 for j in cal])
         zero = np.array([j["zero_raw"] for j in cal], dtype=float)
+        # The policies were trained on a model whose joints stop at their limits whatever is asked: getting up, the
+        # walk policy asks the neck for -125 to -135 deg and the simulated neck stops at -93 (its range is -90..60).
+        # The real neck has no such stop at the same place, so its targets, and the head's, are held to the model's
+        # range (plus NECK_PAST, what the simulated joint gives under load). The legs are deliberately not: the
+        # policies stand up by asking past the range, and holding those back takes the force away.
+        lo = np.array([j["min_rad"] for j in cal]) - self.NECK_PAST
+        hi = np.array([j["max_rad"] for j in cal]) + self.NECK_PAST
         word = lambda t: (lambda w: bytes([w & 0xFF, w >> 8, 0, 0, 0, 0]))(abs(t) | (0x8000 if t < 0 else 0))
+        # The HD1910 counts on past one turn (it reads e.g. 4940 or 6412, not 0-4095), so a joint can be read a whole
+        # turn away from its zero. 2026-11-20: the left hip yaw was read at -196.6 deg, the policies saw that, and its
+        # goal (written in the frame of the turn it should have been in) sent the servo the long way round into its
+        # stop at full load. Every joint's range is within +-180 deg of its zero, so the reading is taken in the turn
+        # nearest the zero (`turn`, from each reading) and every goal is written in the servo's own turn.
+        turn_of = lambda p: np.round((p - zero) / 4096.0) * 4096.0
+        rec, pilot, keymap = None, None, {}
         with self.lock:
             try:
                 pilot = self.pilot = duck_pilot.Pilot(policy_net.load(POLICIES))
@@ -485,8 +596,14 @@ class Drive:
                 if live:
                     self._sync(42, {sid: word(int(t)) for sid, t in zip(self.IDS, start)})
                     self._sync(40, {sid: bytes([1]) for sid in self.IDS})
+                try:
+                    rec, keymap = self._recorder(live, cal), duck_pilot_keys()
+                    info["log"] = rec.name
+                except Exception as e:                                   # no card, no room, no module: drive on
+                    info["log_error"] = str(e)
                 t0 = nxt = time.monotonic()
                 gyro, quat, pos, vel, bad = np.zeros(3), (1.0, 0.0, 0.0, 0.0), start.copy(), np.zeros(14), 0
+                raw, sens, late, cpu = (float("nan"),) * 4, (float("nan"),) * 3, 0.0, (float("nan"),) * 2
                 while not self.halt.is_set():
                     t = time.monotonic()
                     got, imu = self._read(), self.duck.imu()
@@ -499,13 +616,24 @@ class Drive:
                         bad = 0
                         pos = np.array([got[i][0] for i in self.IDS], dtype=float)
                         vel = np.array([got[i][1] for i in self.IDS], dtype=float)
-                        gyro, quat = np.radians(imu["rate"]), imu["quat"]
+                        gyro, quat, raw, sens = np.radians(imu["rate"]), imu["quat"], imu["raw"], imu["gyro"]
                     x, y, w, run = self.stick if time.monotonic() - self.stick_t < 0.5 else (0.0, 0.0, 0.0, False)
                     pilot.drive(x, y, w, run)
+                    pilot.twist = self.duck.player.twist                 # a clip's wiggle / side-step, if one plays
+                    pressed = 0
                     while self.keys:
-                        pilot.press(self.keys.pop(0))
-                    target = pilot.tick(gyro, quat, (pos - zero) * k, vel * 50 * k)
-                    ticks = np.clip(np.round(zero + target / k), -32767, 32767)
+                        key = self.keys.pop(0)
+                        pressed |= keymap.get(key, 0)
+                        pilot.press(key)
+                    turn = turn_of(pos)
+                    target = pilot.tick(gyro, quat, (pos - turn - zero) * k, vel * 50 * k)
+                    mix = self.duck.player.mix                           # a clip playing on top: it has the head
+                    if mix and pilot.state in ("stand", "walk", "stopping", "seated", "run", "sprint"):
+                        target = target.copy()
+                        target[5:9] = (1 - mix[0]) * target[5:9] + mix[0] * np.array(mix[1])
+                    target[5:9] = np.clip(target[5:9], lo[5:9], hi[5:9])       # neck and head: the model's own stops
+                    ticks = np.clip(np.round(zero + turn + target / k), -32767, 32767)
+                    u = 1.0
                     if live:
                         u = min(1.0, (t - t0) / self.BLEND)                    # the first seconds: from where it was
                         u = u * u * (3 - 2 * u)
@@ -513,12 +641,38 @@ class Drive:
                         self._sync(42, {sid: word(int(v)) for sid, v in zip(self.IDS, ticks)})
                     n = info["ticks"] = info["ticks"] + 1
                     ms = (time.monotonic() - t) * 1e3
+                    if rec and rec.error is None:
+                        try:
+                            if n % 50 == 1:
+                                cpu = (cpu_temp(), os.getloadavg()[0])
+                            for name, value in (
+                                    ("t", t - t0), ("ms", ms), ("late", late), ("missed", float(bad > 0)),
+                                    ("state", rec.meta["states"].index(pilot.state) if pilot.state in rec.meta["states"] else -1),
+                                    ("role", rec.meta["roles"].index(pilot.role) if pilot.role in rec.meta["roles"] else -1),
+                                    ("level", pilot.level), ("tilt", pilot.tilt), ("falls", pilot.falls), ("blend", u),
+                                    ("stick", (x, y, w, float(run))), ("keys", pressed), ("cmd", pilot.v),
+                                    ("clip", mix[0] if mix else 0.0), ("quat", quat), ("quat_raw", raw), ("gyro", sens),
+                                    ("rate", np.degrees(gyro)), ("obs", pilot.obs), ("action", pilot.last),
+                                    ("target", target), ("goal", ticks), ("pos", pos), ("vel", vel), ("cpu_temp", cpu[0]),
+                                    ("cpu_load", cpu[1])):
+                                rec.put(name, value)
+                            if time.monotonic() - t < self.EXTRAS_BY:    # the servos' own measurements, after the write
+                                for name, value in zip(("load", "current", "temp", "volt", "status"), self._extras()):
+                                    rec.put(name, value)
+                            rec.commit()
+                        except Exception as e:                           # the log must never stop a run
+                            rec.error = info["log_error"] = str(e)
+                    elif rec and "log_error" not in info:
+                        info["log_error"] = rec.error
                     info["ms"] = round(info["ms"] + (ms - info["ms"]) / min(n, 100), 2)
                     info["hz"] = round(n / max(1e-3, time.monotonic() - t0), 1)
                     if n % 5 == 0:                                       # for the page: the largest step asked of a joint
                         info["off_deg"] = round(float(np.degrees(np.abs((ticks - pos) * k)).max()), 1)
+                        info["ask_deg"] = [round(float(v), 1) for v in np.degrees(target)]      # per joint, the policies' order:
+                        info["at_deg"] = [round(float(v), 1) for v in np.degrees((pos - turn - zero) * k)]  # asked, and where it is
                     nxt += duck_pilot.DT
                     wait = nxt - time.monotonic()
+                    late = float(wait < 0)
                     if wait < 0:
                         info["late"] += 1
                         nxt = time.monotonic()
@@ -534,6 +688,23 @@ class Drive:
                     except OSError:
                         pass
                 info["ended"] = True
+                if rec:
+                    rec.close(ticks=info["ticks"], late=info["late"], missed=info["missed"], error=info.get("error"),
+                              falls=getattr(pilot, "falls", None), note=getattr(pilot, "note", None))
+
+
+def cpu_temp():
+    """The computer's temperature in deg C, NaN where there is no such sensor."""
+    try:
+        return int(open("/sys/class/thermal/thermal_zone0/temp").read()) / 1000
+    except (OSError, ValueError):
+        return float("nan")
+
+
+def duck_pilot_keys():
+    """{key: its bit in the run log's `keys` column}."""
+    import run_log
+    return {k: 1 << i for i, k in enumerate(run_log.KEYS)}
 
 
 class Sensors:

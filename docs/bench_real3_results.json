@@ -1,0 +1,74 @@
+{
+ "date": "2026-11-20 11:15",
+ "quick": false,
+ "sitstand": {
+  "sitstand 5499": {
+   "policy": "sitstand_fast_hd1910_iter5499.onnx",
+   "sit_fell": 0,
+   "sit_trials": 6,
+   "standing_after": 6,
+   "stand_trials": 6,
+   "stop_falls": 0,
+   "stop_trials": 60,
+   "head_tilt_seated_deg": [
+    86.70666996480334,
+    86.51456334393987,
+    86.66786490229498,
+    86.18891085021119,
+    86.71414651763801,
+    86.3777292520889,
+    86.72999878240746,
+    86.26591155633456,
+    86.78146643999492,
+    86.3867359928337
+   ]
+  },
+  "sitstand 8497 level head": {
+   "policy": "sitstand_fast_levelhead_hd1910_iter8497.onnx",
+   "sit_fell": 0,
+   "sit_trials": 6,
+   "standing_after": 6,
+   "stand_trials": 6,
+   "stop_falls": 0,
+   "stop_trials": 60,
+   "head_tilt_seated_deg": [
+    86.44002525415814,
+    86.61083502139229,
+    86.75463632010015,
+    86.05082387499345,
+    86.3023279519393,
+    86.57608744005358,
+    85.99020375659019,
+    86.33685208601233,
+    84.7467924221667,
+    86.76446001662296
+   ]
+  }
+ },
+ "flip": {
+  "flip r2 13249": {
+   "policy": "roulade_head_real2_hd1910_iter13249.onnx",
+   "trials": 12,
+   "completed": 12,
+   "standing": 12,
+   "fell": 11,
+   "peak_deg": {
+    "mean": 385.01984214305367,
+    "min": 380.55889191529354,
+    "max": 388.58268649182605
+   }
+  },
+  "flip r6 14000": {
+   "policy": "roulade_head_real3_hd1910_iter14000.onnx",
+   "trials": 12,
+   "completed": 12,
+   "standing": 12,
+   "fell": 0,
+   "peak_deg": {
+    "mean": 383.60890087749004,
+    "min": 376.8531061365379,
+    "max": 386.5305312217136
+   }
+  }
+ }
+}

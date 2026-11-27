@@ -69,6 +69,7 @@ joint ID keeps ±45° about the pose where torque came on.
 | `web/index.html` | the page |
 | `web/duck.bin` | 3-D duck, baked by `bake_duck.py` from `app/assets/microduck` |
 | `duck_agent.py` | runs on the duck's computer; serves its sensors (and a mock of them) |
+| `run_log.py`, `test_run_log.py` | the record of every policy run, kept on the duck; pull, summary, plot, CSV and replay on the Mac; its test |
 | `duck_voice.py` | the duck's voice: Pollen's vocalisation synth, ported; renders the sound bank |
 | `tof/` | ST's VL53L5CX / L8CX driver (BSD-3, via Pollen) and `main.c`, built on the duck |
 | `sd_flash.sh`, `sd_wifi.sh` | write an image to the microSD card; put Wi-Fi (and USB networking) on it |
@@ -131,8 +132,17 @@ unplugged and replugged, and the servos and IMU (servo power was off).
 ## Driving: the policies on the duck
 
 The seven policies Duck Live drives with (walk and stand, run, sprint, sit and stand, jump, front flip, get up) run on
-the duck itself, from the **Drive** panel in the left dock or the keyboard while it is open (arrows, Shift = run,
-S sit, Space jump, R flip, A / D speed).
+the duck itself. The page has two halves, switched in the top bar as on the phone app:
+
+- **Setup**: the joints, calibration, gains and sensors.
+- **Control**: the phone app's pad at the bottom of the page. A row of animations to scroll through, power and the
+  speed slider (1 to 5), the stick (forward / back, sidestep), sit, run, jump, flip, and the turn slider; the chip under
+  the bar shows what the pilot is doing, the speed it commands and the loop rate. Keys: arrows, Shift = run, S sit,
+  Space jump, R flip, A / D speed. `http://127.0.0.1:8770/#control` opens straight into it.
+
+The switch only changes what is on screen. Power starts the policies (pressed twice: the legs move) and, pressed twice
+again, sits the duck down and lets every joint go limp; Shift-click is a dry run (it reads and computes, nothing
+moves). Going back to Setup with the policies on does the same sit-and-let-go first.
 
 | piece | file | what it is |
 |---|---|---|
@@ -160,15 +170,66 @@ Not yet done on the real duck: a live run. Open before it: the jump is timed by 
 the simulator's touchdown) because the duck has no foot contacts; the IMU's axes against the model's trunk frame and
 the servo gains (the policies were trained at P 5) are not verified; the stand-up policy was not reached in the tests.
 
+## Run log
+
+Every policy run, live or dry, is recorded on the duck tick by tick (`run_log.py`, written by `duck_agent.Drive`):
+`/data/runs/run_NNNN_<UTC time>.f32` (one row of 241 float32 per 20 ms tick, appended once a second by a
+thread of its own) and `.json` (the columns, the calibration, the servos' P and D, the pack's SHA-256, how the run
+ended). A run cut by a power loss keeps its rows up to the last second and has no end record.
+
+| in a row | columns |
+|---|---|
+| the policy | `obs` (the 61 numbers given to the network), `action` (its 14 outputs), `role` and `state`, `cmd`, `target` (rad, after the head mix and neck limit), `goal` (ticks written; in a dry run, what would have been) |
+| the joints | `pos` (ticks), `vel` (counts) as read for the policy; per servo with the beak as the 15th: `load` (-1000..1000, 0.1 % of stall: the servo's torque measure), `current` (counts), `temp` (deg C), `volt` (V), `status` |
+| the IMU | `quat` (body, calibrated), `quat_raw` (the chip's), `gyro` (sensor axes) and `rate` (body axes), deg/s |
+| the battery | `volt`; `run_log.battery` gives percent of charge from its median (low under load, as in Battery above) |
+| the loop | `t`, `ms`, `late`, `missed`, `blend`, `stick`, `keys`, `clip`, `level`, `tilt`, `falls`, `cpu_temp`, `cpu_load` |
+
+Load, current, temperature and voltage need a second bus read (registers 60-70 of the 15 servos, 255 reply bytes,
+about 2.6 ms at 1 Mbit). It is made after the goals are written, so the policy's reading and its write are no later
+than without the log, and it is skipped (NaN in the row) on a tick already past 14 ms. The log never stops a run: on
+any error it stops recording and the status says why (`log_error`). The folder is kept under 500 MB
+(173.5 MB per hour of driving), the oldest runs deleted first.
+
+```bash
+~/.venvs/microduck_live/bin/python firmware/run_log.py pull      # new runs -> logs/duck_runs/ (not in git)
+~/.venvs/microduck_live/bin/python firmware/run_log.py list
+~/.venvs/microduck_live/bin/python firmware/run_log.py show      # the newest run: rate, falls, tracking error, load, temperature, battery
+~/.venvs/microduck_live/bin/python firmware/run_log.py plot      # docs/figures/run_<name>.pdf
+~/.venvs/microduck_live/bin/python firmware/run_log.py csv
+~/.venvs/microduck_live/bin/python firmware/run_log.py replay    # logged obs through the pack: the logged actions?
+```
+
+`run_log.load(path)` gives the columns as arrays (`run["obs"]`, `run["load"]`, ...) and the header as `run.meta`.
+
+Measured with `test_run_log.py` on 2026-11-22 (`docs/run_log_results.json`, `docs/figures/run_log_test.pdf`): the real
+drive loop, pilot and pack against a simulated servo bus on the Mac, 6 s each, dry, live, and live with the
+beak's servo silent. In all three: one row per tick (315, 313, 314 rows), the logged
+observation through the pack gives the logged action exactly (worst difference 0e+00 rad), the joint angles
+in `obs` are the logged ticks through the calibration to 1e-07 rad, the goals are the logged targets to
+0.50 tick (rounding), load, current and temperature are the bus's own, the silent servo's columns are
+NaN, and the key press and the walk are in the log. With a log folder that cannot be made the run went on
+(50 ticks in 1 s) and reported why. Filling a row costs 18 us on the Mac.
+
+Not yet measured: anything on the real duck. The cost of the second bus read on its loop (expected about +2.6 ms
+on a 10.7 ms tick, outside the read-to-write path) and how often it is skipped are the first things to read from
+the first real run (`show`: `tick_ms_mean`, `late_pct`, `extras_read_pct`). The simulated bus has no physics, so
+the figure's joint traces mean nothing about the duck. The pack holds no export names, so a run identifies its
+policies by the pack's SHA-256 only. The current's scale is not published by Feetech (counts, as elsewhere here).
+
 ## Animations
 
 The 27 emotion clips of Duck Live (`app/animations`: Pollen's 14 and the 13 originals) play on the real duck from the
-**Animations** panel in the left dock. The duck plays them by itself: the bridge (`duck_agent.Player`) runs the clip on
+row of animations at the top of the **Control** pad. The duck plays them by itself: the bridge (`duck_agent.Player`) runs the clip on
 a 50 Hz thread, writing the head's four joints and the beak (servos 30-34) and playing the sound, so it is the same
 from the Mac, from the phone's server, or with nobody connected. The legs are never written: they stay limp or held.
 Seven clips also walk, jump, flip or sit in the simulator (orange dot); here they play their head, beak and sound
-only, until the policies run on the duck. **Relax head** stops a clip and lets the head go limp. A clip needs
-Setup mode and a calibrated duck.
+only. Pressing the clip that is playing stops it and lets the head go limp. A clip needs a calibrated duck.
+
+A clip plays at once whether or not the policies are driving (Control). In Setup the bridge moves the head itself.
+Under the policies the clip jumps in on top, as in Duck Live: the legs stay with the policy, which balances against
+the moving head; the head's four joints are mixed into the runner's own targets (eased in over 0.5 s and out over
+0.4 s, offsets kept to Duck Live's standing limits) and the beak and sound are played beside it.
 
 The clips live on the duck, on its always-writable partition (`/data/animations`), so they survive power cuts and
 the read-only lock. `anim_pack.py` builds the pack and a Mac studio sends it when it connects, only if the duck's

@@ -1,9 +1,10 @@
 {
- "when": "2026-11-18 10:42",
+ "when": "2026-11-20 06:58",
  "trials": 10,
- "falls_total": 2,
- "clean_trials": 8,
+ "falls_total": 11,
+ "clean_trials": 2,
  "flips_upright": 10,
+ "kicks_upright": 10,
  "commanded": {
   "walk_v": 0.4,
   "run_v": 0.7,
@@ -11,37 +12,47 @@
  },
  "walk_v": {
   "mean": 0.423,
-  "min": 0.417,
+  "min": 0.415,
   "max": 0.43
  },
  "run_v": {
-  "mean": 0.62,
-  "min": 0.6,
-  "max": 0.635
+  "mean": 0.621,
+  "min": 0.609,
+  "max": 0.639
  },
  "sprint_v": {
-  "mean": 1.334,
-  "min": 1.286,
-  "max": 1.367
+  "mean": 0.854,
+  "min": 0.42,
+  "max": 1.113
  },
  "seated_z": {
-  "mean": 0.062,
-  "min": 0.062,
-  "max": 0.062
+  "mean": 0.06,
+  "min": 0.06,
+  "max": 0.06
  },
  "stand_z": {
-  "mean": 0.117,
+  "mean": 0.116,
   "min": 0.116,
-  "max": 0.118
+  "max": 0.117
  },
  "jump_rise": {
-  "mean": 0.026,
-  "min": 0.024,
-  "max": 0.028
+  "mean": 0.01,
+  "min": 0.008,
+  "max": 0.014
  },
  "flip_peak_tilt": {
-  "mean": 177.751,
-  "min": 176.706,
-  "max": 179.247
+  "mean": 176.102,
+  "min": 173.354,
+  "max": 178.122
+ },
+ "kick_ball": {
+  "mean": 1.173,
+  "min": 1.138,
+  "max": 1.204
+ },
+ "kick_peak_tilt": {
+  "mean": 50.09,
+  "min": 38.059,
+  "max": 59.542
  }
 }

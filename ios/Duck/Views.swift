@@ -568,7 +568,7 @@ struct Dock: View {
 let STATES: [String: (String, Color)] = [
     "stand": ("Standing", .green), "walk": ("Walking", .blue), "run": ("Running", .orange), "sprint": ("Sprinting", .orange),
     "stopping": ("Stopping", .teal), "sit_down": ("Sitting down", .orange), "seated": ("Seated", .orange), "stand_up": ("Standing up", .orange),
-    "jump": ("Jump", .pink), "roulade": ("Front flip", .pink), "flip": ("Front flip", .pink), "recover": ("Getting up", .pink), "fallen": ("Fell", .red), "dead": ("Playing dead", .gray)]
+    "jump": ("Jump", .pink), "roulade": ("Front flip", .pink), "flip": ("Front flip", .pink), "kick": ("Kick", .pink), "recover": ("Getting up", .pink), "fallen": ("Fell", .red), "dead": ("Playing dead", .gray)]
 
 struct StateChip: View {
     @Environment(Duck.self) private var duck
@@ -587,6 +587,18 @@ struct StateChip: View {
         .animation(morph, value: duck.state).animation(morph, value: duck.playing)
         .accessibilityElement(children: .contain).accessibilityIdentifier("state")
         .accessibilityLabel(duck.state).accessibilityValue(Text(verbatim: "\(duck.odometer) \(duck.playing)|\(duck.pose)|\(duck.level)"))
+    }
+}
+
+/// No duck (or simulator) to play them on: the note, above every emotion greyed out, so the list is always there to see.
+struct OfflineEmotes: View {
+    let hint: String
+    var body: some View {
+        VStack(spacing: 12) {
+            Offline(hint: hint)
+            Emotes(items: Emote.catalog, playing: "", enabled: false) { _ in }
+        }
+        .padding(18).glassEffect(.regular, in: .rect(cornerRadius: 28))
     }
 }
 
@@ -643,7 +655,7 @@ struct RealPlay: View {
 
     var body: some View {
         if !duck.studioUp || !duck.brainOn {
-            Offline(hint: "Duck can’t be reached")
+            OfflineEmotes(hint: "Duck can’t be reached")
         } else if duck.runMode != "run" {                   // Setup: the duck's own policies, run by its pilot
             PilotCard()
         } else if !duck.rtUp {
@@ -698,8 +710,9 @@ struct RealPlay: View {
     }
 }
 
-/// The emotions, as a row to swipe. The one playing carries a ring that fills as it plays: from `progress`, or, given
-/// `clock` (when it began, how long it lasts), from the time.
+/// The emotions: a row to swipe, or (the chevron) every clip as a named tile, grouped as in Duck Live -- its own
+/// originals, then Pollen Robotics' set. The one playing carries a ring that fills as it plays: from `progress`, or,
+/// given `clock` (when it began, how long it lasts), from the time. Open or closed is remembered.
 struct Emotes: View {
     let items: [Emote]
     let playing: String
@@ -707,12 +720,21 @@ struct Emotes: View {
     var clock: (start: Date, span: Double)?
     var enabled = true
     let tap: (String) -> Void
+    @AppStorage("allEmotes") private var all = false
 
     private func ring(_ p: Double) -> some View {
         Circle().trim(from: 0, to: min(1, max(0, p))).stroke(.blue, style: .init(lineWidth: 3, lineCap: .round)).rotationEffect(.degrees(-90)).padding(1.5)
     }
 
-    var body: some View {
+    private var more: some View {
+        Button { withAnimation(morph) { all.toggle() } } label: {
+            Image(systemName: "chevron.down").font(.footnote.weight(.bold)).rotationEffect(.degrees(all ? 180 : 0)).frame(width: 34, height: 34)
+                .background(.fill.tertiary, in: .circle)
+        }
+        .buttonStyle(.plain).accessibilityIdentifier("emote.all").accessibilityLabel(all ? "Fewer emotions" : "All emotions")
+    }
+
+    private var row: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 ForEach(items) { e in
@@ -730,9 +752,56 @@ struct Emotes: View {
                     .accessibilityIdentifier("emote.\(e.name)").accessibilityLabel(e.label).accessibilityValue(on ? "playing" : "")
                 }
             }
-            .padding(.horizontal, 18).padding(.vertical, 3)
+            .padding(.leading, 18).padding(.vertical, 3)
         }
-        .scrollIndicators(.hidden).padding(.horizontal, -18).animation(morph, value: playing)
+        .scrollIndicators(.hidden)
+    }
+
+    private func tile(_ e: Emote) -> some View {
+        let on = playing == e.name
+        return Button { tap(e.name) } label: {
+            VStack(spacing: 2) {
+                Text(e.emoji).font(.system(size: 24))
+                Text(e.label).font(.caption.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.7)
+            }
+            .frame(maxWidth: .infinity).padding(.vertical, 9)
+            .background(on ? AnyShapeStyle(.blue.opacity(0.22)) : AnyShapeStyle(.fill.tertiary), in: .rect(cornerRadius: 16))
+            .overlay(alignment: .topTrailing) {
+                if e.headOnly { Text("body").font(.system(size: 9)).foregroundStyle(.secondary).padding(.top, 5).padding(.trailing, 8) }
+            }
+            .overlay { if on { RoundedRectangle(cornerRadius: 16).stroke(.blue, lineWidth: 2) } }
+        }
+        .buttonStyle(.plain).disabled(!e.ok || !enabled).opacity(e.ok && enabled ? 1 : 0.3)
+        .accessibilityIdentifier("emote.\(e.name)").accessibilityLabel(e.label).accessibilityValue(on ? "playing" : "")
+    }
+
+    private func section(_ title: String, _ note: String, _ list: [Emote]) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack { Text(title).fontWeight(.bold); Spacer(); Text(note) }.font(.caption).foregroundStyle(.secondary)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 84), spacing: 8)], spacing: 8) { ForEach(list) { tile($0) } }
+        }
+    }
+
+    var body: some View {
+        if all {
+            VStack(spacing: 6) {
+                HStack { Spacer(); more }
+                ScrollView {
+                    VStack(spacing: 12) {
+                        let live = items.filter { $0.group == "live" }, pollen = items.filter { $0.group == "pollen" }
+                        let other = items.filter { $0.group != "live" && $0.group != "pollen" }
+                        if !live.isEmpty { section("Duck Live", "head · beak · sound", live) }
+                        if !pollen.isEmpty { section("Pollen Robotics", "open-source set", pollen) }
+                        if !other.isEmpty { section("More", "", other) }
+                    }
+                }
+                .frame(maxHeight: 340).scrollIndicators(.hidden)
+            }
+            .animation(morph, value: playing)
+        } else {
+            HStack(spacing: 8) { row; more.padding(.trailing, 18) }
+                .padding(.horizontal, -18).animation(morph, value: playing)
+        }
     }
 }
 
@@ -757,8 +826,9 @@ struct PilotChip: View {
 }
 
 /// Play with the real duck in Setup: the policies trained for this duck, run on the duck. The same pad as the
-/// simulated duck's (emotions, speed, two sticks, sit, run, jump, flip) plus power: on, the policies take the joints;
-/// off, every joint goes limp. Both are asked first. The emotions play with the power off (head, beak and sound).
+/// simulated duck's (emotions, speed, two sticks, sit, run, jump, flip, kick) plus power: on, the policies take the joints;
+/// off, every joint goes limp. Both are asked first. The emotions play either way: head, beak and sound, over a running
+/// policy too (the clip takes the head, the policy keeps the legs).
 struct PilotCard: View {
     @Environment(Duck.self) private var duck
     @State private var ask = false
@@ -772,9 +842,9 @@ struct PilotCard: View {
     var body: some View {
         let on = duck.pilotOn, seated = duck.pilotState == "seated" || duck.pilotState == "sit_down"
         VStack(spacing: 14) {
-            if !duck.clips.isEmpty {
-                Emotes(items: duck.clips, playing: duck.clipNow, clock: duck.clipClock, enabled: !on) { name in Task { await duck.clip(name) } }
-            }
+            // the duck's own clips; until it has sent them, the built-in list, greyed out
+            Emotes(items: duck.clips.isEmpty ? Emote.catalog : duck.clips, playing: duck.clipNow, clock: duck.clipClock,
+                   enabled: !duck.clips.isEmpty) { name in Task { await duck.clip(name) } }
             HStack(spacing: 14) {
                 Button { if on { drop = true } else { ask = true } } label: { Image(systemName: "power") }
                     .buttonStyle(Orb(tint: on ? .green : nil, size: 44)).disabled(duck.pilotBusy)
@@ -787,21 +857,21 @@ struct PilotCard: View {
                 } minimumValueLabel: { Image(systemName: "tortoise.fill") } maximumValueLabel: { Image(systemName: "hare.fill") }
                     .tint(duck.run ? .orange : .blue).foregroundStyle(.secondary).font(.footnote).accessibilityIdentifier("pilot.gait")
             }
-            HStack(spacing: 16) {                           // left: where to go. right: the four moves, and which way to face
+            HStack(spacing: 0) {                            // the five moves, a row of their own (beside the stick they do not fit)
+                act(seated ? "figure.stand" : "figure.seated.side.right", "sit")
+                Spacer(minLength: 0)
+                Button { duck.run.toggle() } label: { Image(systemName: "figure.run") }.buttonStyle(Orb(tint: duck.run ? .orange : nil, size: 44))
+                    .disabled(!on).accessibilityIdentifier("pilot.run").accessibilityValue(duck.run ? "on" : "off")
+                Spacer(minLength: 0)
+                act("arrow.up.to.line", "jump")
+                Spacer(minLength: 0)
+                act("arrow.trianglehead.2.clockwise.rotate.90", "flip")
+                Spacer(minLength: 0)
+                act("soccerball", "kick")
+            }
+            HStack(spacing: 16) {                           // left: where to go. right: which way to face
                 Stick(tint: duck.run ? .orange : .blue) { x, y in duck.drive(x, y) }.opacity(on ? 1 : 0.4).allowsHitTesting(on)
-                VStack(spacing: 14) {
-                    HStack(spacing: 0) {
-                        act(seated ? "figure.stand" : "figure.seated.side.right", "sit")
-                        Spacer(minLength: 0)
-                        Button { duck.run.toggle() } label: { Image(systemName: "figure.run") }.buttonStyle(Orb(tint: duck.run ? .orange : nil, size: 44))
-                            .disabled(!on).accessibilityIdentifier("pilot.run").accessibilityValue(duck.run ? "on" : "off")
-                        Spacer(minLength: 0)
-                        act("arrow.up.to.line", "jump")
-                        Spacer(minLength: 0)
-                        act("arrow.trianglehead.2.clockwise.rotate.90", "flip")
-                    }
-                    Turn { w in duck.turn(w) }.opacity(on ? 1 : 0.4).allowsHitTesting(on)
-                }
+                Turn { w in duck.turn(w) }.opacity(on ? 1 : 0.4).allowsHitTesting(on)
             }
         }
         .padding(18)
@@ -820,28 +890,28 @@ struct PlayCard: View {
     }
 
     var body: some View {
-        if !duck.liveUp { Offline(hint: "Simulator not found") } else {
+        if !duck.liveUp { OfflineEmotes(hint: "Simulator not found") } else {
             VStack(spacing: 14) {
                 Emotes(items: duck.emotes, playing: duck.playing, progress: duck.progress) { duck.emote($0) }
                 Slider(value: .init(get: { Double(duck.level) }, set: { duck.setLevel(Int($0.rounded())) }), in: 1...5, step: 1) {
                     Text("Speed")
                 } minimumValueLabel: { Image(systemName: "tortoise.fill") } maximumValueLabel: { Image(systemName: "hare.fill") }
                     .tint(duck.run ? .orange : .blue).foregroundStyle(.secondary).font(.footnote).accessibilityIdentifier("level")
-                HStack(spacing: 16) {                       // left: where to go. right: the four moves, and which way to face
+                HStack(spacing: 0) {                        // the five moves, a row of their own (beside the stick they do not fit)
+                    act(duck.state == "seated" || duck.state == "sit_down" ? "figure.stand" : "figure.seated.side.right", "s", "sit")
+                    Spacer(minLength: 0)
+                    Button { duck.run.toggle() } label: { Image(systemName: "figure.run") }.buttonStyle(Orb(tint: duck.run ? .orange : nil, size: 44))
+                        .accessibilityIdentifier("act.run").accessibilityValue(duck.run ? "on" : "off")
+                    Spacer(minLength: 0)
+                    act("arrow.up.to.line", "space", "jump", duck.has["jump"] ?? false)
+                    Spacer(minLength: 0)
+                    act("arrow.trianglehead.2.clockwise.rotate.90", "r", "flip", duck.has["roulade"] ?? false)
+                    Spacer(minLength: 0)
+                    act("soccerball", "b", "kick", duck.has["kick"] ?? false)
+                }
+                HStack(spacing: 16) {                       // left: where to go. right: which way to face
                     Stick(tint: duck.run ? .orange : .blue) { x, y in duck.drive(x, y) }
-                    VStack(spacing: 14) {
-                        HStack(spacing: 0) {
-                            act(duck.state == "seated" || duck.state == "sit_down" ? "figure.stand" : "figure.seated.side.right", "s", "sit")
-                            Spacer(minLength: 0)
-                            Button { duck.run.toggle() } label: { Image(systemName: "figure.run") }.buttonStyle(Orb(tint: duck.run ? .orange : nil, size: 44))
-                                .accessibilityIdentifier("act.run").accessibilityValue(duck.run ? "on" : "off")
-                            Spacer(minLength: 0)
-                            act("arrow.up.to.line", "space", "jump", duck.has["jump"] ?? false)
-                            Spacer(minLength: 0)
-                            act("arrow.trianglehead.2.clockwise.rotate.90", "r", "flip", duck.has["roulade"] ?? false)
-                        }
-                        Turn { w in duck.turn(w) }
-                    }
+                    Turn { w in duck.turn(w) }
                 }
             }
             .padding(18)

@@ -23,7 +23,7 @@ import policy_net
 
 SCENARIO = [("stand", 1.0), ("up", 3.0), ("up+left", 2.0), ("stand", 1.0), ("run", 3.0), ("stand", 1.5), ("lvl5", 0), ("run", 2.5),
             ("stand", 2.0), ("s", 0), ("stand", 2.0), ("s", 0), ("stand", 2.0), ("down", 2.0), ("right", 2.0), ("stand", 1.0),
-            ("space", 0), ("stand", 3.0), ("r", 0), ("stand", 4.0)]
+            ("space", 0), ("stand", 3.0), ("r", 0), ("stand", 4.0), ("b", 0), ("stand", 2.0)]
 
 
 def pack(dtype=np.float16):
@@ -51,7 +51,7 @@ def drive(nets=None, seed=0):
         f = duck.policies[role]
         duck.policies[role] = (lambda obs, f=f, role=role: (lambda a: (rec.append((role, obs.copy(), np.array(a))), a)[1])(f(obs)))
     for what, secs in SCENARIO:
-        if what in ("s", "space", "r"):
+        if what in ("s", "space", "r", "b"):
             duck.press(what)
         elif what == "lvl5":
             duck.press("d"); duck.press("d")

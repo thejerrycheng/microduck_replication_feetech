@@ -135,14 +135,52 @@
   #imu1, #imu2 { grid-column: span 2; } #imu2:disabled { opacity: .35; } #imu1.done { box-shadow: inset 0 0 0 1.5px var(--green); }
   .sn .view:not(:has(canvas)) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .sn .view button { padding: 8px 0; font-size: 13px; }
-  .sn .view button[data-a] { position: relative; overflow: hidden; padding: 5px 0 4px; font-size: 17px; line-height: 1.15; }
-  .sn .view button[data-a] small { display: block; font-size: 10px; color: var(--dim); }
-  .sn .view button[data-a] u { position: absolute; top: 5px; right: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); }
-  .sn .view button[data-a]::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: calc(var(--p, 0) * 100%); background: var(--blue); }
-  .sn .view button.play { box-shadow: inset 0 0 0 1.5px var(--blue); }
-  #astop { grid-column: 1 / -1; }
-  #plvl { display: grid; place-items: center; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .sn .view button[data-d] { font-size: 16px; touch-action: none; }
+  /* Control: the pad the phone app has. Animations to swipe through, power and speed, the stick, the four moves, the turn */
+  body.ctl #found, body.ctl #tags, body.ctl #lines, body.ctl #card, body.ctl #cal { display: none; }
+  #pchip { position: fixed; top: 76px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 9px;
+    padding: 9px 14px; border-radius: 999px; white-space: nowrap; font-weight: 600; }
+  #pchip u { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); transition: background .3s; }
+  #pchip i { font-style: normal; font-weight: 400; font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  #play { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); width: 372px; max-width: calc(100% - 28px);
+    display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 28px; transform-origin: 50% 100%; --tint: var(--blue);
+    transition: opacity .3s, filter .3s, transform .6s var(--spring); }
+  #play.empty { opacity: 0; filter: blur(14px); transform: translateX(-50%) translateY(46px) scale(.78); pointer-events: none; }
+  #play.fast { --tint: var(--orange); } #play .row { gap: 14px; } #play .off { opacity: .4; pointer-events: none; }
+  #emotop { display: flex; align-items: center; gap: 8px; margin: 0 -18px 0 -18px; padding-right: 18px; }
+  #emo { flex: 1; min-width: 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 3px 0 3px 18px; }
+  #emomore { flex: none; width: 34px; height: 34px; } #emomore svg { transition: transform .3s var(--spring); }
+  #play.allemo #emomore svg { transform: rotate(180deg); } #play.allemo #emo { display: none; } #play.allemo #emotop { justify-content: flex-end; }
+  #emogrid { max-height: min(52vh, 460px); overflow-y: auto; margin: -6px -6px 0; padding: 0 6px; }
+  #emogrid h4 { margin: 10px 2px 6px; font-size: 12px; font-weight: 700; color: var(--dim); display: flex; justify-content: space-between; }
+  #emogrid h4 i { font-style: normal; font-weight: 500; }
+  #emogrid .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+  #emogrid button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 4px 7px; border-radius: 16px; position: relative; }
+  #emogrid button b { font-size: 24px; line-height: 1.1; } #emogrid button span { font-size: 12px; font-weight: 600; }
+  #emogrid button em { position: absolute; top: 5px; right: 8px; font-size: 9px; font-style: normal; color: var(--dim); }
+  #emogrid button.play { background: color-mix(in srgb, var(--blue) 22%, transparent); outline: 2px solid var(--blue); }
+  #play.emooff #emo button, #play.emooff #emogrid button { opacity: .45; }
+  #play.emooff #emogrid::before { content: "Connect the duck to play these"; display: block; margin: 4px 2px 0; font-size: 12px; color: var(--dim); }
+  #emo button { flex: none; width: 46px; height: 46px; padding: 0; font-size: 23px; position: relative; }
+  #emo button.play { background: color-mix(in srgb, var(--blue) 22%, transparent); transform: scale(1.08); }
+  #emo button.play::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(var(--blue) calc(var(--p, 0) * 360deg), transparent 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px)); mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px)); }
+  .orb { width: 44px; height: 44px; padding: 0; flex: none; display: grid; place-items: center; }
+  #gaitrow span { font-size: 15px; filter: grayscale(1); opacity: .75; }
+  .orb svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .orb.on { background: var(--green); color: #fff; } #prun.on { background: var(--orange); }
+  .orb.arm { background: var(--orange); color: #fff; animation: arm 1s ease-in-out infinite; } @keyframes arm { 50% { opacity: .5; } }
+  #gaitrow { flex: 1; display: flex; align-items: center; gap: 8px; color: var(--dim); min-width: 0; } #gait { flex: 1; width: auto; min-width: 0; accent-color: var(--tint); }
+  #stick, #turn { position: relative; background: var(--fill); touch-action: none; cursor: grab; user-select: none; }
+  #stick { width: 132px; height: 132px; border-radius: 50%; flex: none; } #turn { height: 62px; border-radius: 999px; }
+  #turn span { position: absolute; top: 50%; transform: translateY(-50%); left: 14px; color: var(--dim); font-weight: 700; pointer-events: none; } #turn span + span { left: auto; right: 14px; }
+  #stick svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--dim); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .6; pointer-events: none; }
+  #stick i, #turn i { position: absolute; border-radius: 50%; pointer-events: none; transition: transform .45s var(--spring);
+    background: linear-gradient(var(--tint), color-mix(in srgb, var(--tint) 78%, #000)); box-shadow: 0 3px 8px color-mix(in srgb, var(--tint) 45%, transparent); }
+  #stick i { left: 39px; top: 39px; width: 54px; height: 54px; } #turn i { left: calc(50% - 25px); top: 6px; width: 50px; height: 50px; --tint: var(--blue); }
+  .held { cursor: grabbing !important; } .held i { transition: none !important; }
+  #play .side { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; } #play .acts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }   /* five moves: they share the column */
+  #play .acts .orb { width: 100%; max-width: 44px; height: auto; aspect-ratio: 1; justify-self: center; }
+  #play .acts .orb svg { width: 55%; height: 55%; }
   /* calibration: a strip that drops in under the found row while the duck is being posed at home */
   #cal { position: fixed; top: 130px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px;
     padding: 8px 8px 8px 18px; border-radius: 999px; white-space: nowrap;
@@ -185,7 +223,7 @@
   <span class="sep"></span>
   <span id="bdot"></span>
   <button id="blink" title="The duck's own computer and its sensors, over SSH">Duck</button>
-  <div id="mode" class="seg" hidden title="Setup: the joints are yours to move, calibrate and test. Control: the duck's own policies drive it; steer from the Drive panel. Going back to Setup sits the duck down first."><button data-m="setup">Setup</button><button data-m="run">Control</button></div>
+  <div id="mode" class="seg" title="Setup: the joints, calibration and sensors. Control: animations, power, the stick and the moves, as on the phone. Going back to Setup sits the duck down and lets go."><button data-m="setup">Setup</button><button data-m="run">Control</button></div>
   <span id="temp" hidden><svg viewBox="0 0 9 16"><path d="M4.5 1.5v8.5"/><path d="M2.6 9.2V3.2a1.9 1.9 0 0 1 3.8 0v6a3.1 3.1 0 1 1-3.8 0z"/><circle cx="4.5" cy="11.7" r="1.5"/></svg><b></b></span>
   <span id="batt" hidden><svg viewBox="0 0 30 14"><rect x=".75" y=".75" width="25" height="12.5" rx="3.5"/><path d="M28 4.5v5"/><rect id="bfill" x="2.5" y="2.5" height="9" rx="2"/></svg><b></b></span>
 </header>
@@ -196,7 +234,7 @@
   <button id="csave" class="pri">Save</button><button id="ccancel">Cancel</button>
 </div>
 <nav id="found" class="glass empty"></nav>
-<div id="runnote" class="glass" hidden><b>Vendor runtime</b> the image's own runtime has the servos (started from the phone), so none show here. <button class="pri" onclick="document.querySelector('#mode [data-m=setup]').click()">Back to Setup</button></div>
+<div id="runnote" class="glass" hidden><b>Vendor runtime</b> the image's own runtime has the servos (started from the phone), so none show here. <button class="pri" onclick="api('mode', { to: 'setup' }).then(() => toast('The servos are back')).catch(() => {})">Take over</button></div>
 
 <section id="card" class="glass empty">
   <div id="plots">
@@ -214,6 +252,29 @@
   <div class="row"><span class="lab">ID</span><input id="to" class="num" type="number" min="0" max="253"><button id="set" class="pri">Set</button></div>
   <div class="sep"></div>
   <div class="row"><span class="lab">P</span><input id="kp" class="num" type="number" min="0" max="254"><span class="lab">D</span><input id="kd" class="num" type="number" min="0" max="254"><button id="gduck" title="Fill the replica's gains: P 5, D 20 (beak P 10)">Duck</button><button id="gset" class="pri" disabled>Set</button></div>
+  </div>
+</section>
+<div id="pchip" class="glass" hidden><u></u><b></b><i></i></div>
+<section id="play" class="glass empty">
+  <div id="emotop"><div id="emo"></div><button id="emomore" class="orb" title="All emotions, with their names">
+    <svg viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></svg></button></div>
+  <div id="emogrid" hidden></div>
+  <div class="row">
+    <button id="pwr" class="orb" title="Power. Off: press twice and the policies take the legs. On: press twice and the duck sits down and goes limp. Shift-click: dry run (it reads and computes, nothing moves)."><svg viewBox="0 0 24 24"><path d="M12 3.5v8"/><path d="M6.8 6.8a7.5 7.5 0 1010.4 0"/></svg></button>
+    <div id="gaitrow" title="Speed, 1 to 5 (A / D)"><span>🐢</span><input id="gait" type="range" min="1" max="5" step="1" value="3"><span>🐇</span></div>
+  </div>
+  <div id="pad" class="row">
+    <div id="stick" title="Where to go: forward and back walk, left and right sidestep (arrow keys ↑ ↓)"><svg viewBox="0 0 24 24"><path d="M10.8 3L12 2l1.2 1M10.8 21l1.2 1 1.2-1M3 10.8L2 12l1 1.2M21 10.8l1 1.2-1 1.2" stroke-width=".4"/></svg><i></i></div>
+    <div class="side">
+      <div class="acts">
+        <button id="psit" class="orb" data-p="sit" title="Sit down / stand up (S)"></button>
+        <button id="prun" class="orb" title="Run while going forward (hold Shift)"><svg viewBox="0 0 24 24"><path d="M5 6l6 6-6 6M13 6l6 6-6 6"/></svg></button>
+        <button class="orb" data-p="jump" title="Jump, from a stand (Space)"><svg viewBox="0 0 24 24"><path d="M5 4.5h14M12 20V9m-4.5 4.5L12 9l4.5 4.5"/></svg></button>
+        <button class="orb" data-p="flip" title="Front flip, from a stand (R)"><svg viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 11-2.6-5.7"/><path d="M17.5 2.8v4h-4"/></svg></button>
+        <button class="orb" data-p="kick" title="Kick with the right foot, from a stand; put the ball in front of the right toe first (B)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8.2l3.4 2.5-1.3 4h-4.2l-1.3-4z"/></svg></button>
+      </div>
+      <div id="turn" title="Which way to face (arrow keys ← →)"><span>↺</span><span>↻</span><i></i></div>
+    </div>
   </div>
 </section>
 <div id="tip" class="glass" hidden></div>
@@ -235,6 +296,7 @@ function slide(box, to) {                       // move a container's highlight 
   b.style.left = to.offsetLeft + "px"; b.style.width = to.offsetWidth + "px"; b.offsetWidth; b.style.transition = ""; b.style.opacity = 1;
 }
 let scanning = false, S = { connected: false, ids: [], motors: {}, duck: {}, ports: [], bauds: [] }, sel = null, aim = null, servos = [], housings = {};
+let view = "setup"; try { if (localStorage.view === "control" || location.hash === "#control") view = "control"; } catch (e) {}      // which half of the page: Setup or Control
 const marks = {}, open = new Set(), proj = {};         // sensors: 3-D marker, which are on, their 3-D overlay
 
 // ---- server ------------------------------------------------------------------------------------------------------
@@ -370,7 +432,7 @@ function layout() {
 }
 (function frame() {
   requestAnimationFrame(frame);
-  const want = sel != null ? 1 : 0;
+  const want = sel != null || view === "control" ? 1 : 0;
   if (sel != null) charts.forEach(draw);
   if (!dirty && Math.abs(want - lift) < .002 && !ctl.update()) return;      // nothing moved: skip the 3-D redraw
   dirty = false; lift += (want - lift) * .14;                  // card open: slide the duck up and back, clear of it
@@ -405,12 +467,10 @@ function render() {
   fill($("baud"), S.bauds, S.baud, b => b >= 1e6 ? b / 1e6 + "M" : b / 1e3 + "k");
   $("link").disabled = scanning || (!on && !S.ports.length);
   $("fix").hidden = !(on && S.ids.length && S.baud !== S.bauds[0]);
-  // Setup: the joints are yours to move, calibrate and test. Run: the duck's own policies drive it (the Drive panel).
-  // Both keep the servos on screen: the same bridge serves them either way. (`vendor`: the image's own runtime was
-  // started from elsewhere, the phone say; it takes the servos away until Setup is pressed.)
-  const sm = S.brain && S.brain.on && S.brain.sensors.mode, vendor = sm === "run", md = sm && (vendor || piloting()?.live ? "run" : "setup");
-  $("mode").hidden = !md;
-  if (md) { [...$("mode").children].forEach(b => b.classList.toggle("on", b.dataset.m === md)); slide($("mode"), $("mode").querySelector(".on")); }
+  // Setup: the joints, calibration and sensors. Control: the pad (below). The switch only changes what is on screen;
+  // the policies start from the pad's power button. Both keep the servos: the same bridge serves them either way.
+  // the buttons only: the sliding highlight is a child of the switch too, and must never take "on" itself
+  $("mode").querySelectorAll("button").forEach(b => b.classList.toggle("on", (b.dataset.m === "run") === (view === "control"))); slide($("mode"), $("mode").querySelector("button.on"));
   const bt = S.battery;                                  // the pack, from the servos' own voltage reading
   $("batt").hidden = !bt;
   if (bt) {
@@ -471,7 +531,7 @@ function render() {
     m.emissiveIntensity = st === "sel" ? .55 : .25;
   });
 
-  dock(); pose();
+  dock(); pose(); play();
   const m = S.motors[sel];
   $("card").classList.toggle("empty", sel == null);
   if (sel == null) return;
@@ -597,92 +657,133 @@ const SENS = {       // name, window height, icon
   tof: ["ToF", 150, '<circle cx="5" cy="12" r="1.6"/><path d="M9.5 7.5a6.5 6.5 0 010 9M13 5a10 10 0 010 14M16.5 2.8a13.5 13.5 0 010 18.4"/>'],
   imu: ["IMU", 334, '<path d="M12 12V3m0 9l8 4.5M12 12l-8 4.5"/><circle cx="12" cy="12" r="1.6"/>'],
   mic: ["Mic", 56, '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'],
-  drive: ["Drive", 222, '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3.5v6.3M4.2 15.5l5.8-2.4M19.8 15.5L14 13.1"/>'],
-  anim: ["Animations", 446, '<path d="M9 5.5v13l10-6.5z"/>'],
   speaker: ["Speaker", 82, '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4.2 4.2 0 010 6M18 6.5a7.6 7.6 0 010 11"/>'],
 };
 const VOICE = [["chirp", "Quack"], ["greet", "Greet"], ["coo", "Coo"], ["peck", "Peck"], ["inquire", "Ask"], ["alarm", "Alarm"]];      // the duck's own sounds
-// drive: the duck's own policies (walk, run, sit, jump, flip), run by the duck. Dry run = it reads and computes, no servo moves.
-const DRIVE = `<button id="pdry" title="The duck reads its sensors and runs the policy, but moves nothing">Dry run</button><button id="plive" class="pri" title="The policies drive the legs and head">Start</button><button id="pstop" title="Stop: every joint goes limp">Stop</button>
-  <button data-d="l" title="Turn left (←)">↺</button><button data-d="f" title="Forward (↑)">▲</button><button data-d="r" title="Turn right (→)">↻</button>
-  <button id="prun" title="Run while going forward (Shift)">Run</button><button data-d="b" title="Back (↓)">▼</button><button data-p="sit" title="Sit down / stand up (S)">Sit</button>
-  <button data-p="jump" title="Jump, from a stand (Space)">Jump</button><button data-p="flip" title="Front flip, from a stand (R)">Flip</button><span></span>
-  <button data-p="slower" title="Slower (A)">−</button><span id="plvl" title="Speed level 1 to 5">3</span><button data-p="faster" title="Faster (D)">+</button>`;
 const FOV = { camera: 62, tof: 45 }, rad = Math.PI / 180;        // horizontal field of view, degrees (IMX219; VL53L5CX)
 Object.entries(SENS).forEach(([k, v], i) => {
   const n = document.createElement("div"), cw = k === "camera" ? 240 : 384;      // the camera's window is upright: see feed()
   n.className = "sn glass"; n.style.setProperty("--h", v[1] + 58 + "px"); n.style.setProperty("--i", i);
   n.innerHTML = `<button class="ic" title="${v[0]}"><svg viewBox="0 0 24 24">${v[2]}</svg></button><b>${v[0]}</b><i></i><div class="view">` +
-    (k === "anim" ? "" : k === "drive" ? DRIVE : k === "speaker" ? VOICE.map(([t, n]) => `<button data-t="${t}">${n}</button>`).join("")
+    (k === "speaker" ? VOICE.map(([t, n]) => `<button data-t="${t}">${n}</button>`).join("")
       : `<canvas width="${cw}" height="${cw * (k === "imu" ? 220 : v[1]) / 192}"></canvas>` +
         (k === "imu" ? '<div id="imub"><button id="imu1" title="Step 1: the duck upright with its trunk level, held still. Tells the IMU which way is up.">1 Upright</button><button id="imu2" title="Step 2: the duck on its back, beak pointing straight up, held still. Tells the IMU which way is front.">2 Beak up</button><button data-ax="z" data-deg="90" title="Turn the front a quarter turn to the left">↺</button><button data-ax="x" title="Flip about the front axis: left and up reverse">X</button><button data-ax="y" title="Flip about the left axis: front and up reverse">Y</button><button data-ax="z" title="Flip about the up axis: the duck faces the other way">Z</button><p id="imuw" hidden></p></div>' : "")) + "</div>";
   n.firstChild.onclick = () => toggle(k);
   $("dock").appendChild(n); v.node = n; v.cv = n.querySelector("canvas"); v.note = n.querySelector("i");
 });
-const held = new Set(); let runOn = false, sentMove = false, armT = 0, imuNag = 0;
+SENS.speaker.node.querySelector(".view").onclick = e => e.target.dataset.t && api("say", { tag: e.target.dataset.t }).catch(() => {});
+
+// ---- Control: the phone app's pad ------------------------------------------------------------------------------------
+// Animations (they play over a running policy too: the clip takes the head and beak, the policy keeps the legs),
+// power and speed, the stick (where to go), sit / run / jump / flip / kick, and the turn slider. Keys: arrows, Shift = run,
+// S sit, Space jump, R flip, B kick, A / D speed.
+let imuNag = 0;
+const held = new Set(), NAMES = { stand: ["Standing", "--green"], walk: ["Walking", "--blue"], run: ["Running", "--orange"], sprint: ["Sprinting", "--orange"],
+  stopping: ["Stopping", "--blue"], sit_down: ["Sitting down", "--orange"], seated: ["Seated", "--orange"], stand_up: ["Standing up", "--orange"],
+  jump: ["Jump", "--red"], flip: ["Front flip", "--red"], kick: ["Kick", "--red"], recover: ["Getting up", "--red"] };
+const SIT = '<svg viewBox="0 0 24 24"><path d="M12 4v10m-4.5-4.5L12 14l4.5-4.5M5 19.5h14"/></svg>', STAND = '<svg viewBox="0 0 24 24"><path d="M12 15V5m-4.5 4.5L12 5l4.5 4.5M5 19.5h14"/></svg>';
+let runOn = false, stickV = [0, 0], spin = 0, sentMove = false, sentAt = 0, armT = 0, gaitT = 0, pBusy = false;
 const piloting = () => { const p = S.brain && S.brain.on && S.brain.sensors.pilot; return p && !p.ended ? p : null; };
-function steer() {                                       // what is held -> the sticks, ten times a second while anything is
-  const y = (held.has("f") ? 1 : 0) - (held.has("b") ? 1 : 0), w = (held.has("r") ? 1 : 0) - (held.has("l") ? 1 : 0);
-  fetch("/api/pilot_drive", { method: "POST", body: JSON.stringify({ x: 0, y, w, run: runOn || held.has("shift") }) }).catch(() => {});
+function setView(v) {
+  view = v; try { localStorage.view = v; } catch (e) {}
+  if (v === "control") sel = aim = null;
+  render();
 }
-setInterval(() => { if (piloting() && (held.size || sentMove)) { steer(); sentMove = held.size > 0; } }, 100);
-{ const v = SENS.drive.node.querySelector(".view");
-  const hold = (e, on) => { const d = e.target.dataset && e.target.dataset.d; if (d) { on ? held.add(d) : held.delete(d); e.target.classList.toggle("play", on); } };
-  v.onpointerdown = e => hold(e, true); v.onpointerup = v.onpointerleave = v.onpointercancel = e => hold(e, false);
-  v.onclick = e => { const b = e.target.closest("button"); if (!b) return;
-    if (b.id === "pdry") api("pilot_start", {}).catch(() => {});
-    else if (b.id === "pstop") { held.clear(); api("pilot_stop", {}).catch(() => {}); }
-    else if (b.id === "prun") { runOn = !runOn; b.classList.toggle("play", runOn); }
-    else if (b.id === "plive") {                         // two presses: the legs are about to move
-      if (Date.now() - armT < 4000) { armT = 0; b.textContent = "Start"; api("pilot_start", { live: true }).then(() => toast("The policies have the duck")).catch(() => {}); }
-      else { armT = Date.now(); b.textContent = "Sure?";
-        toast((S.cal || {}).imu_how === "two poses" ? "Legs will move. Press Start again within 4 s." : "The IMU is not calibrated from two poses: the duck may not balance. Press Start again to go anyway.", (S.cal || {}).imu_how !== "two poses"); setTimeout(() => { if (armT) { armT = 0; b.textContent = "Start"; } }, 4000); } }
-    else if (b.dataset.p) api("pilot_press", { key: b.dataset.p }).catch(() => {}); };
-  const KEY = { ArrowUp: "f", ArrowDown: "b", ArrowLeft: "l", ArrowRight: "r", Shift: "shift" }, TAP = { s: "sit", " ": "jump", r: "flip", a: "slower", d: "faster" };
-  addEventListener("keydown", e => { if (!open.has("drive") || !piloting() || /INPUT|SELECT/.test(e.target.tagName)) return;
-    if (KEY[e.key]) { held.add(KEY[e.key]); e.preventDefault(); } else if (TAP[e.key.toLowerCase()] && !e.repeat) { api("pilot_press", { key: TAP[e.key.toLowerCase()] }).catch(() => {}); e.preventDefault(); } });
-  addEventListener("keyup", e => { if (KEY[e.key]) held.delete(KEY[e.key]); });
+function send() {                                        // the sticks and keys -> the pilot: on a change, and ten times a second while any is held
+  if (!piloting()) return;
+  const r = v => Math.round(v * 50) / 50, x = r(stickV[0]), y = r(stickV[1]) || (held.has("f") ? 1 : 0) - (held.has("b") ? 1 : 0),
+    w = r(spin) || (held.has("r") ? 1 : 0) - (held.has("l") ? 1 : 0), any = x || y || w, now = Date.now();
+  if (!any && !sentMove || any && now - sentAt < 50) return;
+  sentAt = now; sentMove = !!any;
+  fetch("/api/pilot_drive", { method: "POST", body: JSON.stringify({ x, y, w, run: runOn || held.has("shift") }) }).catch(() => {});
+}
+setInterval(send, 100);
+function grab(node, reach, both, fn) {                   // a knob that follows the pointer and springs back when let go
+  const k = node.querySelector("i"); let o = null;
+  const end = () => { if (!o) return; o = null; node.classList.remove("held"); k.style.transform = ""; fn(0, 0); send(); };
+  node.onpointerdown = e => { o = [e.clientX, e.clientY]; node.setPointerCapture(e.pointerId); node.classList.add("held"); };
+  node.onpointermove = e => { if (!o) return;
+    let dx = e.clientX - o[0], dy = both ? e.clientY - o[1] : 0; const d = Math.hypot(dx, dy), s = d > reach ? reach / d : 1; dx *= s; dy *= s;
+    k.style.transform = `translate(${dx}px, ${dy}px) scale(1.08)`; fn(dx / reach, -dy / reach); send(); };
+  node.onpointerup = node.onpointercancel = node.onlostpointercapture = end;
+}
+grab($("stick"), 40, true, (x, y) => stickV = [x, y]);
+grab($("turn"), 56, false, x => spin = x);
+function twice(msg, bad) {                               // anything that moves or drops the duck: the power button asks, for 10 s
+  const b = $("pwr");
+  if (armT) { clearTimeout(armT); armT = 0; b.classList.remove("arm"); return true; }
+  b.classList.add("arm"); armT = setTimeout(() => { armT = 0; b.classList.remove("arm"); }, 10000); toast(msg, bad); return false;
+}
+async function letGo() {                                 // sit down first, then every joint limp
+  const p = piloting(); held.clear(); stickV = [0, 0]; spin = 0;
+  if (p && p.live && !["seated", "sit_down"].includes(p.state) && (p.tilt ?? 0) < 45) { await api("pilot_press", { key: "sit" }); await new Promise(r => setTimeout(r, 1800)); }
+  await api("pilot_stop", {});
+}
+$("pwr").onclick = async e => {
+  const p = piloting(), two = (S.cal || {}).imu_how === "two poses";
+  if (pBusy) return;
+  if (e.shiftKey && !p) return api("pilot_start", {}).then(() => toast("Dry run: reading and computing, nothing moves")).catch(() => {});
+  if (p && p.live ? !twice("The duck will sit down and go limp. Press again to let go.") : !twice(two ? "The legs will move. Press again to start." : "The IMU is not calibrated from two poses: the duck may not balance. Press again to go anyway.", !two)) return;
+  pBusy = true; $("pwr").disabled = true;
+  try {
+    if (p && p.live) { await letGo(); toast("Let go: the joints are limp"); }
+    else { if (p) await api("pilot_stop", {}); await api("pilot_start", { live: true }); toast("The policies have the duck"); }
+  } catch (e) {} pBusy = false; render();
+};
+$("play").onclick = e => { const b = e.target.closest("button"); if (!b) return;
+  if (b.id === "prun") { runOn = !runOn; render(); }
+  else if (b.dataset.p) api("pilot_press", { key: b.dataset.p }).catch(() => {});
+  else if (b.dataset.a) (b.classList.contains("play") ? api("anim_stop", {}) : api("anim_play", { name: b.dataset.a })).catch(() => {}); };
+// The slider is the user's from the first touch until 1.5 s after the last change: WebKit (Safari, the app windows) never
+// focuses a range input, so the status refresh would otherwise set it back to the duck's level under the finger.
+let gaitHeld = false;
+$("gait").onpointerdown = () => { gaitHeld = true; gaitT = Date.now(); };
+$("emomore").onclick = e => { e.stopPropagation(); const on = $("play").classList.toggle("allemo"); try { localStorage.allemo = on ? "1" : ""; } catch (x) {} play(); };
+try { if (localStorage.allemo) $("play").classList.add("allemo"); } catch (x) {}
+addEventListener("pointerup", () => { if (gaitHeld) { gaitHeld = false; gaitT = Date.now(); } });
+$("gait").oninput = () => { gaitT = Date.now(); };
+$("gait").onchange = async () => { const p = piloting(); if (!p) return;
+  gaitT = Date.now(); let d = +$("gait").value - (p.level ?? 3);
+  for (; d; d -= Math.sign(d)) await api("pilot_press", { key: d > 0 ? "faster" : "slower" }).catch(() => {}); gaitT = Date.now(); };
+{ const KEY = { ArrowUp: "f", ArrowDown: "b", ArrowLeft: "l", ArrowRight: "r", Shift: "shift" }, TAP = { s: "sit", " ": "jump", r: "flip", b: "kick", a: "slower", d: "faster" };
+  addEventListener("keydown", e => { if (view !== "control" || !piloting() || /INPUT|SELECT/.test(e.target.tagName) && e.target.type !== "range") return;
+    if (KEY[e.key]) { held.add(KEY[e.key]); e.preventDefault(); send(); } else if (TAP[e.key.toLowerCase()] && !e.repeat) { api("pilot_press", { key: TAP[e.key.toLowerCase()] }).catch(() => {}); e.preventDefault(); } });
+  addEventListener("keyup", e => { if (KEY[e.key]) { held.delete(KEY[e.key]); send(); } });
   addEventListener("blur", () => held.clear());
 }
-function drive() {
-  const p = piloting(), n = SENS.drive.node;
-  $("pdry").disabled = $("plive").disabled = !!p; $("pstop").disabled = !p; $("pstop").className = p && p.live ? "pri" : "";
-  n.querySelectorAll("[data-d],[data-p],#prun").forEach(b => b.disabled = !p);
-  if (p) $("plvl").textContent = p.level ?? 3;
-  const last = S.brain.sensors.pilot;
-  if (!n.classList.contains("bad")) SENS.drive.note.textContent = p ? `${p.live ? "" : "dry · "}${p.state || ""} · ${(p.hz || 0).toFixed(0)} Hz` : last && last.error ? last.error : "";
+function play() {
+  const B = S.brain || { on: false, sensors: {} }, on = view === "control", p = piloting(), live = !!(p && p.live), vendor = B.on && B.sensors.mode === "run";
+  document.body.classList.toggle("ctl", on); $("play").classList.toggle("empty", !on); $("pchip").hidden = !on;
+  if (!on) return;
+  const A = S.anims || [], now = B.on && B.sensors.anim, clip = now && A.find(a => a.name === now.name), last = B.on && B.sensors.pilot;
+  const st = p && (NAMES[p.state] || [p.state, "--dim"]), down = p && (p.tilt ?? 0) > 60, [u, word, note] = $("pchip").children;
+  word.textContent = !B.on ? "Duck can’t be reached" : vendor ? "Vendor runtime" : p ? (down ? "Down" : st[0]) + (live ? "" : " · dry run")
+    : clip ? `${clip.emoji || ""} ${clip.label}` : last && last.error ? last.error : "Ready";
+  u.style.background = `var(${!p ? "--dim" : down ? "--red" : st[1]})`;
+  note.textContent = p ? `${Math.hypot(...(p.cmd || [0, 0]).slice(0, 2)).toFixed(2)} m/s · ${(p.hz || 0).toFixed(0)} Hz` : "";
+  $("pwr").classList.toggle("on", live); $("pwr").disabled = pBusy || !B.on || vendor;
+  $("pad").classList.toggle("off", !p); $("gaitrow").classList.toggle("off", !p);
+  $("prun").classList.toggle("on", runOn); $("play").classList.toggle("fast", runOn || held.has("shift"));
+  const sit = p && ["seated", "sit_down"].includes(p.state) ? STAND : SIT; if ($("psit").innerHTML !== sit) $("psit").innerHTML = sit;
+  if (p && !gaitHeld && Date.now() - gaitT > 1500) $("gait").value = p.level ?? 3;
+  const box = $("emo"), key = A.map(a => a.name).join(); box.hidden = !A.length;
+  if (box.dataset.k !== key) { box.dataset.k = key; box.innerHTML = A.map(a => `<button data-a="${a.name}" title="${a.label}">${a.emoji || "•"}</button>`).join("");
+    const G = [["live", "Duck Live", "head · beak · sound"], ["pollen", "Pollen Robotics", "open-source set"]], seen = new Set(G.map(g => g[0]));
+    const tile = a => `<button data-a="${a.name}" title="${a.label}${a.needs && a.needs.length ? " (moves the whole body: " + a.needs.join(", ") + " -- with the policies on; with them off, head, beak and sound only)" : ""}"><b>${a.emoji || "•"}</b><span>${a.label}</span>${a.needs && a.needs.length ? "<em>body</em>" : ""}</button>`;
+    const part = (title, note, list) => list.length ? `<h4>${title}<i>${note}</i></h4><div class="tiles">${list.map(tile).join("")}</div>` : "";
+    $("emogrid").innerHTML = G.map(([g, t, n]) => part(t, n, A.filter(a => a.group === g))).join("") + part("More", "", A.filter(a => !seen.has(a.group))); }
+  $("emomore").hidden = !A.length; $("emogrid").hidden = !A.length || !$("play").classList.contains("allemo");
+  const playable = !!B.on; $("play").classList.toggle("emooff", !playable);         // listed from the studio's copy until a duck answers
+  [...box.querySelectorAll("button"), ...$("emogrid").querySelectorAll("button")].forEach(b => b.disabled = !playable);
+  [...box.querySelectorAll("button"), ...$("emogrid").querySelectorAll("button")].forEach(b => { const is = now && now.name === b.dataset.a; b.classList.toggle("play", !!is); b.style.setProperty("--p", is ? now.t / now.T : 0); });
 }
-// animations: the duck's own emotion clips, played by the duck on its real head, beak and speaker. The legs are not moved.
-SENS.anim.node.querySelector(".view").onclick = e => { const b = e.target.closest("button"); if (!b) return;
-  (b.dataset.a ? api("anim_play", { name: b.dataset.a }) : api("anim_stop", {})).catch(() => {}); };
-function anims() {
-  const v = SENS.anim.node.querySelector(".view"), A = S.anims || [], now = S.brain.sensors.anim, key = A.map(a => a.name).join();
-  if (v.dataset.k !== key) { v.dataset.k = key;
-    v.innerHTML = A.map(a => `<button data-a="${a.name}" title="${a.label}${a.needs.length ? ": head, beak and sound only here (the " + a.needs.join(", ") + " part needs a policy on the duck)" : ""}">${a.emoji || "•"}<small>${a.label}</small>${a.needs.length ? "<u></u>" : ""}</button>`).join("")
-      + '<button id="astop" title="Stop and let the head go limp">Relax head</button>'; }
-  v.querySelectorAll("button[data-a]").forEach(b => { const on = now && now.name === b.dataset.a;
-    b.classList.toggle("play", !!on); b.style.setProperty("--p", on ? now.t / now.T : 0); });
-  if (!SENS.anim.node.classList.contains("bad")) SENS.anim.note.textContent = now ? `${now.t.toFixed(1)} / ${now.T} s` : A.length ? A.length + " clips" : "none on the duck";
-}
-SENS.speaker.node.querySelector(".view").onclick = e => e.target.dataset.t && api("say", { tag: e.target.dataset.t }).catch(() => {});
-let runArm = 0;
-$("mode").onclick = async e => { const to = e.target.dataset.m, p = piloting(), vendor = S.brain.sensors.mode === "run"; if (!to) return;
-  const busy = on => $("mode").style.opacity = on ? .5 : "";
-  try {
-    if (to === "run" && !vendor && !(p && p.live)) {                // Setup -> Run: the policies take the joints where they are
-      const btn = $("mode").querySelector("[data-m=run]"), disarm = () => { runArm = 0; btn.textContent = "Control"; btn.style.color = ""; };
-      if (!runArm) {                                               // first press: the button itself asks, for 10 s
-        runArm = setTimeout(disarm, 10000); btn.textContent = "Press again"; btn.style.color = "var(--orange)";
-        return toast((S.cal || {}).imu_how === "two poses" ? "The legs will move. Press it again to start." : "The IMU is not calibrated from two poses: the duck may not balance. Press again to go anyway.", (S.cal || {}).imu_how !== "two poses"); }
-      clearTimeout(runArm); disarm(); busy(true); if (p) await api("pilot_stop", {});
-      await api("pilot_start", { live: true }); if (!open.has("drive")) toggle("drive"); toast("Control: the policies have the duck");
-    } else if (to === "setup" && vendor) { busy(true); await api("mode", { to: "setup" }); toast("Setup: the joints are yours");
-    } else if (to === "setup" && p && p.live) {                      // Run -> Setup: sit down first, then let go
-      busy(true); held.clear();
-      if (!["seated", "sit_down"].includes(p.state) && (p.tilt ?? 0) < 45) { await api("pilot_press", { key: "sit" }); await new Promise(r => setTimeout(r, 1800)); }
-      await api("pilot_stop", {}); toast("Setup: the joints are yours");
-    }
-  } catch (e) {} busy(false); };
+$("mode").onclick = async e => { const to = e.target.dataset.m, p = piloting(); if (!to) return;
+  if (to === "run") return setView("control");
+  setView("setup");                                      // the switch moves at once, the duck answering or not
+  if (p && p.live) {                                     // the policies were on: sit down, then let go -- given 5 s
+    const late = new Promise((_, no) => setTimeout(() => no(new Error("late")), 5000));
+    try { await Promise.race([letGo(), late]); toast("Setup: the joints are yours"); }
+    catch (e) { toast("The duck did not answer: its policies may still be on", true); } } };
 $("imu1").onclick = () => api("imu_cal", { step: 1 }).then(() => toast("Upright taken. Now lay it on its back, beak straight up, and press 2")).catch(() => {});
 $("imu2").onclick = () => api("imu_cal", { step: 2 }).then(s => toast("IMU calibrated from two poses, " + s.cal.imu_how)).catch(() => {});
 $("imub").onclick = e => { const d = e.target.dataset; if (d && d.ax) api("imu_turn", { axis: d.ax, deg: +(d.deg || 180) }).then(() => toast(d.deg ? "Front turned a quarter left" : "Flipped about " + d.ax.toUpperCase())).catch(() => {}); };
@@ -697,7 +798,7 @@ function dock() {
   $("bdot").className = B.on ? "on" : B.linking ? "busy" : "";        // orange and pulsing while the link comes up
   $("blink").title = B.on ? "Connected to the duck. Press to disconnect." : B.linking ? "Connecting to the duck…" : "The duck is not on the network yet. The studio connects by itself when it is.";
   for (const k in SENS) {
-    const st = !B.on ? "" : k === "drive" ? (B.sensors.pilot && !B.sensors.pilot.ended ? "ok" : "") : k === "anim" ? ((S.anims || []).length ? "ok" : "") : B.sensors[k] && B.sensors[k].ok ? "ok" : "bad", on = open.has(k);
+    const st = !B.on ? "" : B.sensors[k] && B.sensors[k].ok ? "ok" : "bad", on = open.has(k);
     SENS[k].node.className = "sn glass " + st + (on ? " on" : "");
     if (st === "bad") SENS[k].note.textContent = B.sensors[k] ? B.sensors[k].note : "";
     else if (!B.on) {                                    // no duck: nothing to show, in the window or on the model
@@ -712,7 +813,6 @@ function dock() {
     });
     if (k === "imu" && (!on || !B.on)) body.quaternion.set(0, 0, 0, 1);
   }
-  if (B.on) { anims(); drive(); }
   // the IMU needs both poses: half done, or done the old one-pose way, is said plainly and keeps being said
   const C2 = S.cal || {}, half = !!C2.imu_step, old = B.on && C2.imu && C2.imu_how !== "two poses";
   $("imu2").disabled = !half; $("imu1").classList.toggle("done", half); $("imu2").classList.toggle("pri", half);
@@ -829,7 +929,7 @@ function feed(k, v) {
 const busy = {};
 setInterval(() => {                                      // readings, for the sensors that are on
   if (!S.brain || !S.brain.on) return;
-  for (const k of open) if (k !== "speaker" && k !== "anim" && k !== "drive" && !busy[k]) {
+  for (const k of open) if (k !== "speaker" && !busy[k]) {
     busy[k] = 1;
     fetch("/sense/" + k).then(r => k === "camera" ? r.arrayBuffer() : r.json()).then(v => feed(k, v)).catch(() => {}).finally(() => busy[k] = 0);
   }

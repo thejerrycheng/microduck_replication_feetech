@@ -150,6 +150,7 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
   <label>Sit · stand <select id="selSitstand"></select></label>
   <label>Jump (space) <select id="selJump"></select></label>
   <label>Front flip (R) <select id="selRoulade"></select></label>
+  <label>Kick (B) <select id="selKick"></select></label>
   <label>Stand-up after a fall <select id="selRecovery"></select></label>
   <label>Under VelStand, let the walk policy get up by itself (off: always the stand-up policy) <input type="checkbox" id="inSelf" checked></label>
   <h3>Plant</h3>
@@ -171,6 +172,7 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
   <div class="grp"><span class="key" data-k="s">S</span><div class="lab">sit · stand</div></div>
   <div class="grp"><span class="key xwide" data-k="space" id="kSpace">space</span><div class="lab">jump</div></div>
   <div class="grp"><span class="key" data-k="r" id="kR">R</span><div class="lab">front flip</div></div>
+  <div class="grp"><span class="key" data-k="b" id="kB">B</span><div class="lab">kick ball</div></div>
   <div class="grp"><span class="key" data-k="enter">⏎</span><div class="lab">reset</div></div>
   <div class="grp"><span class="key xwide" data-k="drag">⌘ + drag duck</span><div class="lab">push · pull</div></div>
   <div class="grp"><span class="key wide" data-k="emo">1–0 Q–P</span><div class="lab">emotions</div></div>
@@ -297,6 +299,10 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
       meshGeo(e.mesh).then(function (geo) { var m = new THREE.Mesh(geo, mat(e.rgba)); m.castShadow = true; m.receiveShadow = false; h.add(m); });
       (isJaw ? jawPivot : groups[e.body]).add(h);
     });
+    if (sc.ball) {           // the kick's ball: a free body, drawn as a sphere (it is parked off the stage until B)
+      var bm = new THREE.Mesh(new THREE.SphereGeometry(sc.ball.radius, 32, 20), new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.55 }));
+      bm.castShadow = true; groups[sc.ball.body].add(bm);
+    }
     buildPalette(sc.anims || []);
     $("lag").textContent = sc.lag; $("vin").textContent = sc.vin.toFixed(1);
   }
@@ -320,7 +326,7 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
 
   // ---- keys -----------------------------------------------------------------------------------------------------------
   var held = {}, meta = false, alt = false, shift = false, lastSent = "";
-  var MOVE = { up: 1, down: 1, left: 1, right: 1 }, PRESS = { s: 1, space: 1, r: 1, a: 1, d: 1, enter: 1 };
+  var MOVE = { up: 1, down: 1, left: 1, right: 1 }, PRESS = { s: 1, space: 1, r: 1, b: 1, a: 1, d: 1, enter: 1 };
   function sendKeys(force) {
     var h = Object.keys(held).filter(function (k) { return held[k] && MOVE[k]; }).sort();
     var msg = JSON.stringify({ t: "keys", held: h, meta: meta, alt: alt });
@@ -343,7 +349,7 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
     }
   };
   var CODES = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Space: "space", Enter: "enter", NumpadEnter: "enter",
-                KeyS: "s", KeyA: "a", KeyD: "d", KeyR: "r", Escape: "escape" };
+                KeyS: "s", KeyA: "a", KeyD: "d", KeyR: "r", KeyB: "b", Escape: "escape" };
   function keyName(e) {      // arrows / space / enter / escape, and the letter or digit of any other key that means something here
     var n = CODES[e.code]; if (n) return n;
     var m = /^Key([A-Z])$/.exec(e.code) || /^Digit(\d)$/.exec(e.code); n = m ? m[1].toLowerCase() : null;
@@ -480,18 +486,19 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
   // ---- HUD ------------------------------------------------------------------------------------------------------------
   var STATE_TXT = { stand: ["Standing", ""], walk: ["Walking", ""], run: ["Running", "straight only"], sprint: ["Sprinting", "straight only · flat out"], stopping: ["Stopping", ""],
                     sit_down: ["Sitting down", "S again to stand"], seated: ["Seated", "S or ▲ to stand up"], stand_up: ["Standing up", ""],
-                    jump: ["Jump", "launch flag"], roulade: ["Front flip", ""], recover: ["Getting up", "stand-up policy"], fallen: ["Fell", "no get-up policy · ⏎ resets"],
+                    jump: ["Jump", "launch flag"], roulade: ["Front flip", ""], kick: ["Kick", "right foot"], recover: ["Getting up", "stand-up policy"], fallen: ["Fell", "no get-up policy · ⏎ resets"],
                     dead: ["Playing dead", "policies off · any key wakes it"] };
   var lastState = "", toastT = 0, lastNotice = "";
   function hud(s) {
     animHud(s);
-    var emo = s.anim && s.state !== "dead" && s.state !== "jump" && s.state !== "roulade" ? s.anim : null, key = s.state + (emo ? "+" + emo.name : "");
+    var emo = s.anim && s.state !== "dead" && s.state !== "jump" && s.state !== "roulade" && s.state !== "kick" ? s.anim : null, key = s.state + (emo ? "+" + emo.name : "");
     if (key !== lastState) { lastState = key; $("state").className = "state glass " + s.state + (s.state === "sprint" ? " run" : "") + (emo ? " emote" : ""); var t = STATE_TXT[s.state] || [s.state, ""]; $("stateTxt").textContent = emo ? emo.emoji + " " + emo.label : t[0]; $("stateSub").textContent = t[1]; }
     var sub = s.sit_pending ? "then sit" : (STATE_TXT[s.state] || ["", ""])[1];
     if (emo) sub = (s.state === "seated" || s.state === "sit_down" ? "seated · " : "") + "emotion on the " + (s.role === "sitstand" ? "sit-stand" : "walk") + " policy";
     if (s.down && (s.state === "walk" || s.state === "stand" || s.state === "stopping")) sub = "fell · getting up by itself";
     if (s.trick && s.trick.kind === "jump") sub = s.trick.landed ? "landed · rose " + s.trick.rise_mm.toFixed(0) + " mm" : (s.trick.airborne ? "airborne" : (s.trick.launch ? "launch flag 1" : "support"));
     if (s.trick && s.trick.kind === "roulade") sub = "rolled " + s.trick.deg.toFixed(0) + "°";
+    if (s.trick && s.trick.kind === "kick") sub = "ball " + s.trick.peak.toFixed(2) + " m/s";
     $("stateSub").textContent = sub;
     $("fell").classList.toggle("on", s.state === "fallen" || s.state === "recover" || s.down);
     $("polname").textContent = s.policy.replace(/_hd1910|\.onnx/g, "").replace(/_/g, " ");
@@ -507,7 +514,7 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
     $("z").textContent = (s.z * 1000).toFixed(0); $("tilt").textContent = s.tilt.toFixed(0);
     $("odo").textContent = s.odometer.toFixed(2); $("falls").textContent = s.falls;
     $("vin").textContent = s.vin.toFixed(2); $("rate").textContent = ((s.rate || 0) / 50).toFixed(2); $("stepms").textContent = s.step_ms.toFixed(1);
-    $("kSpace").classList.toggle("off", !s.has.jump); $("kR").classList.toggle("off", !s.has.roulade);
+    $("kSpace").classList.toggle("off", !s.has.jump); $("kR").classList.toggle("off", !s.has.roulade); $("kB").classList.toggle("off", !s.has.kick);
     if (s.perturb && drag) { $("stateSub").textContent = "pull " + s.perturb.F.toFixed(1) + " N"; }
     if (s.notice && s.notice !== lastNotice) { lastNotice = s.notice; toast(s.notice); }
     if (!s.notice) lastNotice = "";
@@ -515,8 +522,8 @@ display:flex;align-items:center;gap:7px;transition:opacity .18s,transform .28s c
   function toast(t) { var el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { el.classList.remove("show"); }, 2200); }
 
   // ---- settings popover ---------------------------------------------------------------------------------------------------
-  var ROLES = { walk: "selWalk", run: "selRun", sprint: "selSprint", sitstand: "selSitstand", jump: "selJump", roulade: "selRoulade", recovery: "selRecovery" };
-  var OPTIONAL = { sprint: 1, jump: 1, roulade: 1, recovery: 1 };
+  var ROLES = { walk: "selWalk", run: "selRun", sprint: "selSprint", sitstand: "selSitstand", jump: "selJump", roulade: "selRoulade", recovery: "selRecovery", kick: "selKick" };
+  var OPTIONAL = { sprint: 1, jump: 1, roulade: 1, recovery: 1, kick: 1 };
   function fillPolicies(h) {
     Object.keys(ROLES).forEach(function (role) {
       var sel = $(ROLES[role]); sel.innerHTML = "";

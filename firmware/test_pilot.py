@@ -5,8 +5,8 @@
 The pilot only gets what the real duck can measure (gyro, orientation, joint angles and speeds); the simulator's
 physics and servo model (app/engine.py) stand in for the duck, and the simulator's own truth (trunk height, position)
 judges the result. Per trial (random start jitter and servo delay, fixed seeds): walk forward 4 s, turn 2 s, run 3 s,
-sprint 2.5 s, sit, stand, walk back, sidestep, jump, flip. Reported over the trials: falls, forward speed reached
-against the command for walk / run / sprint, seated and standing heights, jump rise, flips landed upright.
+sprint 2.5 s, sit, stand, walk back, sidestep, jump, flip, then a kick (the ball placed at the right toe as in training). Reported over the trials: falls, forward speed reached
+against the command for walk / run / sprint, seated and standing heights, jump rise, flips landed upright, ball speed and the kick's peak tilt.
 Writes docs/pilot_results.json and docs/figures/pilot_sim.pdf.
 """
 import argparse, json, math, sys, time
@@ -20,7 +20,7 @@ import duck_pilot, policy_net
 
 STEPS = [("stand", 1.0, {}), ("walk", 4.0, dict(y=1)), ("turn", 2.0, dict(y=1, w=-1)), ("stop1", 1.5, {}), ("run", 3.0, dict(y=1, run=True)),
          ("stop2", 2.0, {}), ("level5", 0, "faster2"), ("sprint", 2.5, dict(y=1, run=True)), ("stop3", 2.5, {}), ("sit", 2.5, "sit"),
-         ("up", 2.5, "sit"), ("back", 2.0, dict(y=-1)), ("side", 2.0, dict(x=1)), ("stop4", 1.5, {}), ("jump", 3.0, "jump"), ("flip", 4.5, "flip")]
+         ("up", 2.5, "sit"), ("back", 2.0, dict(y=-1)), ("side", 2.0, dict(x=1)), ("stop4", 1.5, {}), ("jump", 3.0, "jump"), ("flip", 4.5, "flip"), ("settle", 2.0, {}), ("kick", 3.5, "kick")]
 
 
 def trial(nets, seed):
@@ -38,6 +38,9 @@ def trial(nets, seed):
         if what == "faster2":
             pilot.press("faster"); pilot.press("faster")
         elif isinstance(what, str):
+            if what == "kick":
+                duck.place_ball()                 # the operator puts the ball down; the pilot cannot see it
+                ball_yaw = engine.yaw_of(d.qpos[duck.free_qadr + 3:duck.free_qadr + 7]); ball_peak = 0.0
             pilot.drive(); pilot.press(what)
         else:
             pilot.drive(**what)
@@ -50,12 +53,16 @@ def trial(nets, seed):
                 s.substep()
             v = engine.quat_rotate_inverse(q, d.qvel[duck.free_dadr:duck.free_dadr + 3])
             log.append((float(v[0]), float(d.qpos[duck.free_qadr + 2]), pilot.tilt, pilot.state))
+            if name == "kick":
+                bv = d.qvel[duck.ball_dadr:duck.ball_dadr + 2]
+                ball_peak = max(ball_peak, float(bv[0] * math.cos(ball_yaw) + bv[1] * math.sin(ball_yaw)))
     L, m = np.array([r[:3] for r in log]), marks
     seg = lambda a, b=None, skip=1.0: L[m[a] + round(skip / duck_pilot.DT):(m[b] if b else len(L))]
     return dict(falls=pilot.falls, walk_v=float(seg("walk", "turn")[:, 0].mean()), run_v=float(seg("run", "stop2")[:, 0].mean()),
                 sprint_v=float(seg("sprint", "stop3")[:, 0].mean()), seated_z=float(seg("sit", "up", 1.5)[:, 1].mean()),
                 stand_z=float(seg("stop4", "jump", 0.5)[:, 1].mean()), jump_rise=float(seg("jump", "flip", 0)[:, 1].max() - L[m["jump"], 1]),
-                flip_peak_tilt=float(seg("flip", None, 0)[:, 2].max()), flip_upright=bool(L[-1, 2] < 20 and L[-1, 1] > 0.08),
+                flip_peak_tilt=float(seg("flip", "settle", 0)[:, 2].max()), flip_upright=bool(L[m["settle"] - 1, 2] < 20 and L[m["settle"] - 1, 1] > 0.08),
+                kick_ball=ball_peak, kick_peak_tilt=float(seg("kick", None, 0)[:, 2].max()), kick_upright=bool(L[-1, 2] < 20 and L[-1, 1] > 0.08),
                 end_state=log[-1][3]), L, marks
 
 
@@ -74,8 +81,9 @@ if __name__ == "__main__":
                           max=round(float(np.max([r[n] for r in rows])), 3))
     out = dict(when=time.strftime("%Y-%m-%d %H:%M"), trials=a.trials, falls_total=int(sum(r["falls"] for r in rows)),
                clean_trials=int(sum(r["falls"] == 0 for r in rows)), flips_upright=int(sum(r["flip_upright"] for r in rows)),
+               kicks_upright=int(sum(r["kick_upright"] for r in rows)),
                commanded=dict(walk_v=0.40, run_v=0.70, sprint_v=1.2),
-               **{n: stat(n) for n in ("walk_v", "run_v", "sprint_v", "seated_z", "stand_z", "jump_rise", "flip_peak_tilt")})
+               **{n: stat(n) for n in ("walk_v", "run_v", "sprint_v", "seated_z", "stand_z", "jump_rise", "flip_peak_tilt", "kick_ball", "kick_peak_tilt")})
     (HERE.parent / "docs/pilot_results.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(out, indent=1))
 

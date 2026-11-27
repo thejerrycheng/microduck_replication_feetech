@@ -4,7 +4,7 @@
 #     ssh -t microduck 'sudo bash /tmp/net_install.sh'        # after copying this file and duck_net.py to /tmp
 #
 #   1. Wi-Fi     every saved network is retried forever instead of being given up on
-#   2. hotspot   always on, alongside the Wi-Fi: network name `microduck`, the password you type here, the duck at
+#   2. hotspot   always on, alongside the Wi-Fi: network name `microduck`, password `microduck` (or the script's first argument), the duck at
 #                10.42.0.1. A phone on it reaches the duck directly and gets the internet through the duck's Wi-Fi
 #   3. USB       Radxa's NCM gadget on the OTG port plus a `duck-usb` profile; the duck is then 10.55.0.1 and the
 #                Mac gets its address from it over the cable that powers it
@@ -18,7 +18,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 [ -f "$here/duck_net.py" ] || { echo "duck_net.py must sit beside this script"; exit 1; }
 
 ssid="microduck"
-read -r -s -p "Password for the hotspot $ssid (8 characters or more: Wi-Fi security allows nothing shorter): " pw; echo
+pw=${1:-microduck}                # the hotspot's password (user, 2026-11-20: "microduck"); another as the first argument
 [ ${#pw} -ge 8 ] || { echo "too short"; exit 1; }
 
 # 1. saved Wi-Fi: never stop trying

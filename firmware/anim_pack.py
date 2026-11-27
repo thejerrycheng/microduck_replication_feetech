@@ -12,8 +12,10 @@ What is kept, and how small:
            does), the beak 0..100. One JSON for all clips.
   sound    8-bit mu-law at 24 kHz (ITU-T G.711's curve; from 16-bit 48 kHz), one file per sound. The duck's
            speaker is a 20 mm driver: nothing above 12 kHz is lost that it could play.
-  dropped  what needs a policy on the duck: the walk commands (wiggle, side-step), the jump / flip / sit skills
-           and play_dead's leg poses. Those clips play their head, beak and sound; `needs` lists what is missing.
+  legs     the walk commands (wiggle, side-step, step back: `tw`) and the sit / jump / flip skills (`sk`). The duck
+           plays them only while its policies drive (duck_agent.Drive, duck_pilot.ClipBody), as Duck Live does: the
+           whole body moves. With the policies off a clip plays its head, beak and sound; `needs` lists what that
+           leaves out. play_dead's lying leg poses are not kept (the duck sits instead).
 """
 import hashlib, io, json, sys, wave, zipfile
 from pathlib import Path
@@ -56,6 +58,18 @@ def pack():
                 if i in (0, len(rows) - 1) or any(abs((rows[i + 1][j] - rows[i - 1][j]) * (r[0] - rows[i - 1][0])
                                                       - (r[j] - rows[i - 1][j]) * (rows[i + 1][0] - rows[i - 1][0])) > 1e-9
                                                   for j in range(1, 6)) or r[0] - rows[i - 1][0] > 400]
+        # The legs' part (v2, 2026-11-20), played by the duck while its policies drive (duck_pilot.ClipBody): the walk
+        # command [ms, vx mm/s, vy mm/s, yaw mrad/s] as keyframes (linear in between; only clips that have one), and the
+        # skills [ms, "sit" | "jump" | "flip"] (a run of the same skill, as devastated's sit every 0.1 s, kept once).
+        tw = [[round(k["t"] * 1000), *(round(1000 * float(v)) for v in (k.get("twist") or [0.0, 0.0, 0.0]))] for k in keys]
+        tw = [r for i, r in enumerate(tw)
+              if i in (0, len(tw) - 1) or any(abs((tw[i + 1][j] - tw[i - 1][j]) * (r[0] - tw[i - 1][0])
+                                                  - (r[j] - tw[i - 1][j]) * (tw[i + 1][0] - tw[i - 1][0])) > 1e-9 for j in (1, 2, 3))]
+        tw = tw if any(any(r[1:]) for r in tw) else []
+        sk = []
+        for k in keys:
+            if k.get("skill") and (not sk or sk[-1][1] != k["skill"]):
+                sk.append([round(k["t"] * 1000), k["skill"]])
         needs = sorted({k["skill"] for k in keys if k.get("skill")}
                        | ({"walk"} if any(any(k.get("twist") or [0]) for k in keys) else set())
                        | ({"legs"} if c.get("pose_joints") else set()))
@@ -65,8 +79,9 @@ def pack():
             files[name] = sound(SRC / s)
             snd.append(name)
         clips.append(dict(name=c["name"], label=c.get("label") or c["name"].replace("_", " ").capitalize(), emoji=c.get("emoji", ""),
-                          group=c.get("group", ""), T=c["duration_s"], needs=needs, snd=snd, snd_at=c.get("sound_at_s", 0.0), k=rows))
-    files["clips.json"] = json.dumps(dict(v=1, rate=RATE, clips=clips), separators=(",", ":")).encode()
+                          group=c.get("group", ""), T=c["duration_s"], needs=needs, snd=snd, snd_at=c.get("sound_at_s", 0.0), k=rows,
+                          **(dict(tw=tw) if tw else {}), **(dict(sk=sk) if sk else {})))
+    files["clips.json"] = json.dumps(dict(v=2,rate=RATE, clips=clips), separators=(",", ":")).encode()
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for name in sorted(files):

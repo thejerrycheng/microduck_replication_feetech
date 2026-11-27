@@ -41,7 +41,7 @@ Joint order is `duck_pilot.JOINTS` (left leg, neck/head, right leg), the same as
 | 1 | Control period | fixed 20 ms (`sim.dt` 0.005, decimation 4) | 20.2-20.6 ms with the board cool (48.5-49.9 Hz, about 7 % of ticks late); 21.7 ms at 83 C (46 Hz); 30-38 ms once the board throttles (33.0 and 26.5 Hz) | the runner's own tick counter, 5 live runs and 4 dry runs |
 | 2 | Compute + bus time inside a tick | not modelled separately; BAM command delay 3-6 physics steps (15-30 ms) | 9.7-10.3 ms cool, 13-14 ms at 83 C, 29-41 ms throttled | same counter |
 | 3 | Supply voltage | `HD1910_VIN_RANGE` (7.4, 8.0) V, `HD1910_VIN_MIN` 7.0 V | 7.6-7.8 V at rest; 6.5-7.2 V while the legs push (6.5 V was the lowest reading) | servo register 62 during live runs |
-| 4 | Servo gains | P 5 (`HD1910_KP_FW`), no D term in the drive model | P 5, D 20 in the servos (set 2026-11-18; they were at the factory P 32, D 40) | registers 21, 22, 50, 51 |
+| 4 | Servo gains | P 5 (`HD1910_KP_FW`) x per-joint `KP_SCALE_RANGE` 0.9-1.7 (round 2; 1.0-1.6 before; stand-up 0.8-1.7) = P 4.5-8.5; no D term in the drive model (damping only through the BAM fit's friction terms) | P 5, D 20 in the servos (set 2026-11-18; they were at the factory P 32, D 40); P 8, D 10 from 2026-11-20 (`firmware/set_gains.py`, user's call) | registers 21, 22, 50, 51 |
 | 5 | Joint speed reading | continuous, noise +-0.25 rad/s, lag 1-3 steps (`realism.py`) | quantised: 1 count = 50 ticks/s = 0.077 rad/s (fitted 42.7-49.6 ticks/s per count on servos 30, 31, 33, correlation 0.96-0.98) | position differences against register 58 during a head animation |
 | 6 | Joint position reading | +-0.002 rad noise, lag 0-2 steps, 5 % dropped reads | 12-bit, 0.0015 rad per tick; **0 missed readings** in every run (thousands of ticks) | sync-read checksums |
 | 7 | Dropped writes | 3 % (`WRITE_DROPOUT_PROB`) | not measured (a sync write is not acknowledged) | |
@@ -50,6 +50,7 @@ Joint order is `duck_pilot.JOINTS` (left leg, neck/head, right leg), the same as
 | 10 | Foot contacts, trunk height, trunk velocity | used by Duck Live's operator logic (jump launch flag until touchdown, hand-backs) | none of the three exists on the duck: `duck_pilot.py` uses tilt and the clock | |
 | 11 | Start of an episode | reset near the default pose (or the task's own reset) | any limp pose; torque comes on where the joints are and the target is blended in over 2 s | `Drive.BLEND` |
 | 12 | Joint range | model limits, e.g. hip pitch +-90 deg | the tucked sitting duck read hip pitch -167.6 and +133.1 deg, knee -98.0 deg: the real joints go past the model's limits | calibrated angles, sitting |
+| 12b | Encoder turn (fixed 2026-11-20) | joint angle is continuous | the HD1910 counts past one turn (reads 4940, 6412), and zeros sat near the encoder's ends (left hip yaw 576: a full-turn jump at +50.6 deg; right knee 3080: at -89.2 deg, inside its range; head yaw at 167.8 deg). Live, the left hip yaw was read at -196.6 deg and driven the long way round into its stop at 98 % load. Fix: every zero moved to tick 2048 through the servo offset (`firmware/recenter.py`, calibration backed up on the duck), and the runner, head player and studio take each reading in the turn nearest the zero and write goals in the servo's own turn (`duck_agent.Drive._run`, `Player._run`, `feetech.angle`) | live status, servo registers 31, 56, 60, 65 |
 | 13 | Board temperature | none | 51 C at boot, 69 C after 6 min, 83-87 C after about 15 min, then throttled to 408 MHz; three shutdowns in one day | `/sys/class/thermal` |
 
 Not measured at all, and worth measuring before trusting any conclusion: end-to-end command delay (write to first
@@ -82,6 +83,65 @@ Three things follow from these and nothing else has been shown:
   it (6.8 V against a trained minimum of 7.0), but that is an inference, not a measurement.
 
 Walking, running, sitting, jumping and the flip have not been run on the real duck.
+
+### The largest gap: force on the ground when lying on the back or side
+
+Observed on the duck by eye (2026-11-18, after the IMU was calibrated from two poses): it gets up after falling
+forward, but not from its back, and not from its side. In the simulator the same policy is up 1.0-1.2 s after any of
+20 lying starts, back and side included.
+
+What the logs add (`docs/live_*.json`, about 5 samples a second): while the duck was down the policy kept asking for
+joint moves of 37-49 deg (median), and in a growing share of those samples no joint moved by even 1 deg:
+
+| run | samples down | of those, no joint moving | board, battery |
+|---|---|---|---|
+| 11:08 (a) | 27 | 0 | cool, fresh |
+| 11:27 | 118 | 25 | warm |
+| 11:30 | 272 | 90 | hot, battery lower |
+| 11:14 | 20 | 15 | throttled to 26.5 Hz |
+
+So the failure is a stall: a large position error at P 5, and the legs do not deliver the force to act on it. The
+observation side is not the suspect any more: the same pipeline gets the duck up from the front and holds a stand.
+Candidate causes, none of them separated yet:
+
+1. **Stall torque lower than the model's.** The model gives 1.02 N.m at 8.0 V and scales with voltage; the pack
+   read 6.5-7.2 V under load. Getting off the back needs the legs to lever the whole body over, the most torque of
+   any get-up.
+2. **The servo's own overload protection** (Feetech registers 34-36: after a set time above a set load the servo
+   cuts itself to a small "protection torque" until the load goes). The drive model has nothing like it. **Not
+   read yet on this duck**: read registers 34, 35, 36 and the status register 65 during a stall. If it is active,
+   either raise it in the servos or model it in training.
+3. **The body the duck lies on.** The real duck carries a battery, the computer board, the HAT and wiring, and its
+   shell and head differ from the model's collision shapes. Rolling off the back or side depends on exactly that
+   shape, its friction and where the mass is. A forward fall lands on the feet and beak, which the model has right.
+4. **Joint travel.** The real joints went past the model's limits when tucked (hip pitch -168 and +133 deg), and
+   cables may stop others short of them. A get-up that needs a pose the real leg cannot reach stalls there.
+
+**Joint limits tested, 2026-11-18 (`firmware/test_getup.py`, `docs/getup_results.json`,
+`docs/figures/getup_limits.pdf`).** The pilot got the simulated duck up from lying on its back, front, left and right
+side (8 seeds each, 20 s allowed), with the real duck's limits added one at a time:
+
+| Added to the simulator | back | front | left | right |
+|---|---|---|---|---|
+| nothing (as trained) | 8/8, 0.45 s | 8/8, 0.52 s | 8/8, 0.66 s | 8/8, 0.59 s |
+| targets held to each servo's encoder (0..4095 ticks about its zero) | 8/8 | 8/8 | 8/8 | 8/8 |
+| the same + the reading wrapping past the encoder's end | 8/8 | 8/8 | 8/8 | 7/8 |
+| neck and head targets held to the model's range | 8/8 | 8/8 | 8/8 | 8/8 |
+| one joint's stop moved out 40 deg (each of the 14 in turn) | 8/8 all | 7/8 for 21, else 8/8 | 7/8 for 11, else 8/8 | 6/8 for 21, 7/8 for 20, else 8/8 |
+| every stop moved out 40 deg | 8/8 | 5/8 | 8/8, 1.6 s | 8/8 |
+| pack at 6.6 V, loop at 25 Hz, or both | 8/8 | 8/8 | 8/8 | 8/8 |
+
+So no joint limit, and neither the low pack nor the slow loop as the simulator models them, stops the simulated duck
+getting up from its back: item 4 is not the cause. What the table does show: the hip roll joints (11, 21) are the ones
+whose stop the get-up leans on (the policy asks up to 63 and 81 deg of joints that stop at 22), and the real right hip roll
+was logged at 36 deg, past that stop (in runs made before the last joint calibration, so to be measured again). Two faults were found on the way and are worth fixing whatever the cause:
+servo 13 (right knee) has its zero at tick 3136, so the last 5.7 deg of its travel (-84.3 to -90) is past the end of
+its encoder; and every servo's own angle limits are 0..4095, so nothing but the linkage stops a real joint.
+The simulated get-up takes 0.45 to 0.66 s: it is a throw, not a push, and the real legs were logged not moving under
+a 37 to 49 deg error. That points at items 1 and 2 (force and protection), which only the real servos can settle.
+
+To separate them: log each servo's load, current, voltage and status registers at 50 Hz through a failed get-up
+from the back (the per-tick log in section 5), and weigh the duck and find its balance point.
 
 ## 4. What to change in training, in order of expected effect
 
@@ -116,11 +176,26 @@ Walking, running, sitting, jumping and the flip have not been run on the real du
 10. **IMU.** The trained misalignment (up to 6 deg) already covers the calibrated mounting (about 3 deg). No change
     needed; do not deploy without the two-pose calibration (`firmware/studio.py` `imu_cal`).
 
+### Already changed in the training code (2026-11-18, not yet trained or tested)
+
+`microduck_rl/dr.py`, picked up by every task through `apply_replica_dr` and by the sit-stand task's own events:
+
+| Setting | Before | Now | Why |
+|---|---|---|---|
+| `FOOT_FRICTION_RANGE` (sole friction, static and dynamic) | 0.5-1.3 | 0.2-1.3 | the real soles slip on the floor |
+| `TRUNK_MASS_SCALE_RANGE` (new event `battery_mass`, trunk only) | trunk shared the all-body 0.90-1.25 | 0.90-1.60, i.e. 179-318 g for the 199 g trunk | the real battery is heavier than the modelled one |
+
+Both ranges are wide on purpose because neither quantity has been measured. Weigh the battery and the whole duck,
+measure the sole's friction with a spring scale (force to slide the standing duck / its weight), then narrow them:
+a policy trained over a needlessly wide range gives up performance in the middle of it.
+
 ## 5. Measurements still needed, and the tools for them
 
 | Measurement | Tool | State |
 |---|---|---|
-| Per-tick observation and action log from the duck, to replay through the simulator | add a ring buffer to `Drive._run` and a route to fetch it | not written yet |
+| Per-tick observation and action log from the duck, to replay through the simulator | `firmware/run_log.py`: every run is recorded on the duck (obs, action, goals, joint position, speed, load, current, temperature, voltage, IMU, timing); `run_log.py pull`, `show`, `plot`, `replay` | written 2026-11-22, checked against a simulated bus (`firmware/test_run_log.py`); not yet run on the duck |
+| Per joint, the angle asked against the angle reached, through a failed get-up | the runner's status (`ask_deg`, `at_deg`, 10 Hz), logged by `live_try.py` as `ask` / `at` | written 2026-11-18, not yet run on the duck |
+| Which joint limit stops the get-up | `firmware/test_getup.py` | done in the simulator: none (section 3) |
 | Servo step response (delay, rise, overshoot) at P 5, D 20 and several voltages | `firmware/step_response.py` | exists; not rerun at these gains |
 | Voltage against load, to fit the sag term | log register 62 and the load register during a live run | `live_watch.py` logs voltage only |
 | Head tracking of commanded motion | `firmware/test_anim.py` | done: 0.8-2.2 deg RMS, 0.12-0.14 s from request to motion |

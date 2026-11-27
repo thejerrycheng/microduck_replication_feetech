@@ -133,6 +133,12 @@ studio). The studio only passes the inputs on, and the app uses those routes: \t
 \texttt{pilot\_stop}, \texttt{pilot\_drive \{x, y, w, run\}}, \texttt{pilot\_press \{key\}} with key sit, jump,
 flip, faster or slower.
 
+Every such run, live or dry, is recorded on the duck (\texttt{firmware/run\_log.py}): per 20~ms tick the
+observation given to the network and its action, the goals written, each servo's position, speed, load, current,
+temperature and supply voltage, the IMU and the loop's timing. The format, the tools that read it and its test are
+in \texttt{firmware/README.md} (Run log); it was checked against a simulated servo bus and has not yet recorded a
+run on the duck.
+
 In Play with the real duck selected and the duck in Setup, the pad is the simulated duck's with one more button,
 power. Power on asks first (``The legs will move''): the policies take the joints where they are and blend to
 their stance over 2~s. Power off asks first too (``The duck will drop''): every joint goes limp. A refusal is

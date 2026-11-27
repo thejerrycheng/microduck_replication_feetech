@@ -13,7 +13,47 @@ enum Target: String, CaseIterable { case real, sim }
 
 struct Motor: Equatable { var torque = false; var pos = 0.0, goal = 0.0, volt = 0.0, lo = 0.0, hi = 4095.0; var deg: Double?; var temp = 0.0 }      // deg: joint angle, once calibrated
 struct Sensor: Equatable { var ok = false; var note = "" }
-struct Emote: Identifiable, Equatable { let name, emoji, label: String; let ok: Bool; var id: String { name } }
+/// One emotion clip. `group`: "live" (Duck Live's originals) or "pollen" (Pollen Robotics' set); `headOnly` (shown as
+/// "body"): the clip also moves the legs (a walk command, sit, jump or flip); the duck plays that while its policies
+/// are on (duck_pilot.ClipBody) and only the head, beak and sound with them off.
+struct Emote: Identifiable, Equatable {
+    let name, emoji, label: String; let ok: Bool; var group = ""; var headOnly = false
+    var id: String { name }
+}
+extension Emote {
+    /// Every emotion clip, so the pads can list them with no duck or simulator to ask (greyed out until one answers).
+    /// Generated from firmware/anim_pack.py (app/animations/manifest.json) on 2026-11-20; 27 clips.
+    static let catalog: [Emote] = [
+        Emote(name: "hello", emoji: "👋", label: "Hello", ok: false, group: "live", headOnly: false),
+        Emote(name: "happy", emoji: "😄", label: "Happy", ok: false, group: "live", headOnly: true),
+        Emote(name: "dance", emoji: "💃", label: "Dance", ok: false, group: "live", headOnly: true),
+        Emote(name: "sing", emoji: "🎤", label: "Sing", ok: false, group: "live", headOnly: false),
+        Emote(name: "love", emoji: "🥰", label: "Love", ok: false, group: "live", headOnly: false),
+        Emote(name: "proud", emoji: "😎", label: "Proud", ok: false, group: "live", headOnly: false),
+        Emote(name: "showoff", emoji: "🤸", label: "Show off", ok: false, group: "live", headOnly: true),
+        Emote(name: "peck", emoji: "🌾", label: "Peck", ok: false, group: "live", headOnly: false),
+        Emote(name: "yawn", emoji: "🥱", label: "Yawn", ok: false, group: "live", headOnly: false),
+        Emote(name: "sneeze", emoji: "🤧", label: "Sneeze", ok: false, group: "live", headOnly: false),
+        Emote(name: "startled", emoji: "😱", label: "Startled", ok: false, group: "live", headOnly: true),
+        Emote(name: "dizzy", emoji: "😵‍💫", label: "Shake off", ok: false, group: "live", headOnly: false),
+        Emote(name: "nap", emoji: "😴", label: "Nap", ok: false, group: "live", headOnly: true),
+        Emote(name: "yes", emoji: "👍", label: "Yes", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "no", emoji: "🙅", label: "No", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "mmh", emoji: "🤨", label: "Mmh?", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "curious", emoji: "🤔", label: "Curious", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "laugh", emoji: "😂", label: "Laugh", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "excited", emoji: "🤩", label: "Excited", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "angry", emoji: "😠", label: "Angry", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "sad", emoji: "😢", label: "Sad", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "mock", emoji: "😜", label: "Mock", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "defiant", emoji: "😤", label: "Defiant", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "impatient", emoji: "😒", label: "Impatient", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "yes_fast", emoji: "👌", label: "Yep", ok: false, group: "pollen", headOnly: false),
+        Emote(name: "devastated", emoji: "😭", label: "Devastated", ok: false, group: "pollen", headOnly: true),
+        Emote(name: "play_dead", emoji: "💀", label: "Play dead", ok: false, group: "pollen", headOnly: true)
+    ]
+}
+
 struct Gains: Equatable { var p = 0, d = 0, duckP = 5, duckD = 20 }
 struct Trace { var n = 0; var t: [Double] = [], pos: [Double] = [], vel: [Double] = [], load: [Double] = [], temp: [Double] = [] }
 struct ApiError: LocalizedError { let errorDescription: String? }
@@ -440,7 +480,8 @@ final class Finder {
             if Date().timeIntervalSince(pressAt) > 1.3 { pilotLevel = p["level"] as? Int ?? pilotLevel }
         } else if !pilotOn { set(\.pilotState, ""); set(\.pilotSpeed, 0); set(\.pilotDown, false) }
         set(\.clips, brainOn ? (j["anims"] as? [[String: Any]] ?? []).map {
-            Emote(name: $0["name"] as? String ?? "", emoji: $0["emoji"] as? String ?? "", label: $0["label"] as? String ?? "", ok: true) } : [])
+            Emote(name: $0["name"] as? String ?? "", emoji: $0["emoji"] as? String ?? "", label: $0["label"] as? String ?? "", ok: true,
+                  group: $0["group"] as? String ?? "", headOnly: !(($0["needs"] as? [String]) ?? []).isEmpty) } : [])
         if let a = s["anim"] as? [String: Any], let name = a["name"] as? String, let t = a["t"] as? Double, let T = a["T"] as? Double {
             if clipNow != name { clipNow = name; clipClock = (Date().addingTimeInterval(-t), max(0.1, T)) }
         } else if !clipNow.isEmpty, clipClock.map({ Date().timeIntervalSince($0.start) > 1.2 }) ?? true { clipNow = ""; clipClock = nil }
@@ -619,7 +660,8 @@ final class Finder {
         _ = h
         bodies = sc["bodies"] as? [String] ?? []
         emotes = (sc["anims"] as? [[String: Any]] ?? []).map {
-            Emote(name: $0["name"] as? String ?? "", emoji: $0["emoji"] as? String ?? "", label: $0["label"] as? String ?? "", ok: $0["available"] as? Bool ?? false) }
+            Emote(name: $0["name"] as? String ?? "", emoji: $0["emoji"] as? String ?? "", label: $0["label"] as? String ?? "", ok: $0["available"] as? Bool ?? false,
+                  group: $0["group"] as? String ?? "") }
         var c = URLComponents(); c.scheme = "ws"; c.host = live.host; c.port = port; c.path = "/"
         c.queryItems = [URLQueryItem(name: "token", value: token)]
         let t = http.webSocketTask(with: c.url!)
@@ -850,7 +892,7 @@ final class Finder {
     // ---- the duck's pilot and animations (Setup) ----------------------------------------------------------------------------
     // The policies trained for this duck run on the duck (firmware/duck_agent.Drive). The studio only passes the driver's
     // inputs on: `pilot_start {live}`, `pilot_stop`, `pilot_drive {x, y, w, run}` (the two sticks, -1...1, the same axes as
-    // the simulated duck's), `pilot_press {key}` (sit, jump, flip, faster, slower); `anim_play {name}` and `anim_stop`.
+    // the simulated duck's), `pilot_press {key}` (sit, jump, flip, kick, faster, slower); `anim_play {name}` and `anim_stop`.
 
     /// Power: the policies take the joints where they are and blend to their stance over 2 s. Refused with the duck's
     /// own reason (not calibrated, no policies on it, servo power off).
@@ -868,7 +910,7 @@ final class Finder {
         if await call("pilot_stop", short: true) != nil { pilotAt = Date(); pilotOn = false; pilotState = ""; pilotSpeed = 0 }
     }
 
-    /// `sit` (down, or up again), `jump` or `flip` (both from a stand).
+    /// `sit` (down, or up again), `jump`, `flip` or `kick` (all three from a stand).
     func pilotPress(_ key: String) async { await call("pilot_press", ["key": key], short: true) }
 
     func setGait(_ n: Int) { guard n != gait else { return }; gait = n; gaitUntil = Date().addingTimeInterval(4) }

@@ -277,6 +277,34 @@ clip ended on that tick in \cutOk~trials and the duck reached 80\% of the 0.4~m/
 Median control tick: \costBare~ms with the bare policy, \costLive~ms with the idle life, \costClip~ms with a clip
 playing.
 
+\subsection{H. The same clips on the real duck's own pilot}\label{sec:exp:duck}
+The real duck plays the clips from its own pack (\code{firmware/anim\_pack.py}) with its own player
+(\code{duck\_agent.Player}). Until 2026-11-20 that pack kept only the head, beak and sound, so on the duck every clip
+moved the head alone, while in Duck Live \code{dance}, \code{happy}, \code{showoff}, \code{startled}, \code{nap},
+\code{devastated} and \code{play\_dead} move the whole body. Pack v2 keeps each clip's walk command (\code{tw}) and
+its skills (\code{sk}, a run of the same skill kept once), and while the policies drive, \code{duck\_pilot.ClipBody}
+plays them as \code{Animator.update}/\code{fire} do: the walk command goes to the walk policy while the duck stands
+(not slewed; the stick wins); \code{sit} sits a standing duck; \code{jump}/\code{flip} wait until the duck is still
+(standing, tilt $<20^\circ$, $|\omega|<1.5$\,rad/s, no command left, for 0.4\,s, at most 1.5\,s), fire the policy, and
+hold the clip's timeline until the duck has stood again for 0.3\,s (at most 6\,s); a seated duck stands up first for
+a clip that needs its legs; a fall ends the clip. With the policies off the duck still plays the head only.
+
+\code{firmware/test\_clip\_body.py} runs the duck's pilot and numpy pack on the app plant, 6 jittered starts per
+clip, each clip played head-only (the old behaviour) and whole-body (\code{docs/clip\_body\_results.json},
+Fig.~\ref{fig:clipbody}). Trunk path over the clip, head-only $\rightarrow$ whole-body: \code{dance} 0.23 $\rightarrow$
+1.02\,m, \code{showoff} 0.16 $\rightarrow$ 0.73\,m with the flip landed 6/6, \code{startled} 0.30 $\rightarrow$ 0.41\,m;
+\code{nap}, \code{devastated} and \code{play\_dead} now sit (6/6). Head-only \code{play\_dead} was worse than doing
+nothing: its seated head poses on a standing duck tipped it over in 3 of 6 starts (whole-body: 0 falls). Clips without
+legs (\code{hello}, \code{yes}) are unchanged. \textbf{Failure:} \code{happy}'s jump falls in all 6 starts, even after
+the stillness wait; a plain jump with no clip on this harness falls in 2 of 4, so the cause is the pilot's clocked jump
+(\code{jump\_real2\_6748}, no foot contacts), not the clip, and Duck Live's own jump logic lands it 6/6.
+
+\begin{figure}[t]\centering
+\includegraphics[width=0.7\linewidth]{figures/clip_body.pdf}
+\caption{Emotion clips on the duck's pilot (sim): trunk path and net yaw over the clip, head only vs whole body.}
+\label{fig:clipbody}
+\end{figure}
+
 \section{Implementation and usage}
 \begin{verbatim}
 app/ducklive.sh               # the app; emotions on the left panel

@@ -12,7 +12,7 @@
 # On a duck locked by safe_install.sh, unlock first (`sudo duck-safe unlock`), or the install is gone at the next boot.
 set -euo pipefail
 host=${1:-microduck}; cd "$(dirname "$0")/.."
-COPYFILE_DISABLE=1 tar czf - firmware/studio.py firmware/duck_agent.py firmware/duck_voice.py firmware/duck_pilot.py firmware/policy_net.py firmware/feetech.py \
+COPYFILE_DISABLE=1 tar czf - firmware/studio.py firmware/duck_agent.py firmware/duck_voice.py firmware/duck_pilot.py firmware/policy_net.py firmware/run_log.py firmware/feetech.py \
   firmware/web app/web/vendor/three.min.js app/web/vendor/OrbitControls.js \
   app/assets/microduck/robot_groundcontact.xml ios/lan.py |
   ssh -o BatchMode=yes "$host" 'mkdir -p ~/microduck/studio && tar xzf - -C ~/microduck/studio 2>/dev/null'

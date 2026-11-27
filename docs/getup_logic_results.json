@@ -1,0 +1,1627 @@
+{
+ "when": "2026-11-20 07:23",
+ "trials": 6,
+ "seconds": 10.0,
+ "pack": [
+  "jump",
+  "kick",
+  "recovery",
+  "roulade",
+  "run",
+  "sitstand",
+  "sprint",
+  "walk"
+ ],
+ "rows": [
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 0,
+   "up_s": 0.38,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 1,
+   "up_s": 0.34,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 2,
+   "up_s": 0.36,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 3,
+   "up_s": 0.7000000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 4,
+   "up_s": 0.4,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 5,
+   "up_s": 0.9,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 0,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 1,
+   "up_s": 0.5,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 2,
+   "up_s": 0.54,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 3,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 4,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 5,
+   "up_s": 0.74,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 0,
+   "up_s": 0.74,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 1,
+   "up_s": 0.7000000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 2,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 3,
+   "up_s": 0.56,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 4,
+   "up_s": 0.74,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 5,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 0,
+   "up_s": 0.5,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 1,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 2,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 3,
+   "up_s": 0.7000000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 4,
+   "up_s": 0.78,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 5,
+   "up_s": 0.36,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "back",
+   "seed": 0,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "back",
+   "seed": 1,
+   "up_s": 0.4,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "back",
+   "seed": 2,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "back",
+   "seed": 3,
+   "up_s": 0.8,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "back",
+   "seed": 4,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "back",
+   "seed": 5,
+   "up_s": 1.0,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "front",
+   "seed": 0,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "front",
+   "seed": 1,
+   "up_s": 1.2,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "front",
+   "seed": 2,
+   "up_s": 0.6,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "front",
+   "seed": 3,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "front",
+   "seed": 4,
+   "up_s": 0.72,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "front",
+   "seed": 5,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "left",
+   "seed": 0,
+   "up_s": 1.04,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "left",
+   "seed": 1,
+   "up_s": 0.8,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "left",
+   "seed": 2,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "left",
+   "seed": 3,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "left",
+   "seed": 4,
+   "up_s": 0.8,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "left",
+   "seed": 5,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "right",
+   "seed": 0,
+   "up_s": 0.6,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "right",
+   "seed": 1,
+   "up_s": 0.92,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "right",
+   "seed": 2,
+   "up_s": 0.72,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "right",
+   "seed": 3,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "right",
+   "seed": 4,
+   "up_s": 0.88,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "walk first",
+   "cond": "real",
+   "pose": "right",
+   "seed": 5,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 0,
+   "up_s": 0.38,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 1,
+   "up_s": 0.34,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 2,
+   "up_s": 0.36,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 3,
+   "up_s": 0.7000000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 4,
+   "up_s": 0.4,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 5,
+   "up_s": 0.92,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 0,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 1,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 2,
+   "up_s": 0.54,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 3,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 4,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 5,
+   "up_s": 0.72,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 0,
+   "up_s": 0.72,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 1,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 2,
+   "up_s": 0.5,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 3,
+   "up_s": 0.56,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 4,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 5,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 0,
+   "up_s": 0.5,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 1,
+   "up_s": 0.8200000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 2,
+   "up_s": 0.66,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 3,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 4,
+   "up_s": 0.78,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 5,
+   "up_s": 0.36,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "back",
+   "seed": 0,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "back",
+   "seed": 1,
+   "up_s": 0.4,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "back",
+   "seed": 2,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "back",
+   "seed": 3,
+   "up_s": 0.76,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "back",
+   "seed": 4,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "back",
+   "seed": 5,
+   "up_s": 1.0,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "front",
+   "seed": 0,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "front",
+   "seed": 1,
+   "up_s": 1.2,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "front",
+   "seed": 2,
+   "up_s": 0.6,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "front",
+   "seed": 3,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "front",
+   "seed": 4,
+   "up_s": 0.76,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "front",
+   "seed": 5,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "left",
+   "seed": 0,
+   "up_s": 1.04,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "left",
+   "seed": 1,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "left",
+   "seed": 2,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "left",
+   "seed": 3,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "left",
+   "seed": 4,
+   "up_s": 0.8,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "left",
+   "seed": 5,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "right",
+   "seed": 0,
+   "up_s": 0.6,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "right",
+   "seed": 1,
+   "up_s": 0.92,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "right",
+   "seed": 2,
+   "up_s": 0.76,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "right",
+   "seed": 3,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "right",
+   "seed": 4,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up",
+   "cond": "real",
+   "pose": "right",
+   "seed": 5,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 0,
+   "up_s": 0.38,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 1,
+   "up_s": 0.34,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 2,
+   "up_s": 0.36,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 3,
+   "up_s": 0.7000000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 4,
+   "up_s": 0.4,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "back",
+   "seed": 5,
+   "up_s": 0.92,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 0,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 1,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 2,
+   "up_s": 0.54,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 3,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 4,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "front",
+   "seed": 5,
+   "up_s": 0.72,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 0,
+   "up_s": 0.72,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 1,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 2,
+   "up_s": 0.5,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 3,
+   "up_s": 0.56,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 4,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "left",
+   "seed": 5,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 0,
+   "up_s": 0.5,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 1,
+   "up_s": 0.8200000000000001,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 2,
+   "up_s": 0.66,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 3,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 4,
+   "up_s": 0.78,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "nominal",
+   "pose": "right",
+   "seed": 5,
+   "up_s": 0.36,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "back",
+   "seed": 0,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "back",
+   "seed": 1,
+   "up_s": 0.4,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "back",
+   "seed": 2,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "back",
+   "seed": 3,
+   "up_s": 0.76,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "back",
+   "seed": 4,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "back",
+   "seed": 5,
+   "up_s": 1.0,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "front",
+   "seed": 0,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "front",
+   "seed": 1,
+   "up_s": 1.2,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "front",
+   "seed": 2,
+   "up_s": 0.6,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "front",
+   "seed": 3,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "front",
+   "seed": 4,
+   "up_s": 0.76,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "front",
+   "seed": 5,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "left",
+   "seed": 0,
+   "up_s": 1.04,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "left",
+   "seed": 1,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "left",
+   "seed": 2,
+   "up_s": 0.48,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "left",
+   "seed": 3,
+   "up_s": 0.64,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "left",
+   "seed": 4,
+   "up_s": 0.8,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "left",
+   "seed": 5,
+   "up_s": 0.52,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "right",
+   "seed": 0,
+   "up_s": 0.6,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "right",
+   "seed": 1,
+   "up_s": 0.92,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "right",
+   "seed": 2,
+   "up_s": 0.76,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "right",
+   "seed": 3,
+   "up_s": 0.68,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "right",
+   "seed": 4,
+   "up_s": 0.84,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "recovery"
+  },
+  {
+   "logic": "stand-up+hold",
+   "cond": "real",
+   "pose": "right",
+   "seed": 5,
+   "up_s": 0.44,
+   "standing_end": true,
+   "refalls": 0,
+   "role_end": "walk"
+  }
+ ],
+ "summary": {
+  "walk first | nominal | back": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5133333333333333,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | nominal | front": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5499999999999999,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | nominal | left": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.6166666666666666,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | nominal | right": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.6433333333333333,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | real | back": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5933333333333334,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | real | front": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7266666666666666,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | real | left": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7133333333333335,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "walk first | real | right": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7066666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | nominal | back": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5166666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | nominal | front": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5499999999999999,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | nominal | left": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5966666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | nominal | right": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.6266666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | real | back": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5866666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | real | front": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7333333333333333,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | real | left": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7200000000000001,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up | real | right": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7066666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | nominal | back": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5166666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | nominal | front": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5499999999999999,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | nominal | left": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5966666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | nominal | right": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.6266666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | real | back": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.5866666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | real | front": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7333333333333333,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | real | left": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7200000000000001,
+   "standing_end": 6,
+   "refalls": 0
+  },
+  "stand-up+hold | real | right": {
+   "up": 6,
+   "n": 6,
+   "up_s": 0.7066666666666667,
+   "standing_end": 6,
+   "refalls": 0
+  }
+ }
+}

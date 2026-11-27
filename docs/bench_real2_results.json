@@ -1,0 +1,646 @@
+{
+ "date": "2026-11-20 06:41",
+ "quick": false,
+ "slip_mu": 0.3,
+ "sets": {
+  "before (app defaults to 2026-11-19)": {
+   "policies": {
+    "walk": "velstand_allcoll_hd1910_iter21495.onnx",
+    "run": "run_v3_allcoll_hd1910_iter5999.onnx",
+    "sprint": "sprint_max_allcoll_hd1910_iter7998.onnx",
+    "sitstand": "sitstand_fast_hd1910_iter5499.onnx",
+    "jump": "jump_hd1910_iter1500.onnx",
+    "roulade": "roulade_head_hd1910_iter7000.onnx",
+    "recovery": "standup_hd1910_iter9999.onnx"
+   },
+   "nominal": {
+    "walk": [
+     {
+      "cmd": 0.15,
+      "vx": 0.1901644442506394,
+      "vx_min": 0.18731712990752478,
+      "vx_max": 0.1936767917288919,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.3,
+      "vx": 0.33670182546237437,
+      "vx_min": 0.33324818186281435,
+      "vx_max": 0.3433208999664742,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.4,
+      "vx": 0.4171880902727687,
+      "vx_min": 0.4130976870115361,
+      "vx_max": 0.42121653384398855,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.5,
+      "vx": 0.5255303320016423,
+      "vx_min": 0.522635437485675,
+      "vx_max": 0.5292477462860969,
+      "falls": 0,
+      "trials": 6
+     }
+    ],
+    "stand": {
+     "abs_vx_mean": 0.00039659577092094754,
+     "falls": 0,
+     "trials": 6
+    }
+   },
+   "slip": {
+    "walk": [
+     {
+      "cmd": 0.15,
+      "vx": 0.19344944591964008,
+      "vx_min": 0.19092550175681117,
+      "vx_max": 0.19573072186964946,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.3,
+      "vx": 0.34316699919534904,
+      "vx_min": 0.3375020953088796,
+      "vx_max": 0.3471320884836627,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.4,
+      "vx": 0.42100315751507167,
+      "vx_min": 0.4175542067609439,
+      "vx_max": 0.42393822966102435,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.5,
+      "vx": 0.5214457422285169,
+      "vx_min": 0.5153586849819185,
+      "vx_max": 0.5248145706446157,
+      "falls": 0,
+      "trials": 6
+     }
+    ],
+    "stand": {
+     "abs_vx_mean": 0.00021970479381656078,
+     "falls": 0,
+     "trials": 6
+    }
+   },
+   "sprint": {
+    "vx": 1.2667919378123795,
+    "z_min": 0.10727575992939885,
+    "falls": 0,
+    "trials": 6
+   },
+   "sprint_slip": {
+    "vx": 0.43854818993049377,
+    "z_min": 0.03347934584698326,
+    "falls": 0,
+    "trials": 6
+   },
+   "push": [
+    {
+     "level": 1.0,
+     "fell": 4,
+     "upright_after_4s": 8,
+     "repeats": 8
+    },
+    {
+     "level": 2.0,
+     "fell": 6,
+     "upright_after_4s": 8,
+     "repeats": 8
+    },
+    {
+     "level": 3.0,
+     "fell": 6,
+     "upright_after_4s": 8,
+     "repeats": 8
+    }
+   ],
+   "push_slip": [
+    {
+     "level": 1.0,
+     "fell": 2,
+     "upright_after_4s": 8,
+     "repeats": 8
+    },
+    {
+     "level": 2.0,
+     "fell": 3,
+     "upright_after_4s": 7,
+     "repeats": 8
+    },
+    {
+     "level": 3.0,
+     "fell": 6,
+     "upright_after_4s": 8,
+     "repeats": 8
+    }
+   ],
+   "getup": {
+    "prone": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 0.88
+    },
+    "supine": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 0.9824999999999999
+    },
+    "side": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.1
+    }
+   },
+   "sitstand": {
+    "sit_settle_s": [
+     0.27999999999999997,
+     0.26,
+     0.27999999999999997
+    ],
+    "sit_fell": 0,
+    "stand_up_s": [
+     0.2,
+     0.18000000000000002,
+     0.18000000000000002
+    ],
+    "standing_after": 3,
+    "trials": 3,
+    "stop_falls": 0,
+    "stop_trials": 30,
+    "handover": {
+     "run": {
+      "falls": 0,
+      "trials": 3,
+      "level": 3
+     },
+     "sprint": {
+      "falls": 1,
+      "trials": 3,
+      "level": 5
+     }
+    }
+   },
+   "jump": {
+    "trials": 12,
+    "takeoff": 12,
+    "standing": 12,
+    "fell": 0,
+    "rise_mm": {
+     "mean": 23.8672206267199,
+     "min": 21.74119085090688,
+     "max": 26.559208410130054
+    }
+   },
+   "roulade": {
+    "trials": 12,
+    "completed": 12,
+    "standing": 12,
+    "fell": 0,
+    "peak_deg": {
+     "mean": 368.18113780368463,
+     "min": 364.12941225998503,
+     "max": 370.6977888128271
+    }
+   }
+  },
+  "real-duck round 2": {
+   "policies": {
+    "walk": "velstand_real2_hd1910_iter25249.onnx",
+    "run": "run_v3_allcoll_hd1910_iter5999.onnx",
+    "sprint": "sprint_max_real2_hd1910_iter9497.onnx",
+    "sitstand": "sitstand_fast_real2_hd1910_iter6998.onnx",
+    "jump": "jump_real2_hd1910_iter6748.onnx",
+    "roulade": "roulade_head_real2_hd1910_iter13249.onnx",
+    "recovery": "standup_real2_hd1910_iter13248.onnx"
+   },
+   "nominal": {
+    "walk": [
+     {
+      "cmd": 0.15,
+      "vx": 0.21909258640494342,
+      "vx_min": 0.2144171348579479,
+      "vx_max": 0.22626765917808353,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.3,
+      "vx": 0.36771544742603274,
+      "vx_min": 0.3507080532764107,
+      "vx_max": 0.3748673886180001,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.4,
+      "vx": 0.46972650846074165,
+      "vx_min": 0.4626261937452202,
+      "vx_max": 0.4745724948812135,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.5,
+      "vx": 0.528788072507173,
+      "vx_min": 0.5220535919679244,
+      "vx_max": 0.5416206106137822,
+      "falls": 0,
+      "trials": 6
+     }
+    ],
+    "stand": {
+     "abs_vx_mean": 0.15286103965528106,
+     "falls": 0,
+     "trials": 6
+    }
+   },
+   "slip": {
+    "walk": [
+     {
+      "cmd": 0.15,
+      "vx": 0.010158445344524347,
+      "vx_min": -0.06305786865810255,
+      "vx_max": 0.20951926208372582,
+      "falls": 2,
+      "trials": 6
+     },
+     {
+      "cmd": 0.3,
+      "vx": 0.01751473578615364,
+      "vx_min": -0.07983186746187372,
+      "vx_max": 0.38620035296515565,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.4,
+      "vx": 0.030278141197544944,
+      "vx_min": -0.07155285250154393,
+      "vx_max": 0.47172629132919813,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.5,
+      "vx": -0.0692209316865197,
+      "vx_min": -0.0832654238458778,
+      "vx_max": -0.054488386287700294,
+      "falls": 0,
+      "trials": 6
+     }
+    ],
+    "stand": {
+     "abs_vx_mean": 0.12371491816128072,
+     "falls": 0,
+     "trials": 6
+    }
+   },
+   "sprint": {
+    "vx": 0.4650076802511262,
+    "z_min": 0.03580380654192205,
+    "falls": 0,
+    "trials": 6
+   },
+   "sprint_slip": {
+    "vx": 0.3024955114091483,
+    "z_min": 0.03444644872229878,
+    "falls": 0,
+    "trials": 6
+   },
+   "push": [
+    {
+     "level": 1.0,
+     "fell": 5,
+     "upright_after_4s": 5,
+     "repeats": 8
+    },
+    {
+     "level": 2.0,
+     "fell": 8,
+     "upright_after_4s": 5,
+     "repeats": 8
+    },
+    {
+     "level": 3.0,
+     "fell": 7,
+     "upright_after_4s": 2,
+     "repeats": 8
+    }
+   ],
+   "push_slip": [
+    {
+     "level": 1.0,
+     "fell": 1,
+     "upright_after_4s": 4,
+     "repeats": 8
+    },
+    {
+     "level": 2.0,
+     "fell": 5,
+     "upright_after_4s": 3,
+     "repeats": 8
+    },
+    {
+     "level": 3.0,
+     "fell": 7,
+     "upright_after_4s": 3,
+     "repeats": 8
+    }
+   ],
+   "getup": {
+    "prone": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.0150000000000001
+    },
+    "supine": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.0175
+    },
+    "side": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.05
+    }
+   },
+   "sitstand": {
+    "sit_settle_s": [
+     0.26,
+     0.14,
+     0.12000000000000001
+    ],
+    "sit_fell": 0,
+    "stand_up_s": [
+     0.22,
+     0.2,
+     0.2
+    ],
+    "standing_after": 3,
+    "trials": 3,
+    "stop_falls": 0,
+    "stop_trials": 30,
+    "handover": {
+     "run": {
+      "falls": 0,
+      "trials": 3,
+      "level": 3
+     },
+     "sprint": {
+      "falls": 0,
+      "trials": 3,
+      "level": 5
+     }
+    }
+   },
+   "jump": {
+    "trials": 12,
+    "takeoff": 0,
+    "standing": 9,
+    "fell": 0,
+    "rise_mm": {
+     "mean": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    }
+   },
+   "roulade": {
+    "trials": 12,
+    "completed": 1,
+    "standing": 8,
+    "fell": 1,
+    "peak_deg": {
+     "mean": 30.564525528675308,
+     "min": 0.0,
+     "max": 366.7743063441037
+    }
+   }
+  },
+  "round 2, old walk 21495": {
+   "policies": {
+    "walk": "velstand_allcoll_hd1910_iter21495.onnx",
+    "run": "run_v3_allcoll_hd1910_iter5999.onnx",
+    "sprint": "sprint_max_real2_hd1910_iter9497.onnx",
+    "sitstand": "sitstand_fast_real2_hd1910_iter6998.onnx",
+    "jump": "jump_real2_hd1910_iter6748.onnx",
+    "roulade": "roulade_head_real2_hd1910_iter13249.onnx",
+    "recovery": "standup_real2_hd1910_iter13248.onnx"
+   },
+   "nominal": {
+    "walk": [
+     {
+      "cmd": 0.15,
+      "vx": 0.1901644442506394,
+      "vx_min": 0.18731712990752478,
+      "vx_max": 0.1936767917288919,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.3,
+      "vx": 0.33670182546237437,
+      "vx_min": 0.33324818186281435,
+      "vx_max": 0.3433208999664742,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.4,
+      "vx": 0.4171880902727687,
+      "vx_min": 0.4130976870115361,
+      "vx_max": 0.42121653384398855,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.5,
+      "vx": 0.5255303320016423,
+      "vx_min": 0.522635437485675,
+      "vx_max": 0.5292477462860969,
+      "falls": 0,
+      "trials": 6
+     }
+    ],
+    "stand": {
+     "abs_vx_mean": 0.00039659577092094754,
+     "falls": 0,
+     "trials": 6
+    }
+   },
+   "slip": {
+    "walk": [
+     {
+      "cmd": 0.15,
+      "vx": 0.19344944591964008,
+      "vx_min": 0.19092550175681117,
+      "vx_max": 0.19573072186964946,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.3,
+      "vx": 0.34316699919534904,
+      "vx_min": 0.3375020953088796,
+      "vx_max": 0.3471320884836627,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.4,
+      "vx": 0.42100315751507167,
+      "vx_min": 0.4175542067609439,
+      "vx_max": 0.42393822966102435,
+      "falls": 0,
+      "trials": 6
+     },
+     {
+      "cmd": 0.5,
+      "vx": 0.5214457422285169,
+      "vx_min": 0.5153586849819185,
+      "vx_max": 0.5248145706446157,
+      "falls": 0,
+      "trials": 6
+     }
+    ],
+    "stand": {
+     "abs_vx_mean": 0.00021970479381656078,
+     "falls": 0,
+     "trials": 6
+    }
+   },
+   "sprint": {
+    "vx": 0.45135800769662726,
+    "z_min": 0.03567235235592058,
+    "falls": 0,
+    "trials": 6
+   },
+   "sprint_slip": {
+    "vx": 0.5403422269842563,
+    "z_min": 0.03370504967652066,
+    "falls": 0,
+    "trials": 6
+   },
+   "push": [
+    {
+     "level": 1.0,
+     "fell": 4,
+     "upright_after_4s": 8,
+     "repeats": 8
+    },
+    {
+     "level": 2.0,
+     "fell": 6,
+     "upright_after_4s": 8,
+     "repeats": 8
+    },
+    {
+     "level": 3.0,
+     "fell": 6,
+     "upright_after_4s": 8,
+     "repeats": 8
+    }
+   ],
+   "push_slip": [
+    {
+     "level": 1.0,
+     "fell": 2,
+     "upright_after_4s": 8,
+     "repeats": 8
+    },
+    {
+     "level": 2.0,
+     "fell": 3,
+     "upright_after_4s": 7,
+     "repeats": 8
+    },
+    {
+     "level": 3.0,
+     "fell": 6,
+     "upright_after_4s": 8,
+     "repeats": 8
+    }
+   ],
+   "getup": {
+    "prone": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.0150000000000001
+    },
+    "supine": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.0175
+    },
+    "side": {
+     "success": 8,
+     "repeats": 8,
+     "t_mean": 1.05
+    }
+   },
+   "sitstand": {
+    "sit_settle_s": [
+     0.3,
+     0.27999999999999997,
+     0.27999999999999997
+    ],
+    "sit_fell": 0,
+    "stand_up_s": [
+     0.22,
+     0.22,
+     0.22
+    ],
+    "standing_after": 3,
+    "trials": 3,
+    "stop_falls": 0,
+    "stop_trials": 30,
+    "handover": {
+     "run": {
+      "falls": 0,
+      "trials": 3,
+      "level": 3
+     },
+     "sprint": {
+      "falls": 1,
+      "trials": 3,
+      "level": 5
+     }
+    }
+   },
+   "jump": {
+    "trials": 12,
+    "takeoff": 12,
+    "standing": 12,
+    "fell": 0,
+    "rise_mm": {
+     "mean": 19.02409176383121,
+     "min": 14.08619662410314,
+     "max": 25.159671178162256
+    }
+   },
+   "roulade": {
+    "trials": 12,
+    "completed": 12,
+    "standing": 12,
+    "fell": 11,
+    "peak_deg": {
+     "mean": 385.0202987133985,
+     "min": 380.55894338134027,
+     "max": 388.58268678396155
+    }
+   }
+  }
+ }
+}

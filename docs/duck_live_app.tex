@@ -176,6 +176,12 @@ $\dot z\ge0.05$~m/s, tilt $\le30^\circ$). Feet contact is read from the MuJoCo c
 against the floor). The jump policy keeps running until the landing is \emph{quiet}---a foot down, tilt $<20^\circ$,
 $z\ge0.085$~m, $|v|<0.3$~m/s, $|\omega|<1.5$~rad/s---for 0.1~s, or 2.5~s at most, then the walk policy takes the
 stand over. The short window is a measured necessity of this plant (\S\ref{sec:exp:jump}).
+Since the real-duck fine-tunes (2026-11-19) the training command has a second mode, \code{flag\_on\_s}$=0.36$~s:
+the real duck has no contact sensing, so its pilot holds the flag for a fixed time from the request, and training
+uses the same clock. Jump exports trained that way (\code{jump\_real*}, \code{JUMP\_CLOCK\_EXPORTS} in
+\code{engine.py}) get $\ell=1$ for the first 0.36~s of the jump whatever the feet do; the older exports keep the
+contact protocol above. Under the wrong protocol the round-2 jump takes off in 6/12 trials instead of 12/12
+(\S\ref{sec:exp:real2}).
 
 \textbf{Front flip.} R from a stand switches to the roulade policy at zero twist; the rotation about the trunk's
 pitch axis is integrated from the gyro for the HUD. Hand-back to the walk policy once upright for 0.5~s after at
@@ -342,6 +348,45 @@ the last segment, the stop from the sprint (the failure mode of \S\ref{sec:exp:t
 back on its feet before the segment ended; the fourth was the front flip of one run, which ended on the floor and
 was stood up by the stand-up policy. The jump never fell in the scenario.
 
+\subsection{I. The real-duck round-2 fine-tunes}\label{sec:exp:real2}
+Sections A--H were measured with the policies in force until 2026-11-19 (\code{\polWalk}, \code{\polSprint},
+\code{\polSitstand}, \code{\polJump}, \code{\polRoulade}, \code{\polRecovery}). On 2026-11-19/20 every policy was
+fine-tuned on the 4090 laptop for the real replica (``round~2'', its \code{docs/real2/NOTES.md}): sole friction
+0.05--1.0 redrawn every 1--4~s, the trunk (battery) mass $\times$1.1--1.3 with its CoM 10--20~mm rearward, joint
+limits randomised per episode (neck $\times$0.55--1.0), servo P 4.5--8.5, supply 6.2--8.4~V, control period
+20--40~ms. Its picks (\code{docs/real2/LATEST.txt} there): walk VelStand 25249, stand-up 13248, sit--stand 6998,
+flip 13249, jump 6748, sprint 9497; run stays run~v3 5999 (its round~1 froze in place). The exports are
+\code{exports/<role>\_real2\_hd1910\_iter<N>.onnx}, repacked self-contained, same 61$\to$14 contract.
+
+\code{app/bench\_real2.py} runs three policy sets on this plant with the same seeded starts: the old picks, every
+round-2 pick, and every round-2 pick with the old walk. The skills are graded on the old walk too because the
+round-2 walk changes what they start from. Besides the nominal floor, a slippery condition sets the sliding friction of every geom to
+$\mu=0.3$ (MuJoCo takes the larger of the pair, so floor and soles both). \tab{real2}, \fig{real2}.
+
+\begin{table}[h]\centering{\scriptsize\setlength{\tabcolsep}{3pt}\input{duck_app_real2_table}}
+\caption{Old picks against round~2 on the Mac plant. Walk: 6 trials of 6~s per speed, $v_x$ averaged after 2~s;
+stand: 10~s at zero command, mean $|v_x|$; pushes: standing, 8 per level, upright 4~s later; get-up: 8 per family
+under the stand-up role; jump and flip: 12 standing starts (``stand-up needed'': landed on the floor and was stood
+up by the stand-up policy).}\label{tab:real2}\end{table}
+\begin{figure}[h]\centering\includegraphics[width=\linewidth]{figures/duck_app_real2_compare.pdf}
+\caption{Round~2 on the Mac plant. Left: walk speed tracking, nominal (solid) and $\mu=0.3$ (dashed). Middle:
+upright 4~s after a push while standing (bars nominal, triangles $\mu=0.3$). Right: skill success.}\label{fig:real2}\end{figure}
+
+Findings. \textbf{Walk 25249} tracks a little faster on the nominal floor (0.47 against 0.42~m/s at 0.4) but does
+not stand: at zero command it creeps at 0.15~m/s mean $|v_x|$ (old: 0.000), the behaviour the laptop's own grade
+reports (re-falls 33--55\,\% about 2~s after a get-up, creeping at 0.2~m/s). Because the app starts a jump or a flip
+only from a still stand, under this walk neither trick starts (jump 0/12 take-offs; flip 1/12). On $\mu=0.3$ it
+stalls ($|v_x|\le0.03$~m/s at every command) where the old walk is unaffected, and upright-after-push drops from
+7--8/8 to 2--5/8. The app therefore keeps \code{velstand\_21495} as the default walk; 25249 is selectable.
+\textbf{Stand-up 13248} and \textbf{sit--stand 6998}: equal to the old picks here (8/8 get-ups in every family,
+1.0~s; 3/3 sit--stands). \textbf{Jump 6748} under its 0.36~s clock: 12/12 take-offs, 12/12 standing, 0 falls,
+19~mm rise (old 24~mm). \textbf{Flip 13249}: completes 12/12 but lands on the floor in 11/12 and is stood up by the
+stand-up policy (old: 0/12); the laptop graded it at 0.32 / 0.56 complete-and-head-up (nominal / stress).
+\textbf{Sprint 9497}: 0.45~m/s against 1.27 on the nominal floor; the laptop measured 0.49 against 0.69 under its
+own grader, the price of paying speed only on the feet. These are plant results: the slippery-floor, battery and
+joint-limit gains the round was trained for exist only partly here (no battery or limit change on this plant), so
+the real duck is the test that decides.
+
 \section{Implementation and usage}
 \begin{verbatim}
 app/setup.sh                  # once: ~/.venvs/microduck_live (MuJoCo, ORT, BAM)
@@ -349,6 +394,7 @@ app/ducklive.sh               # open /Applications/Duck Live.app (built once)
 app/ducklive.sh --browser | --serve | --install-app | --sync
 app/sync_policies.sh --local  # git pull + repack sidecar exports
 app/bench_mac.py              # this document's numbers -> figures, *_table.tex
+app/bench_real2.py            # Sec. I: old picks vs the round-2 fine-tunes
 \end{verbatim}
 The window starts \code{app/server.py} with the venv's Python, waits for its \code{DUCK\_LIVE\_READY <port>
 <token>} line and loads \code{http://127.0.0.1:<port>/?token=\ldots\&native=1}; the token guards every API and
@@ -376,6 +422,10 @@ protocol and the fall routing---is what a gamepad mapping on the robot would do.
 \item \textbf{The jump is a 2--3~cm hop} and the hand-back is immediate because the landing hold is not reliable
   here; a jump recipe fine-tuned with a longer post-landing hold on this plant would let the jump policy own its
   landing.
+\item \textbf{Sections A--H describe the old picks.} Since 2026-11-20 the app's defaults are the round-2
+  stand-up, sit--stand, flip, jump and sprint (\S\ref{sec:exp:real2}); only \S I measures them, and \code{bench\_mac.py}
+  has not been re-run with them. The flip and sprint defaults are weaker here than the ones they replaced; they
+  are defaults so that they can be tried on the real duck, not because this plant prefers them.
 \item \textbf{Browser mode} (\code{--browser}) cannot see a key-up while \cmdkey is held; the page clears the
   held keys when \cmdkey is released, so the duck stops a moment late. The app window does not have the issue.
 \end{itemize}

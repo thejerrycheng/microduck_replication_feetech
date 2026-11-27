@@ -32,7 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
 
   // keys the page owns; everything else (⌘Q, ⌘R, ⌘L …) stays with the menu
   static let keyNames: [UInt16: String] = [126: "up", 125: "down", 123: "left", 124: "right", 49: "space", 36: "enter",
-                                           76: "enter", 1: "s", 0: "a", 2: "d", 15: "r", 53: "escape",
+                                           76: "enter", 1: "s", 0: "a", 2: "d", 15: "r", 11: "b", 53: "escape",
                                            // emotions (the page maps these names to clips: app/animations/manifest.json)
                                            18: "1", 19: "2", 20: "3", 21: "4", 23: "5", 22: "6", 26: "7", 28: "8", 25: "9", 29: "0",
                                            12: "q", 13: "w", 14: "e", 17: "t", 16: "y", 32: "u", 34: "i", 31: "o", 35: "p",

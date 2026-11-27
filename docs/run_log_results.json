@@ -1,0 +1,98 @@
+{
+ "when": "2026-11-22 12:57",
+ "seconds": 6.0,
+ "row_floats": 241,
+ "cases": {
+  "dry run": {
+   "live": false,
+   "ticks_logged": 315,
+   "ticks_run": 315,
+   "rows_match_ticks": true,
+   "ended_recorded": true,
+   "hz": 50.0,
+   "tick_ms": 1.267,
+   "replay_worst_rad": 0.0,
+   "obs_pos_worst_rad": 2.1718793430380856e-11,
+   "goal_worst_ticks": 0.49989625590978903,
+   "blend_reaches_1": true,
+   "walked": true,
+   "key_logged": true,
+   "level_end": 2.0,
+   "load_exact": true,
+   "current_exact": true,
+   "temp_exact": true,
+   "volt": 7.800000190734863,
+   "battery_pct": 72.0,
+   "gains_p_d": [
+    8,
+    10
+   ],
+   "extras_read_pct": 100.0,
+   "silent_are_nan": true,
+   "bytes_per_s": 48200
+  },
+  "live": {
+   "live": true,
+   "ticks_logged": 313,
+   "ticks_run": 313,
+   "rows_match_ticks": true,
+   "ended_recorded": true,
+   "hz": 50.0,
+   "tick_ms": 1.128,
+   "replay_worst_rad": 0.0,
+   "obs_pos_worst_rad": 1.1906383923232511e-07,
+   "goal_worst_ticks": 0.4998988221268519,
+   "blend_reaches_1": true,
+   "walked": true,
+   "key_logged": true,
+   "level_end": 2.0,
+   "load_exact": true,
+   "current_exact": true,
+   "temp_exact": true,
+   "volt": 7.800000190734863,
+   "battery_pct": 72.0,
+   "gains_p_d": [
+    8,
+    10
+   ],
+   "extras_read_pct": 100.0,
+   "silent_are_nan": true,
+   "bytes_per_s": 48200
+  },
+  "live, the beak's servo silent": {
+   "live": true,
+   "ticks_logged": 314,
+   "ticks_run": 314,
+   "rows_match_ticks": true,
+   "ended_recorded": true,
+   "hz": 50.0,
+   "tick_ms": 1.17,
+   "replay_worst_rad": 0.0,
+   "obs_pos_worst_rad": 1.1891030826660653e-07,
+   "goal_worst_ticks": 0.4999667709339519,
+   "blend_reaches_1": true,
+   "walked": true,
+   "key_logged": true,
+   "level_end": 2.0,
+   "load_exact": true,
+   "current_exact": true,
+   "temp_exact": true,
+   "volt": 7.800000190734863,
+   "battery_pct": 72.0,
+   "gains_p_d": [
+    8,
+    10
+   ],
+   "extras_read_pct": 100.0,
+   "silent_are_nan": true,
+   "bytes_per_s": 48200
+  }
+ },
+ "no_log_folder": {
+  "ticks": 50,
+  "log_error": "[Errno 20] Not a directory: '/dev/null/runs'",
+  "run_error": null
+ },
+ "recorder_ms_per_tick": 0.0179,
+ "hour_MB": 173.5
+}

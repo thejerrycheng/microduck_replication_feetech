@@ -61,7 +61,7 @@ if __name__ == "__main__":
             p = get("/status")["pilot"] or {}
             imu = get("/imu") or {}
             log.append(dict(t=round(time.time() - t0, 2), roll=imu.get("roll"), pitch=imu.get("pitch"), rate=imu.get("rate"), tilt=p.get("tilt"), state=p.get("state"), off=p.get("off_deg"), hz=p.get("hz"),
-                            missed=p.get("missed"), deg=angles(cal)))
+                            missed=p.get("missed"), deg=angles(cal), ask=p.get("ask_deg"), at=p.get("at_deg")))
             if a.level and levelled < 2 and len(log) > 30 and time.time() - level_t > 12:
                 last = [r for r in log if r["t"] > log[-1]["t"] - 5 and r["roll"] is not None]
                 if len(last) > 15 and all(r["tilt"] is not None and r["tilt"] < 25 for r in last) and \
