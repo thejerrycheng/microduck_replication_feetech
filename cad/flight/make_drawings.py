@@ -66,29 +66,41 @@ def dim(ax, p0, p1, off, text, vertical=False):
         ax.text((x0 + x1) / 2, y0 + off * 1.08, text, ha="center", va="bottom" if off > 0 else "top", fontsize=6.5, color="#1f4e79")
 
 
-H = C.FRAME_H_MM
 R_BORE = C.DUCT_OD_MM / 2 + 0.15
+g, bay, SJ, ST, TG = cad["wing"], cad["bay"], C.SIDE_JOINT_MM, C.FC_STACK_MM, C.TONGUE_MM
+PRINT = "PRINT: PLA, 3 perimeters, 5 top / 4 bottom layers, 15 % gyroid, tree supports"
 FEATURES = {
-    "frame": [f"2 x ring bore dia {2*R_BORE:.1f} (duct OD {C.DUCT_OD_MM:.1f} + 0.3), axis canted {C.FAN_CANT_DEG:.0f} deg about the radial line",
-              f"ring wall {C.RING_WALL_MM:.1f} nominal ({cad['ring_wall_min_mm']:.2f} min), height {H:.0f}; 2 mm pinch slit, M3 clearance dia 3.4 across it",
-              f"ring centres {2*C.FAN_LX*1e3:.0f} apart; ring centre line {C.FAN_LY*1e3:.0f} from the duck's centre plane",
-              f"2 x spar {C.SPAR_W_MM:.0f} wide x {H:.0f} deep, inner edges +-{C.SPAR_OFFSET_MM:.2f} from the thrust centroid; run {C.LAP_Y_MM:.1f} past the centre plane",
-              "2 x lap-bolt hole dia 3.4 through both spars at +-22 from the centre plane, 6 above the underside",
-              "2 x heat-set insert pocket dia 4.0 x 5.5 deep in the rear spar top, +-15.25 (30.5 mm stack pattern)",
-              f"rail {C.RAIL_Y_MM[1]-C.RAIL_Y_MM[0]:.1f} wide at {C.RAIL_Y_MM[0]:.1f}-{C.RAIL_Y_MM[1]:.1f} from the centre plane; M2 pilot dia 1.7 for the hook screw",
-              "skirt finger 2.6 x 7.5 x 18 below the rail; 2 x gusset under the spars, 18 deep at the rail",
-              "PRINT: top face (stack side) on the bed, no supports; 3 perimeters, 6 top/bottom layers, 15 % gyroid"],
-    "lift_hook": [f"strap {C.HOOK_STRAP_MM:.1f} thick x {C.HOOK_X_MM[1]-C.HOOK_X_MM[0]:.0f} wide; top flange 2.4 over the rail; lip 2.6 under the shell edge",
-                  f"lip reaches {C.SHELL_LEDGE_Y_MM:.1f} from the centre plane; shell underside taken at z = {C.SHELL_BOTTOM_Z_MM:.0f}",
-                  "clearance hole dia 2.2 for the M2 retention screw",
-                  "PRINT: on its side (profile on the bed), no supports; 100 % infill. Mirror for the other side."],
-    "pack_tray": [f"pocket for a {C.BATT_SIZE[0]*1e3:.0f} x {C.BATT_SIZE[1]*1e3:.1f} x {C.BATT_SIZE[2]*1e3:.0f} pack (4S {C.BATT_REF_AH*1e3:.0f} mAh), shelf 2.4, end lip 8 high",
-                  "lug 3.0 thick against the rear spar pair: 2 x dia 3.4 at +-22 (the rear lap bolts hold the tray)",
-                  "back plate 2.0, roof plate 2.4, 8 mm gusset; 2 strap slots 32 x 3.5; lightening holes dia 9.2",
-                  "PRINT: on its side (C profile on the bed), no supports; 3 perimeters, 15 % gyroid"],
+    "backpack": [f"lower bay {C.BAY_MM['depth']:.0f} x {2*C.BAY_MM['half_w']:.0f} inside (pack {C.BATT_SIZE[0]*1e3:.0f} x {C.BATT_SIZE[1]*1e3:.1f} x {C.BATT_SIZE[2]*1e3:.0f}), open at the bottom; wall {C.PACK_WALL_MM:.1f}",
+                 f"head from z = {C.BAY_HEAD_MM['z0']:.0f}: bay {C.BAY_HEAD_MM['depth']:.0f} x {2*C.BAY_HEAD_MM['half_w']:.0f} inside for a 30.5 mm stack ({ST['x']:.0f} x {ST['y']:.1f}), open at the top; rear wall 6.5",
+                 f"each side wall: 2 x dia 3.4 for the wing-root screws at z = {g['root_z'][0]:.0f} / {g['root_z'][1]:.0f}, dia 6 wire hole between them (x = {g['root_x']:.0f})",
+                 "2 x insert pocket dia 4.0 x 5.5 in the rear wall's top face, +-14 from the centre plane (lid screws)",
+                 "2 x insert pocket dia 4.0 x 5.5 in the bottom rim (cap screws); slot 20.6 x 2.9 in the front wall for the lid's tab",
+                 f"rear slot 14 x 8 at z = {bay['usb_z']:.0f} for USB-C and the serial lead (height to be checked on the board)",
+                 "hook 2.5 thick over the trunk roof's rear edge; two fingers on the rear corners (location only)",
+                 PRINT + "; top face down"],
+    "top_lid": [f"plate {C.PACK_WALL_MM:.1f} thick, outline of the head; 2 x dia 3.4, heads sunk 1.6, +-14 from the centre plane",
+                f"4 x post dia 8 x {ST['boss']:.1f} with insert pocket dia 4.0 x 5.5 on a {ST['hole']:.1f} square (FC / ESC stack, M3 x 25 from below)",
+                "front block 3.8 x 20 x 5 with a tab 2.5 thick into the front wall's slot",
+                PRINT + "; top face down"],
+    "bottom_cap": ["plate 3.0 with a 4.0 plug into the lower bay; hook 2.6 thick under the trunk",
+                   "2 x dia 3.4, counterbored dia 6, for M3 x 8 into the backpack's rim",
+                   PRINT + "; flat"],
+    "wing": [f"closed shell lofted through 13 superelliptic sections; root {2*C.BLADE_ROOT_MM['a']:.0f} x {2*C.BLADE_ROOT_MM['b']:.0f}, tip {2*C.BLADE_TIP_MM['a']:.0f} x {2*C.BLADE_TIP_MM['b']:.0f}",
+             f"root face flat on the backpack's side wall: 2 x insert pocket dia 4.0 x 5.5 at z = {g['root_z'][0]:.0f} / {g['root_z'][1]:.0f}",
+             f"tip mates with the nacelle's inboard flank; tongue {TG['w']:.0f} wide x {TG['t']:.0f} thick under the nacelle, 2 x dia 3.4 counterbored (M3 x 8 from below)",
+             f"2 x dia 3.4 through the tip along y, {SJ['dx'][1]-SJ['dx'][0]:.0f} apart; head channel dia {2*SJ['bore']:.1f}, {SJ['grip']:.0f} of material under the head (M3 x 12)",
+             PRINT + "; root face down. Right wing is the mirror."],
+    "nacelle": [f"stadium pod, {cad['length_x_mm']:.0f} long x {2*(C.DUCT_OD_MM/2+0.15+C.POD_WALL6_MM):.1f} wide x {C.POD_H6_MM:.0f} high, wall {C.POD_WALL6_MM:.1f}",
+                f"2 x bore dia {2*R_BORE:.1f} (duct OD {C.DUCT_OD_MM:.1f} + 0.3) from below up to a shoulder, {2*C.FAN_LX*1e3:.0f} apart, axes canted {C.FAN_CANT_DEG:.0f} deg",
+                f"air path dia 50.6 through the shoulder with a {C.BELL_MM:.0f} mm bell-mouth lip",
+                "2 x insert pocket dia 4.0 x 5.5 in the underside between the fans, 20 apart (tongue screws)",
+                f"2 x insert pocket dia 4.0 x 5.5 in the inboard flank at mid height, {SJ['dx'][1]-SJ['dx'][0]:.0f} apart (wing-tip screws)",
+                PRINT + "; top face down. Right nacelle is the mirror."],
+    "fan_collar": ["tapered ring on the shroud under the nacelle; M2.5 grub screw through the thick upper edge, inboard side",
+                   "PRINT: flat, no supports"],
 }
-SHEETS = [("frame_left", "frame", "Frame half, left", 1), ("frame_right", "frame", "Frame half, right (left turned 180 deg; hook pilot differs)", 1),
-          ("lift_hook_left", "lift_hook", "Lift hook (left; mirror for right)", 2), ("pack_tray", "pack_tray", "Pack tray", 1)]
+SHEETS = [("backpack", "backpack", "Backpack", 1), ("top_lid", "top_lid", "Lid (carries the FC / ESC stack)", 1), ("bottom_cap", "bottom_cap", "Bottom cap", 1),
+          ("wing_left", "wing", "Wing, left (mirror for right)", 2), ("nacelle_left", "nacelle", "Nacelle, left (mirror for right)", 2), ("fan_collar", "fan_collar", "Fan ring", 4)]
 
 
 def sheet(pdf_all, part, feat, title, qty, shape=None, masses=None):
@@ -121,12 +133,12 @@ def sheet(pdf_all, part, feat, title, qty, shape=None, masses=None):
     for x in (0.36, 0.56, 0.78):
         tb.axvline(x, color="k", lw=0.6)
     tb.text(0.01, 0.62, title, fontsize=11, weight="bold")
-    tb.text(0.01, 0.2, f"MicroDuck flight frame v3  |  cad/flight/out/{part}.step", fontsize=6.5)
+    tb.text(0.01, 0.2, f"MicroDuck flight frame v8.1  |  cad/flight/out/{part}.step", fontsize=6.5)
     tb.text(0.37, 0.62, f"Quantity: {qty}", fontsize=9); tb.text(0.37, 0.2, "Units: mm   Tol. +-0.2 (FDM)", fontsize=7)
-    tb.text(0.57, 0.62, "Material: ABS / ASA (PLA: prototype)", fontsize=7.5)
-    tb.text(0.57, 0.2, "Printed mass: " + ", ".join(f"{k} {v:.1f} g" for k, v in masses.items()), fontsize=7)
+    tb.text(0.57, 0.62, "Material: PLA (ABS / ASA for heat)", fontsize=7.5)
+    tb.text(0.57, 0.2, "Printed mass: " + ", ".join(f"{k} {v:.1f} g" for k, v in masses.items() if k in ("PLA", "ABS")), fontsize=7)
     tb.text(0.79, 0.62, f"Envelope {bb.xlen:.0f} x {bb.ylen:.0f} x {bb.zlen:.0f}", fontsize=8)
-    tb.text(0.79, 0.2, "2026-11-25  generated, not to scale", fontsize=7)
+    tb.text(0.79, 0.2, "2026-11-27  generated, not to scale", fontsize=7)
     fig.suptitle("Projection: third angle. Dashed = hidden edges. Blue = overall dimensions; feature dimensions in the list (source: flight_config.py).", fontsize=7, y=0.975)
     fig.savefig(os.path.join(DRW, part + ".pdf")); pdf_all.savefig(fig); plt.close(fig)
     print("  sheet", part)
@@ -137,13 +149,12 @@ with PdfPages(os.path.join(DRW, "flight_frame_drawings.pdf")) as pdf:
     for p in cad["parts"]:
         s = cq.importers.importStep(os.path.join(OUT, p + ".step"))
         asm = s if asm is None else asm.union(s)
-    FEATURES["assembly"] = [f"overall {cad['span_y_mm']:.0f} wide x {cad['length_x_mm']:.0f} long (fan rings included, fans not shown)",
-                            "4 x M3x25 + nut through the spar laps (rear pair also holds the pack tray)",
-                            "4 x M3x12 + nut pinch bolts on the rings; 4 x M3 heat-set inserts for the FC / ESC stack",
-                            "2 x M2x8 self-tapper, hook to rail; hook-and-loop strap around pack and tray",
-                            "assembly: seat the halves over the roof, bolt the laps, clip both hooks under the shell edge and",
-                            "screw them, bolt the tray, insert the fans from above (CW/CCW on diagonals), tighten pinch bolts",
-                            f"frame mass incl. fasteners: ABS {cad['frame_mass_g']['ABS']:.0f} g, PLA {cad['frame_mass_g']['PLA']:.0f} g"]
+    FEATURES["assembly"] = [f"overall {cad['span_y_mm']:.0f} wide x {cad['length_x_mm']:.0f} long (fans not shown)",
+                            "20 x M3 heat-set insert; 12 x M3x8, 4 x M3x12, 4 x M3x25, 4 x M2.5 grub screw",
+                            "each wing: 2 x M3x8 from below and 2 x M3x12 through the tip into the nacelle; 2 x M3x8 into the root from inside the bay",
+                            "stack under the lid on 4 x M3x25; lid: front tab, 2 x M3x8 at the rear; cap: 2 x M3x8 from below",
+                            "order and driver access: assembly guide and scripts/tools/flight_tool_clearance.py",
+                            f"frame mass incl. fasteners: PLA {cad['frame_mass_g']['PLA']:.0f} g, ABS {cad['frame_mass_g']['ABS']:.0f} g"]
     sheet(pdf, "flight_frame_assembly", "assembly", "Assembly (printed parts only)", 1, shape=asm.val(), masses={k: v for k, v in cad["frame_mass_g"].items()})
     for part, feat, title, qty in SHEETS:
         sheet(pdf, part, feat, title, qty)

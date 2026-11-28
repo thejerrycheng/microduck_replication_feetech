@@ -305,6 +305,6 @@ for ax, ((i, j), lab) in zip(axs, [((1, 0), "top: y, x forward [mm]"), ((0, 2), 
     lim = {0: [C.TRUNK_X0_MM, C.TRUNK_X0_MM + C.TRUNK_LEN_MM], 1: [-C.TRUNK_WID_MM / 2, C.TRUNK_WID_MM / 2], 2: [C.TRUNK_BOTTOM_Z_MM, C.ROOF_Z_MM]}
     ax.add_patch(plt.Rectangle((lim[i][0], lim[j][0]), lim[i][1] - lim[i][0], lim[j][1] - lim[j][0], fc="none", ec="k", ls="--", lw=0.8))
     ax.autoscale(); ax.set_aspect("equal"); ax.set_title(lab, fontsize=8); ax.grid(alpha=0.3)
-fig.suptitle("Frame v8: backpack, sculpted wings, nacelles, bottom cap (orange); dashed = trunk", fontsize=8)
+fig.suptitle("Frame v8.1: backpack, sculpted wings, nacelles, lid and bottom cap (orange); dashed = trunk", fontsize=8)
 fig.tight_layout(); fig.savefig(os.path.join(ROOT, "docs", "figures", "flight_frame.pdf"))
 print("wrote cad/flight/out/*.step|stl, docs/flight_cad_results.json, docs/figures/flight_frame.pdf")

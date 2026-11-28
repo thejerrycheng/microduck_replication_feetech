@@ -3,20 +3,25 @@
 import json, os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 J = lambda n: json.load(open(os.path.join(ROOT, "docs", n)))
-fea, sid, ro, cad, res = J("flight_fea_results.json"), J("fan_sysid_results.json"), J("flight_rollout_results.json"), J("flight_cad_results.json"), J("flight_results.json")
+st, sid, ro, cad, res = J("flight_stress_results.json"), J("fan_sysid_results.json"), J("flight_rollout_results.json"), J("flight_cad_results.json"), J("flight_results.json")
+clr, tool = J("flight_clearance.json"), J("flight_tool_clearance.json")
 rl = J("flight_rl_res_legs_results.json"); rb, rp = rl["random_same_seeds"]["base"], rl["random_same_seeds"]["policy"]
-a, p = fea["materials"]["ABS"], fea["materials"]["PLA"]
+s15, s25 = st["infill"]["15"], st["infill"]["25"]; lc1 = s15["cases"]["LC1 full thrust"]; cv = st["convergence"]
+worst = min(s15["cases"].items(), key=lambda kv: min(kv[1]["sf_xy"], kv[1]["sf_z"], kv[1]["sf_core"]))
 b, c = ro["baseline"], ro["carry"]
 tab = {r["name"]: r for r in sid["table"]}
 rob = ro["robust"]
 ok = lambda pred: sum(v["success"] for k, v in rob.items() if pred(k))
 tot = lambda pred: sum(1 for k in rob if pred(k))
 N = dict(
-    FeaLiftABS=f"{a['tip_mean_mm']:.2f}", FeaLiftPLA=f"{p['tip_mean_mm']:.2f}", FeaTiltABS=f"{max(a['ring_tilt_deg']):.2f}", FeaTiltPLA=f"{max(p['ring_tilt_deg']):.2f}",
-    FeaModeABS=f"{a['modes_hz'][0]:.0f}", FeaModePLA=f"{p['modes_hz'][0]:.0f}", FeaVmABS=f"{a['vm_p999_mpa']:.1f}", FeaSfABS=f"{a['sf_yield']:.0f}", FeaSfPLA=f"{p['sf_yield']:.0f}",
-    FeaStiffABS=f"{a['stiffness_n_per_mm']:.0f}", FeaDofs=f"{fea['dofs']/1e3:.0f}", FeaMesh=f"{fea['mesh_mm']:.0f}",
-    FrameABS=f"{cad['frame_mass_g']['ABS']:.0f}", FramePLA=f"{cad['frame_mass_g']['PLA']:.0f}", SpanY=f"{cad['span_y_mm']:.0f}", LenX=f"{cad['length_x_mm']:.0f}",
-    HookMpa=f"{cad['hook']['sigma_mpa']:.1f}", HookSf=f"{cad['hook']['sf']['ABS']:.1f}", NeckGap=f"{cad['neck_gap_mm']:.1f}",
+    StDefl=f"{lc1['fan_defl_mm']:.1f}", StTilt=f"{lc1['fan_tilt_deg']:.1f}", StVm=f"{lc1['vm_skin_p999']:.1f}", StSfMin=f"{s15['min_sf']:.1f}", StSfMinB=f"{s25['min_sf']:.1f}",
+    StWorst=worst[0].split(" ", 1)[1], StMode=f"{s15['modes_hz'][0]:.0f}", StModeB=f"{s25['modes_hz'][0]:.0f}", StDofs=f"{st['mesh']['dofs']/1e3:.0f}", StMesh=f"{st['mesh']['size_mm']:.0f}",
+    StConvMesh=f"{cv['size_mm']:.0f}", StConvDofs=f"{cv['dofs']/1e3:.0f}", StConvDefl=f"{cv['defl_change_pct']:+.0f}", StConvVm=f"{cv['stress_change_pct']:+.0f}", StConvMode=f"{cv['mode1_hz']:.0f}",
+    StCoreE=f"{s15['E_core_mpa']:.0f}", StCoreS=f"{s15['core_strength_mpa']:.2f}", StFeMass=f"{s15['fe_mass_g']:.0f}",
+    FrameABS=f"{cad['frame_mass_g']['ABS']:.0f}", FramePLA=f"{cad['frame_mass_g']['PLA']:.0f}", FramePLAB=f"{cad['frame_mass_g']['PLA25']:.0f}", SpanY=f"{cad['span_y_mm']:.0f}", LenX=f"{cad['length_x_mm']:.0f}",
+    NParts=f"{sum(v['qty'] for v in cad['parts'].values())}", ClrHead=f"{clr['v4']['head']*100:.1f}", ClrLeg=f"{clr['v4']['leg']*100:.1f}", ClrHeadOld=f"{clr['v3']['head']*100:.1f}", ClrLegOld=f"{clr['v3']['leg']*100:.1f}",
+    ToolNeed=f"{tool['need_mm']:.0f}", ToolMin=f"{min(x['free_mm'] for x in tool['screws']):.0f}", ToolN=f"{len(tool['screws'])}", ToolOk=f"{sum(x['ok'] for x in tool['screws'])}",
+    RobAssist=f"{ro.get('robust_assist', 0):.1f}",
     SidKfErr=f"{tab['kf']['fit_err_pct']:+.1f}", SidKfPrior=f"{tab['kf']['prior_err_pct']:+.0f}", SidRErr=f"{tab['R']['fit_err_pct']:+.0f}", SidJErr=f"{tab['J']['fit_err_pct']:+.1f}",
     SidDelayErr=f"{tab['delay']['fit_err_pct']:+.1f}", SidRzeroErr=f"{tab['r0']['fit_err_pct']:+.1f}",
     SidHoverPrior=f"{sid['gap']['prior']['hover_thrust_ratio_on_truth']*100:.1f}", SidHoverFit=f"{sid['gap']['identified']['hover_thrust_ratio_on_truth']*100:.1f}",

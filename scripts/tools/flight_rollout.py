@@ -210,17 +210,20 @@ def run_e23():
     fig.suptitle("MuJoCo baseline: run, take-off (blue), descent (tan), landing; model-based controller, deployed run policy", fontsize=9)
     fig.tight_layout(); fig.savefig(os.path.join(ROOT, "docs", "figures", "flight_rollout.pdf"))
 
-    print("\nE3  plant error against the nominal controller model (take-off from a stand: isolates the flight controller)")
+    # Ground assist 0.8: the fans carry 80 % of the flight hardware's weight while the duck stands. With none the standing
+    # policy falls under the pack before take-off (E1), which would say nothing about the flight controller.
+    E3_ASSIST = 0.8
+    print(f"\nE3  plant error against the nominal controller model (take-off from a stand, ground assist {E3_ASSIST}: isolates the flight controller)")
     res["robust"] = {}
     grid_s, grid_c = (0.80, 0.90, 1.00, 1.10, 1.20), (-0.015, -0.0075, 0.0, 0.0075, 0.015)
     succ = np.zeros((len(grid_s), len(grid_c))); tilt = np.zeros_like(succ)
     for i, s in enumerate(grid_s):
         for j, c in enumerate(grid_c):
-            o, _, _ = rollout(thrust_scale=s, com_dx=c, run=False, assist=0.0)
+            o, _, _ = rollout(thrust_scale=s, com_dx=c, run=False, assist=E3_ASSIST)
             succ[i, j], tilt[i, j] = o["success"], o["max_tilt_flight"]
             res["robust"][f"thrust{s:.2f}_com{c*1e3:+.1f}mm"] = o
         print(f"  thrust x{s:.2f}: " + "  ".join(f"com {c*1e3:+5.1f} mm {'ok ' if succ[i,j] else 'FAIL'} tilt {tilt[i,j]:4.1f}" for j, c in enumerate(grid_c)))
-    res["robust_success_rate"] = float(succ.mean())
+    res["robust_success_rate"] = float(succ.mean()); res["robust_assist"] = E3_ASSIST
     fig, ax = plt.subplots(figsize=(5.0, 3.4))
     im = ax.imshow(tilt, origin="lower", cmap="viridis", aspect="auto")
     for i in range(len(grid_s)):
